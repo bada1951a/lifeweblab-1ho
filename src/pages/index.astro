@@ -6,7 +6,7 @@ try {
   allPosts = await getCollection('post');
 } catch (e) {}
 
-// 최신 날짜순 정렬
+// 최신 발행일 순 정렬
 allPosts.sort((a, b) => {
   const dateA = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0;
   const dateB = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0;
@@ -135,6 +135,44 @@ const languages = [
       padding: 0 20px;
     }
 
+    /* 최상단 메인 추천 글 (Featured Post - 1열 전폭 레이아웃) */
+    .featured-container {
+      margin-bottom: 56px;
+    }
+    .featured-item {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+    }
+    .featured-thumb-wrapper {
+      width: 100%;
+      height: 440px;
+      border-radius: 16px;
+      overflow: hidden;
+      background-color: #f1f5f9;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 768px) {
+      .featured-thumb-wrapper { height: 260px; }
+    }
+    .featured-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.3;
+      color: var(--text-title);
+      margin-bottom: 14px;
+      letter-spacing: -0.8px;
+      transition: color 0.2s;
+    }
+    @media (max-width: 768px) {
+      .featured-title { font-size: 1.7rem; }
+    }
+    .featured-item:hover .featured-title {
+      color: var(--primary);
+    }
+
+    /* 하단 2열 그리드 */
     .posts-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -153,14 +191,13 @@ const languages = [
       text-decoration: none;
       color: inherit;
     }
-
     .thumb-wrapper {
       width: 100%;
-      height: 300px;
+      height: 290px;
       border-radius: 14px;
       overflow: hidden;
-      background-color: #fce8db;
-      margin-bottom: 20px;
+      background-color: #f1f5f9;
+      margin-bottom: 18px;
     }
     .thumb-img {
       width: 100%;
@@ -169,10 +206,11 @@ const languages = [
       display: block;
       transition: transform 0.35s ease;
     }
-    .post-item:hover .thumb-img {
-      transform: scale(1.03);
+    .post-item:hover .thumb-img, .featured-item:hover .thumb-img {
+      transform: scale(1.02);
     }
 
+    /* 공통 메타 정보 줄 */
     .meta-row {
       display: flex;
       align-items: center;
@@ -193,7 +231,6 @@ const languages = [
       height: 24px;
       border-radius: 50%;
       object-fit: cover;
-      display: inline-block;
     }
     .meta-item {
       display: flex;
@@ -211,12 +248,13 @@ const languages = [
       stroke-linejoin: round;
     }
 
+    /* 하단 2열 타이틀 */
     .post-title {
-      font-size: 1.65rem;
+      font-size: 1.55rem;
       font-weight: 800;
       line-height: 1.35;
       color: var(--text-title);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       letter-spacing: -0.6px;
       transition: color 0.2s;
     }
@@ -224,6 +262,7 @@ const languages = [
       color: var(--primary);
     }
 
+    /* 본문 요약 */
     .post-excerpt {
       font-size: 0.96rem;
       color: var(--text-body);
@@ -235,7 +274,6 @@ const languages = [
     }
 
     .no-posts {
-      grid-column: 1 / -1;
       text-align: center;
       padding: 100px 20px;
       color: var(--text-muted);
@@ -270,7 +308,7 @@ const languages = [
 
         <div class="lang-picker">
           <span>🌐</span>
-          <select id="lang-selector" aria-label="Language selector">
+          <select id="lang-selector" aria-label="언어 선택">
             {languages.map((lang) => (
               <option value={lang.code}>{lang.label}</option>
             ))}
@@ -281,14 +319,13 @@ const languages = [
   </header>
 
   <main>
-    <div class="posts-grid" id="posts-container">
+    <!-- 언어별 글 목록 렌더링 컨테이너 -->
+    <div id="posts-wrapper">
       {allPosts.map((post) => {
-        // post.id: 'ko/test-post.md' -> lang: 'ko'
-        const parts = post.id.replace(/\.[^/.]+$/, '').split('/');
-        const postLang = parts[0] || 'ko';
-        
-        // 원본 구조 그대로 유지: /ko/글이름, /en/글이름, /ja/글이름
-        const postUrl = `/${post.id.replace(/\.[^/.]+$/, '')}`;
+        // 원본 폴더 규격 유지: ko/글제목, en/글제목, ja/글제목 그대로 URL 형성
+        const cleanId = post.id.replace(/\.[^/.]+$/, '');
+        const postLang = cleanId.split('/')[0] || 'ko';
+        const postUrl = `/${cleanId}`;
 
         const dateObj = post.data.publishDate ? new Date(post.data.publishDate) : new Date();
         const formattedDate = dateObj.toLocaleDateString('en-GB', {
@@ -297,11 +334,11 @@ const languages = [
           year: 'numeric'
         });
 
-        const authorName = post.data.author || 'LifeWebLab';
+        const authorName = post.data.author || 'Mark Dinn';
         const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`;
 
         return (
-          <article class="post-item post-card" data-lang={postLang}>
+          <article class="post-card post-item" data-lang={postLang}>
             <a href={postUrl} class="thumb-wrapper">
               {post.data.image ? (
                 <img src={post.data.image} alt={post.data.title} class="thumb-img" loading="lazy" />
@@ -333,7 +370,7 @@ const languages = [
                   <rect x="14" y="14" width="7" height="7"></rect>
                   <rect x="3" y="14" width="7" height="7"></rect>
                 </svg>
-                {post.data.category || 'Lifestyle'}
+                {post.data.category || 'General'}
               </span>
             </div>
 
@@ -347,20 +384,25 @@ const languages = [
           </article>
         );
       })}
-      <div id="no-posts" class="no-posts">해당 언어로 작성된 포스팅이 아직 없습니다.</div>
     </div>
+
+    <!-- 포스트가 없을 때 표시할 안내 박스 -->
+    <div id="no-posts" class="no-posts">해당 언어로 작성된 포스팅이 아직 없습니다.</div>
   </main>
 
   <footer>
     <p>Copyright © 2026 LifeWebLab • All rights reserved.</p>
   </footer>
 
+  <!-- 브라우저 언어 자동 감지 및 1위 대형 글 + 2열 그리드 동적 재배치 스크립트 -->
   <script is:inline>
     function setupLanguageFilter() {
       const selector = document.getElementById('lang-selector');
-      const cards = document.querySelectorAll('.post-card');
+      const wrapper = document.getElementById('posts-wrapper');
+      const allCards = Array.from(document.querySelectorAll('.post-card'));
       const noPosts = document.getElementById('no-posts');
 
+      // 1. 브라우저 언어 감지 (한국어면 ko, 일본어면 ja, 영어면 en 등)
       const userLang = (navigator.language || navigator.userLanguage || 'ko').slice(0, 2).toLowerCase();
       const supported = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'];
       const defaultLang = supported.includes(userLang) ? userLang : 'ko';
@@ -369,27 +411,59 @@ const languages = [
         selector.value = defaultLang;
       }
 
-      function applyFilter(target) {
-        let count = 0;
-        cards.forEach(card => {
-          if (card.getAttribute('data-lang') === target) {
-            card.style.display = 'flex';
-            count++;
-          } else {
-            card.style.display = 'none';
-          }
-        });
+      // 2. 선택된 언어 글만 추출하여 [1번째 대형 글 + 나머지 2열 그리드]로 재배치
+      function renderLayoutForLang(targetLang) {
+        const matched = allCards.filter(card => card.getAttribute('data-lang') === targetLang);
 
-        if (noPosts) {
-          noPosts.style.display = count === 0 ? 'block' : 'none';
+        wrapper.innerHTML = '';
+
+        if (matched.length === 0) {
+          if (noPosts) noPosts.style.display = 'block';
+          return;
+        }
+
+        if (noPosts) noPosts.style.display = 'none';
+
+        // 1번째 글: 대형 Featured 레이아웃
+        const firstCard = matched[0];
+        const featuredContainer = document.createElement('div');
+        featuredContainer.className = 'featured-container';
+
+        const thumbWrapper = firstCard.querySelector('.thumb-wrapper');
+        if (thumbWrapper) thumbWrapper.className = 'featured-thumb-wrapper';
+
+        const postTitle = firstCard.querySelector('.post-title');
+        if (postTitle) postTitle.className = 'featured-title';
+
+        featuredContainer.appendChild(firstCard);
+        wrapper.appendChild(featuredContainer);
+
+        // 2번째 글부터: 하단 2열 그리드에 배치
+        if (matched.length > 1) {
+          const gridContainer = document.createElement('div');
+          gridContainer.className = 'posts-grid';
+
+          for (let i = 1; i < matched.length; i++) {
+            const card = matched[i];
+            const tw = card.querySelector('.featured-thumb-wrapper');
+            if (tw) tw.className = 'thumb-wrapper';
+
+            const pt = card.querySelector('.featured-title');
+            if (pt) pt.className = 'post-title';
+
+            gridContainer.appendChild(card);
+          }
+          wrapper.appendChild(gridContainer);
         }
       }
 
-      applyFilter(defaultLang);
+      // 최초 실행
+      renderLayoutForLang(defaultLang);
 
+      // 사용자가 우측 상단 드롭다운 변경 시 즉시 반영
       if (selector) {
         selector.addEventListener('change', (e) => {
-          applyFilter(e.target.value);
+          renderLayoutForLang(e.target.value);
         });
       }
     }
