@@ -1,84 +1,181 @@
 ---
-import Layout from '~/layouts/PageLayout.astro';
-
-// 대문 이미지(JPG) 불러오기
-import heroImage from '~/assets/images/satellite-earth.jpg';
-
-const metadata = {
-  title: 'LifeWebLab — Global Billing & Payment Troubleshooting Hub',
-  ignoreTitleTemplate: true,
-};
+// 외부 레이아웃이나 위젯 import 없이 자체 완결형 코드로 구성
 ---
 
-<Layout metadata={metadata}>
-  <!-- Hero Section (순수 Tailwind CSS 적용) -->
-  <section class="relative md:-mt-[76px] not-prose">
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6">
-      <div class="pt-0 md:pt-[76px] pointer-events-none"></div>
-      <div class="py-12 md:py-20 lg:py-0 lg:flex lg:items-center lg:h-screen lg:gap-8">
-        <div class="basis-1/2 text-center lg:text-left pb-10 md:pb-16 mx-auto">
-          <h1 class="text-5xl md:text-6xl font-bold leading-tighter tracking-tighter mb-4 font-heading dark:text-gray-200">
-            Global Payment & Billing Solutions,<br />
-            <span class="text-blue-600 dark:text-blue-400">LifeWebLab</span>
-          </h1>
-          <div class="max-w-3xl mx-auto lg:max-w-none">
-            <p class="text-xl text-muted mb-6 dark:text-slate-300">
-              Comprehensive troubleshooting guides for overseas payments, recurring billing errors, and digital invoices.
-            </p>
-            <div class="max-w-xs sm:max-w-md m-auto flex flex-nowrap flex-col sm:flex-row sm:justify-center gap-4 lg:justify-start">
-              <a
-                class="btn btn-primary inline-flex items-center justify-center py-3 px-6 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
-                href="/blog"
-              >
-                Explore Guides
-              </a>
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LifeWebLab — Global Billing & Payment Troubleshooting Hub</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #0b1120;
+        color: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem 2rem;
+        background-color: #0b1120;
+        border-bottom: 1px solid #1e293b;
+      }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #60a5fa;
+        text-decoration: none;
+      }
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+      .nav-links a {
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+      .nav-links a:hover {
+        color: #60a5fa;
+      }
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #1e293b;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0,0,0,0.4);
+        border-radius: 8px;
+        padding: 8px 0;
+        z-index: 50;
+      }
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
+      .dropdown-content a {
+        padding: 8px 16px;
+        display: block;
+        color: #cbd5e1;
+      }
+      .dropdown-content a:hover {
+        background-color: #334155;
+        color: #ffffff;
+      }
+      main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 4rem 1rem;
+      }
+      .hero-content {
+        max-width: 720px;
+      }
+      h1 {
+        font-size: 2.75rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 1.25rem;
+      }
+      h1 span {
+        color: #3b82f6;
+      }
+      p {
+        font-size: 1.2rem;
+        color: #94a3b8;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+      .btn {
+        display: inline-block;
+        background-color: #2563eb;
+        color: #ffffff;
+        padding: 0.85rem 1.75rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s;
+      }
+      .btn:hover {
+        background-color: #1d4ed8;
+      }
+      footer {
+        text-align: center;
+        padding: 2rem;
+        border-top: 1px solid #1e293b;
+        color: #64748b;
+        font-size: 0.875rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="/" class="logo">LifeWebLab</a>
+      <div class="nav-links">
+        <a href="/blog">Blog</a>
+        <div class="dropdown">
+          <a href="#" style="cursor: pointer;">🌐 Language ▾</a>
+          <div class="dropdown-content">
+            <a href="/ko">🇰🇷 한국어</a>
+            <a href="/en">🇺🇸 English</a>
+            <a href="/ja">🇯🇵 日本語</a>
+            <a href="/de">🇩🇪 Deutsch</a>
+            <a href="/fr">🇫🇷 Français</a>
+            <a href="/es">🇪🇸 Español</a>
           </div>
         </div>
-        <div class="basis-1/2">
-          {heroImage && (
-            <div class="relative m-auto max-w-5xl">
-              <img
-                src={heroImage.src || heroImage}
-                alt="Troubleshooting Tutorials - LifeWebLab Cover"
-                class="mx-auto rounded-md w-full shadow-lg"
-              />
-            </div>
-          )}
-        </div>
       </div>
-    </div>
-  </section>
-</Layout>
+    </header>
 
-<!-- 방문자 언어 감지 및 자동 분기 스크립트 -->
-<script is:inline>
-  (function () {
-    if (window.location.pathname !== '/' && window.location.pathname !== '') return;
+    <main>
+      <div class="hero-content">
+        <h1>Global Payment & Billing Solutions,<br /><span>LifeWebLab</span></h1>
+        <p>Comprehensive troubleshooting guides for overseas payments, recurring billing errors, and digital invoices across the globe.</p>
+        <a href="/blog" class="btn">Explore All Guides</a>
+      </div>
+    </main>
 
-    const rawLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-    const langCode = rawLang.split('-')[0];
+    <footer>
+      © 2026 LifeWebLab. All rights reserved.
+    </footer>
 
-    const supportedLangs = {
-      ko: '/ko',
-      ja: '/ja',
-      de: '/de',
-      fr: '/fr',
-      es: '/es',
-      zh: '/zh',
-      it: '/it',
-      pt: '/pt',
-      ru: '/ru',
-      nl: '/nl',
-      pl: '/pl',
-      en: '/en'
-    };
+    <!-- 언어 자동 분기 스크립트 -->
+    <script is:inline>
+      (function () {
+        if (window.location.pathname !== '/' && window.location.pathname !== '') return;
 
-    if (supportedLangs[langCode]) {
-      if (!sessionStorage.getItem('lang_redirected')) {
-        sessionStorage.setItem('lang_redirected', 'true');
-        window.location.replace(supportedLangs[langCode]);
-      }
-    }
-  })();
-</script>
+        const rawLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+        const langCode = rawLang.split('-')[0];
+
+        const supportedLangs = {
+          ko: '/ko',
+          ja: '/ja',
+          de: '/de',
+          fr: '/fr',
+          es: '/es',
+          en: '/en'
+        };
+
+        if (supportedLangs[langCode]) {
+          if (!sessionStorage.getItem('lang_redirected')) {
+            sessionStorage.setItem('lang_redirected', 'true');
+            window.location.replace(supportedLangs[langCode]);
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>
