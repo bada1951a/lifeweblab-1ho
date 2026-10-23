@@ -310,6 +310,19 @@ const currentLang = Astro.params.lang || 'ko';
   <footer>
     <p>Copyright © 2026 LifeWebLab • All rights reserved.</p>
   </footer>
+<style is:global>
+  /* 마크다운 본문 내부 이미지 강제 크기 제어 */
+  .post-content img {
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 460px !important;
+    object-fit: cover !important;
+    border-radius: 14px !important;
+    display: block !important;
+    margin: 36px auto !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08) !important;
+  }
+</style>
 
 </body>
 </html>
