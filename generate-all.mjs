@@ -15,47 +15,13 @@ if (!GEMINI_API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
-// Astro 4 규격에 맞춘 content 폴더 경로
+// Astro content 컬렉션 정규 경로
 const POSTS_BASE_DIR = path.resolve('src/content/post');
-const OLD_POSTS_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
 
 // =========================================================================
-// [자동 마이그레이션] 기존 src/data/post 글이 있다면 src/content/post 로 자동 이동
-// =========================================================================
-if (fs.existsSync(OLD_POSTS_DIR)) {
-  console.log("📦 기존 src/data/post 폴더의 글들을 src/content/post 로 자동 동기화합니다...");
-  if (!fs.existsSync(POSTS_BASE_DIR)) {
-    fs.mkdirSync(POSTS_BASE_DIR, { recursive: true });
-  }
-
-  function copyDirRecursive(src, dest) {
-    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
-    const entries = fs.readdirSync(src, { withFileTypes: true });
-
-    for (let entry of entries) {
-      const srcPath = path.join(src, entry.name);
-      const destPath = path.join(dest, entry.name);
-
-      if (entry.isDirectory()) {
-        copyDirRecursive(srcPath, destPath);
-      } else {
-        fs.copyFileSync(srcPath, destPath);
-      }
-    }
-  }
-
-  try {
-    copyDirRecursive(OLD_POSTS_DIR, POSTS_BASE_DIR);
-    console.log("✅ 기존 글 동기화 완료!");
-  } catch (err) {
-    console.warn("⚠️ 기존 글 복사 중 안내:", err.message);
-  }
-}
-
-// =========================================================================
-// [1호기 전용] public/images/billing-photo 로컬 이미지 자동 셔플
+// [사진 61장 순환 로직] 날짜 기반 오프셋으로 연속 중복 원천 방지
 // =========================================================================
 const IMAGE_EXTS = /\.(jpe?g|png|webp|gif|avif)$/i;
 
@@ -63,7 +29,8 @@ if (!fs.existsSync(PHOTO_DIR)) {
   fs.mkdirSync(PHOTO_DIR, { recursive: true });
 }
 
-const localFiles = fs.readdirSync(PHOTO_DIR).filter(file => IMAGE_EXTS.test(file));
+// 파일명 순서대로 정렬하여 고정 인덱스 풀 구축
+const localFiles = fs.readdirSync(PHOTO_DIR).filter(file => IMAGE_EXTS.test(file)).sort();
 let localImages = localFiles.map(file => encodeURI(`/images/billing-photo/${file}`));
 
 if (localImages.length === 0) {
@@ -71,20 +38,20 @@ if (localImages.length === 0) {
   localImages = ['/images/default-billing.jpg'];
 }
 
-function shuffleArray(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-const shuffledPool = shuffleArray(localImages);
-
 function getPostImages(index) {
-  const coverUrl = shuffledPool[(index * 2) % shuffledPool.length];
-  const bodyUrl = shuffledPool[(index * 2 + 1) % shuffledPool.length];
+  // 오늘 날짜(연/월/일) 기준 고유 일자 시드 계산
+  const now = new Date();
+  const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  const year = kstTime.getUTCFullYear();
+  const month = kstTime.getUTCMonth() + 1;
+  const day = kstTime.getUTCDate();
+  
+  // 매일 11칸씩 크게 건너뛰어 어제와 오늘 대표 사진이 겹치는 현상 차단
+  const daySeed = (year * 372) + (month * 31) + day;
+  const baseOffset = (daySeed * 11) % localImages.length;
+
+  const coverUrl = localImages[(baseOffset + (index * 2)) % localImages.length];
+  const bodyUrl = localImages[(baseOffset + (index * 2) + 1) % localImages.length];
   return { coverUrl, bodyUrl };
 }
 
@@ -280,7 +247,7 @@ ${currentTopic}
 
 [Content & Structure (AdSense High Quality E-E-A-T)]
 1. Opening Story: Real workplace problem scenario strictly regarding this topic based on the assigned scenario.
-2. Root Cause Breakdown: Clearly explain 3 realistic root causes behind the failure or error.
+​2. Root Cause Breakdown: Clearly explain 3 realistic root causes behind the failure or error.
 3. Step-by-Step Resolution: Provide actionable steps with exact dashboard menu paths matching "${lang.osUi}".
 4. Preventative Precautions: Practical tips to ensure this error never happens again in the future.
 5. Frequently Asked Questions (FAQ): Exactly 3 realistic, high-value Q&As that users facing this error ask. (CRITICAL: Every Q and A must start on a fresh new line without markdown bolding like Q1. ... and A1.).
@@ -328,7 +295,6 @@ theme: "${selectedTheme.name}"
       let body = text.slice(frontmatter.length).trim();
       body = body.replace(/^#\s+[^\n]+\n+/, '');
 
-      // 심사용 안전 카테고리: troubleshooting 강제 적용
       frontmatter = frontmatter.replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
                                .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
 
@@ -337,7 +303,9 @@ theme: "${selectedTheme.name}"
 
       body = sanitizeMarkdownFormatting(body);
 
-      const middleImageMarkdown = `\n\n![Payment and Billing Troubleshooting Guide](${bodyUrl})\n\n`;
+      // 본문 중간 삽입 이미지: 레이아웃 깨짐을 방지하는 인라인 스타일 적용
+      const middleImageMarkdown = `\n\n<div style="text-align: center; margin: 36px 0;"><img src="${bodyUrl}" alt="Payment and Billing Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>\n\n`;
+
       if (body.includes('## 2.') || body.includes('### 2.')) {
         body = body.replace(/(#{2,3}\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
       } else {
