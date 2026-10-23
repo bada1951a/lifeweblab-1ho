@@ -1,7 +1,7 @@
 How to Fix Stripe Error Code do_not_honor
 PayPal 21-Day Hold: How to Release Funds Instantly
 Stripe Payment Declined: generic_decline Troubleshooting
-Fixing PayPal Error 400 Bad Request on Checkout.
+Fixing PayPal Error 400 Bad Request on Checkout
 How to Bypass Stripe fraudulent False Positive Declines
 PayPal Account Limited: Fast Track Appeal Guide
 Fixing Stripe Webhook 500 Internal Server Error
