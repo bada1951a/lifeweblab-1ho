@@ -1,51 +1,52 @@
-name: Daily Auto Publish Blog Post
+name: Auto Multi-Language Blog Publishing Pipeline
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 매일 UTC 기준 자정 (한국 시간 아침 9시)에 자동 실행
-  workflow_dispatch: # 수동으로도 테스트 실행 가능
+    # 한국 시간 기준: 매일 오전 2시 30분 (02:30 KST) 1회 발행
+    # UTC 기준: 17:30 (전날)
+    - cron: '30 17 * * *'
+
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
-      - name: Create automated blog post
+      - name: Install Dependencies
         run: |
-          # 오늘 날짜 기반으로 고유한 파일 이름 생성
-          DATE_STR=$(date +'%Y-%m-%d-%H%M%S')
-          FILE_PATH="src/content/blog/auto-post-$DATE_STR.md"
-          
-          # 자동 생성될 마크다운 내용 작성
-          cat << 'EOF' > "$FILE_PATH"
-          ---
-          title: "Automated Daily Post ($DATE_STR)"
-          description: "이 포스트는 GitHub Actions에 의해 자동으로 생성되어 발행된 글입니다."
-          date: "$(date +'%d %b, %Y')"
-          category: "AutoTech"
-          author: "GitHub Bot"
-          image: "⚡"
-          avatarIcon: "🤖"
-          ---
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
 
-          ## 🌍 글로벌 자동 발행 시스템 가동 중
+      - name: Run Multi-Language Generator Script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node generate-all.mjs
 
-          이 글은 매일 정해진 시간에 깃허브 액션을 통해 자동으로 생성되었습니다. 
-          마크다운 파일이 생성되는 순간 클라우드플레어가 이를 감지하여 전 세계에 실시간으로 배포합니다!
-          EOF
-
-      - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "🤖 Auto-publish new blog post via GitHub Actions"
-          branch: main
+      - name: Commit and Push New Posts & Updated Topics
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "변경사항이 없습니다."
+          else
+            git commit -m "chore: auto-publish 12-language blog posts with local images"
+            git push
+          fi
