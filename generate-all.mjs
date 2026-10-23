@@ -193,7 +193,7 @@ async function generateSinglePost(lang, index) {
 
   const prompt = `
 당신은 ${lang.persona}입니다.
-반드시 ${lang.name} 언어로 작성하세요. 번역투가 아닌, 현지 직장 동료에게 본인의 실무 경험담(썰)을 생생하게 들려주는 1인칭 구어체로 작성해야 합니다.
+반드시 ${lang.name} 언어로만 작성하세요. 번역투가 아닌, 현지 직장 동료에게 본인의 실무 경험담(썰)을 생생하게 들려주는 1인칭 구어체로 작성해야 합니다.
 
 [작성 주제]
 ${currentTopic}
@@ -202,31 +202,36 @@ ${currentTopic}
 - 대상 도시/문화권: ${lang.localeContext}
 - 발생한 긴급 시나리오: "${selectedScenario}"
 
-[언어 규칙 - 엄격 준수]
-${lang.code !== 'ko' ? '- 한국어(한글)를 단 한 글자도 포함하지 마세요. 제목, 요약, 태그, 본문, FAQ 모두 100% ' + lang.name + '로만 작성하세요.' : '- 자연스러운 한국어 직장인 실무 구어체로 작성하세요.'}
+[언어 규칙 - 절대 엄수 (CRITICAL)]
+${lang.code !== 'ko' ? `
+- [매우 중요] 한국어(한글)를 단 한 글자도 포함하지 마세요. 제목, 요약, 태그, 본문, 모든 소제목(##), 강조 박스 문구, FAQ(Q/A)까지 100% ${lang.name} 언어로만 작성해야 합니다.
+- 한국어 예시 문구(예: '당시 상황과 겪었던 혼란', '핵심 포인트', 'FAQ' 등)를 그대로 쓰지 말고, 반드시 ${lang.name}로 완벽히 번역하여 적용하세요.
+` : `
+- 자연스러운 한국어 직장인 실무 구어체로 작성하세요.
+`}
 
 [필수 마크다운 구조 및 줄바꿈 규칙 - 절대 생략 금지]
-1. 반드시 마크다운 소제목(## 및 ###)을 빠짐없이 사용하여 본문의 시각적 뼈대를 구축하세요.
+1. 반드시 마크다운 소제목(## 및 ###)을 빠짐없이 사용하여 본문의 시각적 뼈대를 구축하세요. (단, 소제목 제목도 100% ${lang.name} 번역 필수)
 2. 모든 문단 사이에는 반드시 빈 줄을 1개 삽입하여 완벽한 줄바꿈(엔터 2번, \\n\\n)을 적용하세요. 문단이 뭉쳐서 벽돌처럼 출력되면 안 됩니다.
 3. 소제목 바로 앞과 뒤에도 반드시 빈 줄(\\n\\n)을 넣어 여백을 확보하세요.
 4. 기술 파라미터나 에러 코드, 메뉴명은 작은따옴표 백틱(\`code\`)으로 감싸세요.
-5. 테마 스타일의 강조 박스를 본문 중간에 2개 이상 배치하세요:
+5. 테마 스타일의 강조 박스를 본문 중간에 2개 이상 배치하세요 (${lang.name} 번역 적용):
    <div style="border-left: 4px solid ${selectedTheme.primaryColor}; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-     <strong>[핵심 포인트]:</strong> 실무자가 즉시 적용할 수 있는 핵심 조치 요약
+     <strong>[${lang.code === 'ko' ? '핵심 포인트' : 'Key Point'}]:</strong> ${lang.name}로 작성된 실무 핵심 조치 요약
    </div>
 
 [본문 필수 구성 순서 (AdSense 고품질 E-E-A-T)]
 1. 도입부 (H1, H2 소제목 없이 바로 이야기 시작):
    - "${selectedScenario}" 상황이 터진 당일 아침의 다급했던 현장 분위기를 1인칭 썰로 흥미진진하게 시작.
-2. ## 1. 당시 상황과 겪었던 혼란:
+2. ## 1. [${lang.name}로 번역된 '당시 상황과 겪었던 혼란']:
    - 문제를 처음 맞닥뜨렸을 때의 당혹감, 고객센터나 문서를 뒤지며 겪은 시행착오를 구체적으로 서술.
-3. ## 2. 문제의 근본 원인 분석:
+3. ## 2. [${lang.name}로 번역된 '문제의 근본 원인 분석']:
    - 왜 이런 일이 발생했는지 3가지 현실적인 원인을 각각 ### 소제목으로 나누어 분석.
-4. ## 3. 즉시 해결한 단계별 조치 매뉴얼:
+4. ## 3. [${lang.name}로 번역된 '즉시 해결한 단계별 조치 매뉴얼']:
    - "${lang.osUi}" 메뉴를 직접 조작하듯 클릭 경로와 해결 방법을 Step 1, Step 2, Step 3으로 상세히 가이드.
-5. ## 4. 재발 방지를 위한 실무 체크리스트:
+5. ## 4. [${lang.name}로 번역된 '재발 방지를 위한 실무 체크리스트']:
    - 앞으로 똑같은 사고를 원천 방지하기 위해 정기적으로 확인해야 할 핵심 수칙.
-6. ## 5. 자주 묻는 질문 (FAQ):
+6. ## 5. [${lang.name}로 번역된 '자주 묻는 질문 FAQ']:
    - 실무자들이 실제로 가장 곤란해하는 고가치 질문 3개를 엄선하여 Q1, A1 형식으로 작성. (각 Q와 A 사이, 질문들 사이마다 빈 줄 필수).
 
 [분량 규격]
@@ -264,7 +269,7 @@ theme: "${selectedTheme.name}"
       body = body.replace(/^#\s+[^\n]+\n+/, '');
 
       frontmatter = frontmatter.replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
-                               .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
+                             .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
 
       frontmatter = frontmatter.replace(/publishDate:\s*[^\n\r]+/i, `publishDate: ${pubDateIso}`);
       frontmatter = frontmatter.replace(/image:\s*["'][^"']*["']/i, `image: '${coverUrl}'`);
