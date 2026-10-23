@@ -1,41 +1,57 @@
 ---
-// lifeweblab-1ho - Bookworm 감성 홈 템플릿
+// lifeweblab-1ho - Bookworm 완벽 싱크로율 레이아웃 (귀여운 아이콘, 날짜, 카테고리 포함)
 const posts = [
   {
-    title: "¿Qué hacer si Stripe muestra el error do_not_honor y rechaza tarjetas internacionales?",
-    description: "Durante la sincronización de pasarelas de pago globales, uno de los fallos más críticos es cuando el banco emisor bloquea la transacción sin explicaciones detalladas...",
-    date: "23 Oct, 2026",
-    category: "Business",
-    author: "Tech Doctor",
-    image: "💳",
-    url: "#"
-  },
-  {
-    title: "¿Por qué aparece la retención de 21 días en cuentas nuevas de PayPal Business y cómo liberarla?",
-    description: "Análisis detallado del mecanismo de retención estándar en pasarelas de pago transfronterizas y métodos automatizados para registrar comprobantes de envío válidos.",
-    date: "23 Oct, 2026",
-    category: "Business",
-    author: "Tech Doctor",
+    title: "How to make toys from old Olarpaper",
+    description: "Nemo vel ad consectetur namut rutrum ex, venenatis sollicitudin urna. Aliquam erat volutpat. Integer eu ipsum sem. Ut bibendum lacus vestibulum maximus suscipit...",
+    date: "07 Apr, 2025",
+    category: "Art",
+    author: "Mark Dinn",
     image: "📦",
+    avatarIcon: "🦊", // 작성자 귀여운 동물 아이콘
     url: "#"
   },
   {
-    title: "Solución al error de permisos S3 Bucket Access Denied y configuración IAM Policy recomendada",
-    description: "Resolución de bloqueos de políticas de acceso público y errores de configuración de permisos IAM para infraestructura en la nube.",
-    date: "23 Oct, 2026",
-    category: "Business",
-    author: "Tech Doctor",
-    image: "☁️",
+    title: "Become a morning person with the help of alarm clock",
+    description: "Almost every day for the past nine or so months has felt like March 13, and that can sometimes make it difficult to want...",
+    date: "06 Apr, 2025",
+    category: "LifeStyle",
+    author: "Mark Dinh",
+    image: "⏰",
+    avatarIcon: "🐼",
+    url: "#"
+  },
+  {
+    title: "Banana is the best meal packages in the UK spark outrage online",
+    description: "A banana is an elongated, edible fruit—botanically a berry—produced by several kinds of large herbaceous flowering...",
+    date: "05 Apr, 2025",
+    category: "Food",
+    author: "John Doe",
+    image: "🍌",
+    avatarIcon: "🐨",
+    url: "#"
+  },
+  {
+    title: "Why a balloon is a flexible bag that can be inflated with a gas",
+    description: "A balloon is a flexible bag that can be inflated with a gas, such as helium, hydrogen, nitrous oxide, oxygen, and air...",
+    date: "04 Apr, 2025",
+    category: "Accessories",
+    author: "Mark Dinn",
+    image: "🎈",
+    avatarIcon: "🦁",
     url: "#"
   }
 ];
+
+const featuredPost = posts[0];
+const gridPosts = posts.slice(1);
 ---
 
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>lifeweblab-1ho.com - Global SaaS & Fintech Lab</title>
+    <title>Bookworm - Astro Theme</title>
     <style>
         :root {
             --bg-color: #ffffff;
@@ -43,7 +59,7 @@ const posts = [
             --muted-color: #777777;
             --border-color: #eaeaea;
             --primary-color: #10b981;
-            --card-bg: #fdfbf7;
+            --card-bg: #f5f2eb; /* 아기자기한 미색 썸네일 배경 */
         }
 
         body {
@@ -55,10 +71,11 @@ const posts = [
             line-height: 1.6;
         }
 
+        /* Header */
         header {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 30px 20px;
+            padding: 25px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -70,6 +87,9 @@ const posts = [
             font-weight: 800;
             color: #111;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         nav {
@@ -88,122 +108,180 @@ const posts = [
             color: var(--primary-color);
         }
 
+        /* Container */
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 40px auto;
             padding: 0 20px;
         }
 
-        .post-card {
-            margin-bottom: 60px;
-            background: #fff;
-            border-radius: 12px;
-        }
-
-        .post-thumbnail {
-            width: 100%;
-            height: 380px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .post-thumbnail:hover {
-            transform: translateY(-4px);
-        }
-
+        /* 메타 정보 (귀여운 아이콘 + 작성자 + 날짜 + 카테고리) */
         .post-meta {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
+            gap: 8px;
+            font-size: 0.88rem;
             color: var(--muted-color);
             margin-bottom: 12px;
         }
 
-        .author-img {
-            width: 24px;
-            height: 24px;
+        .author-icon-box {
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
-            background: #ccc;
-            display: inline-flex;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
-            color: #fff;
-            font-weight: bold;
+            font-size: 0.85rem;
         }
 
-        .post-title {
-            font-size: 1.8rem;
-            font-weight: 700;
+        .category-badge {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* 1. 상단 대문 사진 (Featured Post) */
+        .featured-post {
+            margin-bottom: 55px;
+        }
+
+        .featured-thumbnail {
+            width: 100%;
+            height: 420px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            margin-bottom: 20px;
+        }
+
+        .post-title-large {
+            font-size: 2.1rem;
+            font-weight: 800;
             color: #111;
             text-decoration: none;
             display: block;
             margin-bottom: 12px;
-            line-height: 1.3;
+            line-height: 1.25;
         }
 
-        .post-title:hover {
+        .post-title-large:hover, .post-title-small:hover {
             color: var(--primary-color);
         }
 
         .post-desc {
-            font-size: 1.05rem;
+            font-size: 1.02rem;
             color: #555;
-            margin-bottom: 20px;
+            margin-bottom: 0;
         }
 
+        /* 2. 하단 2열 그리드 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 45px 30px;
+            margin-top: 40px;
+        }
+
+        .grid-thumbnail {
+            width: 100%;
+            height: 240px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .post-title-small {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #111;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        /* Footer */
         footer {
-            max-width: 800px;
-            margin: 60px auto 40px auto;
+            max-width: 900px;
+            margin: 80px auto 40px auto;
             padding: 20px;
             border-top: 1px solid var(--border-color);
             text-align: center;
             font-size: 0.85rem;
             color: var(--muted-color);
         }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="#" class="logo">🐛 lifeweblab-1ho</a>
+        <a href="#" class="logo">🐛 Bookworm</a>
         <nav>
             <a href="#">Home</a>
             <a href="#">About</a>
             <a href="#">Contact</a>
+            <a href="#">Pages ▾</a>
         </nav>
     </header>
 
     <main class="container">
-        {posts.map(post => (
-            <article class="post-card">
-                <div class="post-thumbnail">
-                    {post.image}
-                </div>
-                <div class="post-meta">
-                    <span class="author-img">TD</span>
-                    <span>{post.author}</span>
-                    <span>•</span>
-                    <span>{post.date}</span>
-                    <span>•</span>
-                    <span style="color: var(--primary-color); font-weight: 600;">{post.category}</span>
-                </div>
-                <h2><a href={post.url} class="post-title">{post.title}</a></h2>
-                <p class="post-desc">{post.description}</p>
-            </article>
-        ))}
+        <!-- 1. 상단 대문 사진 포스트 (Featured) -->
+        <article class="featured-post">
+            <div class="featured-thumbnail">
+                {featuredPost.image}
+            </div>
+            <div class="post-meta">
+                <div class="author-icon-box">{featuredPost.avatarIcon}</div>
+                <span>{featuredPost.author}</span>
+                <span>•</span>
+                <span>{featuredPost.date}</span>
+                <span>•</span>
+                <a href="#" class="category-badge">{featuredPost.category}</a>
+            </div>
+            <h2><a href={featuredPost.url} class="post-title-large">{featuredPost.title}</a></h2>
+            <p class="post-desc">{featuredPost.description}</p>
+        </article>
+
+        <!-- 2. 하단 2열 그리드 포스트 목록 -->
+        <div class="grid-container">
+            {gridPosts.map(post => (
+                <article class="grid-item">
+                    <div class="grid-thumbnail">
+                        {post.image}
+                    </div>
+                    <div class="post-meta">
+                        <div class="author-icon-box">{post.avatarIcon}</div>
+                        <span>{post.author}</span>
+                        <span>•</span>
+                        <span>{post.date}</span>
+                        <span>•</span>
+                        <a href="#" class="category-badge">{post.category}</a>
+                    </div>
+                    <h3><a href={post.url} class="post-title-small">{post.title}</a></h3>
+                    <p class="post-desc" style="font-size: 0.95rem;">{post.description}</p>
+                </article>
+            ))}
+        </div>
     </main>
 
     <footer>
-        <p>Copyright © 2026 lifeweblab-1ho.com • Built with Astro & Automated Pipeline</p>
+        <p>Copyright © 2026 a theme by Themefisher • Built with Astro</p>
     </footer>
 
 </body>
