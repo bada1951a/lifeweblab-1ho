@@ -6,6 +6,7 @@ try {
   allPosts = await getCollection('post');
 } catch (e) {}
 
+// 최신 발행일 순 정렬
 allPosts.sort((a, b) => {
   const dateA = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0;
   const dateB = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0;
@@ -33,44 +34,43 @@ const languages = [
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LifeWebLab — Global Troubleshooting & Solutions</title>
+  <title>LifeWebLab</title>
   
+  <!-- Bookworm 순정 전용 폰트 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: #111827;
-      --card-border: #1f2937;
-      --text-main: #f9fafb;
-      --text-sub: #9ca3af;
-      --primary: #3b82f6;
-      --primary-hover: #60a5fa;
+      --bg: #ffffff;
+      --text-title: #0f172a;
+      --text-muted: #64748b;
+      --text-desc: #475569;
+      --border: #f1f5f9;
+      --primary: #2563eb;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #0b0f19;
-      color: var(--text-main);
+      background-color: var(--bg);
+      color: var(--text-title);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
 
     /* 상단 헤더 */
     header {
-      background: rgba(11, 15, 25, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #1f2937;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 50;
     }
     .header-inner {
-      max-width: 1140px;
+      max-width: 1040px;
       margin: 0 auto;
       padding: 16px 20px;
       display: flex;
@@ -78,10 +78,11 @@ const languages = [
       align-items: center;
     }
     .logo {
-      font-size: 1.35rem;
+      font-size: 1.4rem;
       font-weight: 800;
-      color: #ffffff;
+      color: #0f172a;
       text-decoration: none;
+      letter-spacing: -0.5px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -98,13 +99,13 @@ const languages = [
     }
     .nav-links a {
       text-decoration: none;
-      font-size: 0.92rem;
+      font-size: 0.95rem;
       font-weight: 600;
-      color: #9ca3af;
+      color: #475569;
       transition: color 0.2s;
     }
     .nav-links a:hover {
-      color: #ffffff;
+      color: var(--primary);
     }
     @media (max-width: 640px) {
       .nav-links { display: none; }
@@ -115,8 +116,8 @@ const languages = [
       display: flex;
       align-items: center;
       gap: 6px;
-      background: #1f2937;
-      border: 1px solid #374151;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
       padding: 6px 14px;
       border-radius: 9999px;
     }
@@ -124,203 +125,168 @@ const languages = [
       border: none;
       background: transparent;
       font-size: 0.85rem;
-      font-weight: 600;
-      color: #e5e7eb;
+      font-weight: 700;
+      color: #334155;
       outline: none;
       cursor: pointer;
       font-family: inherit;
     }
 
-    /* 대문 사진이 들어간 히어로 섹션 */
-    .hero-section {
-      position: relative;
-      background: linear-gradient(rgba(11, 15, 25, 0.75), rgba(11, 15, 25, 0.95)),
-                  url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
-      border-bottom: 1px solid #1f2937;
-      padding: 95px 20px 105px 20px;
-      text-align: center;
+    /* 상단 대문 사진 배너 자리 */
+    .hero-banner-container {
+      max-width: 1040px;
+      margin: 28px auto 0 auto;
+      padding: 0 20px;
     }
-    .hero-badge {
-      display: inline-block;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--primary-hover);
-      background: rgba(59, 130, 246, 0.15);
-      border: 1px solid rgba(59, 130, 246, 0.35);
-      padding: 6px 16px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
+    .hero-banner-img {
+      width: 100%;
+      height: 340px;
+      border-radius: 18px;
+      object-fit: cover;
+      display: block;
+      background-color: #fce8db;
     }
-    .hero-title {
-      font-size: 3rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin-bottom: 18px;
-      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    @media (max-width: 640px) {
-      .hero-title { font-size: 2.1rem; }
-    }
-    .hero-desc {
-      font-size: 1.1rem;
-      color: #cbd5e1;
-      max-width: 640px;
-      margin: 0 auto;
-      line-height: 1.7;
+    @media (max-width: 768px) {
+      .hero-banner-img {
+        height: 200px;
+      }
     }
 
-    /* 포스트 영역 */
+    /* 포스트 메인 컨테이너 */
     main {
-      max-width: 1140px;
-      margin: 50px auto 100px auto;
+      max-width: 1040px;
+      margin: 40px auto 100px auto;
       padding: 0 20px;
     }
 
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 32px;
-      border-bottom: 1px solid #1f2937;
-      padding-bottom: 16px;
-    }
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #ffffff;
-    }
-    .section-subtitle {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      margin-top: 4px;
-    }
-
-    /* 포스트 카드 그리드 */
+    /* 스크린샷과 1:1로 일치하는 2열 카드 그리드 */
     .posts-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 48px 40px;
     }
-    @media (max-width: 1024px) {
-      .posts-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 640px) {
-      .posts-grid { grid-template-columns: 1fr; }
+    @media (max-width: 768px) {
+      .posts-grid {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
     }
 
-    .post-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      overflow: hidden;
+    .post-item {
       display: flex;
       flex-direction: column;
       text-decoration: none;
       color: inherit;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-    .post-card:hover {
-      transform: translateY(-4px);
-      border-color: #374151;
     }
 
+    /* 둥근 사각형 썸네일 */
     .thumb-wrapper {
       width: 100%;
-      height: 200px;
-      background: #1f2937;
+      height: 290px;
+      border-radius: 14px;
       overflow: hidden;
+      background-color: #f1f5f9;
+      margin-bottom: 18px;
     }
     .thumb-img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
       transition: transform 0.3s ease;
     }
-    .post-card:hover .thumb-img {
-      transform: scale(1.04);
+    .post-item:hover .thumb-img {
+      transform: scale(1.02);
     }
 
-    .card-body {
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-    .card-meta {
+    /* Bookworm 순정 메타 바 (아바타 + 작성자 + 달력 + 날짜 + 격자 카테고리) */
+    .meta-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 0.8rem;
-      color: var(--text-sub);
-      margin-bottom: 10px;
+      gap: 14px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
     }
-    .card-badge {
-      color: var(--primary-hover);
-      font-weight: 700;
-      text-transform: uppercase;
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 500;
+      color: #334155;
     }
-    .card-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #ffffff;
-      line-height: 1.45;
+    .author-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: inline-block;
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 500;
+    }
+    .meta-icon {
+      width: 15px;
+      height: 15px;
+      stroke: #64748b;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* 볼드 대형 제목 (스크린샷 타이포그래피) */
+    .post-title {
+      font-size: 1.55rem;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text-title);
       margin-bottom: 10px;
+      letter-spacing: -0.5px;
+      transition: color 0.2s;
+    }
+    .post-item:hover .post-title {
+      color: var(--primary);
+    }
+
+    /* 본문 요약 */
+    .post-excerpt {
+      font-size: 0.95rem;
+      color: var(--text-desc);
+      line-height: 1.6;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .post-card:hover .card-title {
-      color: var(--primary-hover);
-    }
-    .card-excerpt {
-      font-size: 0.88rem;
-      color: var(--text-sub);
-      line-height: 1.6;
-      margin-bottom: 18px;
-      flex-grow: 1;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-    .card-footer {
-      border-top: 1px solid #1f2937;
-      padding-top: 14px;
-      font-size: 0.8rem;
-      color: #6b7280;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
 
     .no-posts {
       grid-column: 1 / -1;
       text-align: center;
-      padding: 80px 20px;
-      color: var(--text-sub);
-      font-size: 1rem;
+      padding: 90px 20px;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      font-weight: 600;
       display: none;
     }
 
-    /* 푸터 */
+    /* 정갈한 푸터 */
     footer {
-      border-top: 1px solid #1f2937;
-      background: #090d16;
-      padding: 60px 20px 40px 20px;
-      color: var(--text-sub);
+      border-top: 1px solid var(--border);
+      background: #fafafa;
+      padding: 50px 20px 35px 20px;
+      color: var(--text-muted);
       font-size: 0.88rem;
     }
     .footer-inner {
-      max-width: 1140px;
+      max-width: 1040px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 24px;
     }
     .footer-top {
       display: flex;
@@ -331,29 +297,30 @@ const languages = [
     }
     .footer-links {
       display: flex;
-      gap: 24px;
+      gap: 20px;
       list-style: none;
     }
     .footer-links a {
-      color: var(--text-sub);
+      color: #475569;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 600;
       transition: color 0.2s;
     }
     .footer-links a:hover {
-      color: #ffffff;
+      color: var(--primary);
     }
     .footer-bottom {
-      border-top: 1px solid #1f2937;
-      padding-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 20px;
       text-align: center;
-      color: #6b7280;
+      color: #94a3b8;
       font-size: 0.82rem;
     }
   </style>
 </head>
 <body>
 
+  <!-- 상단 헤더: Home + 핵심 카테고리 -->
   <header>
     <div class="header-inner">
       <a href="/" class="logo">
@@ -363,15 +330,17 @@ const languages = [
       <div class="header-nav">
         <ul class="nav-links">
           <li><a href="/">Home</a></li>
-          <li><a href="#">Guides</a></li>
-          <li><a href="#">Solutions</a></li>
+          <li><a href="#">LifeStyle</a></li>
+          <li><a href="#">Food</a></li>
+          <li><a href="#">Tech</a></li>
         </ul>
 
+        <!-- 12개국 지구본 셀렉터 -->
         <div class="lang-picker">
           <span>🌐</span>
-          <select id="lang-selector" aria-label="Language selector">
+          <select id="lang-selector" aria-label="언어 선택">
             {languages.map((lang) => (
-              <option value={lang.code} style="background: #111827; color: #fff;">{lang.label}</option>
+              <option value={lang.code}>{lang.label}</option>
             ))}
           </select>
         </div>
@@ -379,88 +348,111 @@ const languages = [
     </div>
   </header>
 
-  <!-- 대문 사진 적용된 히어로 배너 -->
-  <section class="hero-section">
-    <span class="hero-badge">Global Troubleshooting Hub</span>
-    <h1 class="hero-title">Troubleshooting & Tutorials</h1>
-    <p class="hero-desc">
-      글로벌 비즈니스, 해외 결제 게이트웨이 연동 및 실무 IT 시스템 오류를 해결하는 전문 가이드입니다.
-    </p>
-  </section>
+  <!-- 🌟 대문 사진 자리 (원하는 사진 주소로 언제든 교체 가능) 🌟 -->
+  <div class="hero-banner-container">
+    <img 
+      src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop" 
+      alt="LifeWebLab Banner" 
+      class="hero-banner-img" 
+    />
+  </div>
 
+  <!-- 포스트 2열 리스트 (스크린샷 원본 규격) -->
   <main>
-    <div class="section-header">
-      <div>
-        <h2 class="section-title">Latest Articles</h2>
-        <p class="section-subtitle">엄선된 실무 트러블슈팅 및 가이드 모음</p>
-      </div>
-    </div>
-
     <div class="posts-grid" id="posts-container">
       {allPosts.map((post) => {
         const cleanId = post.id.replace(/\.[^/.]+$/, '');
         const postLang = cleanId.split('/')[0] || 'ko';
         const postUrl = `/${cleanId}`;
 
+        // 스크린샷과 정확히 일치하는 날짜 표기 (예: 06 Apr, 2025)
         const dateObj = post.data.publishDate ? new Date(post.data.publishDate) : new Date();
-        const formattedDate = dateObj.toLocaleDateString('ko-KR', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
+        const formattedDate = dateObj.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
         });
 
+        // 작성자 및 동그란 프로필 아바타
+        const authorName = post.data.author || 'Mark Dinn';
+        const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`;
+
         return (
-          <a href={postUrl} class="post-card" data-lang={postLang}>
-            <div class="thumb-wrapper">
+          <article class="post-item post-card" data-lang={postLang}>
+            <!-- 상단 썸네일 -->
+            <a href={postUrl} class="thumb-wrapper">
               {post.data.image ? (
                 <img src={post.data.image} alt={post.data.title} class="thumb-img" loading="lazy" />
               ) : (
-                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #4b5563;">💻</div>
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #cbd5e1;">🖼️</div>
               )}
+            </a>
+
+            <!-- 스크린샷 그대로 복원된 메타 정보 바 -->
+            <div class="meta-row">
+              <span class="author-info">
+                <img src={avatarUrl} alt={authorName} class="author-avatar" />
+                {authorName}
+              </span>
+
+              <!-- 달력 아이콘 + 날짜 -->
+              <span class="meta-item">
+                <svg class="meta-icon" viewBox="0 0 24 24">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                {formattedDate}
+              </span>
+
+              <!-- 카테고리 4개 사각 격자 아이콘 -->
+              <span class="meta-item">
+                <svg class="meta-icon" viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                {post.data.category || 'LifeStyle'}
+              </span>
             </div>
 
-            <div class="card-body">
-              <div class="card-meta">
-                <span class="card-badge">{post.data.category || 'Tech'}</span>
-                <span>•</span>
-                <span>{formattedDate}</span>
-              </div>
+            <!-- 볼드 타이틀 -->
+            <h2 class="post-title">
+              <a href={postUrl} style="text-decoration: none; color: inherit;">{post.data.title}</a>
+            </h2>
 
-              <h3 class="card-title">{post.data.title}</h3>
-
-              <p class="card-excerpt">
-                {post.data.description || post.data.excerpt || '실무 문제 해결을 위한 단계별 상세 안내입니다.'}
-              </p>
-
-              <div class="card-footer">
-                <span>{post.data.author || 'LifeWebLab'}</span>
-                <span style="font-weight: 700; text-transform: uppercase; color: #9ca3af;">{postLang}</span>
-              </div>
-            </div>
-          </a>
+            <!-- 2줄 요약 설명 -->
+            <p class="post-excerpt">
+              {post.data.description || post.data.excerpt || 'Almost every day for the past nine or so months has felt like March 13, and that can sometimes make it difficult to want...'}
+            </p>
+          </article>
         );
       })}
       <div id="no-posts" class="no-posts">해당 언어로 작성된 포스팅이 아직 없습니다.</div>
     </div>
   </main>
 
+  <!-- 하단 푸터: 필수 정책 링크 완비 -->
   <footer>
     <div class="footer-inner">
       <div class="footer-top">
         <a href="/" class="logo">🧪 LifeWebLab</a>
         <ul class="footer-links">
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Terms of Service</a></li>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy-policy">개인정보처리방침</a></li>
+          <li><a href="/terms">이용약관</a></li>
         </ul>
       </div>
       <div class="footer-bottom">
-        <p>© 2026 LifeWebLab. All rights reserved.</p>
+        <p>Copyright © 2026 LifeWebLab • All rights reserved.</p>
       </div>
     </div>
   </footer>
 
+  <!-- 12개국 언어 감지 및 필터링 스크립트 -->
   <script is:inline>
     function setupLanguageFilter() {
       const selector = document.getElementById('lang-selector');
