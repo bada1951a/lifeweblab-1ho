@@ -1,242 +1,84 @@
 ---
-import { getCollection } from 'astro:content';
+import Layout from '~/layouts/PageLayout.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 
-const allPosts = await getCollection('blog');
-const featuredPost = allPosts[0];
-const gridPosts = allPosts.slice(1);
+// 대문 이미지(JPG) 불러오기
+import heroImage from '~/assets/images/satellite-earth.jpg';
+
+const metadata = {
+  title: 'LifeWebLab — Global Billing & Payment Troubleshooting Hub',
+  ignoreTitleTemplate: true,
+};
 ---
 
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>lifeweblab-1ho - Global Blog</title>
-    <style>
-        :root {
-            --bg-color: #ffffff;
-            --text-color: #222222;
-            --muted-color: #777777;
-            --border-color: #eaeaea;
-            --primary-color: #10b981;
-            --card-bg: #f5f2eb;
-        }
+<Layout metadata={metadata}>
+  <!-- Hero Section -->
+  <Hero
+    actions={[
+      {
+        variant: 'primary',
+        text: 'Explore Guides',
+        href: '/blog',
+        icon: 'tabler:chevron-right',
+      },
+    ]}
+    image={{
+      src: heroImage,
+      alt: 'Troubleshooting Tutorials - LifeWebLab Cover',
+    }}
+  >
+    <Fragment slot="title">
+      Global Payment & Billing Solutions,<br />
+      <span class="text-accent dark:text-white highlight">LifeWebLab</span>
+    </Fragment>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
+    <Fragment slot="subtitle">
+      Comprehensive troubleshooting guides for overseas payments, recurring billing errors, and digital invoices.
+    </Fragment>
+  </Hero>
 
-        header {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 25px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }
+  <!-- Latest Posts Section -->
+  <BlogLatestPosts
+    title="Latest Articles"
+    information="Carefully curated troubleshooting guides and resolution steps for payment failures."
+    count={6}
+  />
+</Layout>
 
-        .logo {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #111;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+<!-- 방문자 언어 감지 및 자동 분기 스크립트 -->
+<script is:inline>
+  (function () {
+    // 사용자가 이미 특정 페이지를 둘러보는 중이 아니라 '메인 루트(/)'로 직접 들어왔을 때만 작동
+    if (window.location.pathname !== '/' && window.location.pathname !== '') return;
 
-        nav {
-            display: flex;
-            gap: 24px;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
+    // 브라우저 기본 언어 확인 (예: 'ko-KR' -> 'ko', 'ja' -> 'ja')
+    const rawLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+    const langCode = rawLang.split('-')[0];
 
-        nav a {
-            color: #444;
-            text-decoration: none;
-        }
+    // 지원하는 주요 언어 매핑
+    const supportedLangs = {
+      ko: '/ko',
+      ja: '/ja',
+      de: '/de',
+      fr: '/fr',
+      es: '/es',
+      zh: '/zh',
+      it: '/it',
+      pt: '/pt',
+      ru: '/ru',
+      nl: '/nl',
+      pl: '/pl',
+      en: '/en'
+    };
 
-        nav a:hover {
-            color: var(--primary-color);
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .post-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.88rem;
-            color: var(--muted-color);
-            margin-bottom: 12px;
-        }
-
-        .author-icon-box {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: #fff;
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-        }
-
-        .category-badge {
-            color: var(--primary-color);
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        /* 1. 상단 대문 사진 (Featured Post) */
-        .featured-post {
-            margin-bottom: 55px;
-        }
-
-        .featured-thumbnail {
-            width: 100%;
-            height: 420px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 6rem;
-            margin-bottom: 20px;
-        }
-
-        .post-title-large {
-            font-size: 2.1rem;
-            font-weight: 800;
-            color: #111;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 12px;
-            line-height: 1.25;
-        }
-
-        .post-title-large:hover, .post-title-small:hover {
-            color: var(--primary-color);
-        }
-
-        .post-desc {
-            font-size: 1.02rem;
-            color: #555;
-            margin-bottom: 0;
-        }
-
-        /* 2. 하단 2열 그리드 */
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 45px 30px;
-            margin-top: 40px;
-        }
-
-        .grid-thumbnail {
-            width: 100%;
-            height: 240px;
-            background: var(--card-bg);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            margin-bottom: 16px;
-        }
-
-        .post-title-small {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #111;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 10px;
-            line-height: 1.3;
-        }
-
-        footer {
-            max-width: 900px;
-            margin: 80px auto 40px auto;
-            padding: 20px;
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--muted-color);
-        }
-
-        @media (max-width: 768px) {
-            .grid-container {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <a href="/" class="logo">🐛 lifeweblab-1ho</a>
-        <nav>
-            <a href="/">Home</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-        </nav>
-    </header>
-
-    <main class="container">
-        {featuredPost && (
-            <article class="featured-post">
-                <div class="featured-thumbnail">
-                    {featuredPost.data.image}
-                </div>
-                <div class="post-meta">
-                    <div class="author-icon-box">{featuredPost.data.avatarIcon}</div>
-                    <span>{featuredPost.data.author}</span>
-                    <span>•</span>
-                    <span>{featuredPost.data.date}</span>
-                    <span>•</span>
-                    <a href="#" class="category-badge">{featuredPost.data.category}</a>
-                </div>
-                <h2><a href={`/${featuredPost.id}/`} class="post-title-large">{featuredPost.data.title}</a></h2>
-                <p class="post-desc">{featuredPost.data.description}</p>
-            </article>
-        )}
-
-        <div class="grid-container">
-            {gridPosts.map(post => (
-                <article class="grid-item">
-                    <div class="grid-thumbnail">
-                        {post.data.image}
-                    </div>
-                    <div class="post-meta">
-                        <div class="author-icon-box">{post.data.avatarIcon}</div>
-                        <span>{post.data.author}</span>
-                        <span>•</span>
-                        <span>{post.data.date}</span>
-                        <span>•</span>
-                        <a href="#" class="category-badge">{post.data.category}</a>
-                    </div>
-                    <h3><a href={`/${post.id}/`} class="post-title-small">{post.data.title}</a></h3>
-                    <p class="post-desc" style="font-size: 0.95rem;">{post.data.description}</p>
-                </article>
-            ))}
-        </div>
-    </main>
-
-    <footer>
-        <p>Copyright © 2026 lifeweblab-1ho.com • Built with Astro & Automated Pipeline</p>
-    </footer>
-
-</body>
-</html>
+    // 한국어면 /ko, 일본어면 /ja 등으로 이동 (매핑 없으면 기본 영어 /en 또는 그대로 유지)
+    if (supportedLangs[langCode]) {
+      // 무한 루프 방지를 위해 sessionStorage 체크
+      if (!sessionStorage.getItem('lang_redirected')) {
+        sessionStorage.setItem('lang_redirected', 'true');
+        window.location.replace(supportedLangs[langCode]);
+      }
+    }
+  })();
+</script>
