@@ -1,23 +1,23 @@
 site:
-  name: 'Daily Insight'
-  site: 'https://storydailyview.com'
+  name: 'LifeWeb Lab'
+  site: 'https://lifeweblab.com'
   base: '/'
   trailingSlash: false
 
   googleSiteVerificationId: false
-  naverSiteVerificationId: '9c86fd610a91958080f6c85ad5168103b8a514ed'
+  naverSiteVerificationId: false
 
 # Metadata
 metadata:
   title:
-    default: 'Daily Insight'
-    template: '%s — Daily Insight'
-  description: 'Daily curated tech insights and troubleshooting guides'
+    default: 'LifeWeb Lab'
+    template: '%s — LifeWeb Lab'
+  description: 'Practical tech troubleshooting, error solutions, and real-world digital guides.'
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: 'Daily Insight'
+    site_name: 'LifeWeb Lab'
     type: website
 
 i18n:
@@ -57,4 +57,4 @@ announcement:
 analytics:
   vendors:
     googleAnalytics:
-      id: 'G-9N381KKW13'
+      id: false
