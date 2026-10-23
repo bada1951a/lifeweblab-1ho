@@ -6,7 +6,6 @@ try {
   allPosts = await getCollection('post');
 } catch (e) {}
 
-// 최신 발행일 순 정렬
 allPosts.sort((a, b) => {
   const dateA = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0;
   const dateB = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0;
@@ -14,18 +13,18 @@ allPosts.sort((a, b) => {
 });
 
 const languages = [
-  { code: 'ko', label: 'KO' },
-  { code: 'en', label: 'EN' },
-  { code: 'ja', label: 'JA' },
-  { code: 'de', label: 'DE' },
-  { code: 'fr', label: 'FR' },
-  { code: 'es', label: 'ES' },
-  { code: 'it', label: 'IT' },
-  { code: 'pt', label: 'PT' },
-  { code: 'nl', label: 'NL' },
-  { code: 'pl', label: 'PL' },
-  { code: 'id', label: 'ID' },
-  { code: 'vi', label: 'VI' },
+  { code: 'ko', label: '한국어 (KO)' },
+  { code: 'en', label: 'English (EN)' },
+  { code: 'ja', label: '日本語 (JA)' },
+  { code: 'de', label: 'Deutsch (DE)' },
+  { code: 'fr', label: 'Français (FR)' },
+  { code: 'es', label: 'Español (ES)' },
+  { code: 'it', label: 'Italiano (IT)' },
+  { code: 'pt', label: 'Português (PT)' },
+  { code: 'nl', label: 'Nederlands (NL)' },
+  { code: 'pl', label: 'Polski (PL)' },
+  { code: 'id', label: 'Bahasa Indonesia (ID)' },
+  { code: 'vi', label: 'Tiếng Việt (VI)' },
 ];
 ---
 
@@ -36,9 +35,10 @@ const languages = [
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LifeWebLab</title>
   
+  <!-- Fredoka 둥글둥글 Bookworm 폰트 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -53,7 +53,7 @@ const languages = [
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Fredoka', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text-title);
       line-height: 1.6;
@@ -77,11 +77,12 @@ const languages = [
       align-items: center;
     }
     .logo {
-      font-size: 1.4rem;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.55rem;
       font-weight: 800;
       color: #0f172a;
       text-decoration: none;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -97,8 +98,9 @@ const languages = [
       list-style: none;
     }
     .nav-links a {
+      font-family: 'Fredoka', sans-serif;
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 1.05rem;
       font-weight: 600;
       color: #475569;
       transition: color 0.2s;
@@ -110,7 +112,7 @@ const languages = [
       .nav-links { display: none; }
     }
 
-    /* 상단 대문 사진 배너 */
+    /* 대문 배너 컨테이너: 글자가 절대 안 잘리도록 최적화 */
     .hero-banner-container {
       max-width: 1040px;
       margin: 28px auto 0 auto;
@@ -118,15 +120,18 @@ const languages = [
     }
     .hero-banner-img {
       width: 100%;
-      height: 380px;
+      height: auto;
+      aspect-ratio: 16 / 5.5; /* 배너 이미지 원본 비율 완벽 유지 */
       border-radius: 18px;
-      object-fit: cover;
+      object-fit: contain; /* 글자 안 잘리게 전체 표시 */
       display: block;
-      background-color: #fce8db;
+      background-color: #d8f0f6; /* 배너 여백 시 자연스런 파스텔 하늘색 */
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     }
     @media (max-width: 768px) {
       .hero-banner-img {
-        height: 220px;
+        aspect-ratio: auto;
+        height: auto;
       }
     }
 
@@ -275,6 +280,7 @@ const languages = [
       list-style: none;
     }
     .footer-links a {
+      font-family: 'Fredoka', sans-serif;
       color: #475569;
       text-decoration: none;
       font-weight: 600;
@@ -284,28 +290,34 @@ const languages = [
       color: var(--primary);
     }
 
-    /* 푸터 안쪽에 숨겨둔 초소형 지구본 언어 선택기 */
-    .stealth-lang-picker {
+    /* 🤫 오직 지구본 아이콘만 보이는 미니멀 스위처 */
+    .stealth-lang-wrapper {
+      position: relative;
       display: inline-flex;
       align-items: center;
-      gap: 3px;
-      opacity: 0.45;
-      transition: opacity 0.2s;
-      margin-left: 8px;
+      margin-left: 6px;
     }
-    .stealth-lang-picker:hover {
-      opacity: 1;
-    }
-    .stealth-lang-picker select {
-      border: none;
-      background: transparent;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #64748b;
-      outline: none;
+    .globe-btn {
+      font-size: 1.05rem;
+      opacity: 0.35;
       cursor: pointer;
-      font-family: inherit;
-      padding: 0;
+      line-height: 1;
+      transition: opacity 0.2s, transform 0.2s;
+      user-select: none;
+    }
+    .globe-btn:hover {
+      opacity: 0.9;
+      transform: scale(1.15);
+    }
+    /* 평소엔 글자(KR)가 아예 안 보이고 지구본만 보임. 클릭 시 드롭다운 */
+    .stealth-select {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0; /* 완전 투명 */
+      cursor: pointer;
     }
 
     .footer-bottom {
@@ -319,7 +331,7 @@ const languages = [
 </head>
 <body>
 
-  <!-- 상단 헤더: Home + Troubleshooting 한 개만 노출 -->
+  <!-- 헤더 -->
   <header>
     <div class="header-inner">
       <a href="/" class="logo">
@@ -335,13 +347,12 @@ const languages = [
     </div>
   </header>
 
-  <!-- 대문 사진 자리 -->
+  <!-- 대문 사진 배너 (글자 안 잘림) -->
   <div class="hero-banner-container">
     <img 
       src="/banner.png" 
       alt="LifeWebLab Banner" 
       class="hero-banner-img"
-      onerror="this.src='https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop'"
     />
   </div>
 
@@ -414,7 +425,7 @@ const languages = [
     </div>
   </main>
 
-  <!-- 하단 푸터: 이용약관 옆에 작게 지구본 아이콘 배치 -->
+  <!-- 하단 푸터 -->
   <footer>
     <div class="footer-inner">
       <div class="footer-top">
@@ -424,10 +435,11 @@ const languages = [
           <li><a href="/contact">Contact</a></li>
           <li><a href="/privacy-policy">개인정보처리방침</a></li>
           <li><a href="/terms">이용약관</a></li>
-          <!-- 🤫 나만 조용히 테스트하는 초소형 지구본 스위처 -->
-          <li class="stealth-lang-picker">
-            <span>🌐</span>
-            <select id="lang-selector" aria-label="언어 선택">
+          
+          <!-- 🌐 글자(KR) 없이 오직 지구본 아이콘만 보이는 버튼 -->
+          <li class="stealth-lang-wrapper" title="언어 선택">
+            <span class="globe-btn">🌐</span>
+            <select id="lang-selector" class="stealth-select" aria-label="언어 선택">
               {languages.map((lang) => (
                 <option value={lang.code}>{lang.label}</option>
               ))}
@@ -441,7 +453,6 @@ const languages = [
     </div>
   </footer>
 
-  <!-- 브라우저 언어 자동 감지 및 필터링 스크립트 -->
   <script is:inline>
     function setupLanguageFilter() {
       const selector = document.getElementById('lang-selector');
