@@ -15,7 +15,7 @@ if (!GEMINI_API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
-// Astro content 컬렉션 정규 경로
+// Astro content 컬렉션 표준 경로
 const POSTS_BASE_DIR = path.resolve('src/content/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
@@ -29,7 +29,7 @@ if (!fs.existsSync(PHOTO_DIR)) {
   fs.mkdirSync(PHOTO_DIR, { recursive: true });
 }
 
-// 파일명 순서대로 정렬하여 고정 인덱스 풀 구축
+// 파일명 순서대로 고정 정렬하여 일관된 순환 풀 구성
 const localFiles = fs.readdirSync(PHOTO_DIR).filter(file => IMAGE_EXTS.test(file)).sort();
 let localImages = localFiles.map(file => encodeURI(`/images/billing-photo/${file}`));
 
@@ -39,14 +39,14 @@ if (localImages.length === 0) {
 }
 
 function getPostImages(index) {
-  // 오늘 날짜(연/월/일) 기준 고유 일자 시드 계산
+  // 오늘 날짜(한국 시간 KST) 기준 고유 일자 시드 계산
   const now = new Date();
   const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
   const year = kstTime.getUTCFullYear();
   const month = kstTime.getUTCMonth() + 1;
   const day = kstTime.getUTCDate();
-  
-  // 매일 11칸씩 크게 건너뛰어 어제와 오늘 대표 사진이 겹치는 현상 차단
+
+  // 매일 11칸씩 크게 건너뛰어 어제와 오늘 대표 사진이 겹치는 현상 완벽 차단
   const daySeed = (year * 372) + (month * 31) + day;
   const baseOffset = (daySeed * 11) % localImages.length;
 
@@ -69,25 +69,23 @@ function getKstPublishDateIso(index) {
 }
 
 // =========================================================================
-// 마크다운 정제 함수 (단어 쪼개짐 방지 및 개행 보정)
+// 마크다운 최소 정제 함수 (소제목과 줄바꿈은 절대 건드리지 않음)
 // =========================================================================
 function sanitizeMarkdownFormatting(content) {
   let cleaned = content;
 
-  // 1) 마크다운 볼드(**) 기호 일괄 제거
-  cleaned = cleaned.replace(/\*\*/g, '');
+  // LaTeX 수식 기호 치환
+  cleaned = cleaned.replace(/\$([^$]+)\$/g, '$1')
+                   .replace(/\\times/g, 'x')
+                   .replace(/\\circ/g, '°')
+                   .replace(/\\approx/g, '≈');
 
-  // 2) 숫자 뒤 마침표는 보존하고, 일반 문장 끝 부호 뒤의 ¿ 만 분리
-  cleaned = cleaned.replace(/([^0-9][.?!])\s*([¿¡])/g, '$1\n\n$2');
+  // 물결표(~) 범위 기호를 안전한 하이픈(-)으로 치환
+  cleaned = cleaned.replace(/(\S)\s*~\s*(\S)/g, '$1 - $2');
+  cleaned = cleaned.replace(/~/g, '-');
 
-  // 3) 물음표 뒤 띄어쓰기 보정
-  cleaned = cleaned.replace(/\?([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9가-힣])/g, '? $1');
-
-  // 4) Q/A 머리말 줄바꿈 확보
-  cleaned = cleaned.replace(/\?\s*([QA][0-9]*\s*[:.])/g, '?\n\n$1');
-  cleaned = cleaned.replace(/([.!])\s*([QA][0-9]*\s*[:.]|[0-9]+\.\s+)/g, '$1\n\n$2');
-  cleaned = cleaned.replace(/([^\n])\s+([QA][0-9]*\s*[:.])/g, '$1\n\n$2');
-  cleaned = cleaned.replace(/([.!])\s*(D:|R:|Risposta|Domande)/gi, '$1\n\n$2');
+  // 문단 사이 3개 이상 과도한 줄바꿈만 2개로 압축 (문단 분리는 완벽 보존)
+  cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
 
   return cleaned;
 }
@@ -162,7 +160,7 @@ const TARGET_LANGS = [
   { code: 'nl', name: 'Dutch', persona: 'Specialist in het oplossen van internationale betalings- en factuurproblemen', osUi: 'Dashboard, Betaalmethoden, Facturen, Accountinstellingen, Belastingformulieren', localeContext: 'Zuidas zakendistrict in Amsterdam' },
   { code: 'pl', name: 'Polish', persona: 'Inżynier wsparcia ds. globalnych systemów płatności i fakturowania transgranicznego', osUi: 'Pulpit, Metody płatności, Faktury, Ustawienia konta, Formularze podatkowe', localeContext: 'Warszawskie centrum biznesowe i technologiczne' },
   { code: 'id', name: 'Indonesian', persona: 'Spesialis penanganan masalah pembayaran global dan transfer dana internasional', osUi: 'Dasbor, Metode Pembayaran, Tagihan / Faktur, Pengaturan Akun, Formulir Pajak', localeContext: 'Kawasan bisnis Sudirman Central Business District (SCBD) Jakarta' },
-  { code: 'vi', name: 'Vietnamese', persona: 'Chuyên gia xử lý sự cố cổng thanh toán quốc tế và xuất hóa đơn xuyên biên giới', osUi: 'Bảng điều khiển, Phương thức thanh toán, Hóa đơn, Cài đặt tài khoản, Biểu mẫu thuế', localeContext: 'Tòa nhà văn phòng tài chính Quận 1, TP. Hồ Chí Minh' }
+  { code: 'vi', name: 'Vietnamese', persona: 'Chuyên gia xử lý sự cố cổng thanh toán quốc tế 및 xuất hóa đơn xuyên biên giới', osUi: 'Bảng điều khiển, Phương thức thanh toán, Hóa đơn, Cài đặt tài khoản, Biểu mẫu thuế', localeContext: 'Tòa nhà văn phòng tài chính Quận 1, TP. Hồ Chí Minh' }
 ];
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -194,80 +192,58 @@ async function generateSinglePost(lang, index) {
   const pubDateIso = getKstPublishDateIso(index);
 
   const prompt = `
-You are a ${lang.persona}.
-Write a highly practical, conversational, 1st-person troubleshooting and resolution guide natively in ${lang.name}.
-CRITICAL: DO NOT translate literally from Korean. Write completely from scratch as an authentic native specialist helping a peer resolve a real operational roadblock.
+당신은 ${lang.persona}입니다.
+반드시 ${lang.name} 언어로 작성하세요. 번역투가 아닌, 현지 직장 동료에게 본인의 실무 경험담(썰)을 생생하게 들려주는 1인칭 구어체로 작성해야 합니다.
 
-[Topic]
+[작성 주제]
 ${currentTopic}
 
-[Workplace Incident Context]
-- Target City/Culture: ${lang.localeContext}
-- Assigned Emergency Scenario: "${selectedScenario}"
+[실무 현장 배경 및 돌발 상황]
+- 대상 도시/문화권: ${lang.localeContext}
+- 발생한 긴급 시나리오: "${selectedScenario}"
 
-[CRITICAL OUTPUT LANGUAGE INTEGRITY - ZERO HANGUL IN GLOBAL POSTS]
-- If target language is NOT Korean (ko):
-  * Absolutely NEVER include any Korean Hangul characters (가-힣) anywhere in the title, description, tags, or body.
-  * Every single character in the title and description MUST strictly be in native ${lang.name}.
+[언어 규칙 - 엄격 준수]
+${lang.code !== 'ko' ? '- 한국어(한글)를 단 한 글자도 포함하지 마세요. 제목, 요약, 태그, 본문, FAQ 모두 100% ' + lang.name + '로만 작성하세요.' : '- 자연스러운 한국어 직장인 실무 구어체로 작성하세요.'}
 
-[WRITING STYLE: DIRECT, ACCESSIBLE & ACTIONABLE]
-1. Plain & Easy Explanations:
-    - Avoid dry academic jargon or unnecessary theory.
-    - Write in warm, encouraging, everyday professional language that any freelancer, merchant, or desk worker can immediately follow.
-    - Give concrete UI navigation matching: "${lang.osUi}".
-2. Laser-Focused Narrative:
-    - The opening emergency story MUST be 100% strictly about [Topic] (${currentTopic}) and reflect the given [Assigned Emergency Scenario].
+[필수 마크다운 구조 및 줄바꿈 규칙 - 절대 생략 금지]
+1. 반드시 마크다운 소제목(## 및 ###)을 빠짐없이 사용하여 본문의 시각적 뼈대를 구축하세요.
+2. 모든 문단 사이에는 반드시 빈 줄을 1개 삽입하여 완벽한 줄바꿈(엔터 2번, \\n\\n)을 적용하세요. 문단이 뭉쳐서 벽돌처럼 출력되면 안 됩니다.
+3. 소제목 바로 앞과 뒤에도 반드시 빈 줄(\\n\\n)을 넣어 여백을 확보하세요.
+4. 기술 파라미터나 에러 코드, 메뉴명은 작은따옴표 백틱(\`code\`)으로 감싸세요.
+5. 테마 스타일의 강조 박스를 본문 중간에 2개 이상 배치하세요:
+   <div style="border-left: 4px solid ${selectedTheme.primaryColor}; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
+     <strong>[핵심 포인트]:</strong> 실무자가 즉시 적용할 수 있는 핵심 조치 요약
+   </div>
 
-[MANDATORY OPENING VARIATION RULE - ZERO CLICHE REPETITION]
-- You MUST start the opening story based strictly on the assigned scenario: "${selectedScenario}".
-- ABSOLUTELY FORBIDDEN: Do NOT use boring greetings like "Hello everyone" or "In this post". Jump straight into the urgent issue and the confusion it caused.
+[본문 필수 구성 순서 (AdSense 고품질 E-E-A-T)]
+1. 도입부 (H1, H2 소제목 없이 바로 이야기 시작):
+   - "${selectedScenario}" 상황이 터진 당일 아침의 다급했던 현장 분위기를 1인칭 썰로 흥미진진하게 시작.
+2. ## 1. 당시 상황과 겪었던 혼란:
+   - 문제를 처음 맞닥뜨렸을 때의 당혹감, 고객센터나 문서를 뒤지며 겪은 시행착오를 구체적으로 서술.
+3. ## 2. 문제의 근본 원인 분석:
+   - 왜 이런 일이 발생했는지 3가지 현실적인 원인을 각각 ### 소제목으로 나누어 분석.
+4. ## 3. 즉시 해결한 단계별 조치 매뉴얼:
+   - "${lang.osUi}" 메뉴를 직접 조작하듯 클릭 경로와 해결 방법을 Step 1, Step 2, Step 3으로 상세히 가이드.
+5. ## 4. 재발 방지를 위한 실무 체크리스트:
+   - 앞으로 똑같은 사고를 원천 방지하기 위해 정기적으로 확인해야 할 핵심 수칙.
+6. ## 5. 자주 묻는 질문 (FAQ):
+   - 실무자들이 실제로 가장 곤란해하는 고가치 질문 3개를 엄선하여 Q1, A1 형식으로 작성. (각 Q와 A 사이, 질문들 사이마다 빈 줄 필수).
 
-[STRICT MARKDOWN & FORMATTING RULES]
-1. BOLD FORMATTING RULE:
-    - Absolutely DO NOT use markdown bold asterisks anywhere in the body text or FAQ. Keep all text in plain standard format.
-2. COMMANDS / PARAMETERS / CODES:
-    - Wrap error codes (e.g., \`400 Bad Request\`, \`do_not_honor\`), form fields, or short dashboard commands in standard single backticks (\`code\`).
-3. NO LATEX & NO TILDE:
-    - ABSOLUTELY FORBIDDEN: NEVER use LaTeX math delimiters ($ or $$).
-    - ABSOLUTELY FORBIDDEN: NEVER use tilde (~) for ranges. Always use a hyphen (e.g., "1-3 business days").
+[분량 규격]
+- 한국어(ko): 공백 포함 최소 2,500자 이상의 깊이 있고 풍부한 본문.
+- 기타 언어: 1,200 ~ 1,500 단어 이상의 충실한 실무 해설.
 
-[Design Theme & Layout Dynamic Rules (MANDATORY)]
-- Assigned Theme: "${selectedTheme.name}"
-- Primary Accent Color: ${selectedTheme.primaryColor}
-- Layout Characteristic: ${selectedTheme.layout}
-- You MUST incorporate native Markdown and inline styled HTML callouts tailored to this theme.
-- Use custom styled tip/warning boxes (e.g., <div style="border-left: 4px solid ${selectedTheme.primaryColor}; padding: 12px 16px; margin: 20px 0; background-color: rgba(0,0,0,0.03); border-radius: 4px; color: #111827;">...</div>).
-  * CRITICAL: All text inside callout/tip/warning boxes MUST be crisp dark charcoal/black (color: #111827).
-
-[Tone & Writing Style Rules (STRICT - NO AI VIBE)]
-1. Fast-Paced 3-Step Narrative:
-    - Step 1: Sudden workflow roadblock or error alert regarding [Topic].
-    - Step 2: Wasted time on confusing documentation, automated support, and trial-and-error.
-    - Step 3: The exact root cause discovered and the clear step-by-step fix that resolved it.
-
-[Content & Structure (AdSense High Quality E-E-A-T)]
-1. Opening Story: Real workplace problem scenario strictly regarding this topic based on the assigned scenario.
-​2. Root Cause Breakdown: Clearly explain 3 realistic root causes behind the failure or error.
-3. Step-by-Step Resolution: Provide actionable steps with exact dashboard menu paths matching "${lang.osUi}".
-4. Preventative Precautions: Practical tips to ensure this error never happens again in the future.
-5. Frequently Asked Questions (FAQ): Exactly 3 realistic, high-value Q&As that users facing this error ask. (CRITICAL: Every Q and A must start on a fresh new line without markdown bolding like Q1. ... and A1.).
-
-[Length & Richness Rules]
-- Korean (ko): Minimum 2,500 characters of rich, deep, non-repetitive text.
-- Other languages: 1,200 to 1,500 words of thorough practical explanation.
-
-[Strict Output Format]
-Return raw Markdown starting with frontmatter:
+[출력 형식]
+반드시 아래 프론트매터로 시작하세요:
 ---
-title: "Native Catchy Title in ${lang.name}"
-description: "Native concise description in ${lang.name} under 160 characters"
+title: "${lang.name} 언어로 작성된 실무적이고 매력적인 제목"
+description: "${lang.name} 언어로 작성된 150자 이내의 명확한 요약문"
 publishDate: ${pubDateIso}
 image: "${coverUrl}"
 category: "troubleshooting"
 tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "${selectedTheme.name}"
 ---
-(Body starts directly here without H1 header)
 `;
 
   try {
@@ -275,14 +251,6 @@ theme: "${selectedTheme.name}"
     let text = rawText.trim();
     if (text.startsWith('```markdown')) text = text.replace(/^```markdown\n/, '').replace(/\n```$/, '');
     if (text.startsWith('```')) text = text.replace(/^```\n/, '').replace(/\n```$/, '');
-
-    text = text.replace(/\$([^$]+)\$/g, '$1')
-               .replace(/\\times/g, 'x')
-               .replace(/\\circ/g, '°')
-               .replace(/\\approx/g, '≈');
-
-    text = text.replace(/(\S)\s*~\s*(\S)/g, '$1 - $2');
-    text = text.replace(/~/g, '-');
 
     if (lang.code !== 'ko') {
       text = text.replace(/(title:\s*")([^"]*)(")/g, (match, p1, p2, p3) => `${p1}${p2.replace(/[가-힣]+/g, '').trim()}${p3}`);
@@ -301,13 +269,14 @@ theme: "${selectedTheme.name}"
       frontmatter = frontmatter.replace(/publishDate:\s*[^\n\r]+/i, `publishDate: ${pubDateIso}`);
       frontmatter = frontmatter.replace(/image:\s*["'][^"']*["']/i, `image: '${coverUrl}'`);
 
+      // 텍스트 수식/특수문자만 정리하고 줄바꿈/소제목은 완벽 보존
       body = sanitizeMarkdownFormatting(body);
 
-      // 본문 중간 삽입 이미지: 레이아웃 깨짐을 방지하는 인라인 스타일 적용
-      const middleImageMarkdown = `\n\n<div style="text-align: center; margin: 36px 0;"><img src="${bodyUrl}" alt="Payment and Billing Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>\n\n`;
+      // 본문 중간 삽입 이미지: 레이아웃 넘침 방지 인라인 스타일 적용
+      const middleImageMarkdown = `\n\n<div style="text-align: center; margin: 36px 0;"><img src="${bodyUrl}" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>\n\n`;
 
-      if (body.includes('## 2.') || body.includes('### 2.')) {
-        body = body.replace(/(#{2,3}\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
+      if (body.includes('## 2.')) {
+        body = body.replace(/(## 2\.[^\n]+)/, `${middleImageMarkdown}$1`);
       } else {
         const paragraphs = body.split('\n\n');
         if (paragraphs.length >= 3) {
@@ -338,7 +307,7 @@ theme: "${selectedTheme.name}"
 
 async function run() {
   console.log("==================================================");
-  console.log(`⚡ 1호기 글로벌 결제/비즈니스 문제해결 12개국 자동 포스팅 시작 (모델: ${GEMINI_MODEL})`);
+  console.log(`⚡ LifeWebLab 12개국 고품질 문제해결 자동 포스팅 시작 (모델: ${GEMINI_MODEL})`);
   console.log("==================================================");
 
   let successCount = 0;
@@ -354,10 +323,10 @@ async function run() {
   if (successCount > 0) {
     lines.shift();
     fs.writeFileSync(TOPICS_FILE, lines.join('\n'), 'utf-8');
-    console.log(`\n🧹 총 ${successCount}개국 포스팅 완료. topics.txt에서 주제를 삭제했습니다.`);
+    console.log(`\n🧹 총 ${successCount}개국 포스팅 완료. topics.txt에서 사용한 주제를 제거했습니다.`);
     console.log(`📊 남은 주제 수: ${lines.length}개`);
   } else {
-    console.error("\n❌ 모든 언어 생성이 실패하여 topics.txt를 유지합니다.");
+    console.error("\n❌ 모든 언어 생성이 실패하여 topics.txt를 보존합니다.");
     process.exit(1);
   }
 }
