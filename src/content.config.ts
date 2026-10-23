@@ -7,18 +7,14 @@ const metadataDefinition = () =>
     .object({
       title: z.string().optional(),
       ignoreTitleTemplate: z.boolean().optional(),
-
-      canonical: z.url().optional(),
-
+      canonical: z.string().url().optional(),
       robots: z
         .object({
           index: z.boolean().optional(),
           follow: z.boolean().optional(),
         })
         .optional(),
-
       description: z.string().optional(),
-
       openGraph: z
         .object({
           url: z.string().optional(),
@@ -36,7 +32,6 @@ const metadataDefinition = () =>
           type: z.string().optional(),
         })
         .optional(),
-
       twitter: z
         .object({
           handle: z.string().optional(),
@@ -57,7 +52,6 @@ const postCollection = defineCollection({
     title: z.string(),
     excerpt: z.string().optional(),
     image: z.string().optional(),
-    /** Alternative text for the cover image. Leave empty for decorative stock photos. */
     imageAlt: z.string().optional(),
 
     category: z.string().optional(),
@@ -68,6 +62,8 @@ const postCollection = defineCollection({
   }),
 });
 
+// post와 blog 둘 다 인식할 수 있도록 연결
 export const collections = {
   post: postCollection,
+  blog: postCollection,
 };
