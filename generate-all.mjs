@@ -14,9 +14,45 @@ if (!GEMINI_API_KEY) {
 }
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-const POSTS_BASE_DIR = path.resolve('src/data/post');
+
+// Astro 4 규격에 맞춘 content 폴더 경로
+const POSTS_BASE_DIR = path.resolve('src/content/post');
+const OLD_POSTS_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
+
+// =========================================================================
+// [자동 마이그레이션] 기존 src/data/post 글이 있다면 src/content/post 로 자동 이동
+// =========================================================================
+if (fs.existsSync(OLD_POSTS_DIR)) {
+  console.log("📦 기존 src/data/post 폴더의 글들을 src/content/post 로 자동 동기화합니다...");
+  if (!fs.existsSync(POSTS_BASE_DIR)) {
+    fs.mkdirSync(POSTS_BASE_DIR, { recursive: true });
+  }
+
+  function copyDirRecursive(src, dest) {
+    if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+    const entries = fs.readdirSync(src, { withFileTypes: true });
+
+    for (let entry of entries) {
+      const srcPath = path.join(src, entry.name);
+      const destPath = path.join(dest, entry.name);
+
+      if (entry.isDirectory()) {
+        copyDirRecursive(srcPath, destPath);
+      } else {
+        fs.copyFileSync(srcPath, destPath);
+      }
+    }
+  }
+
+  try {
+    copyDirRecursive(OLD_POSTS_DIR, POSTS_BASE_DIR);
+    console.log("✅ 기존 글 동기화 완료!");
+  } catch (err) {
+    console.warn("⚠️ 기존 글 복사 중 안내:", err.message);
+  }
+}
 
 // =========================================================================
 // [1호기 전용] public/images/billing-photo 로컬 이미지 자동 셔플
@@ -324,7 +360,7 @@ theme: "${selectedTheme.name}"
 
     const filePath = path.join(targetDir, `${fileSlug}.md`);
     fs.writeFileSync(filePath, text, 'utf-8');
-    console.log(`✅ [성공] 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
+    console.log(`✅ [성공] 저장 완료: src/content/post/${lang.code}/${fileSlug}.md`);
     return true;
   } catch (error) {
     console.error(`❌ [최종 실패] ${lang.name} 생성 실패:`, error.message);
