@@ -7,7 +7,7 @@ const metadata = {
   ignoreTitleTemplate: true,
 };
 
-// 1. post 컬렉션의 모든 글 수집
+// 1. post 컬렉션 글 전체 가져오기
 let allPosts = [];
 try {
   allPosts = await getCollection('post');
@@ -20,6 +20,7 @@ allPosts.sort((a, b) => {
   return dateB - dateA;
 });
 
+// 12개국 언어 정의
 const languages = [
   { code: 'ko', label: '한국어' },
   { code: 'en', label: 'English' },
@@ -37,24 +38,24 @@ const languages = [
 ---
 
 <Layout metadata={metadata}>
-  <section class="px-6 sm:px-6 py-12 sm:py-16 max-w-6xl mx-auto">
-    <!-- 헤더 컨트롤: 타이틀 + 언어 선택 지구본 셀렉터 -->
+  <section class="px-4 sm:px-6 py-8 sm:py-12 max-w-6xl mx-auto">
+    <!-- 상단 바: 타이틀 및 국적/언어 전환 셀렉터 -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 dark:border-gray-700 pb-6 mb-8 gap-4">
       <div>
-        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white" id="main-title">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
           최신 문제해결 가이드
         </h1>
-        <p class="text-gray-500 dark:text-gray-400 mt-2 text-sm sm:text-base" id="main-desc">
-          해외 결제 및 비즈니스 관련 실무 해결 가이드 목록입니다.
+        <p class="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+          해외 결제 및 글로벌 비즈니스 오류 해결 솔루션입니다.
         </p>
       </div>
 
-      <!-- 언어 전환 드롭다운 -->
-      <div class="inline-flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 self-start sm:self-auto">
+      <!-- 12개국 지구본 셀렉터 -->
+      <div class="inline-flex items-center gap-2 bg-gray-100 dark:bg-slate-800 px-3.5 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 self-start sm:self-auto shadow-sm">
         <span class="text-base">🌐</span>
-        <select id="lang-selector" class="bg-transparent text-sm font-semibold text-gray-800 dark:text-gray-200 outline-none cursor-pointer">
+        <select id="lang-selector" aria-label="Language selector" class="bg-transparent text-sm font-semibold text-gray-800 dark:text-gray-200 outline-none cursor-pointer">
           {languages.map((lang) => (
-            <option value={lang.code} class="text-gray-900 bg-white dark:bg-gray-800 dark:text-white">
+            <option value={lang.code} class="text-gray-900 bg-white dark:bg-slate-800 dark:text-white">
               {lang.label}
             </option>
           ))}
@@ -62,13 +63,13 @@ const languages = [
       </div>
     </div>
 
-    <!-- 카드 그리드 목록 (전체 글을 렌더링하되 언어별 data-lang 속성 부여) -->
+    <!-- 블로그 포스트 카드 그리드 -->
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" id="posts-container">
       {allPosts.map((post) => {
-        // post.id 앞자리에서 언어 코드 추출 (예: 'ko/test-post.md' -> 'ko')
         const postLang = post.id.split('/')[0] || 'ko';
         const cleanSlug = post.slug ? post.slug.split('/').pop() : post.id.replace(/\.[^/.]+$/, '').split('/').pop();
-        const postUrl = `/blog/${cleanSlug}`;
+        // AstroWind 정규 상세 경로와 직관적인 slug 경로 모두 매핑
+        const postUrl = `/${cleanSlug}`;
 
         return (
           <article 
@@ -83,18 +84,20 @@ const languages = [
             <div class="flex-1 p-5 flex flex-col justify-between">
               <div>
                 <span class="inline-block text-xs font-semibold text-primary uppercase tracking-wider mb-2">
-                  {post.data.category || 'Guide'}
+                  {post.data.category || 'Troubleshooting'}
                 </span>
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-2 leading-snug hover:text-primary transition">
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-2 leading-snug hover:text-primary transition line-clamp-2">
                   <a href={postUrl}>{post.data.title}</a>
                 </h2>
                 <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-4">
-                  {post.data.description || post.data.excerpt || ''}
+                  {post.data.description || post.data.excerpt || '실무 문제 해결 절차를 상세히 안내합니다.'}
                 </p>
               </div>
-              <div class="text-xs text-gray-400 border-t border-gray-100 dark:border-gray-800 pt-3 flex justify-between">
-                <span>{post.data.publishDate ? new Date(post.data.publishDate).toLocaleDateString() : ''}</span>
-                <span class="uppercase font-bold tracking-widest">{postLang}</span>
+              <div class="text-xs text-gray-400 border-t border-gray-100 dark:border-gray-800 pt-3 flex justify-between items-center">
+                <span>{post.data.publishDate ? new Date(post.data.publishDate).toLocaleDateString() : '최신'}</span>
+                <span class="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 font-bold uppercase tracking-wider text-[10px] text-gray-500">
+                  {postLang}
+                </span>
               </div>
             </div>
           </article>
@@ -102,63 +105,59 @@ const languages = [
       })}
     </div>
 
-    <!-- 선택된 언어 글이 없을 때 표시되는 상태 -->
+    <!-- 포스트가 없을 때 표시할 안내 박스 -->
     <div id="no-posts" class="hidden text-center py-20 text-gray-500">
-      <p class="text-lg">해당 언어로 작성된 포스팅이 아직 없습니다.</p>
+      <p class="text-base">해당 언어로 발행된 가이드가 아직 없습니다.</p>
     </div>
   </section>
 
-  <!-- 접속자 국적(브라우저 언어) 감지 및 실시간 언어 필터링 스크립트 -->
+  <!-- 접속자 언어 자동 감지 및 실시간 카드 스위칭 로직 -->
   <script is:inline>
-    function detectAndFilterLanguage() {
+    function setupLanguageFilter() {
       const selector = document.getElementById('lang-selector');
       const cards = document.querySelectorAll('.post-card');
-      const noPostsMsg = document.getElementById('no-posts');
+      const noPosts = document.getElementById('no-posts');
 
-      // 1. 브라우저 언어 확인 (한국어면 ko, 일본어면 ja, 영어면 en 등)
+      // 1. 브라우저 언어 판별 (기본값 ko)
       const userLang = (navigator.language || navigator.userLanguage || 'ko').slice(0, 2).toLowerCase();
-      
-      // 지원 언어 목록에 있는지 검사 후 기본 선택 설정
-      const supportedLangs = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'];
-      const targetLang = supportedLangs.includes(userLang) ? userLang : 'ko';
+      const supported = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'];
+      const defaultLang = supported.includes(userLang) ? userLang : 'ko';
 
       if (selector) {
-        selector.value = targetLang;
+        selector.value = defaultLang;
       }
 
-      // 2. 화면에 해당 언어 카드만 남기고 숨기기
-      function filterPosts(langCode) {
-        let visibleCount = 0;
+      // 2. 해당 언어의 글만 보이도록 필터링
+      function applyFilter(target) {
+        let count = 0;
         cards.forEach(card => {
-          if (card.getAttribute('data-lang') === langCode) {
+          if (card.getAttribute('data-lang') === target) {
             card.style.display = 'flex';
-            visibleCount++;
+            count++;
           } else {
             card.style.display = 'none';
           }
         });
 
-        if (noPostsMsg) {
-          noPostsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+        if (noPosts) {
+          noPosts.style.display = count === 0 ? 'block' : 'none';
         }
       }
 
-      // 최초 접속 시 감지된 국적 언어로 실행
-      filterPosts(targetLang);
+      applyFilter(defaultLang);
 
-      // 사용자가 우측 상단 드롭다운에서 언어를 수동 변경했을 때 즉시 반영
+      // 3. 사용자가 지구본 드롭다운을 직접 변경했을 때
       if (selector) {
         selector.addEventListener('change', (e) => {
-          filterPosts(e.target.value);
+          applyFilter(e.target.value);
         });
       }
     }
 
-    // 문서 로드 즉시 실행
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', detectAndFilterLanguage);
+      document.addEventListener('DOMContentLoaded', setupLanguageFilter);
     } else {
-      detectAndFilterLanguage();
+      setupLanguageFilter();
     }
   </script>
 </Layout>
