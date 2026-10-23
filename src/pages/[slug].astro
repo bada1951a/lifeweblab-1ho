@@ -1,13 +1,32 @@
 ---
 import { getCollection } from 'astro:content';
 
-// 1. 모든 블로그 글의 경로(slug)를 미리 생성합니다
+// 1. post 컬렉션 및 blog 컬렉션의 글 경로(slug)를 모두 수집합니다
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map(post => ({
-    params: { slug: post.id },
-    props: { post },
-  }));
+  let posts = [];
+  try {
+    const postCol = await getCollection('post');
+    if (postCol && postCol.length > 0) posts = postCol;
+  } catch (e) {}
+
+  if (posts.length === 0) {
+    try {
+      const blogCol = await getCollection('blog');
+      if (blogCol && blogCol.length > 0) posts = blogCol;
+    } catch (e) {}
+  }
+
+  return posts.map(post => {
+    // ko/test-post.md 형태에서 파일명('test-post')만 깔끔하게 slug로 추출
+    const cleanSlug = post.slug 
+      ? post.slug.split('/').pop() 
+      : post.id.replace(/\.[^/.]+$/, '').split('/').pop();
+
+    return {
+      params: { slug: cleanSlug },
+      props: { post },
+    };
+  });
 }
 
 // 2. 현재 클릭된 글의 데이터와 본문 내용을 가져옵니다
@@ -122,14 +141,20 @@ const { Content } = await post.render();
 
         .thumbnail-box {
             width: 100%;
-            height: 380px;
+            max-height: 420px;
             background: var(--card-bg);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 6rem;
             margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .thumbnail-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* 본문 내용 스타일 */
@@ -140,6 +165,12 @@ const { Content } = await post.render();
 
         .post-content p {
             margin-bottom: 24px;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
         }
 
         .back-link {
@@ -180,19 +211,18 @@ const { Content } = await post.render();
         <article>
             <div class="post-header">
                 <div class="post-meta">
-                    <div class="author-icon-box">{post.data.avatarIcon}</div>
-                    <span>{post.data.author}</span>
-                    <span>•</span>
-                    <span>{post.data.date}</span>
-                    <span>•</span>
-                    <a href="#" class="category-badge">{post.data.category}</a>
+                    {post.data.author && <span>{post.data.author} • </span>}
+                    {post.data.publishDate && <span>{new Date(post.data.publishDate).toLocaleDateString()} • </span>}
+                    {post.data.category && <a href="#" class="category-badge">{post.data.category}</a>}
                 </div>
                 <h1>{post.data.title}</h1>
             </div>
 
-            <div class="thumbnail-box">
-                {post.data.image}
-            </div>
+            {post.data.image && (
+                <div class="thumbnail-box">
+                    <img src={post.data.image} alt={post.data.title} />
+                </div>
+            )}
 
             <div class="post-content">
                 <Content />
@@ -203,7 +233,7 @@ const { Content } = await post.render();
     </main>
 
     <footer>
-        <p>Copyright © 2026 lifeweblab-1ho.com • Built with Astro & Automated Pipeline</p>
+        <p>Copyright © 2026 lifeweblab-1ho • Built with Astro & Automated Pipeline</p>
     </footer>
 
 </body>
