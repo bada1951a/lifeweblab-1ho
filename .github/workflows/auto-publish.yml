@@ -1,0 +1,51 @@
+name: Daily Auto Publish Blog Post
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 매일 UTC 기준 자정 (한국 시간 아침 9시)에 자동 실행
+  workflow_dispatch: # 수동으로도 테스트 실행 가능
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Create automated blog post
+        run: |
+          # 오늘 날짜 기반으로 고유한 파일 이름 생성
+          DATE_STR=$(date +'%Y-%m-%d-%H%M%S')
+          FILE_PATH="src/content/blog/auto-post-$DATE_STR.md"
+          
+          # 자동 생성될 마크다운 내용 작성
+          cat << 'EOF' > "$FILE_PATH"
+          ---
+          title: "Automated Daily Post ($DATE_STR)"
+          description: "이 포스트는 GitHub Actions에 의해 자동으로 생성되어 발행된 글입니다."
+          date: "$(date +'%d %b, %Y')"
+          category: "AutoTech"
+          author: "GitHub Bot"
+          image: "⚡"
+          avatarIcon: "🤖"
+          ---
+
+          ## 🌍 글로벌 자동 발행 시스템 가동 중
+
+          이 글은 매일 정해진 시간에 깃허브 액션을 통해 자동으로 생성되었습니다. 
+          마크다운 파일이 생성되는 순간 클라우드플레어가 이를 감지하여 전 세계에 실시간으로 배포합니다!
+          EOF
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🤖 Auto-publish new blog post via GitHub Actions"
+          branch: main
