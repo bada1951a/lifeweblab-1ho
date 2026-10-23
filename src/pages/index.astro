@@ -14,18 +14,18 @@ allPosts.sort((a, b) => {
 });
 
 const languages = [
-  { code: 'ko', label: '한국어' },
-  { code: 'en', label: 'English' },
-  { code: 'ja', label: '日本語' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'fr', label: 'Français' },
-  { code: 'es', label: 'Español' },
-  { code: 'it', label: 'Italiano' },
-  { code: 'pt', label: 'Português' },
-  { code: 'nl', label: 'Nederlands' },
-  { code: 'pl', label: 'Polski' },
-  { code: 'id', label: 'Bahasa Indonesia' },
-  { code: 'vi', label: 'Tiếng Việt' },
+  { code: 'ko', label: 'KO' },
+  { code: 'en', label: 'EN' },
+  { code: 'ja', label: 'JA' },
+  { code: 'de', label: 'DE' },
+  { code: 'fr', label: 'FR' },
+  { code: 'es', label: 'ES' },
+  { code: 'it', label: 'IT' },
+  { code: 'pt', label: 'PT' },
+  { code: 'nl', label: 'NL' },
+  { code: 'pl', label: 'PL' },
+  { code: 'id', label: 'ID' },
+  { code: 'vi', label: 'VI' },
 ];
 ---
 
@@ -36,7 +36,6 @@ const languages = [
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LifeWebLab</title>
   
-  <!-- Bookworm 순정 전용 폰트 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -94,7 +93,7 @@ const languages = [
     }
     .nav-links {
       display: flex;
-      gap: 20px;
+      gap: 24px;
       list-style: none;
     }
     .nav-links a {
@@ -111,28 +110,7 @@ const languages = [
       .nav-links { display: none; }
     }
 
-    /* 12개국 지구본 셀렉터 */
-    .lang-picker {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      padding: 6px 14px;
-      border-radius: 9999px;
-    }
-    .lang-picker select {
-      border: none;
-      background: transparent;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #334155;
-      outline: none;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    /* 상단 대문 사진 배너 자리 */
+    /* 상단 대문 사진 배너 */
     .hero-banner-container {
       max-width: 1040px;
       margin: 28px auto 0 auto;
@@ -140,7 +118,7 @@ const languages = [
     }
     .hero-banner-img {
       width: 100%;
-      height: 340px;
+      height: 380px;
       border-radius: 18px;
       object-fit: cover;
       display: block;
@@ -148,7 +126,7 @@ const languages = [
     }
     @media (max-width: 768px) {
       .hero-banner-img {
-        height: 200px;
+        height: 220px;
       }
     }
 
@@ -159,7 +137,6 @@ const languages = [
       padding: 0 20px;
     }
 
-    /* 스크린샷과 1:1로 일치하는 2열 카드 그리드 */
     .posts-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -179,7 +156,6 @@ const languages = [
       color: inherit;
     }
 
-    /* 둥근 사각형 썸네일 */
     .thumb-wrapper {
       width: 100%;
       height: 290px;
@@ -199,7 +175,6 @@ const languages = [
       transform: scale(1.02);
     }
 
-    /* Bookworm 순정 메타 바 (아바타 + 작성자 + 달력 + 날짜 + 격자 카테고리) */
     .meta-row {
       display: flex;
       align-items: center;
@@ -238,7 +213,6 @@ const languages = [
       stroke-linejoin: round;
     }
 
-    /* 볼드 대형 제목 (스크린샷 타이포그래피) */
     .post-title {
       font-size: 1.55rem;
       font-weight: 800;
@@ -252,7 +226,6 @@ const languages = [
       color: var(--primary);
     }
 
-    /* 본문 요약 */
     .post-excerpt {
       font-size: 0.95rem;
       color: var(--text-desc);
@@ -273,7 +246,7 @@ const languages = [
       display: none;
     }
 
-    /* 정갈한 푸터 */
+    /* 하단 푸터 */
     footer {
       border-top: 1px solid var(--border);
       background: #fafafa;
@@ -297,6 +270,7 @@ const languages = [
     }
     .footer-links {
       display: flex;
+      align-items: center;
       gap: 20px;
       list-style: none;
     }
@@ -309,6 +283,31 @@ const languages = [
     .footer-links a:hover {
       color: var(--primary);
     }
+
+    /* 푸터 안쪽에 숨겨둔 초소형 지구본 언어 선택기 */
+    .stealth-lang-picker {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      opacity: 0.45;
+      transition: opacity 0.2s;
+      margin-left: 8px;
+    }
+    .stealth-lang-picker:hover {
+      opacity: 1;
+    }
+    .stealth-lang-picker select {
+      border: none;
+      background: transparent;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #64748b;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      padding: 0;
+    }
+
     .footer-bottom {
       border-top: 1px solid #e2e8f0;
       padding-top: 20px;
@@ -320,7 +319,7 @@ const languages = [
 </head>
 <body>
 
-  <!-- 상단 헤더: Home + 핵심 카테고리 -->
+  <!-- 상단 헤더: Home + Troubleshooting 한 개만 노출 -->
   <header>
     <div class="header-inner">
       <a href="/" class="logo">
@@ -330,34 +329,23 @@ const languages = [
       <div class="header-nav">
         <ul class="nav-links">
           <li><a href="/">Home</a></li>
-          <li><a href="#">LifeStyle</a></li>
-          <li><a href="#">Food</a></li>
-          <li><a href="#">Tech</a></li>
+          <li><a href="#posts-container">Troubleshooting</a></li>
         </ul>
-
-        <!-- 12개국 지구본 셀렉터 -->
-        <div class="lang-picker">
-          <span>🌐</span>
-          <select id="lang-selector" aria-label="언어 선택">
-            {languages.map((lang) => (
-              <option value={lang.code}>{lang.label}</option>
-            ))}
-          </select>
-        </div>
       </div>
     </div>
   </header>
 
-  <!-- 🌟 대문 사진 자리 (원하는 사진 주소로 언제든 교체 가능) 🌟 -->
+  <!-- 대문 사진 자리 -->
   <div class="hero-banner-container">
     <img 
-      src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop" 
+      src="/banner.png" 
       alt="LifeWebLab Banner" 
-      class="hero-banner-img" 
+      class="hero-banner-img"
+      onerror="this.src='https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop'"
     />
   </div>
 
-  <!-- 포스트 2열 리스트 (스크린샷 원본 규격) -->
+  <!-- 포스트 목록 -->
   <main>
     <div class="posts-grid" id="posts-container">
       {allPosts.map((post) => {
@@ -365,7 +353,6 @@ const languages = [
         const postLang = cleanId.split('/')[0] || 'ko';
         const postUrl = `/${cleanId}`;
 
-        // 스크린샷과 정확히 일치하는 날짜 표기 (예: 06 Apr, 2025)
         const dateObj = post.data.publishDate ? new Date(post.data.publishDate) : new Date();
         const formattedDate = dateObj.toLocaleDateString('en-GB', {
           day: '2-digit',
@@ -373,13 +360,11 @@ const languages = [
           year: 'numeric'
         });
 
-        // 작성자 및 동그란 프로필 아바타
         const authorName = post.data.author || 'Mark Dinn';
         const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`;
 
         return (
           <article class="post-item post-card" data-lang={postLang}>
-            <!-- 상단 썸네일 -->
             <a href={postUrl} class="thumb-wrapper">
               {post.data.image ? (
                 <img src={post.data.image} alt={post.data.title} class="thumb-img" loading="lazy" />
@@ -388,14 +373,12 @@ const languages = [
               )}
             </a>
 
-            <!-- 스크린샷 그대로 복원된 메타 정보 바 -->
             <div class="meta-row">
               <span class="author-info">
                 <img src={avatarUrl} alt={authorName} class="author-avatar" />
                 {authorName}
               </span>
 
-              <!-- 달력 아이콘 + 날짜 -->
               <span class="meta-item">
                 <svg class="meta-icon" viewBox="0 0 24 24">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -406,7 +389,6 @@ const languages = [
                 {formattedDate}
               </span>
 
-              <!-- 카테고리 4개 사각 격자 아이콘 -->
               <span class="meta-item">
                 <svg class="meta-icon" viewBox="0 0 24 24">
                   <rect x="3" y="3" width="7" height="7"></rect>
@@ -414,18 +396,16 @@ const languages = [
                   <rect x="14" y="14" width="7" height="7"></rect>
                   <rect x="3" y="14" width="7" height="7"></rect>
                 </svg>
-                {post.data.category || 'LifeStyle'}
+                {post.data.category || 'Troubleshooting'}
               </span>
             </div>
 
-            <!-- 볼드 타이틀 -->
             <h2 class="post-title">
               <a href={postUrl} style="text-decoration: none; color: inherit;">{post.data.title}</a>
             </h2>
 
-            <!-- 2줄 요약 설명 -->
             <p class="post-excerpt">
-              {post.data.description || post.data.excerpt || 'Almost every day for the past nine or so months has felt like March 13, and that can sometimes make it difficult to want...'}
+              {post.data.description || post.data.excerpt || '해외 결제 및 글로벌 비즈니스 오류 해결 가이드입니다.'}
             </p>
           </article>
         );
@@ -434,7 +414,7 @@ const languages = [
     </div>
   </main>
 
-  <!-- 하단 푸터: 필수 정책 링크 완비 -->
+  <!-- 하단 푸터: 이용약관 옆에 작게 지구본 아이콘 배치 -->
   <footer>
     <div class="footer-inner">
       <div class="footer-top">
@@ -444,6 +424,15 @@ const languages = [
           <li><a href="/contact">Contact</a></li>
           <li><a href="/privacy-policy">개인정보처리방침</a></li>
           <li><a href="/terms">이용약관</a></li>
+          <!-- 🤫 나만 조용히 테스트하는 초소형 지구본 스위처 -->
+          <li class="stealth-lang-picker">
+            <span>🌐</span>
+            <select id="lang-selector" aria-label="언어 선택">
+              {languages.map((lang) => (
+                <option value={lang.code}>{lang.label}</option>
+              ))}
+            </select>
+          </li>
         </ul>
       </div>
       <div class="footer-bottom">
@@ -452,7 +441,7 @@ const languages = [
     </div>
   </footer>
 
-  <!-- 12개국 언어 감지 및 필터링 스크립트 -->
+  <!-- 브라우저 언어 자동 감지 및 필터링 스크립트 -->
   <script is:inline>
     function setupLanguageFilter() {
       const selector = document.getElementById('lang-selector');
