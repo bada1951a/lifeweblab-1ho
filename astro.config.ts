@@ -24,7 +24,7 @@ const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroInteg
   hasExternalScripts ? (Array.isArray(items) ? items.map((item) => item()) : [items()]) : [];
 
 export default defineConfig({
-  site: 'https://storydailyview.com',
+  site: 'https://lifeweblab.com',
   output: 'static',
 
   prefetch: {
