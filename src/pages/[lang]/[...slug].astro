@@ -22,7 +22,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await post.render();
 
-// 압축파일의 원본 날짜 포맷 (예: 23 Oct, 2026)
+// 날짜 포맷 (예: 24 Oct, 2026)
 const dateObj = post.data.publishDate ? new Date(post.data.publishDate) : new Date();
 const formattedDate = dateObj.toLocaleDateString('en-GB', {
   day: '2-digit',
@@ -43,7 +43,7 @@ const currentLang = Astro.params.lang || 'ko';
   <title>{post.data.title} — LifeWebLab</title>
   <meta name="description" content={post.data.description || post.data.excerpt || ''} />
 
-  <!-- Bookworm Light 전용 정품 웹폰트 -->
+  <!-- 웹폰트 설정 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -185,6 +185,19 @@ const currentLang = Astro.params.lang || 'ko';
       margin-bottom: 24px;
       line-height: 1.85;
     }
+
+    /* 본문 내 중간 이미지 크기 및 레이아웃 최적화 */
+    .post-content img {
+      max-width: 100% !important;
+      height: auto !important;
+      max-height: 480px !important;
+      object-fit: cover !important;
+      border-radius: 14px;
+      display: block;
+      margin: 36px auto;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    }
+
     .post-content h2 {
       font-size: 1.65rem;
       font-weight: 800;
@@ -248,7 +261,7 @@ const currentLang = Astro.params.lang || 'ko';
 
   <header>
     <div class="header-inner">
-      <a href="/" class="logo">🐛 Bookworm</a>
+      <a href="/" class="logo">🧪 LifeWebLab</a>
       <a href="/" class="back-btn">← Home</a>
     </div>
   </header>
@@ -276,7 +289,7 @@ const currentLang = Astro.params.lang || 'ko';
             <rect x="14" y="14" width="7" height="7"></rect>
             <rect x="3" y="14" width="7" height="7"></rect>
           </svg>
-          {post.data.category || 'General'}
+          {post.data.category || 'Troubleshooting'}
         </span>
       </div>
 
