@@ -2,9 +2,9 @@ name: Auto Multi-Language Blog Publishing Pipeline
 
 on:
   schedule:
-    # 한국 시간 기준: 매일 오전 2시 15분 (02:15 KST) 1회 발행
-    # UTC 기준: 17:15 (전날)
-    - cron: '15 17 * * *'
+    # 한국 시간 기준: 매일 오전 2시 13분 (02:13 KST) 1회 발행
+    # UTC 기준: 17:13 (전날)
+    - cron: '13 17 * * *'
 
   workflow_dispatch:
 
@@ -28,6 +28,7 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install --legacy-peer-deps
+          npm install @google/genai --legacy-peer-deps
 
       - name: Run Multi-Language Generator Script
         env:
