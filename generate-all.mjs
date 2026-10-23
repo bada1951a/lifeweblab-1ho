@@ -2,6 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import { GoogleGenAI } from '@google/genai';
 
+// =========================================================================
+// [핵심 설정] Gemini 고정 모델 및 API 키 검증
+// =========================================================================
+const GEMINI_MODEL = 'gemini-3.5-flash-lite';
+
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 if (!GEMINI_API_KEY) {
   console.error("❌ GEMINI_API_KEY 환경변수가 설정되지 않았습니다.");
@@ -11,10 +16,10 @@ if (!GEMINI_API_KEY) {
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
-const PHOTO_DIR = path.resolve('public/images/tech-photo');
+const PHOTO_DIR = path.resolve('public/images/billing-photo');
 
 // =========================================================================
-// [1호기 전용] public/images/tech-photo 로컬 이미지 자동 셔플 (URL 인코딩 안전 처리)
+// [1호기 전용] public/images/billing-photo 로컬 이미지 자동 셔플
 // =========================================================================
 const IMAGE_EXTS = /\.(jpe?g|png|webp|gif|avif)$/i;
 
@@ -23,11 +28,11 @@ if (!fs.existsSync(PHOTO_DIR)) {
 }
 
 const localFiles = fs.readdirSync(PHOTO_DIR).filter(file => IMAGE_EXTS.test(file));
-let localImages = localFiles.map(file => encodeURI(`/images/tech-photo/${file}`));
+let localImages = localFiles.map(file => encodeURI(`/images/billing-photo/${file}`));
 
 if (localImages.length === 0) {
-  console.warn("⚠️ public/images/tech-photo 에 이미지가 없습니다. 기본 이미지를 사용합니다.");
-  localImages = ['/images/default-tech.jpg'];
+  console.warn("⚠️ public/images/billing-photo 에 이미지가 없습니다. 기본 이미지를 사용합니다.");
+  localImages = ['/images/default-billing.jpg'];
 }
 
 function shuffleArray(array) {
@@ -61,7 +66,7 @@ function getKstPublishDateIso(index) {
 }
 
 // =========================================================================
-// [최종 안정형 마크다운 정제 함수] 단어 쪼개짐 방지 + 스페인어 번호 개행 방어
+// 마크다운 정제 함수 (단어 쪼개짐 방지 및 개행 보정)
 // =========================================================================
 function sanitizeMarkdownFormatting(content) {
   let cleaned = content;
@@ -69,19 +74,15 @@ function sanitizeMarkdownFormatting(content) {
   // 1) 마크다운 볼드(**) 기호 일괄 제거
   cleaned = cleaned.replace(/\*\*/g, '');
 
-  // 2) 숫자 뒤 마침표(1. 2.)는 보존하고, 일반 문장 끝 부호 뒤의 ¿ 만 분리
+  // 2) 숫자 뒤 마침표는 보존하고, 일반 문장 끝 부호 뒤의 ¿ 만 분리
   cleaned = cleaned.replace(/([^0-9][.?!])\s*([¿¡])/g, '$1\n\n$2');
 
-  // 3) 물음표 뒤 띄어쓰기 누락 보정 (?단어 -> ? 단어)
+  // 3) 물음표 뒤 띄어쓰기 보정
   cleaned = cleaned.replace(/\?([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9가-힣])/g, '? $1');
 
-  // 4) 물음표 뒤에 대문자 Q/A(Q:, A:, Q1:, A1: 등)가 올 때 강제 2줄 개행
+  // 4) Q/A 머리말 줄바꿈 확보
   cleaned = cleaned.replace(/\?\s*([QA][0-9]*\s*[:.])/g, '?\n\n$1');
-
-  // 5) 문장 끝 부호(.!) 뒤에 대문자 Q/A 또는 번호 목록(1., 2.)이 올 때 강제 2줄 개행
   cleaned = cleaned.replace(/([.!])\s*([QA][0-9]*\s*[:.]|[0-9]+\.\s+)/g, '$1\n\n$2');
-
-  // 6) 줄바꿈 없이 본문 중에 들어간 대문자 Q/A 머리말 줄바꿈 확보
   cleaned = cleaned.replace(/([^\n])\s+([QA][0-9]*\s*[:.])/g, '$1\n\n$2');
   cleaned = cleaned.replace(/([.!])\s*(D:|R:|Risposta|Domande)/gi, '$1\n\n$2');
 
@@ -102,87 +103,63 @@ if (lines.length === 0) {
 }
 
 const currentTopic = lines[0];
-console.log(`📌 오늘 처리할 주제 (1호기 메인 IT/Tech): "${currentTopic}"`);
+console.log(`📌 오늘 처리할 주제: "${currentTopic}"`);
 
-const IT_CRISIS_SCENARIOS_30 = [
-  "금요일 퇴근 15분 전, 팀장님과 임원진에게 주간 최종 결산 보고서를 메일로 막 발송하려던 순간",
-  "월요일 출근 직후 오전 9시, 전사 주간 정례 킥오프 회의 시작을 앞두고 PC를 켠 순간",
-  "야간에 사무실에 홀로 남아 내일 배포할 핵심 시스템 및 데이터 마이그레이션 작업을 진행하던 새벽 1시",
-  "점심시간 직후 커피를 들고 자리에 복귀해 오후 첫 업무 창을 띄우는 순간",
-  "급한 프로젝트 마감을 위해 밤샘 작업을 이어가던 새벽 4시경 피로가 극에 달한 순간",
-  "나른한 목요일 오후 4시, 집중해서 작성하던 중간 납품 검수 문서를 정리하던 순간",
-  "휴일 직전 연휴 시작 30분 전, 남은 사내 결재 문서를 모두 승인 처리하려던 타이밍",
-  "주말 당직 근무 중 예기치 못한 사내 시스템 에러 알림을 받고 긴급히 PC에 로그인한 상황",
-  "해외 출장지 호텔 로비에서 노트북 배터리가 18% 남은 상태로 급히 본사 공유 문서를 열람하던 상황",
-  "카페에서 스마트폰 핫스팟(테더링)을 연결해 외부 고객 미팅용 견적서와 설계 도면을 수정하던 오후",
-  "재택근무 중 사내 VPN 보안 연결을 걸고 중요한 화상회의(Zoom/Teams) 접속 5분 전",
-  "KTX/기차 안에서 이동하며 불안정한 무선 와이파이 상태로 긴급 수정 요청 메일을 확인하던 순간",
-  "지방 지사로 출장을 가 현장 회의실 낯선 모니터와 프로젝터에 노트북을 연결하던 상황",
-  "고객사 본사 회의실에 방문하여 현장 실무진과 실시간 시스템 화면을 공유하며 시연하기 직전",
-  "공항 출국장 라운지에서 탑승 직전 20분을 남겨두고 최종 승인 문서를 전송해야 하는 급박한 상황",
-  "스마트오피스 자율좌석에서 처음 연결해 보는 도킹 스테이션과 듀얼 모니터를 세팅하던 아침",
-  "월간 데이터 백업을 위해 2TB 분량의 핵심 업무 파일을 외장 SSD와 나스(NAS)로 전송하던 중",
-  "사내 IT 보안 감사팀의 분기별 PC 점검 마감 30분 전, 자체 진단 리포트를 생성해 제출해야 하는 상황",
-  "새로 지급받은 고사양 개발 및 그래픽 작업용 PC에 필수 사내 라이선스 툴들을 처음 세팅하던 날",
-  "수백 명의 직원이 접속하는 사내 인트라넷 게시판에 전사 공지 파일과 첨부 자료를 업로드하던 순간",
-  "회계 연도 마감을 앞두고 1년 치 결산 엑셀 시트와 전산 시스템을 교차 검증하던 중요한 시점",
-  "대규모 고객 데이터베이스(DB) 쿼리를 실행해 두고 모니터링 창을 지켜보던 긴박한 순간",
-  "사내 메신저로 급한 오류 수정 요청이 쏟아져 동시에 5개의 실무 툴을 띄워놓고 멀티태스킹을 하던 중",
-  "외부 협력업체에서 보내온 압축 파일과 도면 데이터를 다운로드받아 사내 검사를 진행하려던 찰나",
-  "어젯밤 진행된 윈도우 대규모 누적 보안 업데이트 이후 첫 부팅을 마치고 업무를 시작하려던 아침",
-  "메인보드 바이오스(BIOS) 펌웨어를 최신 버전으로 올린 뒤 윈도우 진입 화면에서 평소와 다른 증상을 마주한 순간",
-  "작업 도중 원인 모를 블루스크린(BSOD)이 스쳐 지나가며 강제 재부팅된 직후의 당혹스러운 상황",
-  "백신 실시간 감시 프로그램이 갑자기 시스템 리소스를 100% 점유하며 전체 화면이 멈칫거리던 순간",
-  "그래픽카드 드라이버 자동 업데이트가 완료된 후 작업표시줄과 해상도가 비정상적으로 흔들리던 시점",
-  "중요한 화상 발표 도중 마이크와 웹캠이 간헐적으로 끊기며 시스템 지연(DPC Latency)이 발생하던 상황"
+// 글로벌 결제 / 송금 / 인보이스 / 세무 위기 시나리오 30선
+const TROUBLESHOOTING_SCENARIOS_30 = [
+  "해외 바이어로부터 거액의 인보이스 결제 완료 알림 직후 결제 게이트웨이 대시보드에 결제 거절(Declined) 경고가 뜬 순간",
+  "월말 정산일 당일, 사내 외주 인력 대량 송금을 실행하려다 계정 일시 점검 및 동결 알림을 마주한 아침",
+  "미국 클라이언트와의 계약서 작성 중 W-8BEN 양식 작성 오류로 불필요한 원천징수 30%가 차감 적용된다는 통보를 받은 순간",
+  "수개월간 준비한 글로벌 비즈니스 런칭 당일, 첫 유료 고객들의 해외 카드 결제가 3D Secure 인증 에러로 튕겨나가는 시점",
+  "비즈니스 계정에 보관 중이던 운영 자금이 예고 없는 21일 보류(Hold)로 묶여버린 긴박한 오후",
+  "해외에서 송금을 받았으나 중계은행 수수료와 환율 마진으로 수수료만 과도하게 차감된 내역을 확인한 순간",
+  "유럽 파트너사에 발행한 B2B 인보이스가 부가세(VAT Reverse Charge) 표기 누락으로 회계팀에서 반려된 타이밍",
+  "온라인 결제창에서 고객 결제 시도 중 일부가 사기 의심으로 오탐 차단되어 매출 손실이 실시간으로 발생하는 상황",
+  "해외 결제 계좌에서 국내 계좌로 인출 신청을 넣었으나 영문 명의 불일치로 반송되어 자금 흐름이 막힌 새벽",
+  "해외 비즈니스 툴 정기 결제를 위해 등록해 둔 카드가 일일 한도 초과로 결제 실패 메일이 연속 수신된 순간",
+  "플랫폼 규정 변경으로 납세자 번호(Foreign TIN) 재검증을 요구하며 일시적으로 정산 출금이 정지된 상황",
+  "글로벌 마켓플레이스 판매 대금이 입금되었으나 비정상적인 수수료가 중복 차감된 내역을 확인한 날",
+  "프로젝트 납품 후 대금 지급일이 지났음에도 바이어 측에서 인보이스 재발행을 요청하며 결제를 미루는 상황",
+  "환율 급변동 시기에 환전 타이밍을 놓쳐 대규모 환차손을 보게 된 긴박한 시점",
+  "전자상거래 결제 시 다통화 반올림(Rounding) 오류로 고객 결제 승인이 실패하는 기술적 에러 발생 시",
+  "외국인 계약자로서 파트너사에 제출한 세무 서류가 분류 코드 오류로 반려되어 계약 진행이 막힌 순간",
+  "해외 비즈니스 계좌에서 진행한 송금이 중계은행에서 추적(MT103) 불가 상태로 수일째 지연되는 상황",
+  "보안 위험 점수 필터링 설정 실수로 정상 고객의 결제가 무더기로 차단된 상황",
+  "해외 직거래 클라이언트가 사전 협의 없이 차지백(Chargeback)을 걸어 대금 환수 위기에 처한 시점",
+  "외주 대금을 지급하려다 이중 결제 웹훅 버그가 발생해 동일 금액이 두 번 인출된 아찔한 순간",
+  "신고 기간 직전, 해외 다통화 계좌(달러, 유로, 엔화) 입출금 내역의 원화 환산 정리가 꼬여버린 상황",
+  "해외 결제사로부터 갑작스러운 신원 확인(KYC) 추가 서류 제출 요청을 받고 기한 내 미제출 시 계정 중단 위기에 놓인 순간",
+  "공동 프로젝트 수익을 분배하는 과정에서 해외 송금 수수료로 인해 실수령액 불일치 문제가 생긴 날",
+  "미국 클라이언트가 W-9 양식을 요구해 비거주자로서 합법적으로 W-8BEN 제출 절차를 안내해야 하는 상황",
+  "구독 고객의 카드 유효기간 만료로 인한 연체율이 급증해 스마트 결제 재시도 설정이 시급한 시점",
+  "바이어에게 보낸 인보이스의 결제 기한 문구가 모호하여 수개월째 미수금으로 묶여 현금 흐름에 비상이 걸린 순간",
+  "출장지에서 긴급한 업무 비용을 결제하려다 비즈니스 가상 카드가 해외 IP 부정 사용 의심으로 차단된 상황",
+  "글로벌 상업용 카드로 현지 결제를 시도했으나 칩 리딩 오류 및 통화 변환 수수료 폭탄을 맞은 직후",
+  "가상 터미널을 통한 수기 결제 시도 중 보안 코드 오류로 클라이언트와 통화 도중 거래가 중단된 타이밍",
+  "계약서 내 중도 해지 보상금(Kill Fee) 조항이 누락되어 프로젝트 중단 후 정산 분쟁에 처한 상황"
 ];
 
 const THEME_PRESETS = [
-  { id: 1, name: "Cyberpunk Terminal", primaryColor: "#00ffcc", bgColor: "#111827", layout: "CLI/터미널 스타일, 자동화 단축 경로 최상단 배치" },
-  { id: 2, name: "Modern Minimalist Slate", primaryColor: "#3b82f6", bgColor: "#f8fafc", layout: "미니멀 가이드 스타일, 여백 중심의 깔끔한 단계별 넘버링, 직관적 핵심 요약" },
-  { id: 3, name: "Industrial Blueprint", primaryColor: "#f59e0b", bgColor: "#1e293b", layout: "엔지니어링 청사진 스타일, 워크플로우 병목 원인 시각화, 쉬운 3단 비교표 포함" },
-  { id: 4, name: "Retro Monokai", primaryColor: "#a6e22e", bgColor: "#272822", layout: "개발자 에디터 스타일, 실전 프롬프트 코드 박스 중심 전개, 디버깅 팁" },
-  { id: 5, name: "Nordic Clean Ice", primaryColor: "#0284c7", bgColor: "#f0f9ff", layout: "북유럽 감성 클린 레이아웃, 인용구 중심 도입부, 실무 체크리스트" },
-  { id: 6, name: "Dark Velvet Obsidian", primaryColor: "#a855f7", bgColor: "#0f172a", layout: "고급 다크 모드, 전문가 독점 자동화 팁 배너, 단계별 문제 해결 타임라인" },
-  { id: 7, name: "Crimson Emergency Field", primaryColor: "#ef4444", bgColor: "#fff1f2", layout: "긴급 오류 복구 매뉴얼 스타일, 위험 경고 박스 최우선 강조, FAQ 아코디언형" },
-  { id: 8, name: "Forest Emerald Bio", primaryColor: "#10b981", bgColor: "#f0fdf4", layout: "칼퇴 효율 가이드 스타일, 시간 절약 지표 박스, 친절하고 명쾌한 어조" },
-  { id: 9, name: "Solarized Amber Warm", primaryColor: "#d97706", bgColor: "#fef3c7", layout: "실무 공방 노트 스타일, 실측 작업시간 단축 분석표, 초보자 세팅 팁" },
-  { id: 10, name: "Deep Ocean Cobalt", primaryColor: "#2563eb", bgColor: "#eff6ff", layout: "표준 소프트웨어 매뉴얼 지침서, 원인 분석 심층 다이어그램 텍스트, 권장 설정 안내" },
-  { id: 11, name: "Tokyo Neon Violet", primaryColor: "#8b5cf6", bgColor: "#2e1065", layout: "파워유저 최적화 스타일, 실행 속도 및 단축키 비교, 커스텀 세팅 팁" },
-  { id: 12, name: "Graphite Technical Paper", primaryColor: "#475569", bgColor: "#f1f5f9", layout: "깔끔한 기술 백서 스타일, 수식/코드 원인 가설 및 검증 절차, 표준화된 결론" },
-  { id: 13, name: "High-Contrast Charcoal", primaryColor: "#e11d48", bgColor: "#18181b", layout: "고대비 경보 스타일, 데이터 손실 방지 수칙, 긴급 롤백 팁 박스" },
-  { id: 14, name: "Warm Coffee Latte", primaryColor: "#78350f", bgColor: "#fefae0", layout: "초보자를 위한 친절한 오피스 수필 가이드, 쉬운 비유법, 차근차근 따라하기" },
-  { id: 15, name: "Steel Silver Metallic", primaryColor: "#64748b", bgColor: "#e2e8f0", layout: "공식 기술지원 티켓 스타일, 증상 체크리스트, 사전 자가진단표" },
-  { id: 16, name: "Sunset Horizon Coral", primaryColor: "#f97316", bgColor: "#fff7ed", layout: "생산성 꿀팁 세팅 스타일, 전후 비교 표, 추천 프롬프트 모음 배너" },
-  { id: 17, name: "Mint Fresh Engineering", primaryColor: "#059669", bgColor: "#ecfdf5", layout: "가벼운 워크플로우 최적화 매뉴얼, 불필요한 단계 정리 팁, 명쾌한 솔루션" },
-  { id: 18, name: "Midnight Navy Royal", primaryColor: "#1d4ed8", bgColor: "#172554", layout: "야간 배포 로그 스타일, 치명적 수식 에러 극복 타임스탬프, 재발 방지책" },
-  { id: 19, name: "Matte Black stealth", primaryColor: "#ffffff", bgColor: "#09090b", layout: "전문 실무 가이드 스타일, 불필요한 서술 배제, 직관적인 단계별 설명" },
-  { id: 20, name: "Teal Matrix Digital", primaryColor: "#14b8a6", bgColor: "#042f2e", layout: "API 및 데이터 연동 분석 스타일, 웹훅 신호 및 트리거 점검 체크리스트" },
-  { id: 21, name: "Pastel Lavender Tech", primaryColor: "#7c3aed", bgColor: "#faf5ff", layout: "사용자 경험 중심 가이드, 실무자가 가장 자주 묻는 질문 5선 최상단 요약 배치" },
-  { id: 22, name: "Bronze Artisan Workshop", primaryColor: "#b45309", bgColor: "#fffbeb", layout: "스프레드시트 튜닝 가이드, 대량 데이터 처리 시 주의 박스, 준비물 목록" },
-  { id: 23, name: "Cobalt Enterprise Lab", primaryColor: "#1e40af", bgColor: "#dbeafe", layout: "엔터프라이즈 실사용 생산성 리포트 형식, 비용 및 시간 절감 수치 인용" },
-  { id: 24, name: "Rosewood Hardware Guide", primaryColor: "#be123c", bgColor: "#ffe4e6", layout: "생산성 툴 매니아 분석기, 버전별/플랫폼별 기능 차이점 설명, 설정 기준표" },
-  { id: 25, name: "Deep Indigo System", primaryColor: "#4338ca", bgColor: "#e0e7ff", layout: "시스템 자동화 파이프라인 분석 형식, 불필요한 수작업 병목 식별법" },
-  { id: 26, name: "Acid Lime Hacker Space", primaryColor: "#84cc16", bgColor: "#14532d", layout: "유용한 무료 노코드 툴 가이드, 안전한 데이터 연동 안내" },
-  { id: 27, name: "Sandstone Desert Minimal", primaryColor: "#a16207", bgColor: "#fefce8", layout: "깔끔한 실무 매뉴얼 스타일, 소제목 하단 1줄 핵심 팁 강조 배너" },
-  { id: 28, name: "Dracula Purple Dev", primaryColor: "#bd93f9", bgColor: "#282a36", layout: "전통 드라큘라 테마 스타일, 필수 단축키 및 복구 함수 하이라이트" },
-  { id: 29, name: "Electric Cyan Speed", primaryColor: "#06b6d4", bgColor: "#ecfeff", layout: "초고속 1분 해결 가이드 형식, 빠른 조치법 -> 심층 세팅 2단계 분리" },
-  { id: 30, name: "Pure Titanium Clean", primaryColor: "#334155", bgColor: "#ffffff", layout: "초고화질 매뉴얼 스타일, 볼드 타이포그래피 강조, 깔끔한 구분선" }
+  { id: 1, name: "HelpDesk Clean Slate", primaryColor: "#2563eb", bgColor: "#f8fafc", layout: "헬프데스크 가이드 스타일, 문제 해결 핵심 요약 박스, 직관적 3단계 절차" },
+  { id: 2, name: "Technical Standard Navy", primaryColor: "#1e3a8a", bgColor: "#ffffff", layout: "표준 비즈니스 매뉴얼 스타일, 규정 준수 체크리스트, 공식 설정 박스" },
+  { id: 3, name: "Resolution Emerald Guide", primaryColor: "#059669", bgColor: "#f0fdf4", layout: "원인 및 해결 중심 가이드 스타일, 오류 코드 비교표, 문제 해결 꿀팁 배너" },
+  { id: 4, name: "Emergency Alert Amber", primaryColor: "#d97706", bgColor: "#fffbeb", layout: "긴급 오류 복구 매뉴얼 스타일, 위험 경고 박스 최우선 강조, FAQ 아코디언형" },
+  { id: 5, name: "Modern Minimalist Modern", primaryColor: "#4f46e5", bgColor: "#f5f3ff", layout: "미니멀 문제 해결 스타일, 대시보드 설정 중심, 단계별 조치 가이드" }
 ];
 
 const TARGET_LANGS = [
-  { code: 'ko', name: 'Korean', persona: '친절하고 경험 많은 PC/IT 하드웨어 트러블슈팅 전문가 (현직 테크 엔지니어)', osUi: '작업 관리자, 제어판, 장치 관리자, 이벤트 뷰어, 설정', localeContext: '서울/수도권 IT 및 기업 오피스' },
-  { code: 'en', name: 'English', persona: 'Senior IT systems engineer and enterprise tech troubleshooter', osUi: 'Task Manager, Control Panel, Device Manager, Event Viewer, Settings', localeContext: 'Silicon Valley tech enterprise / New York corporate finance office' },
-  { code: 'ja', name: 'Japanese', persona: '現場経験豊富な日本のITサポートエンジニア・PCハードウェア専門家', osUi: 'タスクマネージャー, コントロールパネル, デバイスマネージャー, イベントビューアー, 設定', localeContext: '東京・丸の内および品川のビジネスオフィス' },
-  { code: 'de', name: 'German', persona: 'Erfahrener IT-Systemadministrator und Hardware-Diagnostiker', osUi: 'Task-Manager, Systemsteuerung, Geräte-Manager, Ereignisanzeige, Einstellungen', localeContext: 'Frankfurter Bankenviertel und Münchner Technologie-Campus' },
-  { code: 'fr', name: 'French', persona: 'Ingénieur support informatique et spécialiste de la maintenance PC', osUi: 'Gestionnaire des tâches, Panneau de configuration, Gestionnaire de périphériques, Paramètres', localeContext: 'Siège d\'entreprise à Paris La Défense' },
-  { code: 'es', name: 'Spanish', persona: 'Técnico especialista en sistemas informáticos y soporte de hardware', osUi: 'Administrador de tareas, Panel de control, Administrador de dispositivos, Configuración', localeContext: 'Distrito financiero y corporativo en Madrid' },
-  { code: 'it', name: 'Italian', persona: 'Tecnico informatico sistemista con ampia experiencia sul campo', osUi: 'Gestione attività, Pannello di controllo, Gestione dispositivi, Impostazioni', localeContext: 'Centro direzionale e poli produttivi a Milano' },
-  { code: 'pt', name: 'Portuguese', persona: 'Especialista em manutenção de TI, redes e hardware computacional', osUi: 'Gerenciador de Tarefas, Painel de Controle, Gerenciador de Dispositivos, Configurações', localeContext: 'Avenida Paulista e centros empresariais em São Paulo' },
-  { code: 'nl', name: 'Dutch', persona: 'Allround IT-systeembeheerder en computer hardware specialist', osUi: 'Taakbeheer, Configuratiescherm, Apparaatbeheer, Instellingen', localeContext: 'Zuidas zakendistrict in Amsterdam' },
-  { code: 'pl', name: 'Polish', persona: 'Inżynier wsparcia IT i serwisant sprzętu komputerowego', osUi: 'Menedżer zadań, Panel sterowania, Menedżer urządzeń, Ustawienia', localeContext: 'Warszawskie centrum biznesowe i technologiczne' },
-  { code: 'id', name: 'Indonesian', persona: 'Teknisi senior infrastruktur IT dan troubleshoot hardware komputer', osUi: 'Task Manager, Control Panel, Device Manager, Pengaturan', localeContext: 'Kawasan bisnis Sudirman Central Business District (SCBD) Jakarta' },
-  { code: 'vi', name: 'Vietnamese', persona: 'Kỹ sư công nghệ thông tin chuyên xử lý sự cố máy tính và phần 구성', osUi: 'Task Manager, Control Panel, Device Manager, Cài đặt', localeContext: 'Tòa nhà văn phòng trung tâm Quận 1, TP. Hồ Chí Minh' }
+  { code: 'ko', name: 'Korean', persona: '글로벌 결제·송금 및 비즈니스 인보이스 오류 해결 실무 전문가', osUi: '대시보드, 결제 수단, 인보이스, 계정 설정, 세무 서식', localeContext: '서울/수도권 글로벌 스타트업 및 디지털 비즈니스 오피스' },
+  { code: 'en', name: 'English', persona: 'Global payment gateway and cross-border invoicing troubleshooter', osUi: 'Dashboard, Payment Methods, Billing, Invoices, Tax Forms', localeContext: 'Silicon Valley tech startup / New York corporate finance office' },
+  { code: 'ja', name: 'Japanese', persona: '海外決済・送金トラブルおよび請求書発行サポート専門家', osUi: 'ダッシュボード, 支払い方法, 請求書, アカウント設定, 税務書類', localeContext: '東京・丸の内および六本木の越境ビジネスオフィス' },
+  { code: 'de', name: 'German', persona: 'Spezialist für internationale Zahlungsprobleme und B2B-Rechnungsstellung', osUi: 'Dashboard, Zahlungsmethoden, Rechnungen, Kontoeinstellungen, Steuerformulare', localeContext: 'Frankfurter Finanzdistrikt und Berliner Technologie-Campus' },
+  { code: 'fr', name: 'French', persona: 'Spécialiste du dépannage des passerelles de paiement et de la facturation internationale', osUi: 'Tableau de bord, Modes de paiement, Factures, Paramètres du compte, Formulaires fiscaux', localeContext: 'Centres d\'affaires à Paris La Défense' },
+  { code: 'es', name: 'Spanish', persona: 'Especialista en resolución de errores de cobros internacionales y facturación B2B', osUi: 'Panel de control, Métodos de pago, Facturación, Configuración de cuenta, Formularios fiscales', localeContext: 'Distrito financiero y corporativo en Madrid' },
+  { code: 'it', name: 'Italian', persona: 'Consulente per la risoluzione dei problemi di pagamento e fatturazione B2B transfrontaliera', osUi: 'Dashboard, Metodi di pagamento, Fatture, Impostazioni account, Moduli fiscali', localeContext: 'Centri direzionali di Milano' },
+  { code: 'pt', name: 'Portuguese', persona: 'Especialista em suporte a pagamentos globais, câmbio e faturamento internacional', osUi: 'Painel, Formas de Pagamento, Faturas, Configurações de Conta, Formulários Fiscais', localeContext: 'Avenida Paulista e centros empresariais em São Paulo' },
+  { code: 'nl', name: 'Dutch', persona: 'Specialist in het oplossen van internationale betalings- en factuurproblemen', osUi: 'Dashboard, Betaalmethoden, Facturen, Accountinstellingen, Belastingformulieren', localeContext: 'Zuidas zakendistrict in Amsterdam' },
+  { code: 'pl', name: 'Polish', persona: 'Inżynier wsparcia ds. globalnych systemów płatności i fakturowania transgranicznego', osUi: 'Pulpit, Metody płatności, Faktury, Ustawienia konta, Formularze podatkowe', localeContext: 'Warszawskie centrum biznesowe i technologiczne' },
+  { code: 'id', name: 'Indonesian', persona: 'Spesialis penanganan masalah pembayaran global dan transfer dana internasional', osUi: 'Dasbor, Metode Pembayaran, Tagihan / Faktur, Pengaturan Akun, Formulir Pajak', localeContext: 'Kawasan bisnis Sudirman Central Business District (SCBD) Jakarta' },
+  { code: 'vi', name: 'Vietnamese', persona: 'Chuyên gia xử lý sự cố cổng thanh toán quốc tế và xuất hóa đơn xuyên biên giới', osUi: 'Bảng điều khiển, Phương thức thanh toán, Hóa đơn, Cài đặt tài khoản, Biểu mẫu thuế', localeContext: 'Tòa nhà văn phòng tài chính Quận 1, TP. Hồ Chí Minh' }
 ];
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -192,12 +169,12 @@ async function fetchWithRetry(prompt, maxRetries = 5, delayMs = 5000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const response = await ai.models.generateContent({
-        model: 'gemini-3.5-flash-lite',
+        model: GEMINI_MODEL,
         contents: prompt,
       });
       return response.text;
     } catch (error) {
-      console.warn(`⚠️ [호출 재시도] ${attempt}/${maxRetries}: ${error.message}`);
+      console.warn(`⚠️ [호출 재시도] ${attempt}/${maxRetries} (모델: ${GEMINI_MODEL}): ${error.message}`);
       if (attempt === maxRetries) { throw error; }
       await delay(delayMs);
     }
@@ -206,17 +183,17 @@ async function fetchWithRetry(prompt, maxRetries = 5, delayMs = 5000) {
 
 async function generateSinglePost(lang, index) {
   const selectedTheme = THEME_PRESETS[Math.floor(Math.random() * THEME_PRESETS.length)];
-  const selectedScenario = IT_CRISIS_SCENARIOS_30[Math.floor(Math.random() * IT_CRISIS_SCENARIOS_30.length)];
+  const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
 
-  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 1호기 메인 IT 포스팅 생성 중... (테마: ${selectedTheme.name})`);
+  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 문제 해결 포스팅 생성 중... (테마: ${selectedTheme.name})`);
 
   const { coverUrl, bodyUrl } = getPostImages(index);
   const pubDateIso = getKstPublishDateIso(index);
 
   const prompt = `
 You are a ${lang.persona}.
-Write a highly practical, conversational, 1st-person IT hardware troubleshooting guide natively in ${lang.name}.
-CRITICAL: DO NOT translate literally from Korean. Write completely from scratch as an authentic native technician.
+Write a highly practical, conversational, 1st-person troubleshooting and resolution guide natively in ${lang.name}.
+CRITICAL: DO NOT translate literally from Korean. Write completely from scratch as an authentic native specialist helping a peer resolve a real operational roadblock.
 
 [Topic]
 ${currentTopic}
@@ -230,26 +207,26 @@ ${currentTopic}
   * Absolutely NEVER include any Korean Hangul characters (가-힣) anywhere in the title, description, tags, or body.
   * Every single character in the title and description MUST strictly be in native ${lang.name}.
 
-[WRITING STYLE: PLAIN & PRACTICAL FOR EVERYDAY PROFESSIONALS]
+[WRITING STYLE: DIRECT, ACCESSIBLE & ACTIONABLE]
 1. Plain & Easy Explanations:
-    - Avoid overly abstract academic theory.
-    - Write in warm, friendly, everyday language that any desk worker or technician can immediately follow.
-    - Give concrete steps and clear clicks matching: "${lang.osUi}".
+    - Avoid dry academic jargon or unnecessary theory.
+    - Write in warm, encouraging, everyday professional language that any freelancer, merchant, or desk worker can immediately follow.
+    - Give concrete UI navigation matching: "${lang.osUi}".
 2. Laser-Focused Narrative:
-    - The opening emergency story MUST be 100% strictly about the assigned [Topic] (${currentTopic}) and reflect the given [Assigned Emergency Scenario].
+    - The opening emergency story MUST be 100% strictly about [Topic] (${currentTopic}) and reflect the given [Assigned Emergency Scenario].
 
 [MANDATORY OPENING VARIATION RULE - ZERO CLICHE REPETITION]
 - You MUST start the opening story based strictly on the assigned scenario: "${selectedScenario}".
-- ABSOLUTELY FORBIDDEN: Do NOT default to a generic "presentation in 30 minutes" or "board meeting" unless specifically assigned. Adapt naturally to the context.
+- ABSOLUTELY FORBIDDEN: Do NOT use boring greetings like "Hello everyone" or "In this post". Jump straight into the urgent issue and the confusion it caused.
 
-[STRICT MARKDOWN & FORMATTING RULES - NO RENDERING GLITCHES]
+[STRICT MARKDOWN & FORMATTING RULES]
 1. BOLD FORMATTING RULE:
     - Absolutely DO NOT use markdown bold asterisks anywhere in the body text or FAQ. Keep all text in plain standard format.
-2. COMMANDS & CODE BLOCKS:
-    - Always wrap long terminal/registry commands (like reg.exe add, slmgr, PowerShell scripts) in standard 3-backtick code blocks (\`\`\`cmd or \`\`\`bash).
+2. COMMANDS / PARAMETERS / CODES:
+    - Wrap error codes (e.g., \`400 Bad Request\`, \`do_not_honor\`), form fields, or short dashboard commands in standard single backticks (\`code\`).
 3. NO LATEX & NO TILDE:
     - ABSOLUTELY FORBIDDEN: NEVER use LaTeX math delimiters ($ or $$).
-    - ABSOLUTELY FORBIDDEN: NEVER use tilde (~) for ranges. Always use a hyphen (e.g., "10-20%").
+    - ABSOLUTELY FORBIDDEN: NEVER use tilde (~) for ranges. Always use a hyphen (e.g., "1-3 business days").
 
 [Design Theme & Layout Dynamic Rules (MANDATORY)]
 - Assigned Theme: "${selectedTheme.name}"
@@ -260,21 +237,17 @@ ${currentTopic}
   * CRITICAL: All text inside callout/tip/warning boxes MUST be crisp dark charcoal/black (color: #111827).
 
 [Tone & Writing Style Rules (STRICT - NO AI VIBE)]
-1. Mandatory Opening:
-    - Start immediately with an intense, relatable workplace emergency scenario strictly about [Topic] based on the assigned incident.
-2. Tone & Voice:
-    - Write like a real colleague sharing an honest, battle-tested solution on a professional community.
-3. Fast-Paced 3-Step Narrative:
-    - Step 1: Sudden workflow panic regarding [Topic].
-    - Step 2: Wasted manual effort and trial-and-error.
-    - Step 3: The breakthrough actionable tip & clear step-by-step setup.
+1. Fast-Paced 3-Step Narrative:
+    - Step 1: Sudden workflow roadblock or error alert regarding [Topic].
+    - Step 2: Wasted time on confusing documentation, automated support, and trial-and-error.
+    - Step 3: The exact root cause discovered and the clear step-by-step fix that resolved it.
 
-[Content & Structure (AdSense E-E-A-T Compliant)]
-1. Opening Story: Intense real workplace incident strictly regarding this topic based on the assigned scenario.
-2. Root Cause Breakdown: Clearly explain 3 realistic root causes behind the bottleneck or error.
-3. Step-by-Step Resolution: Provide exact clicks matching "${lang.osUi}".
-4. Expert Warning / Advice: Practical precautions regarding hardware, power, or data safety.
-5. Frequently Asked Questions (FAQ): Exactly 3 realistic, high-value Q&As that everyday users would ask. (CRITICAL: Every Q and A must start on a fresh new line without markdown bolding like Q1. ... and A1.).
+[Content & Structure (AdSense High Quality E-E-A-T)]
+1. Opening Story: Real workplace problem scenario strictly regarding this topic based on the assigned scenario.
+2. Root Cause Breakdown: Clearly explain 3 realistic root causes behind the failure or error.
+3. Step-by-Step Resolution: Provide actionable steps with exact dashboard menu paths matching "${lang.osUi}".
+4. Preventative Precautions: Practical tips to ensure this error never happens again in the future.
+5. Frequently Asked Questions (FAQ): Exactly 3 realistic, high-value Q&As that users facing this error ask. (CRITICAL: Every Q and A must start on a fresh new line without markdown bolding like Q1. ... and A1.).
 
 [Length & Richness Rules]
 - Korean (ko): Minimum 2,500 characters of rich, deep, non-repetitive text.
@@ -287,8 +260,8 @@ title: "Native Catchy Title in ${lang.name}"
 description: "Native concise description in ${lang.name} under 160 characters"
 publishDate: ${pubDateIso}
 image: "${coverUrl}"
-category: "tech"
-tags: ["Tech Tips", "Hardware", "Troubleshooting", "PC Fix"]
+category: "troubleshooting"
+tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "${selectedTheme.name}"
 ---
 (Body starts directly here without H1 header)
@@ -319,16 +292,16 @@ theme: "${selectedTheme.name}"
       let body = text.slice(frontmatter.length).trim();
       body = body.replace(/^#\s+[^\n]+\n+/, '');
 
-      frontmatter = frontmatter.replace(/category:\s*["'][^"']*["']/i, "category: 'tech'")
-                               .replace(/category:\s*[^\n\r]+/i, "category: 'tech'");
+      // 심사용 안전 카테고리: troubleshooting 강제 적용
+      frontmatter = frontmatter.replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
+                               .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
 
       frontmatter = frontmatter.replace(/publishDate:\s*[^\n\r]+/i, `publishDate: ${pubDateIso}`);
       frontmatter = frontmatter.replace(/image:\s*["'][^"']*["']/i, `image: '${coverUrl}'`);
 
-      // 안전 정제 함수 적용
       body = sanitizeMarkdownFormatting(body);
 
-      const middleImageMarkdown = `\n\n![Tech Troubleshooting Guide](${bodyUrl})\n\n`;
+      const middleImageMarkdown = `\n\n![Payment and Billing Troubleshooting Guide](${bodyUrl})\n\n`;
       if (body.includes('## 2.') || body.includes('### 2.')) {
         body = body.replace(/(#{2,3}\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
       } else {
@@ -351,7 +324,7 @@ theme: "${selectedTheme.name}"
 
     const filePath = path.join(targetDir, `${fileSlug}.md`);
     fs.writeFileSync(filePath, text, 'utf-8');
-    console.log(`✅ [성공] 1호기 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
+    console.log(`✅ [성공] 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
     return true;
   } catch (error) {
     console.error(`❌ [최종 실패] ${lang.name} 생성 실패:`, error.message);
@@ -361,7 +334,7 @@ theme: "${selectedTheme.name}"
 
 async function run() {
   console.log("==================================================");
-  console.log("⚡ 1호기 Tech/IT 12개국 최적화 고속 자동 포스팅 시작");
+  console.log(`⚡ 1호기 글로벌 결제/비즈니스 문제해결 12개국 자동 포스팅 시작 (모델: ${GEMINI_MODEL})`);
   console.log("==================================================");
 
   let successCount = 0;
