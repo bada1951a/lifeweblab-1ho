@@ -4,8 +4,11 @@ import { getCollection } from 'astro:content';
 let allPosts = [];
 try {
   allPosts = await getCollection('post');
-} catch (e) {}
+} catch (e) {
+  console.error("Failed to load posts:", e);
+}
 
+// 날짜 내림차순 정렬 (미래 시간 여부와 무관하게 최신 글 상단 배치)
 allPosts.sort((a, b) => {
   const dateA = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0;
   const dateB = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0;
@@ -31,31 +34,29 @@ const languages = [
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9L4TLNMJCT"></script>
-<script is:inline>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-9L4TLNMJCT');
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9L4TLNMJCT"></script>
+  <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-9L4TLNMJCT');
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LifeWebLab</title>
+  <title>LifeWebLab - Global Payment & Billing Troubleshooter</title>
   
-  <!-- Fredoka 둥글둥글 Bookworm 폰트 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #faf8f5;        /* 눈이 편안한 따뜻한 웜 크림색 */
+      --bg: #faf8f5;
       --text-title: #0f172a;
       --text-muted: #64748b;
       --text-desc: #475569;
-      --border: #ede8df;    /* 크림색 배경에 맞춘 부드러운 구분선 */
+      --border: #ede8df;
       --primary: #2563eb;
     }
 
@@ -69,7 +70,6 @@ const languages = [
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 상단 헤더 */
     header {
       background: #ffffff;
       border-bottom: 1px solid var(--border);
@@ -121,7 +121,6 @@ const languages = [
       .nav-links { display: none; }
     }
 
-    /* 대문 배너 컨테이너: 글자가 절대 안 잘리도록 최적화 */
     .hero-banner-container {
       max-width: 1040px;
       margin: 28px auto 0 auto;
@@ -130,11 +129,11 @@ const languages = [
     .hero-banner-img {
       width: 100%;
       height: auto;
-      aspect-ratio: 16 / 5.5; /* 배너 이미지 원본 비율 완벽 유지 */
+      aspect-ratio: 16 / 5.5;
       border-radius: 18px;
-      object-fit: contain; /* 글자 안 잘리게 전체 표시 */
+      object-fit: contain;
       display: block;
-      background-color: #d8f0f6; /* 배너 여백 시 자연스런 파스텔 하늘색 */
+      background-color: #d8f0f6;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     }
     @media (max-width: 768px) {
@@ -144,7 +143,6 @@ const languages = [
       }
     }
 
-    /* 포스트 메인 컨테이너 */
     main {
       max-width: 1040px;
       margin: 40px auto 100px auto;
@@ -260,7 +258,6 @@ const languages = [
       display: none;
     }
 
-    /* 하단 푸터 */
     footer {
       border-top: 1px solid var(--border);
       background: #fafafa;
@@ -299,7 +296,6 @@ const languages = [
       color: var(--primary);
     }
 
-    /* 🤫 오직 지구본 아이콘만 보이는 미니멀 스위처 */
     .stealth-lang-wrapper {
       position: relative;
       display: inline-flex;
@@ -308,7 +304,7 @@ const languages = [
     }
     .globe-btn {
       font-size: 1.05rem;
-      opacity: 0.35;
+      opacity: 0.45;
       cursor: pointer;
       line-height: 1;
       transition: opacity 0.2s, transform 0.2s;
@@ -318,14 +314,13 @@ const languages = [
       opacity: 0.9;
       transform: scale(1.15);
     }
-    /* 평소엔 글자(KR)가 아예 안 보이고 지구본만 보임. 클릭 시 드롭다운 */
     .stealth-select {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      opacity: 0; /* 완전 투명 */
+      opacity: 0;
       cursor: pointer;
     }
 
@@ -340,7 +335,6 @@ const languages = [
 </head>
 <body>
 
-  <!-- 헤더 -->
   <header>
     <div class="header-inner">
       <a href="/" class="logo">
@@ -356,7 +350,6 @@ const languages = [
     </div>
   </header>
 
-  <!-- 대문 사진 배너 (글자 안 잘림) -->
   <div class="hero-banner-container">
     <img 
       src="/banner.png" 
@@ -365,12 +358,11 @@ const languages = [
     />
   </div>
 
-  <!-- 포스트 목록 -->
   <main>
     <div class="posts-grid" id="posts-container">
       {allPosts.map((post) => {
         const cleanId = post.id.replace(/\.[^/.]+$/, '');
-        const postLang = cleanId.split('/')[0] || 'ko';
+        const postLang = cleanId.includes('/') ? cleanId.split('/')[0] : 'ko';
         const postUrl = `/${cleanId}`;
 
         const dateObj = post.data.publishDate ? new Date(post.data.publishDate) : new Date();
@@ -434,7 +426,6 @@ const languages = [
     </div>
   </main>
 
-  <!-- 하단 푸터 -->
   <footer>
     <div class="footer-inner">
       <div class="footer-top">
@@ -445,7 +436,6 @@ const languages = [
           <li><a href="/privacy-policy">Privacy Policy</a></li>
           <li><a href="/terms">Terms of Service</a></li>
           
-          <!-- 🌐 글자(KR) 없이 오직 지구본 아이콘만 보이는 버튼 -->
           <li class="stealth-lang-wrapper" title="언어 선택">
             <span class="globe-btn">🌐</span>
             <select id="lang-selector" class="stealth-select" aria-label="언어 선택">
@@ -468,18 +458,28 @@ const languages = [
       const cards = document.querySelectorAll('.post-card');
       const noPosts = document.getElementById('no-posts');
 
-      const userLang = (navigator.language || navigator.userLanguage || 'ko').slice(0, 2).toLowerCase();
-      const supported = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'];
-      const defaultLang = supported.includes(userLang) ? userLang : 'ko';
+      // 저장된 언어가 있거나 한국어 기본값 사용 (안전하게 ko 우선 고정)
+      let currentLang = 'ko';
+      const stored = localStorage.getItem('pref_lang');
+      if (stored) {
+        currentLang = stored;
+      } else {
+        const navLang = (navigator.language || navigator.userLanguage || 'ko').slice(0, 2).toLowerCase();
+        const supported = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'];
+        if (supported.includes(navLang)) {
+          currentLang = navLang;
+        }
+      }
 
       if (selector) {
-        selector.value = defaultLang;
+        selector.value = currentLang;
       }
 
       function applyFilter(target) {
         let count = 0;
         cards.forEach(card => {
-          if (card.getAttribute('data-lang') === target) {
+          const cardLang = card.getAttribute('data-lang');
+          if (cardLang === target) {
             card.style.display = 'flex';
             count++;
           } else {
@@ -487,16 +487,28 @@ const languages = [
           }
         });
 
+        // 만약 선택된 언어의 글이 0개라면 fallback으로 한국어(ko) 글을 노출
+        if (count === 0 && target !== 'ko') {
+          cards.forEach(card => {
+            if (card.getAttribute('data-lang') === 'ko') {
+              card.style.display = 'flex';
+              count++;
+            }
+          });
+        }
+
         if (noPosts) {
           noPosts.style.display = count === 0 ? 'block' : 'none';
         }
       }
 
-      applyFilter(defaultLang);
+      applyFilter(currentLang);
 
       if (selector) {
         selector.addEventListener('change', (e) => {
-          applyFilter(e.target.value);
+          const selected = e.target.value;
+          localStorage.setItem('pref_lang', selected);
+          applyFilter(selected);
         });
       }
     }
