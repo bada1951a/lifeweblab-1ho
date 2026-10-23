@@ -1,7 +1,5 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
-import Hero from '~/components/widgets/Hero.astro';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 
 // 대문 이미지(JPG) 불러오기
 import heroImage from '~/assets/images/satellite-earth.jpg';
@@ -13,50 +11,54 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
-  <!-- Hero Section -->
-  <Hero
-    actions={[
-      {
-        variant: 'primary',
-        text: 'Explore Guides',
-        href: '/blog',
-        icon: 'tabler:chevron-right',
-      },
-    ]}
-    image={{
-      src: heroImage,
-      alt: 'Troubleshooting Tutorials - LifeWebLab Cover',
-    }}
-  >
-    <Fragment slot="title">
-      Global Payment & Billing Solutions,<br />
-      <span class="text-accent dark:text-white highlight">LifeWebLab</span>
-    </Fragment>
-
-    <Fragment slot="subtitle">
-      Comprehensive troubleshooting guides for overseas payments, recurring billing errors, and digital invoices.
-    </Fragment>
-  </Hero>
-
-  <!-- Latest Posts Section -->
-  <BlogLatestPosts
-    title="Latest Articles"
-    information="Carefully curated troubleshooting guides and resolution steps for payment failures."
-    count={6}
-  />
+  <!-- Hero Section (순수 Tailwind CSS 적용) -->
+  <section class="relative md:-mt-[76px] not-prose">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="pt-0 md:pt-[76px] pointer-events-none"></div>
+      <div class="py-12 md:py-20 lg:py-0 lg:flex lg:items-center lg:h-screen lg:gap-8">
+        <div class="basis-1/2 text-center lg:text-left pb-10 md:pb-16 mx-auto">
+          <h1 class="text-5xl md:text-6xl font-bold leading-tighter tracking-tighter mb-4 font-heading dark:text-gray-200">
+            Global Payment & Billing Solutions,<br />
+            <span class="text-blue-600 dark:text-blue-400">LifeWebLab</span>
+          </h1>
+          <div class="max-w-3xl mx-auto lg:max-w-none">
+            <p class="text-xl text-muted mb-6 dark:text-slate-300">
+              Comprehensive troubleshooting guides for overseas payments, recurring billing errors, and digital invoices.
+            </p>
+            <div class="max-w-xs sm:max-w-md m-auto flex flex-nowrap flex-col sm:flex-row sm:justify-center gap-4 lg:justify-start">
+              <a
+                class="btn btn-primary inline-flex items-center justify-center py-3 px-6 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+                href="/blog"
+              >
+                Explore Guides
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="basis-1/2">
+          {heroImage && (
+            <div class="relative m-auto max-w-5xl">
+              <img
+                src={heroImage.src || heroImage}
+                alt="Troubleshooting Tutorials - LifeWebLab Cover"
+                class="mx-auto rounded-md w-full shadow-lg"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
 </Layout>
 
 <!-- 방문자 언어 감지 및 자동 분기 스크립트 -->
 <script is:inline>
   (function () {
-    // 사용자가 이미 특정 페이지를 둘러보는 중이 아니라 '메인 루트(/)'로 직접 들어왔을 때만 작동
     if (window.location.pathname !== '/' && window.location.pathname !== '') return;
 
-    // 브라우저 기본 언어 확인 (예: 'ko-KR' -> 'ko', 'ja' -> 'ja')
     const rawLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
     const langCode = rawLang.split('-')[0];
 
-    // 지원하는 주요 언어 매핑
     const supportedLangs = {
       ko: '/ko',
       ja: '/ja',
@@ -72,9 +74,7 @@ const metadata = {
       en: '/en'
     };
 
-    // 한국어면 /ko, 일본어면 /ja 등으로 이동 (매핑 없으면 기본 영어 /en 또는 그대로 유지)
     if (supportedLangs[langCode]) {
-      // 무한 루프 방지를 위해 sessionStorage 체크
       if (!sessionStorage.getItem('lang_redirected')) {
         sessionStorage.setItem('lang_redirected', 'true');
         window.location.replace(supportedLangs[langCode]);
