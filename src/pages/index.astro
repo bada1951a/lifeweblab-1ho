@@ -1,12 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 
-// 깃허브에 있는 블로그 마크다운 글들을 최신순으로 가져옵니다
 const allPosts = await getCollection('blog');
-
-// 최신 글 1개를 대문(Featured)으로, 나머지를 그리드로 분리
-const featuredPost = allPosts[0]?.data;
-const gridPosts = allPosts.slice(1).map(post => post.data);
+const featuredPost = allPosts[0];
+const gridPosts = allPosts.slice(1);
 ---
 
 <html lang="ko">
@@ -189,9 +186,9 @@ const gridPosts = allPosts.slice(1).map(post => post.data);
 <body>
 
     <header>
-        <a href="#" class="logo">🐛 lifeweblab-1ho</a>
+        <a href="/" class="logo">🐛 lifeweblab-1ho</a>
         <nav>
-            <a href="#">Home</a>
+            <a href="/">Home</a>
             <a href="#">About</a>
             <a href="#">Contact</a>
         </nav>
@@ -201,18 +198,18 @@ const gridPosts = allPosts.slice(1).map(post => post.data);
         {featuredPost && (
             <article class="featured-post">
                 <div class="featured-thumbnail">
-                    {featuredPost.image}
+                    {featuredPost.data.image}
                 </div>
                 <div class="post-meta">
-                    <div class="author-icon-box">{featuredPost.avatarIcon}</div>
-                    <span>{featuredPost.author}</span>
+                    <div class="author-icon-box">{featuredPost.data.avatarIcon}</div>
+                    <span>{featuredPost.data.author}</span>
                     <span>•</span>
-                    <span>{featuredPost.date}</span>
+                    <span>{featuredPost.data.date}</span>
                     <span>•</span>
-                    <a href="#" class="category-badge">{featuredPost.category}</a>
+                    <a href="#" class="category-badge">{featuredPost.data.category}</a>
                 </div>
-                <h2><a href="#" class="post-title-large">{featuredPost.title}</a></h2>
-                <p class="post-desc">{featuredPost.description}</p>
+                <h2><a href={`/${featuredPost.id}/`} class="post-title-large">{featuredPost.data.title}</a></h2>
+                <p class="post-desc">{featuredPost.data.description}</p>
             </article>
         )}
 
@@ -220,18 +217,18 @@ const gridPosts = allPosts.slice(1).map(post => post.data);
             {gridPosts.map(post => (
                 <article class="grid-item">
                     <div class="grid-thumbnail">
-                        {post.image}
+                        {post.data.image}
                     </div>
                     <div class="post-meta">
-                        <div class="author-icon-box">{post.avatarIcon}</div>
-                        <span>{post.author}</span>
+                        <div class="author-icon-box">{post.data.avatarIcon}</div>
+                        <span>{post.data.author}</span>
                         <span>•</span>
-                        <span>{post.date}</span>
+                        <span>{post.data.date}</span>
                         <span>•</span>
-                        <a href="#" class="category-badge">{post.category}</a>
+                        <a href="#" class="category-badge">{post.data.category}</a>
                     </div>
-                    <h3><a href="#" class="post-title-small">{post.title}</a></h3>
-                    <p class="post-desc" style="font-size: 0.95rem;">{post.description}</p>
+                    <h3><a href={`/${post.id}/`} class="post-title-small">{post.data.title}</a></h3>
+                    <p class="post-desc" style="font-size: 0.95rem;">{post.data.description}</p>
                 </article>
             ))}
         </div>
