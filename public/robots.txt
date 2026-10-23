@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lifeweblab.com/sitemap-index.xml
