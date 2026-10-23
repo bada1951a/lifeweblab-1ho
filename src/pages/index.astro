@@ -1,181 +1,354 @@
 ---
-// 외부 레이아웃이나 위젯 import 없이 자체 완결형 코드로 구성
+import { getCollection } from 'astro:content';
+
+// 1. post 및 blog 컬렉션에서 모든 글 가져오기
+let posts = [];
+try {
+  const postCol = await getCollection('post');
+  if (postCol && postCol.length > 0) posts = postCol;
+} catch (e) {}
+
+if (posts.length === 0) {
+  try {
+    const blogCol = await getCollection('blog');
+    if (blogCol && blogCol.length > 0) posts = blogCol;
+  } catch (e) {}
+}
+
+// 2. 최신 발행일 순으로 정렬
+posts.sort((a, b) => {
+  const dateA = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0;
+  const dateB = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0;
+  return dateB - dateA;
+});
+
+// 3. 12개국 언어 목록 정의
+const languages = [
+  { code: 'ko', label: '한국어' },
+  { code: 'en', label: 'English' },
+  { code: 'ja', label: '日本語' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'fr', label: 'Français' },
+  { code: 'es', label: 'Español' },
+  { code: 'it', label: 'Italiano' },
+  { code: 'pt', label: 'Português' },
+  { code: 'nl', label: 'Nederlands' },
+  { code: 'pl', label: 'Polski' },
+  { code: 'id', label: 'Bahasa Indonesia' },
+  { code: 'vi', label: 'Tiếng Việt' },
+];
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LifeWebLab — Global Billing & Payment Troubleshooting Hub</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <style>
-      body {
-        margin: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background-color: #0b1120;
-        color: #f8fafc;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.25rem 2rem;
-        background-color: #0b1120;
-        border-bottom: 1px solid #1e293b;
-      }
-      .logo {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: #60a5fa;
-        text-decoration: none;
-      }
-      .nav-links {
-        display: flex;
-        gap: 1.5rem;
-        align-items: center;
-      }
-      .nav-links a {
-        color: #cbd5e1;
-        text-decoration: none;
-        font-size: 0.95rem;
-      }
-      .nav-links a:hover {
-        color: #60a5fa;
-      }
-      .dropdown {
-        position: relative;
-        display: inline-block;
-      }
-      .dropdown-content {
-        display: none;
-        position: absolute;
-        right: 0;
-        background-color: #1e293b;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px rgba(0,0,0,0.4);
-        border-radius: 8px;
-        padding: 8px 0;
-        z-index: 50;
-      }
-      .dropdown:hover .dropdown-content {
-        display: block;
-      }
-      .dropdown-content a {
-        padding: 8px 16px;
-        display: block;
-        color: #cbd5e1;
-      }
-      .dropdown-content a:hover {
-        background-color: #334155;
-        color: #ffffff;
-      }
-      main {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 4rem 1rem;
-      }
-      .hero-content {
-        max-width: 720px;
-      }
-      h1 {
-        font-size: 2.75rem;
-        font-weight: 800;
-        line-height: 1.2;
-        margin-bottom: 1.25rem;
-      }
-      h1 span {
-        color: #3b82f6;
-      }
-      p {
-        font-size: 1.2rem;
-        color: #94a3b8;
-        margin-bottom: 2rem;
-        line-height: 1.6;
-      }
-      .btn {
-        display: inline-block;
-        background-color: #2563eb;
-        color: #ffffff;
-        padding: 0.85rem 1.75rem;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: background-color 0.2s;
-      }
-      .btn:hover {
-        background-color: #1d4ed8;
-      }
-      footer {
-        text-align: center;
-        padding: 2rem;
-        border-top: 1px solid #1e293b;
-        color: #64748b;
-        font-size: 0.875rem;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LifeWebLab - Global Payment & Billing Solutions</title>
+  <meta name="description" content="글로벌 결제, 송금, 인보이스 오류 해결 및 해외 비즈니스 가이드" />
+  <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --border-color: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    header {
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #0f172a;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    nav {
+      display: flex;
+      gap: 16px;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    nav a {
+      color: var(--text-sub);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: var(--primary);
+    }
+
+    /* 지구본 12개국 드롭다운 */
+    .lang-picker {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .globe-icon {
+      width: 16px;
+      height: 16px;
+      color: #475569;
+    }
+
+    .lang-select {
+      border: none;
+      background: transparent;
+      font-size: 0.85rem;
+      color: #334155;
+      outline: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    /* 상단 슬림 헤드라인 */
+    .section-header {
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .post-count {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+    }
+
+    /* 블로그 글 반응형 카드 그리드 */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 28px;
+    }
+
+    .post-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .post-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .thumbnail-box {
+      width: 100%;
+      height: 200px;
+      background: #e2e8f0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .thumbnail-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .card-meta {
+      font-size: 0.82rem;
+      color: var(--primary);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .card-excerpt {
+      font-size: 0.92rem;
+      color: var(--text-sub);
+      line-height: 1.5;
+      margin-bottom: 16px;
+      flex-grow: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 12px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-sub);
+      grid-column: 1 / -1;
+    }
+
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-top: 80px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
       <a href="/" class="logo">LifeWebLab</a>
-      <div class="nav-links">
-        <a href="/blog">Blog</a>
-        <div class="dropdown">
-          <a href="#" style="cursor: pointer;">🌐 Language ▾</a>
-          <div class="dropdown-content">
-            <a href="/ko">🇰🇷 한국어</a>
-            <a href="/en">🇺🇸 English</a>
-            <a href="/ja">🇯🇵 日本語</a>
-            <a href="/de">🇩🇪 Deutsch</a>
-            <a href="/fr">🇫🇷 Français</a>
-            <a href="/es">🇪🇸 Español</a>
-          </div>
+      
+      <div class="header-right">
+        <nav>
+          <a href="/">Home</a>
+          <a href="#">Categories</a>
+          <a href="#">Contact</a>
+        </nav>
+
+        <!-- 12개국 전체 언어 지원 드롭다운 -->
+        <div class="lang-picker">
+          <svg class="globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <select class="lang-select" aria-label="Language selector">
+            {languages.map((lang) => (
+              <option value={lang.code}>{lang.label}</option>
+            ))}
+          </select>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main>
-      <div class="hero-content">
-        <h1>Global Payment & Billing Solutions,<br /><span>LifeWebLab</span></h1>
-        <p>Comprehensive troubleshooting guides for overseas payments, recurring billing errors, and digital invoices across the globe.</p>
-        <a href="/blog" class="btn">Explore All Guides</a>
-      </div>
-    </main>
+  <main>
+    <div class="section-header">
+      <h1 class="section-title">Latest Troubleshooting Guides</h1>
+      <span class="post-count">Total {posts.length} Guides</span>
+    </div>
 
-    <footer>
-      © 2026 LifeWebLab. All rights reserved.
-    </footer>
+    <div class="posts-grid">
+      {posts.length > 0 ? (
+        posts.map((post) => {
+          const cleanSlug = post.slug 
+            ? post.slug.split('/').pop() 
+            : post.id.replace(/\.[^/.]+$/, '').split('/').pop();
 
-    <!-- 언어 자동 분기 스크립트 -->
-    <script is:inline>
-      (function () {
-        if (window.location.pathname !== '/' && window.location.pathname !== '') return;
+          return (
+            <a href={`/${cleanSlug}`} class="post-card">
+              <div class="thumbnail-box">
+                {post.data.image ? (
+                  <img src={post.data.image} alt={post.data.title} loading="lazy" />
+                ) : (
+                  <div style="font-size: 2.5rem; color: #94a3b8;">📄</div>
+                )}
+              </div>
+              <div class="card-content">
+                <span class="card-meta">{post.data.category || 'Troubleshooting'}</span>
+                <h2 class="card-title">{post.data.title}</h2>
+                <p class="card-excerpt">{post.data.excerpt || post.data.description || 'Global business troubleshooting and resolution guide.'}</p>
+                <div class="card-footer">
+                  {post.data.publishDate ? new Date(post.data.publishDate).toLocaleDateString() : 'Recent'}
+                </div>
+              </div>
+            </a>
+          );
+        })
+      ) : (
+        <div class="empty-state">
+          <h2>아직 등록된 포스팅이 없습니다.</h2>
+          <p>새 글이 발행되면 여기에 최신 가이드 목록이 즉시 표시됩니다.</p>
+        </div>
+      )}
+    </div>
+  </main>
 
-        const rawLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-        const langCode = rawLang.split('-')[0];
+  <footer>
+    <p>Copyright © 2026 LifeWebLab • Global Payment & Billing Resolution Network</p>
+  </footer>
 
-        const supportedLangs = {
-          ko: '/ko',
-          ja: '/ja',
-          de: '/de',
-          fr: '/fr',
-          es: '/es',
-          en: '/en'
-        };
-
-        if (supportedLangs[langCode]) {
-          if (!sessionStorage.getItem('lang_redirected')) {
-            sessionStorage.setItem('lang_redirected', 'true');
-            window.location.replace(supportedLangs[langCode]);
-          }
-        }
-      })();
-    </script>
-  </body>
+</body>
 </html>
