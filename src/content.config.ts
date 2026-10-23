@@ -43,13 +43,15 @@ const metadataDefinition = () =>
     .optional();
 
 const postCollection = defineCollection({
-  loader: glob({ pattern: ['**/*.md', '**/*.mdx'], base: 'src/data/post' }),
+  // 기준 경로를 src/content/post 로 변경
+  loader: glob({ pattern: ['**/*.md', '**/*.mdx'], base: 'src/content/post' }),
   schema: z.object({
-    publishDate: z.date().optional(),
-    updateDate: z.date().optional(),
+    publishDate: z.coerce.date().optional(),
+    updateDate: z.coerce.date().optional(),
     draft: z.boolean().optional(),
 
     title: z.string(),
+    description: z.string().optional(),
     excerpt: z.string().optional(),
     image: z.string().optional(),
     imageAlt: z.string().optional(),
@@ -57,12 +59,12 @@ const postCollection = defineCollection({
     category: z.string().optional(),
     tags: z.array(z.string()).optional(),
     author: z.string().optional(),
+    theme: z.string().optional(),
 
     metadata: metadataDefinition(),
   }),
 });
 
-// post와 blog 둘 다 인식할 수 있도록 연결
 export const collections = {
   post: postCollection,
   blog: postCollection,
