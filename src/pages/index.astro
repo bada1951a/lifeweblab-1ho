@@ -34,98 +34,345 @@ const languages = [
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LifeWebLab — Global Troubleshooting & Solutions</title>
+  <title>LifeWebLab</title>
+  
+  <!-- Bookworm Light 스타일 전용 폰트 (Plus Jakarta Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text-main: #0f172a;
-      --text-sub: #64748b;
+      --bg: #ffffff;
+      --text-title: #1e293b;
+      --text-muted: #64748b;
+      --text-body: #475569;
+      --border: #f1f5f9;
       --primary: #2563eb;
-      --border: #e2e8f0;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif; background-color: var(--bg); color: var(--text-main); line-height: 1.6; }
-    header { background: #ffffff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
-    .header-inner { max-width: 1200px; margin: 0 auto; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .logo { font-size: 1.3rem; font-weight: 800; color: var(--text-main); text-decoration: none; display: flex; align-items: center; gap: 8px; }
-    .lang-picker { display: flex; align-items: center; gap: 6px; background: #f1f5f9; border: 1px solid var(--border); padding: 5px 12px; border-radius: 20px; }
-    .lang-picker select { border: none; background: transparent; font-size: 0.85rem; font-weight: 600; color: var(--text-main); outline: none; cursor: pointer; }
-    main { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-    .title-area { border-bottom: 2px solid var(--border); padding-bottom: 16px; margin-bottom: 32px; }
-    .title-area h1 { font-size: 1.8rem; font-weight: 800; }
-    .title-area p { color: var(--text-sub); font-size: 0.95rem; margin-top: 4px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s; }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-    .card-thumb { width: 100%; height: 180px; background: #e2e8f0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-    .card-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .card-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
-    .badge { font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 8px; }
-    .card-title { font-size: 1.15rem; font-weight: 700; line-height: 1.4; margin-bottom: 8px; color: var(--text-main); }
-    .card-desc { font-size: 0.88rem; color: var(--text-sub); line-height: 1.5; margin-bottom: 16px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-    .card-footer { font-size: 0.78rem; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 12px; display: flex; justify-content: space-between; }
-    .no-posts { text-align: center; padding: 60px 20px; color: var(--text-sub); font-size: 1rem; width: 100%; grid-column: 1 / -1; display: none; }
-    footer { text-align: center; padding: 30px 20px; border-top: 1px solid var(--border); margin-top: 60px; font-size: 0.85rem; color: var(--text-sub); background: #ffffff; }
+    
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-title);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 상단 헤더 */
+    header {
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      text-decoration: none;
+      letter-spacing: -0.6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+    }
+
+    /* 12개국 언어 셀렉터 */
+    .lang-picker {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 6px 14px;
+      border-radius: 9999px;
+    }
+    .lang-picker select {
+      border: none;
+      background: transparent;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #334155;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* 컨테이너 */
+    main {
+      max-width: 1040px;
+      margin: 40px auto 100px auto;
+      padding: 0 20px;
+    }
+
+    /* 포스트 그리드 (2열 기본, 반응형 1열) */
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 56px 40px;
+    }
+    @media (max-width: 768px) {
+      .posts-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+
+    /* 개별 포스트 아이템 */
+    .post-item {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* 둥글고 부드러운 썸네일 박스 */
+    .thumb-wrapper {
+      width: 100%;
+      height: 300px;
+      border-radius: 14px;
+      overflow: hidden;
+      background-color: #fce8db; /* 스크린샷과 유사한 따뜻한 베이지 톤 기본 배경 */
+      margin-bottom: 20px;
+    }
+    .thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+    .post-item:hover .thumb-img {
+      transform: scale(1.03);
+    }
+
+    /* 메타 정보 줄: 작성자 아바타 / 달력 날짜 / 그리드 카테고리 */
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: #334155;
+    }
+    /* 원형 아바타 이미지 */
+    .author-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: inline-block;
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    .meta-icon {
+      width: 16px;
+      height: 16px;
+      stroke: #64748b;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* 대형 볼드 타이틀 (Plus Jakarta Sans 특유의 정갈하고 굵은 헤드라인) */
+    .post-title {
+      font-size: 1.65rem;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text-title);
+      margin-bottom: 12px;
+      letter-spacing: -0.6px;
+      transition: color 0.2s;
+    }
+    .post-item:hover .post-title {
+      color: var(--primary);
+    }
+
+    /* 본문 2줄 요약 */
+    .post-excerpt {
+      font-size: 0.96rem;
+      color: var(--text-body);
+      line-height: 1.65;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .no-posts {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 100px 20px;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
   </style>
 </head>
 <body>
 
   <header>
     <div class="header-inner">
-      <a href="/" class="logo">LifeWebLab</a>
-      <div class="lang-picker">
-        <span>🌐</span>
-        <select id="lang-selector" aria-label="Language selector">
-          {languages.map((lang) => (
-            <option value={lang.code}>{lang.label}</option>
-          ))}
-        </select>
+      <a href="/" class="logo">
+        🐛 Bookworm
+      </a>
+
+      <div class="header-nav">
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+
+        <!-- 12개국 언어 감지/전환기 -->
+        <div class="lang-picker">
+          <span>🌐</span>
+          <select id="lang-selector" aria-label="Language selector">
+            {languages.map((lang) => (
+              <option value={lang.code}>{lang.label}</option>
+            ))}
+          </select>
+        </div>
       </div>
     </div>
   </header>
 
   <main>
-    <div class="title-area">
-      <h1>최신 문제해결 가이드</h1>
-      <p>해외 결제 및 글로벌 비즈니스 오류 해결 솔루션입니다.</p>
-    </div>
-
-    <div class="grid" id="posts-container">
+    <div class="posts-grid" id="posts-container">
       {allPosts.map((post) => {
         const postLang = post.id.split('/')[0] || 'ko';
         const cleanSlug = post.slug ? post.slug.split('/').pop() : post.id.replace(/\.[^/.]+$/, '').split('/').pop();
         const postUrl = `/${cleanSlug}`;
 
+        // 날짜 포맷 (예: 07 Apr, 2025)
+        const dateObj = post.data.publishDate ? new Date(post.data.publishDate) : new Date();
+        const formattedDate = dateObj.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+
+        // 기본 프로필 이미지 (DiceBear 실사풍 아바타)
+        const authorName = post.data.author || 'Mark Dinn';
+        const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`;
+
         return (
-          <a href={postUrl} class="card post-card" data-lang={postLang}>
-            <div class="card-thumb">
+          <article class="post-item post-card" data-lang={postLang}>
+            <!-- 상단 둥근 썸네일 이미지 -->
+            <a href={postUrl} class="thumb-wrapper">
               {post.data.image ? (
-                <img src={post.data.image} alt={post.data.title} loading="lazy" />
+                <img src={post.data.image} alt={post.data.title} class="thumb-img" loading="lazy" />
               ) : (
-                <span style="font-size: 2rem;">📄</span>
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #cbd5e1;">🖼️</div>
               )}
+            </a>
+
+            <!-- 메타 정보 줄 (아바타+작성자 / 달력+날짜 / 그리드+카테고리) -->
+            <div class="meta-row">
+              <span class="author-info">
+                <img src={avatarUrl} alt={authorName} class="author-avatar" />
+                {authorName}
+              </span>
+
+              <!-- 달력 아이콘 -->
+              <span class="meta-item">
+                <svg class="meta-icon" viewBox="0 0 24 24">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                {formattedDate}
+              </span>
+
+              <!-- 카테고리 4개 사각 그리드 아이콘 -->
+              <span class="meta-item">
+                <svg class="meta-icon" viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                {post.data.category || 'Lifestyle'}
+              </span>
             </div>
-            <div class="card-body">
-              <span class="badge">{post.data.category || 'Guide'}</span>
-              <h2 class="card-title">{post.data.title}</h2>
-              <p class="card-desc">{post.data.description || post.data.excerpt || '실무 문제 해결 절차를 상세히 안내합니다.'}</p>
-              <div class="card-footer">
-                <span>{post.data.publishDate ? new Date(post.data.publishDate).toLocaleDateString() : '최신'}</span>
-                <span style="font-weight: 700; text-transform: uppercase;">{postLang}</span>
-              </div>
-            </div>
-          </a>
+
+            <!-- 볼드 대형 헤드라인 -->
+            <h2 class="post-title">
+              <a href={postUrl} style="text-decoration: none; color: inherit;">{post.data.title}</a>
+            </h2>
+
+            <!-- 2줄 요약 본문 -->
+            <p class="post-excerpt">
+              {post.data.description || post.data.excerpt || 'Nemo vel ad consectetur namut rutrum ex, venenatis sollicitudin urna. Aliquam erat volutpat. Integer eu ipsum sem.'}
+            </p>
+          </article>
         );
       })}
-      <div id="no-posts" class="no-posts">해당 언어로 발행된 글이 아직 없습니다.</div>
+      <div id="no-posts" class="no-posts">해당 언어로 작성된 포스팅이 아직 없습니다.</div>
     </div>
   </main>
 
   <footer>
-    <p>Copyright © 2026 LifeWebLab • Global Problem Solving Hub</p>
+    <p>Copyright © 2026 LifeWebLab • All rights reserved.</p>
   </footer>
 
+  <!-- 브라우저 언어 자동 감지 및 실시간 언어 필터링 -->
   <script is:inline>
     function setupLanguageFilter() {
       const selector = document.getElementById('lang-selector');
