@@ -1,0 +1,210 @@
+---
+import { getCollection } from 'astro:content';
+
+// 1. 모든 블로그 글의 경로(slug)를 미리 생성합니다
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+// 2. 현재 클릭된 글의 데이터와 본문 내용을 가져옵니다
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{post.data.title} - lifeweblab-1ho</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #222222;
+            --muted-color: #777777;
+            --border-color: #eaeaea;
+            --primary-color: #10b981;
+            --card-bg: #f5f2eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+        }
+
+        header {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 25px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #111;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        nav a {
+            color: #444;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        /* 상세 페이지 스타일 */
+        .post-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .post-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--muted-color);
+            margin-bottom: 16px;
+        }
+
+        .author-icon-box {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        .category-badge {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: #111;
+            line-height: 1.3;
+            margin-bottom: 20px;
+        }
+
+        .thumbnail-box {
+            width: 100%;
+            height: 380px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            margin-bottom: 40px;
+        }
+
+        /* 본문 내용 스타일 */
+        .post-content {
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .post-content p {
+            margin-bottom: 24px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 50px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            max-width: 800px;
+            margin: 80px auto 40px auto;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted-color);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="/" class="logo">🐛 lifeweblab-1ho</a>
+        <nav>
+            <a href="/">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <article>
+            <div class="post-header">
+                <div class="post-meta">
+                    <div class="author-icon-box">{post.data.avatarIcon}</div>
+                    <span>{post.data.author}</span>
+                    <span>•</span>
+                    <span>{post.data.date}</span>
+                    <span>•</span>
+                    <a href="#" class="category-badge">{post.data.category}</a>
+                </div>
+                <h1>{post.data.title}</h1>
+            </div>
+
+            <div class="thumbnail-box">
+                {post.data.image}
+            </div>
+
+            <div class="post-content">
+                <Content />
+            </div>
+        </article>
+
+        <a href="/" class="back-link">← 홈으로 돌아가기</a>
+    </main>
+
+    <footer>
+        <p>Copyright © 2026 lifeweblab-1ho.com • Built with Astro & Automated Pipeline</p>
+    </footer>
+
+</body>
+</html>
