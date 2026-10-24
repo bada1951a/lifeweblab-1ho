@@ -8,7 +8,7 @@ try {
   console.error("Failed to load posts:", e);
 }
 
-// 날짜 내림차순 정렬 (미래 시간 여부와 무관하게 최신 글 상단 배치)
+// 날짜 내림차순 정렬 (최신 글 상단 배치)
 allPosts.sort((a, b) => {
   const dateA = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0;
   const dateB = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0;
@@ -467,16 +467,24 @@ const languages = [
       const cards = document.querySelectorAll('.post-card');
       const noPosts = document.getElementById('no-posts');
 
-      let currentLang = 'ko';
+      // 1. 지원 언어 목록
+      const supported = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'];
+
+      // 2. 브라우저/기기 기본 언어 1순위 감지 (한국어면 'ko', 일본어면 'ja' 등)
+      const browserLang = (navigator.languages && navigator.languages.length ? navigator.languages[0] : (navigator.language || navigator.userLanguage || 'ko'))
+        .slice(0, 2)
+        .toLowerCase();
+
+      // 3. 사용자가 과거에 수동 선택한 기록 확인
       const stored = localStorage.getItem('pref_lang');
-      if (stored) {
+
+      // 4. 언어 결정:
+      // 접속자의 기기 언어가 지원 목록에 있으면 최우선 적용 (한국어 기기는 무조건 'ko'로 자동 직행)
+      let currentLang = 'ko';
+      if (supported.includes(browserLang)) {
+        currentLang = browserLang;
+      } else if (stored && supported.includes(stored)) {
         currentLang = stored;
-      } else {
-        const navLang = (navigator.language || navigator.userLanguage || 'ko').slice(0, 2).toLowerCase();
-        const supported = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'];
-        if (supported.includes(navLang)) {
-          currentLang = navLang;
-        }
       }
 
       if (selector) {
@@ -495,6 +503,7 @@ const languages = [
           }
         });
 
+        // 만약 선택된 언어 글이 아직 0개라면 fallback으로 한국어(ko) 글 노출
         if (count === 0 && target !== 'ko') {
           cards.forEach(card => {
             if (card.getAttribute('data-lang') === 'ko') {
