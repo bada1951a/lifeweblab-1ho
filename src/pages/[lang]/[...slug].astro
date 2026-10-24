@@ -177,45 +177,50 @@ const currentLang = Astro.params.lang || 'en';
       display: block;
     }
 
-    /* 본문 가독성 스타일 */
-    .post-content {
-      font-size: 1.15rem !important;
-      line-height: 1.95 !important;
+    /* 본문 가독성 스타일 - 19px 글자 크기 및 2.05 행간 적용 */
+    .post-content,
+    .post-content p,
+    .post-content div,
+    .post-content span,
+    article .post-content p {
+      font-size: 1.1875rem !important; /* 약 19px */
+      line-height: 2.05 !important;
       color: #334155 !important;
-    }
-    .post-content p {
-      font-size: 1.15rem !important;
-      line-height: 1.95 !important;
-      margin-bottom: 26px !important;
-    }
-    .post-content h2 {
-      font-size: 1.7rem !important;
-      font-weight: 800 !important;
-      color: #0f172a !important;
-      margin: 50px 0 20px 0 !important;
-      border-bottom: 2px solid #f1f5f9 !important;
-      padding-bottom: 10px !important;
-      line-height: 1.35 !important;
-    }
-    .post-content h3 {
-      font-size: 1.35rem !important;
-      font-weight: 700 !important;
-      color: #1e293b !important;
-      margin: 38px 0 16px 0 !important;
-      line-height: 1.4 !important;
-    }
-    .post-content ul, 
-    .post-content ol {
       margin-bottom: 28px !important;
-      padding-left: 24px !important;
-      font-size: 1.12rem !important;
-      line-height: 1.9 !important;
-    }
-    .post-content li {
-      margin-bottom: 10px !important;
+      word-break: keep-all;
     }
 
-    /* 배경색, 박스, 테두리를 완전히 없애서 일반 본문 글씨와 100% 동일하게 통일 */
+    .post-content h2 {
+      font-size: 1.85rem !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      margin: 56px 0 24px 0 !important;
+      border-bottom: 2px solid #f1f5f9 !important;
+      padding-bottom: 12px !important;
+      line-height: 1.4 !important;
+    }
+
+    .post-content h3 {
+      font-size: 1.45rem !important;
+      font-weight: 700 !important;
+      color: #1e293b !important;
+      margin: 42px 0 18px 0 !important;
+      line-height: 1.45 !important;
+    }
+
+    .post-content ul, 
+    .post-content ol {
+      margin-bottom: 32px !important;
+      padding-left: 28px !important;
+      font-size: 1.15rem !important;
+      line-height: 2.0 !important;
+    }
+
+    .post-content li {
+      margin-bottom: 12px !important;
+    }
+
+    /* 인라인 강조 태그(code)는 회색 박스/테두리 없이 깔끔한 볼드 처리 유지 */
     .post-content code {
       font-family: inherit !important;
       font-size: inherit !important;
