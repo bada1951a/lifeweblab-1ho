@@ -382,11 +382,14 @@ const languages = [
         const authorName = post.data.author || 'Mark Dinn';
         const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`;
 
-        // description이 없을 경우 본문(post.body)에서 마크다운 기호를 뺀 첫 문장을 직접 추출
-        const cleanBodyText = post.body 
-          ? post.body.replace(/---[\s\S]*?---/, '').replace(/#+\s[^\n]+/g, '').replace(/<[^>]+>/g, '').replace(/[*_~`]/g, '').trim()
-          : '';
-        const excerptText = post.data.description || post.data.excerpt || cleanBodyText.slice(0, 140) + '...';
+        const rawBody = post.body || '';
+        const cleanBodyText = rawBody
+          .replace(/---[\s\S]*?---/, '')
+          .replace(/#+\s[^\n]+/g, '')
+          .replace(/<[^>]+>/g, '')
+          .replace(/[*_~`]/g, '')
+          .trim();
+        const excerptText = post.data.description || post.data.excerpt || (cleanBodyText.slice(0, 140) + '...');
 
         return (
           <article class="post-item post-card" data-lang={postLang}>
