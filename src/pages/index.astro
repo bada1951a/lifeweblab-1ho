@@ -381,7 +381,12 @@ const languages = [
 
         const authorName = post.data.author || 'Mark Dinn';
         const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`;
-        const fallbackDescription = 'Troubleshooting guide for global payment and business billing issues.';
+
+        // description이 없을 경우 본문(post.body)에서 마크다운 기호를 뺀 첫 문장을 직접 추출
+        const cleanBodyText = post.body 
+          ? post.body.replace(/---[\s\S]*?---/, '').replace(/#+\s[^\n]+/g, '').replace(/<[^>]+>/g, '').replace(/[*_~`]/g, '').trim()
+          : '';
+        const excerptText = post.data.description || post.data.excerpt || cleanBodyText.slice(0, 140) + '...';
 
         return (
           <article class="post-item post-card" data-lang={postLang}>
@@ -425,7 +430,7 @@ const languages = [
             </h2>
 
             <p class="post-excerpt">
-              {post.data.description || post.data.excerpt || fallbackDescription}
+              {excerptText}
             </p>
           </article>
         );
@@ -462,7 +467,6 @@ const languages = [
 
   <script is:inline>
     function setupLanguageFilter() {
-      // 1. 브라우저에 남아있던 과거 선택 기록 즉시 완전 삭제
       try {
         localStorage.removeItem('pref_lang');
       } catch (e) {}
@@ -473,12 +477,10 @@ const languages = [
 
       const supported = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'];
 
-      // 2. 접속자의 브라우저/기기 언어를 1순위 최우선으로 강제 감지
       const browserLang = (navigator.languages && navigator.languages.length ? navigator.languages[0] : (navigator.language || navigator.userLanguage || 'en'))
         .slice(0, 2)
         .toLowerCase();
 
-      // 한국어 기기는 무조건 'ko', 그 외 지원 언어는 해당 언어, 미지원 언어는 'en'
       const currentLang = supported.includes(browserLang) ? browserLang : 'en';
 
       if (selector) {
@@ -502,10 +504,8 @@ const languages = [
         }
       }
 
-      // 첫 로딩 시 무조건 접속자 기기 언어로 자동 필터링
       applyFilter(currentLang);
 
-      // 사용자가 아래 지구본을 수동 조작할 때만 임시로 필터 변경 (저장하지 않음)
       if (selector) {
         selector.addEventListener('change', (e) => {
           applyFilter(e.target.value);
