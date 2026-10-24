@@ -39,14 +39,12 @@ if (localImages.length === 0) {
 }
 
 function getPostImages(index) {
-  // 오늘 날짜(한국 시간 KST) 기준 고유 일자 시드 계산
   const now = new Date();
   const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
   const year = kstTime.getUTCFullYear();
   const month = kstTime.getUTCMonth() + 1;
   const day = kstTime.getUTCDate();
 
-  // 매일 11칸씩 크게 건너뛰어 어제와 오늘 대표 사진이 겹치는 현상 완벽 차단
   const daySeed = (year * 372) + (month * 31) + day;
   const baseOffset = (daySeed * 11) % localImages.length;
 
@@ -56,16 +54,11 @@ function getPostImages(index) {
 }
 
 // =========================================================================
-// 한국 시간(KST) 기준 당일 발행 날짜 생성
+// [수정] 빌드 즉시 목록에 노출되도록 현재 시간(또는 1분 전) 기준 ISO 날짜 생성
 // =========================================================================
 function getKstPublishDateIso(index) {
-  const now = new Date();
-  const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  const year = kstTime.getUTCFullYear();
-  const month = String(kstTime.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(kstTime.getUTCDate()).padStart(2, '0');
-  const minute = String((index * 5) % 60).padStart(2, '0');
-  return `${year}-${month}-${day}T03:${minute}:00.000Z`;
+  const now = new Date(Date.now() - (index * 60 * 1000));
+  return now.toISOString();
 }
 
 // =========================================================================
@@ -257,6 +250,12 @@ theme: "${selectedTheme.name}"
     if (text.startsWith('```markdown')) text = text.replace(/^```markdown\n/, '').replace(/\n```$/, '');
     if (text.startsWith('```')) text = text.replace(/^```\n/, '').replace(/\n```$/, '');
 
+    // [수정] 프론트매터 제목 및 본문 제목의 볼드(**) 기호 제거
+    text = text.replace(/(title:\s*["'])([^"']*)(["'])/gi, (match, p1, p2, p3) => {
+      const cleanTitle = p2.replace(/\*\*/g, '').replace(/[*_~`]/g, '').trim();
+      return `${p1}${cleanTitle}${p3}`;
+    });
+
     if (lang.code !== 'ko') {
       text = text.replace(/(title:\s*")([^"]*)(")/g, (match, p1, p2, p3) => `${p1}${p2.replace(/[가-힣]+/g, '').trim()}${p3}`);
       text = text.replace(/(description:\s*")([^"]*)(")/g, (match, p1, p2, p3) => `${p1}${p2.replace(/[가-힣]+/g, '').trim()}${p3}`);
@@ -268,8 +267,13 @@ theme: "${selectedTheme.name}"
       let body = text.slice(frontmatter.length).trim();
       body = body.replace(/^#\s+[^\n]+\n+/, '');
 
+      // [수정] frontmatter 내 title, category, publishDate 등 재정제
+      frontmatter = frontmatter.replace(/(title:\s*["'])([^"']*)(["'])/gi, (m, p1, p2, p3) => {
+        return `${p1}${p2.replace(/\*\*/g, '').trim()}${p3}`;
+      });
+
       frontmatter = frontmatter.replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
-                             .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
+                               .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
 
       frontmatter = frontmatter.replace(/publishDate:\s*[^\n\r]+/i, `publishDate: ${pubDateIso}`);
       frontmatter = frontmatter.replace(/image:\s*["'][^"']*["']/i, `image: '${coverUrl}'`);
