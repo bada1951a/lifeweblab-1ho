@@ -462,24 +462,24 @@ const languages = [
 
   <script is:inline>
     function setupLanguageFilter() {
+      // 1. 브라우저에 남아있던 과거 선택 기록 즉시 완전 삭제
+      try {
+        localStorage.removeItem('pref_lang');
+      } catch (e) {}
+
       const selector = document.getElementById('lang-selector');
       const cards = document.querySelectorAll('.post-card');
       const noPosts = document.getElementById('no-posts');
 
       const supported = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'];
 
+      // 2. 접속자의 브라우저/기기 언어를 1순위 최우선으로 강제 감지
       const browserLang = (navigator.languages && navigator.languages.length ? navigator.languages[0] : (navigator.language || navigator.userLanguage || 'en'))
         .slice(0, 2)
         .toLowerCase();
 
-      const stored = localStorage.getItem('pref_lang');
-
-      let currentLang = 'en';
-      if (stored && supported.includes(stored)) {
-        currentLang = stored;
-      } else if (supported.includes(browserLang)) {
-        currentLang = browserLang;
-      }
+      // 한국어 기기는 무조건 'ko', 그 외 지원 언어는 해당 언어, 미지원 언어는 'en'
+      const currentLang = supported.includes(browserLang) ? browserLang : 'en';
 
       if (selector) {
         selector.value = currentLang;
@@ -502,13 +502,13 @@ const languages = [
         }
       }
 
+      // 첫 로딩 시 무조건 접속자 기기 언어로 자동 필터링
       applyFilter(currentLang);
 
+      // 사용자가 아래 지구본을 수동 조작할 때만 임시로 필터 변경 (저장하지 않음)
       if (selector) {
         selector.addEventListener('change', (e) => {
-          const selected = e.target.value;
-          localStorage.setItem('pref_lang', selected);
-          applyFilter(selected);
+          applyFilter(e.target.value);
         });
       }
     }
