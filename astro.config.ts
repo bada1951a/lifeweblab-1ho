@@ -5,6 +5,7 @@ import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
 import partytown from '@astrojs/partytown';
 import icon from 'astro-icon';
+import sitemap from '@astrojs/sitemap';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -22,6 +23,7 @@ export default defineConfig({
     partytown({
       config: { forward: ['dataLayer.push'] },
     }),
+    sitemap(),
   ],
 
   vite: {
