@@ -44,7 +44,7 @@ const currentLang = Astro.params.lang || 'en';
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <style>
+  <style is:global>
     :root {
       --bg: #ffffff;
       --text-title: #0f172a;
@@ -70,7 +70,7 @@ const currentLang = Astro.params.lang || 'en';
       z-index: 50;
     }
     .header-inner {
-      max-width: 900px;
+      max-width: 860px;
       margin: 0 auto;
       padding: 16px 20px;
       display: flex;
@@ -93,11 +93,6 @@ const currentLang = Astro.params.lang || 'en';
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: opacity 0.2s;
-    }
-    .back-btn:hover {
-      text-decoration: underline;
-      opacity: 0.85;
     }
 
     article {
@@ -106,54 +101,63 @@ const currentLang = Astro.params.lang || 'en';
       padding: 0 20px;
     }
     .post-header {
-      margin-bottom: 40px;
+      margin-bottom: 36px;
     }
 
+    /* 메타 정보 및 아이콘/아바타 크기 강력 고정 (깨짐 완벽 방지) */
     .meta-row {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 16px;
       font-size: 0.92rem;
       color: var(--text-muted);
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
     .author-info {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
       font-weight: 600;
       color: #0f172a;
     }
     .author-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
+      width: 28px !important;
+      height: 28px !important;
+      max-width: 28px !important;
+      max-height: 28px !important;
+      border-radius: 50% !important;
+      object-fit: cover !important;
+      display: inline-block !important;
     }
     .meta-item {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
     }
     .meta-icon {
-      width: 16px;
-      height: 16px;
+      width: 16px !important;
+      height: 16px !important;
+      max-width: 16px !important;
+      max-height: 16px !important;
       stroke: #64748b;
       fill: none;
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
+      display: inline-block !important;
     }
 
     h1.post-title {
-      font-size: 2.35rem;
-      font-weight: 800;
-      line-height: 1.35;
-      color: var(--text-title);
-      margin-bottom: 28px;
-      letter-spacing: -0.8px;
+      font-size: 2.3rem !important;
+      font-weight: 800 !important;
+      line-height: 1.35 !important;
+      color: var(--text-title) !important;
+      margin-bottom: 28px !important;
+      letter-spacing: -0.6px !important;
     }
     @media (max-width: 768px) {
-      h1.post-title { font-size: 1.85rem; line-height: 1.35; }
+      h1.post-title { font-size: 1.75rem !important; }
     }
 
     .post-cover {
@@ -161,16 +165,65 @@ const currentLang = Astro.params.lang || 'en';
       height: 440px;
       border-radius: 16px;
       overflow: hidden;
-      margin-bottom: 44px;
+      margin-bottom: 40px;
       background-color: #f1f5f9;
     }
     @media (max-width: 768px) {
-      .post-cover { height: 260px; margin-bottom: 30px; }
+      .post-cover { height: 260px; margin-bottom: 28px; }
     }
     .post-cover img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
+    }
+
+    /* 본문 폰트 크기 및 가독성 대폭 향상 */
+    .post-content {
+      font-size: 1.15rem !important; /* 약 18.5px */
+      line-height: 1.95 !important;
+      color: #334155 !important;
+    }
+    .post-content p {
+      font-size: 1.15rem !important;
+      line-height: 1.95 !important;
+      margin-bottom: 26px !important;
+    }
+    .post-content h2 {
+      font-size: 1.7rem !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      margin: 50px 0 20px 0 !important;
+      border-bottom: 2px solid #f1f5f9 !important;
+      padding-bottom: 10px !important;
+      line-height: 1.35 !important;
+    }
+    .post-content h3 {
+      font-size: 1.35rem !important;
+      font-weight: 700 !important;
+      color: #1e293b !important;
+      margin: 38px 0 16px 0 !important;
+      line-height: 1.4 !important;
+    }
+    .post-content ul, 
+    .post-content ol {
+      margin-bottom: 28px !important;
+      padding-left: 24px !important;
+      font-size: 1.12rem !important;
+      line-height: 1.9 !important;
+    }
+    .post-content li {
+      margin-bottom: 10px !important;
+    }
+    .post-content img {
+      max-width: 100% !important;
+      height: auto !important;
+      max-height: 460px !important;
+      object-fit: cover !important;
+      border-radius: 14px !important;
+      display: block !important;
+      margin: 36px auto !important;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08) !important;
     }
 
     footer {
@@ -179,110 +232,6 @@ const currentLang = Astro.params.lang || 'en';
       padding: 40px 20px;
       color: var(--text-muted);
       font-size: 0.88rem;
-    }
-  </style>
-
-  <style is:global>
-    /* Global Typography & Enhanced Readability */
-    .post-content {
-      font-size: 1.15rem !important; /* ~18.5px */
-      line-height: 1.95 !important;
-      color: #334155 !important;
-      word-break: break-word;
-    }
-
-    .post-content p {
-      margin-bottom: 28px !important;
-      line-height: 1.95 !important;
-    }
-
-    .post-content h2 {
-      font-size: 1.75rem !important;
-      font-weight: 800 !important;
-      color: #0f172a !important;
-      margin: 54px 0 20px 0 !important;
-      letter-spacing: -0.5px !important;
-      border-bottom: 2px solid #f1f5f9 !important;
-      padding-bottom: 12px !important;
-      line-height: 1.35 !important;
-    }
-
-    .post-content h3 {
-      font-size: 1.4rem !important;
-      font-weight: 700 !important;
-      color: #1e293b !important;
-      margin: 40px 0 16px 0 !important;
-      line-height: 1.4 !important;
-    }
-
-    .post-content ul, 
-    .post-content ol {
-      margin-bottom: 28px !important;
-      padding-left: 26px !important;
-    }
-
-    .post-content li {
-      margin-bottom: 12px !important;
-      line-height: 1.85 !important;
-    }
-
-    .post-content blockquote {
-      border-left: 4px solid #2563eb !important;
-      padding: 12px 20px !important;
-      margin: 32px 0 !important;
-      background: #f8fafc !important;
-      border-radius: 0 8px 8px 0 !important;
-      color: #475569 !important;
-    }
-
-    .post-content code {
-      background: #f1f5f9 !important;
-      padding: 3px 7px !important;
-      border-radius: 6px !important;
-      font-size: 0.9em !important;
-      color: #2563eb !important;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
-    }
-
-    .post-content pre {
-      background: #0f172a !important;
-      color: #f8fafc !important;
-      padding: 22px !important;
-      border-radius: 12px !important;
-      overflow-x: auto !important;
-      margin-bottom: 28px !important;
-    }
-
-    .post-content pre code {
-      background: transparent !important;
-      padding: 0 !important;
-      color: inherit !important;
-    }
-
-    /* Images inside post body */
-    .post-content img {
-      max-width: 100% !important;
-      height: auto !important;
-      max-height: 480px !important;
-      object-fit: cover !important;
-      border-radius: 14px !important;
-      display: block !important;
-      margin: 40px auto !important;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-    }
-
-    @media (max-width: 768px) {
-      .post-content {
-        font-size: 1.08rem !important;
-        line-height: 1.85 !important;
-      }
-      .post-content h2 {
-        font-size: 1.45rem !important;
-        margin: 40px 0 16px 0 !important;
-      }
-      .post-content h3 {
-        font-size: 1.25rem !important;
-      }
     }
   </style>
 </head>
