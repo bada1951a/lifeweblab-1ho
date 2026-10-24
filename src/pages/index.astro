@@ -228,3 +228,296 @@ const languages = [
       stroke: #64748b;
       fill: none;
       stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .post-title {
+      font-size: 1.55rem;
+      font-weight: 800;
+      line-height: 1.35;
+      color: var(--text-title);
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+      transition: color 0.2s;
+    }
+    .post-item:hover .post-title {
+      color: var(--primary);
+    }
+
+    .post-excerpt {
+      font-size: 1.05rem;
+      color: var(--text-desc);
+      line-height: 1.65;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .no-posts {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 90px 20px;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      font-weight: 600;
+      display: none;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      background: #fafafa;
+      padding: 50px 20px 35px 20px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+    .footer-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      list-style: none;
+    }
+    .footer-links a {
+      font-family: 'Fredoka', sans-serif;
+      color: #475569;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .stealth-lang-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      margin-left: 6px;
+    }
+    .globe-btn {
+      font-size: 1.05rem;
+      opacity: 0.45;
+      cursor: pointer;
+      line-height: 1;
+      transition: opacity 0.2s, transform 0.2s;
+      user-select: none;
+    }
+    .globe-btn:hover {
+      opacity: 0.9;
+      transform: scale(1.15);
+    }
+    .stealth-select {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 20px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <a href="/" class="logo">
+        🧪 LifeWebLab
+      </a>
+
+      <div class="header-nav">
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="#posts-container">Troubleshooting</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero-banner-container">
+    <img 
+      src="/banner.png" 
+      alt="LifeWebLab Banner" 
+      class="hero-banner-img"
+    />
+  </div>
+
+  <main>
+    <div class="posts-grid" id="posts-container">
+      {allPosts.map((post) => {
+        const cleanId = post.id.replace(/\.[^/.]+$/, '');
+        const postLang = cleanId.includes('/') ? cleanId.split('/')[0] : 'ko';
+        const postUrl = `/${cleanId}`;
+
+        const dateObj = post.data.publishDate ? new Date(post.data.publishDate) : new Date();
+        const formattedDate = dateObj.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
+
+        const authorName = post.data.author || 'Mark Dinn';
+        const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`;
+        const fallbackDescription = 'Troubleshooting guide for global payment and business billing issues.';
+
+        return (
+          <article class="post-item post-card" data-lang={postLang}>
+            <a href={postUrl} class="thumb-wrapper">
+              {post.data.image ? (
+                <img src={post.data.image} alt={post.data.title} class="thumb-img" loading="lazy" />
+              ) : (
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #cbd5e1;">🖼️</div>
+              )}
+            </a>
+
+            <div class="meta-row">
+              <span class="author-info">
+                <img src={avatarUrl} alt={authorName} class="author-avatar" />
+                {authorName}
+              </span>
+
+              <span class="meta-item">
+                <svg class="meta-icon" viewBox="0 0 24 24">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                {formattedDate}
+              </span>
+
+              <span class="meta-item">
+                <svg class="meta-icon" viewBox="0 0 24 24">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                {post.data.category || 'Troubleshooting'}
+              </span>
+            </div>
+
+            <h2 class="post-title">
+              <a href={postUrl} style="text-decoration: none; color: inherit;">{post.data.title}</a>
+            </h2>
+
+            <p class="post-excerpt">
+              {post.data.description || post.data.excerpt || fallbackDescription}
+            </p>
+          </article>
+        );
+      })}
+      <div id="no-posts" class="no-posts">No articles found in this language yet.</div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <a href="/" class="logo">🧪 LifeWebLab</a>
+        <ul class="footer-links">
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms of Service</a></li>
+          
+          <li class="stealth-lang-wrapper" title="Language">
+            <span class="globe-btn">🌐</span>
+            <select id="lang-selector" class="stealth-select" aria-label="Language Selector">
+              {languages.map((lang) => (
+                <option value={lang.code}>{lang.label}</option>
+              ))}
+            </select>
+          </li>
+        </ul>
+      </div>
+      <div class="footer-bottom">
+        <p>Copyright © 2026 LifeWebLab • All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script is:inline>
+    function setupLanguageFilter() {
+      const selector = document.getElementById('lang-selector');
+      const cards = document.querySelectorAll('.post-card');
+      const noPosts = document.getElementById('no-posts');
+
+      const supported = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'];
+
+      const browserLang = (navigator.languages && navigator.languages.length ? navigator.languages[0] : (navigator.language || navigator.userLanguage || 'en'))
+        .slice(0, 2)
+        .toLowerCase();
+
+      const stored = localStorage.getItem('pref_lang');
+
+      let currentLang = 'en';
+      if (stored && supported.includes(stored)) {
+        currentLang = stored;
+      } else if (supported.includes(browserLang)) {
+        currentLang = browserLang;
+      }
+
+      if (selector) {
+        selector.value = currentLang;
+      }
+
+      function applyFilter(target) {
+        let count = 0;
+        cards.forEach(card => {
+          const cardLang = card.getAttribute('data-lang');
+          if (cardLang === target) {
+            card.style.display = 'flex';
+            count++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (noPosts) {
+          noPosts.style.display = count === 0 ? 'block' : 'none';
+        }
+      }
+
+      applyFilter(currentLang);
+
+      if (selector) {
+        selector.addEventListener('change', (e) => {
+          const selected = e.target.value;
+          localStorage.setItem('pref_lang', selected);
+          applyFilter(selected);
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupLanguageFilter);
+    } else {
+      setupLanguageFilter();
+    }
+  </script>
+</body>
+</html>
