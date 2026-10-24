@@ -1,16 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 
-// 1. 압축파일 원본 post 컬렉션에서 12개국 모든 포스트 경로 생성
 export async function getStaticPaths() {
   const posts = await getCollection('post');
   
   return posts.map((post) => {
-    // post.id: 'ko/test-post.md' -> cleanId: 'ko/test-post'
     const cleanId = post.id.replace(/\.[^/.]+$/, '');
     const parts = cleanId.split('/');
-    const lang = parts[0]; // 'ko', 'en', 'ja' 등
-    const slug = parts.slice(1).join('/'); // 'test-post'
+    const lang = parts[0];
+    const slug = parts.slice(1).join('/');
 
     return {
       params: { lang, slug },
@@ -22,7 +20,6 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await post.render();
 
-// 날짜 포맷 (예: 24 Oct, 2026)
 const dateObj = post.data.publishDate ? new Date(post.data.publishDate) : new Date();
 const formattedDate = dateObj.toLocaleDateString('en-GB', {
   day: '2-digit',
@@ -30,9 +27,9 @@ const formattedDate = dateObj.toLocaleDateString('en-GB', {
   year: 'numeric'
 });
 
-const authorName = post.data.author || 'LifeWebLab';
+const authorName = post.data.author || 'Mark Dinn';
 const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`;
-const currentLang = Astro.params.lang || 'ko';
+const currentLang = Astro.params.lang || 'en';
 ---
 
 <!DOCTYPE html>
@@ -43,10 +40,9 @@ const currentLang = Astro.params.lang || 'ko';
   <title>{post.data.title} — LifeWebLab</title>
   <meta name="description" content={post.data.description || post.data.excerpt || ''} />
 
-  <!-- 웹폰트 설정 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -82,42 +78,44 @@ const currentLang = Astro.params.lang || 'ko';
       align-items: center;
     }
     .logo {
-      font-size: 1.4rem;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.45rem;
       font-weight: 800;
       color: #0f172a;
       text-decoration: none;
       letter-spacing: -0.5px;
     }
     .back-btn {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       font-weight: 600;
       color: var(--primary);
       text-decoration: none;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      transition: opacity 0.2s;
     }
     .back-btn:hover {
       text-decoration: underline;
+      opacity: 0.85;
     }
 
     article {
-      max-width: 900px;
+      max-width: 860px;
       margin: 40px auto 100px auto;
       padding: 0 20px;
     }
     .post-header {
-      margin-bottom: 36px;
+      margin-bottom: 40px;
     }
 
-    /* 메타 정보 (아바타 / 날짜 / 카테고리) */
     .meta-row {
       display: flex;
       align-items: center;
       gap: 16px;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: var(--text-muted);
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
     .author-info {
       display: flex;
@@ -151,101 +149,28 @@ const currentLang = Astro.params.lang || 'ko';
       font-weight: 800;
       line-height: 1.35;
       color: var(--text-title);
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       letter-spacing: -0.8px;
     }
     @media (max-width: 768px) {
-      h1.post-title { font-size: 1.8rem; }
+      h1.post-title { font-size: 1.85rem; line-height: 1.35; }
     }
 
-    /* 상단 커버 이미지 */
     .post-cover {
       width: 100%;
       height: 440px;
       border-radius: 16px;
       overflow: hidden;
-      margin-bottom: 40px;
-      background-color: #fce8db;
+      margin-bottom: 44px;
+      background-color: #f1f5f9;
     }
     @media (max-width: 768px) {
-      .post-cover { height: 260px; }
+      .post-cover { height: 260px; margin-bottom: 30px; }
     }
     .post-cover img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-    }
-
-    /* 마크다운 본문 타이포그래피 스타일 */
-    .post-content {
-      font-size: 1.08rem;
-      color: #334155;
-    }
-    .post-content p {
-      margin-bottom: 24px;
-      line-height: 1.85;
-    }
-
-    /* 본문 내 중간 이미지 크기 및 레이아웃 최적화 */
-    .post-content img {
-      max-width: 100% !important;
-      height: auto !important;
-      max-height: 480px !important;
-      object-fit: cover !important;
-      border-radius: 14px;
-      display: block;
-      margin: 36px auto;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
-    }
-
-    .post-content h2 {
-      font-size: 1.65rem;
-      font-weight: 800;
-      color: var(--text-title);
-      margin: 48px 0 18px 0;
-      letter-spacing: -0.5px;
-      border-bottom: 2px solid #f1f5f9;
-      padding-bottom: 8px;
-    }
-    .post-content h3 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--text-title);
-      margin: 36px 0 14px 0;
-    }
-    .post-content ul, .post-content ol {
-      margin-bottom: 24px;
-      padding-left: 24px;
-    }
-    .post-content li {
-      margin-bottom: 10px;
-    }
-    .post-content blockquote {
-      border-left: 4px solid var(--primary);
-      padding-left: 16px;
-      margin: 24px 0;
-      color: #64748b;
-      font-style: italic;
-    }
-    .post-content code {
-      background: #f1f5f9;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.9em;
-      color: #ef4444;
-    }
-    .post-content pre {
-      background: #0f172a;
-      color: #f8fafc;
-      padding: 20px;
-      border-radius: 12px;
-      overflow-x: auto;
-      margin-bottom: 24px;
-    }
-    .post-content pre code {
-      background: transparent;
-      padding: 0;
-      color: inherit;
     }
 
     footer {
@@ -254,6 +179,110 @@ const currentLang = Astro.params.lang || 'ko';
       padding: 40px 20px;
       color: var(--text-muted);
       font-size: 0.88rem;
+    }
+  </style>
+
+  <style is:global>
+    /* Global Typography & Enhanced Readability */
+    .post-content {
+      font-size: 1.15rem !important; /* ~18.5px */
+      line-height: 1.95 !important;
+      color: #334155 !important;
+      word-break: break-word;
+    }
+
+    .post-content p {
+      margin-bottom: 28px !important;
+      line-height: 1.95 !important;
+    }
+
+    .post-content h2 {
+      font-size: 1.75rem !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      margin: 54px 0 20px 0 !important;
+      letter-spacing: -0.5px !important;
+      border-bottom: 2px solid #f1f5f9 !important;
+      padding-bottom: 12px !important;
+      line-height: 1.35 !important;
+    }
+
+    .post-content h3 {
+      font-size: 1.4rem !important;
+      font-weight: 700 !important;
+      color: #1e293b !important;
+      margin: 40px 0 16px 0 !important;
+      line-height: 1.4 !important;
+    }
+
+    .post-content ul, 
+    .post-content ol {
+      margin-bottom: 28px !important;
+      padding-left: 26px !important;
+    }
+
+    .post-content li {
+      margin-bottom: 12px !important;
+      line-height: 1.85 !important;
+    }
+
+    .post-content blockquote {
+      border-left: 4px solid #2563eb !important;
+      padding: 12px 20px !important;
+      margin: 32px 0 !important;
+      background: #f8fafc !important;
+      border-radius: 0 8px 8px 0 !important;
+      color: #475569 !important;
+    }
+
+    .post-content code {
+      background: #f1f5f9 !important;
+      padding: 3px 7px !important;
+      border-radius: 6px !important;
+      font-size: 0.9em !important;
+      color: #2563eb !important;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+    }
+
+    .post-content pre {
+      background: #0f172a !important;
+      color: #f8fafc !important;
+      padding: 22px !important;
+      border-radius: 12px !important;
+      overflow-x: auto !important;
+      margin-bottom: 28px !important;
+    }
+
+    .post-content pre code {
+      background: transparent !important;
+      padding: 0 !important;
+      color: inherit !important;
+    }
+
+    /* Images inside post body */
+    .post-content img {
+      max-width: 100% !important;
+      height: auto !important;
+      max-height: 480px !important;
+      object-fit: cover !important;
+      border-radius: 14px !important;
+      display: block !important;
+      margin: 40px auto !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    @media (max-width: 768px) {
+      .post-content {
+        font-size: 1.08rem !important;
+        line-height: 1.85 !important;
+      }
+      .post-content h2 {
+        font-size: 1.45rem !important;
+        margin: 40px 0 16px 0 !important;
+      }
+      .post-content h3 {
+        font-size: 1.25rem !important;
+      }
     }
   </style>
 </head>
@@ -310,19 +339,6 @@ const currentLang = Astro.params.lang || 'ko';
   <footer>
     <p>Copyright © 2026 LifeWebLab • All rights reserved.</p>
   </footer>
-<style is:global>
-  /* 마크다운 본문 내부 이미지 강제 크기 제어 */
-  .post-content img {
-    max-width: 100% !important;
-    height: auto !important;
-    max-height: 460px !important;
-    object-fit: cover !important;
-    border-radius: 14px !important;
-    display: block !important;
-    margin: 36px auto !important;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08) !important;
-  }
-</style>
 
 </body>
 </html>
