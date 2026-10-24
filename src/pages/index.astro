@@ -26,10 +26,9 @@ const languages = [
   { code: 'nl', label: 'Dutch (NL)' },
   { code: 'pl', label: 'Polish (PL)' },
   { code: 'id', label: 'Indonesian (ID)' },
-  { code: 'vi', label: 'Vietnamese (VI)' },
+  { code: 'vi', label: 'Vietnamese (VI)' }
 ];
 ---
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -372,15 +371,7 @@ const languages = [
 
         const authorName = post.data.author || 'Mark Dinn';
         const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`;
-
-        const rawBody = post.body || '';
-        const cleanBody = rawBody
-          .replace(/---[\s\S]*?---/, '')
-          .replace(/#+\s[^\n]+/g, '')
-          .replace(/<[^>]*>/g, '')
-          .replace(/[*_~`]/g, '')
-          .trim();
-        const excerptText = post.data.description || post.data.excerpt || cleanBody.slice(0, 140);
+        const excerptText = post.data.description || post.data.excerpt || '';
 
         return (
           <article class="post-item post-card" data-lang={postLang}>
