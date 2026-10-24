@@ -1,12 +1,37 @@
-name: Auto Multi-Language Blog Publishing Pipeline
+name: Auto Multi-Language Blog Publishing Pipeline (Unit 2-1)
 
 on:
-  # 스케줄을 비워두고 수동 실행(workflow_dispatch)만 남겨서 아예 작동하지 않게 차단
-  workflow_dispatch:
+  schedule:
+    # 매일 한국 시각 15:13 (UTC 06:13)
+    - cron: '13 6 * * *'
+  workflow_dispatch: # 수동 즉시 실행 지원
+
+permissions:
+  contents: write # 생성된 마크다운 글 커밋 및 푸시 권한
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Disabled
-        run: echo "This workflow is currently disabled."
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Auto Publishing Script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          npm ci || npm install
+          node generate-all.mjs
+
+      - name: Commit and Push New Posts
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/post/
+          git commit -m "Auto published new multi-language posts [skip ci]" || echo "No changes to commit"
+          git push
