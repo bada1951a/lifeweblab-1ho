@@ -50,7 +50,7 @@ const languages = [
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
+  <style is:global>
     :root {
       --bg: #faf8f5;
       --text-title: #0f172a;
@@ -68,6 +68,15 @@ const languages = [
       color: var(--text-title);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+    }
+
+    /* 본문 폰트 크기 및 줄간격 확대 (가독성 개선) */
+    .prose p, 
+    article p, 
+    .post-content p {
+      font-size: 1.125rem !important; /* 약 18px */
+      line-height: 1.85 !important;
+      margin-bottom: 1.5rem;
     }
 
     header {
@@ -239,9 +248,9 @@ const languages = [
     }
 
     .post-excerpt {
-      font-size: 0.95rem;
+      font-size: 1.05rem; /* 목록 요약문 글자 크기 확대 */
       color: var(--text-desc);
-      line-height: 1.6;
+      line-height: 1.65;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -458,7 +467,6 @@ const languages = [
       const cards = document.querySelectorAll('.post-card');
       const noPosts = document.getElementById('no-posts');
 
-      // 저장된 언어가 있거나 한국어 기본값 사용 (안전하게 ko 우선 고정)
       let currentLang = 'ko';
       const stored = localStorage.getItem('pref_lang');
       if (stored) {
@@ -487,7 +495,6 @@ const languages = [
           }
         });
 
-        // 만약 선택된 언어의 글이 0개라면 fallback으로 한국어(ko) 글을 노출
         if (count === 0 && target !== 'ko') {
           cards.forEach(card => {
             if (card.getAttribute('data-lang') === 'ko') {
