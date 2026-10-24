@@ -374,13 +374,13 @@ const languages = [
         const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(authorName)}`;
 
         const rawBody = post.body || '';
-        const cleanBodyText = rawBody
+        const cleanBody = rawBody
           .replace(/---[\s\S]*?---/, '')
           .replace(/#+\s[^\n]+/g, '')
-          .replace(/<[^>]+>/g, '')
+          .replace(/<[^>]*>/g, '')
           .replace(/[*_~`]/g, '')
           .trim();
-        const excerptText = post.data.description || post.data.excerpt || (cleanBodyText.slice(0, 140) + '...');
+        const excerptText = post.data.description || post.data.excerpt || cleanBody.slice(0, 140);
 
         return (
           <article class="post-item post-card" data-lang={postLang}>
