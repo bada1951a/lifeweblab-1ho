@@ -1,4 +1,3 @@
-Stripe Payment Declined: generic_decline Troubleshooting
 Fixing PayPal Error 400 Bad Request on Checkout
 How to Bypass Stripe fraudulent False Positive Declines
 PayPal Account Limited: Fast Track Appeal Guide
