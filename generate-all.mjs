@@ -12,7 +12,7 @@ if (!GEMINI_API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
-// 2-1호기 전용 콘텐츠 경로 유지
+// 2-1호기 전용 콘텐츠 경로
 const POSTS_BASE_DIR = path.resolve('src/content/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
@@ -31,9 +31,6 @@ if (localImages.length === 0) {
   localImages = ['/images/default-billing.jpg'];
 }
 
-// =========================================================================
-// [2-1호기] 로컬 이미지 순환 매핑
-// =========================================================================
 function getPostImages(index) {
   const now = new Date();
   const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -49,9 +46,6 @@ function getPostImages(index) {
   return { coverUrl, bodyUrl };
 }
 
-// =========================================================================
-// 한국 시간(KST) 기준 안전한 당일 발행 날짜 생성 함수
-// =========================================================================
 function getKstPublishDateIso(index) {
   const now = new Date();
   const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -64,7 +58,7 @@ function getKstPublishDateIso(index) {
 }
 
 // =========================================================================
-// 12개국 현지어 표준 소제목 및 카테고리 딕셔너리
+// 1·2·3·4호기 규격 12개국 현지어 표준 소제목 딕셔너리
 // =========================================================================
 const I18N_SECTIONS = {
   ko: {
@@ -166,45 +160,44 @@ const I18N_SECTIONS = {
 };
 
 // =========================================================================
-// [강력 정제 함수] 상단 빈 줄 압축, 변칙 소제목 승격, 박스 시인성 확보
+// [완전체 마크다운 정제 함수] 볼드 서식 보호, 상단 공백 차단, 박스 시인성 확보
 // =========================================================================
 function sanitizeMarkdownFormatting(content, langCode) {
   let cleaned = content;
   const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
 
-  // 1) 상단 빈 줄 압축 (공백 버그 원천 차단)
+  // 1) 상단 빈 줄 압축
   cleaned = cleaned.replace(/^\n+/, '');
 
-  // 2) 달러/금액 기호 및 키보드 단축키 백틱화 및 보호
+  // 2) 달러/금액 기호 및 단축키 인라인 백틱화
   cleaned = cleaned.replace(/\$(?:Strg|Ctrl|Win|Shift|Alt|Esc)\s*[^$\n]*\$/gi, (match) => {
     return `\`${match.replace(/\$/g, '').trim()}\``;
   });
-  // LaTeX 형태의 $수식$만 백틱화
   cleaned = cleaned.replace(/\$([A-Za-z0-9_-]+)\$/g, '`$1`');
   cleaned = cleaned.replace(/\\times/g, 'x')
                    .replace(/\\circ/g, '°')
                    .replace(/\\approx/g, '≈');
 
-  // 3) 영문 대괄호 템플릿 헤더 및 기본 헤더 강제 치환
-  cleaned = cleaned.replace(/^#{1,3}\s*1\.?\s*(\[.*?\]|당시 상황.*?|Critical Payment.*?|Opening Story.*?)/gmi, `## ${i18n.s1}`);
-  cleaned = cleaned.replace(/^#{1,3}\s*2\.?\s*(\[.*?\]|문제의 근본 원인.*?|Root Cause.*?|Ursachenanalyse.*?)/gmi, `## ${i18n.s2}`);
-  cleaned = cleaned.replace(/^#{1,3}\s*3\.?\s*(\[.*?\]|즉시 해결한 단계별.*?|Step-by-Step.*?|Schritt-für-Schritt.*?)/gmi, `## ${i18n.s3}`);
-  cleaned = cleaned.replace(/^#{1,3}\s*4\.?\s*(\[.*?\]|재발 방지를 위한.*?|Essential Checklist.*?|Checklist.*?)/gmi, `## ${i18n.s4}`);
+  // 3) 구버전 캡처 헤더 및 영문 대괄호 헤더를 100% 현지어 표준 규격으로 치환
+  cleaned = cleaned.replace(/^#{1,3}\s*1\.?\s*(\[.*?\]|당시 상황.*?|Critical Payment.*?|Opening Story.*?|Die Panik.*?)/gmi, `## ${i18n.s1}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*2\.?\s*(\[.*?\]|문제의 근본 원인.*?|Root Cause.*?|Ursachenanalyse.*?|Die wahren Wurzeln.*?)/gmi, `## ${i18n.s2}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*3\.?\s*(\[.*?\]|즉시 해결한 단계별.*?|Step-by-Step.*?|Schritt-für-Schritt.*?|Der Masterplan.*?)/gmi, `## ${i18n.s3}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*4\.?\s*(\[.*?\]|재발 방지를 위한.*?|Essential Checklist.*?|Checklist.*?|Nie wieder Panik.*?)/gmi, `## ${i18n.s4}`);
   cleaned = cleaned.replace(/^#{1,3}\s*5\.?\s*(\[.*?\]|자주 묻는 질문.*?|Frequently Asked Questions.*?|Häufig gestellte Fragen.*?|FAQ)/gmi, `## ${i18n.s5}`);
 
-  cleaned = cleaned.replace(/^1\.\s*\[.*?\]/gmi, `## ${i18n.s1}`);
-  cleaned = cleaned.replace(/^2\.\s*\[.*?\]/gmi, `## ${i18n.s2}`);
-  cleaned = cleaned.replace(/^3\.\s*\[.*?\]/gmi, `## ${i18n.s3}`);
-  cleaned = cleaned.replace(/^4\.\s*\[.*?\]/gmi, `## ${i18n.s4}`);
-  cleaned = cleaned.replace(/^5\.\s*(Frequently Asked Questions|자주 묻는 질문|FAQ)/gmi, `## ${i18n.s5}`);
+  cleaned = cleaned.replace(/^1\.\s*(\[.*?\]|당시 상황.*?)/gmi, `## ${i18n.s1}`);
+  cleaned = cleaned.replace(/^2\.\s*(\[.*?\]|문제의 근본 원인.*?)/gmi, `## ${i18n.s2}`);
+  cleaned = cleaned.replace(/^3\.\s*(\[.*?\]|즉시 해결한 단계별.*?)/gmi, `## ${i18n.s3}`);
+  cleaned = cleaned.replace(/^4\.\s*(\[.*?\]|재발 방지를 위한.*?)/gmi, `## ${i18n.s4}`);
+  cleaned = cleaned.replace(/^5\.\s*(Frequently Asked Questions|자주 묻는 질문|Häufig gestellte Fragen)/gmi, `## ${i18n.s5}`);
 
-  // 4) 1번 헤더 누락 시 주입 및 직후 중복 1줄 정밀 제거
+  // 4) 1번 헤더 누락 시 주입 및 직후 중복 1줄 제거
   if (!cleaned.startsWith('## 1.')) {
     cleaned = `## ${i18n.s1}\n\n` + cleaned;
   }
   cleaned = cleaned.replace(/^(## 1\.[^\n]+)\n+(\s*1\.\s+[^\n]+)\n+/m, '$1\n\n');
 
-  // 5) [박스 글자색 보정] 인라인 HTML 박스 글자색 진한 검은색(#111827) 강제
+  // 5) 인라인 콜아웃 박스 글자색(#111827) 강제 주입
   cleaned = cleaned.replace(/(<div style="[^"]*background-color:[^"]*)"/gi, (match, p1) => {
     if (!p1.includes('color:')) {
       return `${p1}; color: #111827;"`;
@@ -212,18 +205,20 @@ function sanitizeMarkdownFormatting(content, langCode) {
     return match;
   });
 
-  // 6) 헤더 볼드 정제 및 볼드 서식 공백 교정
+  // 6) 헤더에 붙은 불필요한 볼드 정제 (### **제목** -> ### 제목)
   cleaned = cleaned.replace(/^(#{1,6}\s*)\*\*(.*?)\*\*/gm, '$1$2');
+
+  // 7) 본문 볼드(**) 기호 띄어쓰기 및 깨짐 교정
   cleaned = cleaned.replace(/\*\*\s+([^\*]+?)\s+\*\*/g, '**$1**');
   cleaned = cleaned.replace(/([가-힣a-zA-Z0-9])\*\*([가-힣a-zA-Z0-9])/g, '$1 **$2');
 
-  // 7) Q&A 줄바꿈 및 물음표 띄어쓰기
+  // 8) Q&A 줄바꿈 및 물음표 띄어쓰기
   cleaned = cleaned.replace(/([^\n])\s*(\*\*?[QA][0-9]*\s*[:.]\*\*?)/gi, '$1\n\n$2');
   cleaned = cleaned.replace(/([^\n])\s+([QA][0-9]*\s*[:.])/g, '$1\n\n$2');
   cleaned = cleaned.replace(/([.!?])\s*(\*\*?[QA][0-9]*\s*[:.]\*\*?)/gi, '$1\n\n$2');
   cleaned = cleaned.replace(/\?([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9가-힣])/g, '? $1');
 
-  // 8) 물결표(~) 하이픈 치환 및 과도한 개행 압축
+  // 9) 물결표(~) 하이픈 치환 및 과도한 개행 압축
   cleaned = cleaned.replace(/(\S)\s*~\s*(\S)/g, '$1 - $2');
   cleaned = cleaned.replace(/~/g, '-');
   cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
@@ -289,26 +284,23 @@ const THEME_PRESETS = [
 ];
 
 const TARGET_LANGS = [
-  { code: 'ko', name: 'Korean', persona: '글로벌 결제·송금 및 비즈니스 인보이스 오류 해결 실무 전문가', osUi: '대시보드, 결제 수단, 인보이스, 계정 설정, 세무 서식', localeContext: '서울/수도권 글로벌 스타트업 및 디지털 비즈니스 오피스' },
-  { code: 'en', name: 'English', persona: 'Global payment gateway and cross-border invoicing troubleshooter', osUi: 'Dashboard, Payment Methods, Billing, Invoices, Tax Forms', localeContext: 'Silicon Valley tech startup / New York corporate finance office' },
-  { code: 'ja', name: 'Japanese', persona: '海外決済・送金トラブルおよび請求書発行サポート専門家', osUi: 'ダッシュボード, 支払い方法, 請求書, アカウント設定, 税務書類', localeContext: '東京・丸の内および六本木の越境ビジネスオフィス' },
-  { code: 'de', name: 'German', persona: 'Spezialist für internationale Zahlungsprobleme und B2B-Rechnungsstellung', osUi: 'Dashboard, Zahlungsmethoden, Rechnungen, Kontoeinstellungen, Steuerformulare', localeContext: 'Frankfurter Finanzdistrikt und Berliner Technologie-Campus' },
-  { code: 'fr', name: 'French', persona: 'Spécialiste du dépannage des passerelles de paiement et de la facturation internationale', osUi: 'Tableau de bord, Modes de paiement, Factures, Paramètres du compte, Formulaires fiscaux', localeContext: 'Centres d\'affaires à Paris La Défense' },
-  { code: 'es', name: 'Spanish', persona: 'Especialista en resolución de errores de cobros internacionales y facturación B2B', osUi: 'Panel de control, Métodos de pago, Facturación, Configuración de cuenta, Formularios fiscales', localeContext: 'Distrito financiero y corporativo en Madrid' },
-  { code: 'it', name: 'Italian', persona: 'Consulente per la risoluzione dei problemi di pagamento e fatturazione B2B transfrontaliera', osUi: 'Dashboard, Metodi di pagamento, Fatture, Impostazioni account, Moduli fiscali', localeContext: 'Centri direzionali di Milano' },
-  { code: 'pt', name: 'Portuguese', persona: 'Especialista em suporte a pagamentos globais, câmbio e faturamento internacional', osUi: 'Painel, Formas de Pagamento, Faturas, Configurações de Conta, Formulários Fiscais', localeContext: 'Avenida Paulista e centros empresariais em São Paulo' },
-  { code: 'nl', name: 'Dutch', persona: 'Specialist in het oplossen van internationale betalings- en factuurproblemen', osUi: 'Dashboard, Betaalmethoden, Facturen, Accountinstellingen, Belastingformulieren', localeContext: 'Zuidas zakendistrict in Amsterdam' },
-  { code: 'pl', name: 'Polish', persona: 'Inżynier wsparcia ds. globalnych systemów płatności i fakturowania transgranicznego', osUi: 'Pulpit, Metody płatności, Faktury, Ustawienia konta, Formularze podatkowe', localeContext: 'Warszawskie centrum biznesowe i technologiczne' },
-  { code: 'id', name: 'Indonesian', persona: 'Spesialis penanganan masalah pembayaran global dan transfer dana internasional', osUi: 'Dasbor, Metode Pembayaran, Tagihan / Faktur, Pengaturan Akun, Formulir Pajak', localeContext: 'Kawasan bisnis Sudirman Central Business District (SCBD) Jakarta' },
-  { code: 'vi', name: 'Vietnamese', persona: 'Chuyên gia xử lý sự cố cổng thanh toán quốc tế và xuất hóa đơn xuyên biên giới', osUi: 'Bảng điều khiển, Phương thức thanh toán, Hóa đơn, Cài đặt tài khoản, Biểu mẫu thuế', localeContext: 'Tòa nhà văn phòng tài chính Quận 1, TP. Hồ Chí Minh' }
+  { code: 'ko', name: 'Korean', persona: '글로벌 결제·송금 및 비즈니스 인보이스 오류를 사이다처럼 해결해 주는 10년 차 현직 핀테크 실무자', osUi: '대시보드, 결제 수단, 인보이스, 계정 설정, 세무 서식', localeContext: '서울/수도권 글로벌 스타트업 및 디지털 비즈니스 오피스' },
+  { code: 'en', name: 'English', persona: 'Veteran cross-border fintech specialist and global payment gateway troubleshooter', osUi: 'Dashboard, Payment Methods, Billing, Invoices, Tax Forms', localeContext: 'Silicon Valley tech startup / New York corporate finance office' },
+  { code: 'ja', name: 'Japanese', persona: '海外決済・送金トラブルおよび請求書発行を現場目線で解決するベテラン実務担当者', osUi: 'ダッシュボード, 支払い方法, 請求書, アカウント設定, 税務書類', localeContext: '東京・丸の内および六本木の越境ビジネスオフィス' },
+  { code: 'de', name: 'German', persona: 'Erfahrener Fintech-Praktiker für grenzüberschreitende Zahlungen und Rechnungsstellung', osUi: 'Dashboard, Zahlungsmethoden, Rechnungen, Kontoeinstellungen, Steuerformulare', localeContext: 'Frankfurter Finanzdistrikt und Berliner Technologie-Campus' },
+  { code: 'fr', name: 'French', persona: 'Expert chevronné en résolution de litiges de paiement international et facturation B2B', osUi: 'Tableau de bord, Modes de paiement, Factures, Paramètres du compte, Formulaires fiscaux', localeContext: 'Centres d\'affaires à Paris La Défense' },
+  { code: 'es', name: 'Spanish', persona: 'Especialista sénior en cobros internacionales, pasarelas de pago y facturación B2B', osUi: 'Panel de control, Métodos de pago, Facturación, Configuración de cuenta, Formularios fiscales', localeContext: 'Distrito financiero y corporativo en Madrid' },
+  { code: 'it', name: 'Italian', persona: 'Consulente senior per la risoluzione dei blocchi conto e pagamenti internazionali B2B', osUi: 'Dashboard, Metodi di pagamento, Fatture, Impostazioni account, Moduli fiscali', localeContext: 'Centri direzionali di Milano' },
+  { code: 'pt', name: 'Portuguese', persona: 'Especialista prático em pagamentos globais, desbloqueio de contas e remessas B2B', osUi: 'Painel, Formas de Pagamento, Faturas, Configurações de Conta, Formulários Fiscais', localeContext: 'Avenida Paulista e centros empresariais em São Paulo' },
+  { code: 'nl', name: 'Dutch', persona: 'Ervaren fintech troubleshooter voor internationale betalings- en factuurproblemen', osUi: 'Dashboard, Betaalmethoden, Facturen, Accountinstellingen, Belastingformulieren', localeContext: 'Zuidas zakendistrict in Amsterdam' },
+  { code: 'pl', name: 'Polish', persona: 'Doświadczony praktyk fintech i systemów rozliczeń transgranicznych B2B', osUi: 'Pulpit, Metody płatności, Faktury, Ustawienia konta, Formularze podatkowe', localeContext: 'Warszawskie centrum biznesowe i technologiczne' },
+  { code: 'id', name: 'Indonesian', persona: 'Praktisi senior penanganan masalah pembayaran gateway dan transfer dana global', osUi: 'Dasbor, Metode Pembayaran, Tagihan / Faktur, Pengaturan Akun, Formulir Pajak', localeContext: 'Kawasan bisnis Sudirman Central Business District (SCBD) Jakarta' },
+  { code: 'vi', name: 'Vietnamese', persona: 'Chuyên gia thực chiến xử lý sự cố cổng thanh toán quốc tế và dòng tiền doanh nghiệp', osUi: 'Bảng điều khiển, Phương thức thanh toán, Hóa đơn, Cài đặt tài khoản, Biểu mẫu thuế', localeContext: 'Tòa nhà văn phòng tài chính Quận 1, TP. Hồ Chí Minh' }
 ];
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const fileSlug = `post-${Date.now().toString(36)}`;
 
-// =========================================================================
-// [영구 고정] gemini-3.5-flash-lite + 8192 토큰 상한
-// =========================================================================
 async function fetchWithRetry(prompt, maxRetries = 5, delayMs = 5000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -334,15 +326,16 @@ async function generateSinglePost(lang, index) {
   const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
-  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 포스팅 생성 중... (테마: ${selectedTheme.name})`);
+  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 포스팅 생성 중... (적용 테마: ${selectedTheme.name})`);
 
   const { coverUrl, bodyUrl } = getPostImages(index);
   const pubDateIso = getKstPublishDateIso(index);
 
+  // 1·2·3·4호기와 동일한 직장인 썰 + 볼드 하이라이트 강제 프롬프트
   const prompt = `
 You are a ${lang.persona}.
-Write a definitive, exhaustive, highly professional cross-border billing and fintech troubleshooting guide natively in ${lang.name}.
-CRITICAL REQUIREMENT: Write 100% natively in ${lang.name}. NEVER mix English template headings or bracketed words unless writing the English post.
+Write a gripping, highly engaging, and practically exhaustive cross-border payment/fintech troubleshooting guide natively in ${lang.name}.
+CRITICAL REQUIREMENT: Write 100% natively in ${lang.name}. NEVER use bland textbook prose or mechanical listing. Write like a seasoned real-world professional sharing an intense workplace story and breakthrough tips on a professional community.
 
 [Topic]
 ${currentTopic}
@@ -359,29 +352,30 @@ ${currentTopic}
 You MUST strictly follow these 5 sections using clean H2 markdown headings (## ):
 
 ## ${i18n.s1}
-- Do NOT summarize. Write at least 4 long, vivid paragraphs describing:
-  1) The intense daily/workplace crisis strictly based on: "${selectedScenario}".
-  2) The exact gateway decline error, tax rejection, or frozen balance and the immediate panic it triggered.
-  3) The naive first attempts to fix it (repeatedly spamming payment cards, submitting unverified IDs) that worsened the hold.
-  4) The realization of what is at stake (lost client deal, cash runway freeze, severe tax withholding penalty).
+- Do NOT write a polite greeting or textbook intro. Dive immediately into the intense panic strictly based on: "${selectedScenario}".
+- Write at least 4 long, suspenseful paragraphs describing:
+  1) The sudden cold sweat moment when the payment declined, invoice bounced, or funds were frozen.
+  2) The urgent business deadline (salary payout, supplier cutoff, investor reporting).
+  3) The naive first reactions (panicking, clicking resubmit multiple times, submitting unverified papers) that triggered stricter security locks.
+  4) The high stakes: cash flow paralysis, executive escalations, or painful penalty fees.
 
 ## ${i18n.s2}
-- Do NOT just write 3 quick bullets. Write an exhaustive technical analysis across at least 4 detailed paragraphs explaining:
-  1) Payment gateway risk algorithms, 3DS2 authentication protocol failures, or interchange fee structures.
-  2) Tax compliance mismatch (W-8BEN vs W-9, VAT Reverse Charge, foreign TIN validation).
-  3) Intermediary banking routes (SWIFT MT103 tracking, correspondent bank cutoffs, multi-currency conversion margins).
+- Write an exhaustive technical analysis across at least 4 detailed paragraphs explaining why this happens:
+  1) Risk scoring engines, 3DS2 / SCA authentication drops, and interchange routing barriers.
+  2) Tax compliance pitfalls (W-8BEN vs W-9 discrepancies, VAT Reverse Charge missing clauses, TIN mismatches).
+  3) Intermediary bank bottlenecks (SWIFT MT103 routing loops, correspondent bank clearing delays, currency conversion spreads).
 
 ## ${i18n.s3}
 - Provide at least 3 distinct, complete practical resolution methods matching "${lang.osUi}":
-  * Method 1: Gateway / Dashboard UI fix with exact navigation clicks and verification procedures.
-  * Method 2: Document / Invoicing correction protocol (Exact tax clause wording, VAT Reverse Charge formatting).
-  * Method 3: Direct compliance escalations, alternative routing (ACH/SEPA/Wise B2B bypass).
-  * Write step-by-step with clear numbered lists and explain the financial/technical reason for each step.
+  * Method 1: Exact Dashboard / Gateway UI navigation clicks and parameter resetting.
+  * Method 2: Official Document / Invoicing correction protocol (Exact tax clause wording, compliance upload rules).
+  * Method 3: Direct compliance escalation route and alternative payment bypass (Wise Business, ACH, SEPA, Virtual Accounts).
+  * Write step-by-step with clear numbered lists.
 
 ## ${i18n.s4}
-- Write at least 2 in-depth paragraphs of professional fintech specialist wisdom:
+- Write at least 2 in-depth paragraphs of battle-tested professional wisdom:
   1) Critical hazards: Account termination, rolling reserves, permanent payment processor blacklisting.
-  2) Best operational habits: Secondary gateway redundancy, dispute mitigation, automated tax document audits.
+  2) Best operational habits: Gateway redundancy, dispute chargeback defense, automated tax document audits.
 
 ## ${i18n.s5}
 - Provide exactly 3 realistic, highly specific Q&A items:
@@ -389,12 +383,10 @@ You MUST strictly follow these 5 sections using clean H2 markdown headings (## )
   * Each answer (**A1.**, **A2.**, **A3.**) MUST be a detailed, multi-sentence technical explanation (at least 3-4 sentences per answer).
   * Put an empty blank line between every Question and Answer.
 
-[STRICT MARKDOWN & FORMATTING RULES]
-1. HEADINGS: Keep clean markdown headings (e.g. "## ${i18n.s2}"). NEVER put bold asterisks (**) inside headings.
-2. BOLD FORMATTING: Use bold (**) ONLY for key button clicks or essential UI/financial terms. Always put a space before and after the bold markup if surrounded by words.
-3. COMMANDS & CODES: Wrap parameters or code snippets in standard 3-backtick code blocks.
-4. NO LATEX: NEVER use LaTeX ($ or $$). NEVER wrap variables, keys, or numbers in raw dollar signs like $100$. Wrap them in backticks or normal text.
-5. NO TILDE: NEVER use tilde (~) for ranges; use hyphen (-).
+[VISUAL HIGHLIGHTING & STYLING RULES - CRITICAL FOR READABILITY]
+1. BOLD HIGHLIGHTS (**): Liberally use bold text (**keyword**) for crucial terms, exact button names, critical error codes, and key financial takeaways in EVERY single paragraph so the text NEVER looks monotone. Always place a space before and after the bold markup if surrounded by words.
+2. INLINE CODE BLOCKS: Wrap error codes, API parameters, or financial forms (e.g. \`W-8BEN\`, \`MT103\`, \`3DS2\`, \`do_not_honor\`) in inline backticks (\`code\`).
+3. NO LATEX & NO TILDE: NEVER use LaTeX ($ or $$). NEVER wrap variables, keys, or dollar amounts in raw dollar signs like $100$. Wrap them in normal text or backticks. NEVER use tilde (~) for ranges; use hyphen (-).
 ${lang.code !== 'ko' ? `- Absolutely NEVER include any Korean characters (가-힣) anywhere in non-Korean posts.` : ''}
 
 [Design Theme & Layout Dynamic Rules]
