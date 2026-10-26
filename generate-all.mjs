@@ -12,6 +12,7 @@ if (!GEMINI_API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
+// 2-1호기 전용 콘텐츠 경로 유지
 const POSTS_BASE_DIR = path.resolve('src/content/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
@@ -30,6 +31,9 @@ if (localImages.length === 0) {
   localImages = ['/images/default-billing.jpg'];
 }
 
+// =========================================================================
+// [2-1호기] 로컬 이미지 순환 매핑
+// =========================================================================
 function getPostImages(index) {
   const now = new Date();
   const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -45,11 +49,23 @@ function getPostImages(index) {
   return { coverUrl, bodyUrl };
 }
 
+// =========================================================================
+// 한국 시간(KST) 기준 안전한 당일 발행 날짜 생성 함수
+// =========================================================================
 function getKstPublishDateIso(index) {
-  const now = new Date(Date.now() - (index * 60 * 1000));
-  return now.toISOString();
+  const now = new Date();
+  const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  const year = kstTime.getUTCFullYear();
+  const month = String(kstTime.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(kstTime.getUTCDate()).padStart(2, '0');
+
+  const minute = String((index * 5) % 60).padStart(2, '0');
+  return `${year}-${month}-${day}T03:${minute}:00.000Z`;
 }
 
+// =========================================================================
+// 12개국 현지어 표준 소제목 및 카테고리 딕셔너리
+// =========================================================================
 const I18N_SECTIONS = {
   ko: {
     s1: "1. 결제·송금 돌발 오류와 멘붕의 순간",
@@ -149,47 +165,70 @@ const I18N_SECTIONS = {
   }
 };
 
+// =========================================================================
+// [강력 정제 함수] 상단 빈 줄 압축, 변칙 소제목 승격, 박스 시인성 확보
+// =========================================================================
 function sanitizeMarkdownFormatting(content, langCode) {
   let cleaned = content;
   const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
 
-  cleaned = cleaned.replace(/^#{1,3}\s*1\.?\s*(\[.*?\]|당시 상황.*?|Critical Payment.*?)/gmi, `## ${i18n.s1}`);
-  cleaned = cleaned.replace(/^#{1,3}\s*2\.?\s*(\[.*?\]|문제의 근본 원인.*?|Root Cause.*?)/gmi, `## ${i18n.s2}`);
-  cleaned = cleaned.replace(/^#{1,3}\s*3\.?\s*(\[.*?\]|즉시 해결한 단계별.*?|Step-by-Step.*?)/gmi, `## ${i18n.s3}`);
-  cleaned = cleaned.replace(/^#{1,3}\s*4\.?\s*(\[.*?\]|재발 방지를 위한.*?|Essential Checklist.*?)/gmi, `## ${i18n.s4}`);
-  cleaned = cleaned.replace(/^#{1,3}\s*5\.?\s*(\[.*?\]|자주 묻는 질문.*?|Frequently Asked Questions.*?|FAQ)/gmi, `## ${i18n.s5}`);
+  // 1) 상단 빈 줄 압축 (공백 버그 원천 차단)
+  cleaned = cleaned.replace(/^\n+/, '');
+
+  // 2) 달러/금액 기호 및 키보드 단축키 백틱화 및 보호
+  cleaned = cleaned.replace(/\$(?:Strg|Ctrl|Win|Shift|Alt|Esc)\s*[^$\n]*\$/gi, (match) => {
+    return `\`${match.replace(/\$/g, '').trim()}\``;
+  });
+  // LaTeX 형태의 $수식$만 백틱화
+  cleaned = cleaned.replace(/\$([A-Za-z0-9_-]+)\$/g, '`$1`');
+  cleaned = cleaned.replace(/\\times/g, 'x')
+                   .replace(/\\circ/g, '°')
+                   .replace(/\\approx/g, '≈');
+
+  // 3) 영문 대괄호 템플릿 헤더 및 기본 헤더 강제 치환
+  cleaned = cleaned.replace(/^#{1,3}\s*1\.?\s*(\[.*?\]|당시 상황.*?|Critical Payment.*?|Opening Story.*?)/gmi, `## ${i18n.s1}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*2\.?\s*(\[.*?\]|문제의 근본 원인.*?|Root Cause.*?|Ursachenanalyse.*?)/gmi, `## ${i18n.s2}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*3\.?\s*(\[.*?\]|즉시 해결한 단계별.*?|Step-by-Step.*?|Schritt-für-Schritt.*?)/gmi, `## ${i18n.s3}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*4\.?\s*(\[.*?\]|재발 방지를 위한.*?|Essential Checklist.*?|Checklist.*?)/gmi, `## ${i18n.s4}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*5\.?\s*(\[.*?\]|자주 묻는 질문.*?|Frequently Asked Questions.*?|Häufig gestellte Fragen.*?|FAQ)/gmi, `## ${i18n.s5}`);
 
   cleaned = cleaned.replace(/^1\.\s*\[.*?\]/gmi, `## ${i18n.s1}`);
   cleaned = cleaned.replace(/^2\.\s*\[.*?\]/gmi, `## ${i18n.s2}`);
   cleaned = cleaned.replace(/^3\.\s*\[.*?\]/gmi, `## ${i18n.s3}`);
   cleaned = cleaned.replace(/^4\.\s*\[.*?\]/gmi, `## ${i18n.s4}`);
-  cleaned = cleaned.replace(/^5\.\s*(Frequently Asked Questions|자주 묻는 질문)/gmi, `## ${i18n.s5}`);
+  cleaned = cleaned.replace(/^5\.\s*(Frequently Asked Questions|자주 묻는 질문|FAQ)/gmi, `## ${i18n.s5}`);
 
+  // 4) 1번 헤더 누락 시 주입 및 직후 중복 1줄 정밀 제거
+  if (!cleaned.startsWith('## 1.')) {
+    cleaned = `## ${i18n.s1}\n\n` + cleaned;
+  }
+  cleaned = cleaned.replace(/^(## 1\.[^\n]+)\n+(\s*1\.\s+[^\n]+)\n+/m, '$1\n\n');
+
+  // 5) [박스 글자색 보정] 인라인 HTML 박스 글자색 진한 검은색(#111827) 강제
+  cleaned = cleaned.replace(/(<div style="[^"]*background-color:[^"]*)"/gi, (match, p1) => {
+    if (!p1.includes('color:')) {
+      return `${p1}; color: #111827;"`;
+    }
+    return match;
+  });
+
+  // 6) 헤더 볼드 정제 및 볼드 서식 공백 교정
   cleaned = cleaned.replace(/^(#{1,6}\s*)\*\*(.*?)\*\*/gm, '$1$2');
-
   cleaned = cleaned.replace(/\*\*\s+([^\*]+?)\s+\*\*/g, '**$1**');
   cleaned = cleaned.replace(/([가-힣a-zA-Z0-9])\*\*([가-힣a-zA-Z0-9])/g, '$1 **$2');
 
+  // 7) Q&A 줄바꿈 및 물음표 띄어쓰기
   cleaned = cleaned.replace(/([^\n])\s*(\*\*?[QA][0-9]*\s*[:.]\*\*?)/gi, '$1\n\n$2');
   cleaned = cleaned.replace(/([^\n])\s+([QA][0-9]*\s*[:.])/g, '$1\n\n$2');
   cleaned = cleaned.replace(/([.!?])\s*(\*\*?[QA][0-9]*\s*[:.]\*\*?)/gi, '$1\n\n$2');
-
   cleaned = cleaned.replace(/\?([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9가-힣])/g, '? $1');
 
-  cleaned = cleaned.replace(/([^0-9][.?!])\s*([¿¡])/g, '$1\n\n$2');
-  cleaned = cleaned.replace(/([.!])\s*(D:|R:|Risposta|Domande)/gi, '$1\n\n$2');
-
-  cleaned = cleaned.replace(/\$([^$]+)\$/g, '$1')
-                   .replace(/\\times/g, 'x')
-                   .replace(/\\circ/g, '°')
-                   .replace(/\\approx/g, '≈');
-
+  // 8) 물결표(~) 하이픈 치환 및 과도한 개행 압축
   cleaned = cleaned.replace(/(\S)\s*~\s*(\S)/g, '$1 - $2');
   cleaned = cleaned.replace(/~/g, '-');
-
   cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
 
-  return cleaned;
+  return cleaned.trim();
 }
 
 if (!fs.existsSync(TOPICS_FILE)) {
@@ -267,6 +306,9 @@ const TARGET_LANGS = [
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const fileSlug = `post-${Date.now().toString(36)}`;
 
+// =========================================================================
+// [영구 고정] gemini-3.5-flash-lite + 8192 토큰 상한
+// =========================================================================
 async function fetchWithRetry(prompt, maxRetries = 5, delayMs = 5000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -351,14 +393,15 @@ You MUST strictly follow these 5 sections using clean H2 markdown headings (## )
 1. HEADINGS: Keep clean markdown headings (e.g. "## ${i18n.s2}"). NEVER put bold asterisks (**) inside headings.
 2. BOLD FORMATTING: Use bold (**) ONLY for key button clicks or essential UI/financial terms. Always put a space before and after the bold markup if surrounded by words.
 3. COMMANDS & CODES: Wrap parameters or code snippets in standard 3-backtick code blocks.
-4. NO LATEX & NO TILDE: NEVER use LaTeX ($ or $$). NEVER use tilde (~) for ranges; use hyphen (-).
+4. NO LATEX: NEVER use LaTeX ($ or $$). NEVER wrap variables, keys, or numbers in raw dollar signs like $100$. Wrap them in backticks or normal text.
+5. NO TILDE: NEVER use tilde (~) for ranges; use hyphen (-).
 ${lang.code !== 'ko' ? `- Absolutely NEVER include any Korean characters (가-힣) anywhere in non-Korean posts.` : ''}
 
 [Design Theme & Layout Dynamic Rules]
 - Assigned Theme: "${selectedTheme.name}"
 - Primary Accent Color: ${selectedTheme.primaryColor}
 - Layout Characteristic: ${selectedTheme.layout}
-- Incorporate inline styled HTML callout boxes tailored to this theme:
+- Incorporate inline styled HTML callout boxes tailored to this theme (Ensure font color is dark and readable):
   <div style="border-left: 4px solid ${selectedTheme.primaryColor}; padding: 14px 18px; margin: 24px 0; background-color: rgba(0,0,0,0.03); border-radius: 4px; color: #111827;">...</div>
 
 [Strict Output Format]
@@ -393,8 +436,8 @@ theme: "${selectedTheme.name}"
 
     const fmMatch = text.match(/^---[\s\S]*?---\n*/);
     if (fmMatch) {
-      let frontmatter = fmMatch[0];
-      let body = text.slice(frontmatter.length).trim();
+      let frontmatter = fmMatch[0].trim();
+      let body = text.slice(fmMatch[0].length).trim();
       body = body.replace(/^#\s+[^\n]+\n+/, '');
 
       frontmatter = frontmatter.replace(/(title:\s*["'])([^"']*)(["'])/gi, (m, p1, p2, p3) => {
@@ -409,6 +452,7 @@ theme: "${selectedTheme.name}"
 
       body = sanitizeMarkdownFormatting(body, lang.code);
 
+      // 🛡️ [2,500자 분량 강제 루프]
       let retryCount = 0;
       while (lang.code === 'ko' && body.length < 2200 && retryCount < 2) {
         console.warn(`⚠️ [2-1호기 분량 부족] 현재 ${body.length}자 -> 목표 2,500자 충족을 위해 재작성 시도 (${retryCount + 1}/2)...`);
@@ -446,7 +490,8 @@ theme: "${selectedTheme.name}"
         }
       }
 
-      text = `${frontmatter}\n${body}\n`;
+      // 상단 공백 차단: frontmatter와 body 사이를 정확히 개행 2줄(\n\n)로 고정
+      text = `${frontmatter}\n\n${body}\n`;
     }
 
     const targetDir = path.join(POSTS_BASE_DIR, lang.code);
