@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Technical Standard Navy"
 ---
 
+## 1. Emergência crítica com pagamentos globais e remessas internacionais
 
 Eram por volta das oito e meia da manhã aqui no meu escritório na Avenida Paulista, o tráfego típico de São Paulo já estava caótico lá embaixo, e eu com aquela xícara de café fresco na mão, achando que seria mais um día tranquilo de conciliação cambial.
 
@@ -40,8 +41,6 @@ Eu já passei por centenas de situações de câmbio e faturamento na minha carr
 <div style="border-left: 4px solid #1e3a8a; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
   <strong>[Key Point]:</strong> Nunca preencha um formulário fiscal incorreto apenas para agradar o cliente corporativo estrangeiro; substitua sempre o documento pelo equivalente legal correto para não gerar passivos fiscais internacionais.
 </div>
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-12.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
@@ -105,7 +104,7 @@ Em menos de duas horas, o cliente fez isso, o status mudou de "Retido" para "Dis
   <strong>[Key Point]:</strong> Acelerar a liberação de saldo no PayPal exige evidências robustas de entrega (contratos, e-mails, relatórios) e a cooperação ativa do pagador na confirmação do serviço dentro da plataforma.
 </div>
 
-## 4. Checklist Prático para Evitar Novas Dores de Cabeça
+## 4. Checklist essencial para evitar retenções de saldo e taxas abusivas Prático para Evitar Novas Dores de Cabeça
 
 Para garantir que eu nunca mais passe por esse sufoco no meio do expediente na Paulista, montei um checklist interno que agora sigo religiosamente antes de emitir qualquer fatura internacional:
 

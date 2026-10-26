@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Modern Minimalist Modern"
 ---
 
+## 1. Awaryjna sytuacja z płatnościami i przelewami zagranicznymi
 
 To był poniedziałkowy poranek w naszym warszawskim biurze na Rondzie Daszyńskiego, kiedy na Slacku zaczął się prawdziwy cyrk. Pracowałem nad integracją nowej bramki płatniczej dla dużego klienta z branży SaaS, gdy nagle nasz system monitorowania transakcji transgranicznych zaczął świecić się na czerwono. W ciągu zaledwie dziesięciu minut wskaźnik odrzuconych transakcji poszybował w górę o trzydzieści procent, a skrzynka mailowa zespołu wsparcia zalała się wiadomościami od wściekłych partnerów biznesowych. 
 
@@ -26,8 +27,6 @@ Próbowałem przekopać się przez dokumentację API Stripe, przeszukiwałem for
 <div style="border-left: 4px solid #4f46e5; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
   <strong>[Key Point]:</strong> Kod `do_not_honor` rzadko jest winą samej platformy Stripe. Najczęściej wynika z niezgodności danych rozliczeniowych, błędów w klasyfikacji podatkowej kontrahenta lub restrykcyjnych reguł bezpieczeństwa banku wydającego kartę.
 </div>
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-28.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
@@ -81,7 +80,7 @@ Ostatnim etapem było upewnienie się, że polski partner nie ma już żadnych f
   <strong>[Pro Tip]:</strong> Nigгда nie zostawiaj odrzuconych płatności z błędem `do_not_honor` samych sobie w nadziei, że klient spróbuje ponownie. Natychmiastowa korektura danych podatkowych i ręczna autoryzacja w module Radar to klucz do odzyskania nawet 85% zagrożonych przychodów w ciągu pierwszej godziny od awarii.
 </div>
 
-## 4. Checklista zapobiegawcza: Jak unikać takich kryzysów w przyszłości
+## 4. Lista kontrolna zapobiegająca blokadom środków i prowizjoma zapobiegawcza: Jak unikać takich kryzysów w przyszłości
 
 Aby ta sytuacja nigdy więcej się nie powtórzyła w naszym warszawskim zespole, wdrożyłem rygorystyczną listę kontrolną, którą każdy inżynier i specjalista ds. rozliczeń musi teraz przechodzić przed uruchomieniem nowych integracji transgranicznych.
 

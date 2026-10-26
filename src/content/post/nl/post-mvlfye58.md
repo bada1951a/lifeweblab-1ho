@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Emergency Alert Amber"
 ---
 
+## 1. Noodsituatie bij internationale betalingen en overboekingen
 
 Het was een typische regenachtige dinsdagochtend op de Zuidas in Amsterdam. Ik zat achter mijn bureau op de twintigste verdieping met een kop sterke espresso toen de hel losbarstte. Onze klantenservice-afdeling stormde bijna mijn kantoor binnen. Het dashboard van onze online betalingen stond volledig rood. Door een fatale administratieve en technische blunder in onze 'Accountinstellingen' hadden we de `Fraud Risk Score`-filters veel te streng ingesteld. Het gevolg? Duizenden legitieme betalingen van trouwe Europese zakelijke klanten werden massaal geblokkeerd, en al deze transacties belandden direct in de gevreesde 'PayPal 21-Day Hold'. Onze omzetstroom lag in één klap lam en de telefoon bleef maar overgaan met boze klanten.
 
@@ -20,8 +21,6 @@ We probeerden meteen via de standaard klantenservice van PayPal contact te legge
 <div style="border-left: 4px solid #d97706; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
   <strong>[Key Point]:</strong> Paniek in de boardroom los je niet op met afwachten, maar door direct de root-cause van je filterinstellingen te identificeren en proactief te handelen.
 </div>
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-14.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
@@ -61,7 +60,7 @@ Om het systeem te voeden met de juiste compliance-data, doken we de `Facturen`-s
   <strong>[Key Point]:</strong> Door handmatig de transactiestatus te wijzigen naar 'Dienst geleverd' en sluitende facturen te koppelen, dwing je het systeem feitelijk om de hold op te heffen.
 </div>
 
-## 4. Checklist ter voorkoming van toekomstige crises
+## 4. Checklist om rekeningblokkades en overmatige kosten te voorkomen ter voorkoming van toekomstige crises
 
 Om te zorgen dat we dit nooit meer meemaken, hebben we een strikt intern protocol opgesteld dat elke financieel medewerker op kantoor nu uit zijn hoofd kent.
 

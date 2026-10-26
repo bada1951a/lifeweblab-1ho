@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Resolution Emerald Guide"
 ---
 
+## 1. Situation d'urgence critique sur les paiements et virements
 
 C'était un mardi matin particulièrement pluvieux dans mon bureau de La Défense. Le genre de journée où le café filtre a un goût de plastique brûlé et où la météo parisienne vous donne envie de rester sous la couette. Je venais à peine d'ouvrir mon ordinateur portable qu'un message sur Slack de notre directeur commercial a fait tressauter mon écran : un client institutionnel basé à Londres venait de valider une facture monumentale de plus de quatre-vingt mille euros pour notre abonnement enterprise annuel. J'ai eu ce petit sourire satisfait du gars qui se dit que la journée commence plutôt bien. 
 
@@ -22,8 +23,6 @@ J'ai ouvert le support Stripe dans un onglet et lu la documentation officielle, 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
   <strong>[Key Point]:</strong> L'erreur `do_not_honor` est une mesure de précaution de la banque du client, et non un dysfonctionnement de votre passerelle. Ne tentez jamais de relancer la même carte en boucle, car cela déclenchera un blocage anti-fraude permanent.
 </div>
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-17.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 

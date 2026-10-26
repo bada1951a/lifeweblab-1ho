@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "HelpDesk Clean Slate"
 ---
 
+## 1. Awaryjna sytuacja z płatnościami i przelewami zagranicznymi
 
 Cześć! Jeśli pracujesz w warszawskim centrum biznesowym tak jak ja i na co dzień użerasz się z globalnymi rozliczeniami, to doskonale wiesz, że poranek potrafi zaskoczyć w najmniej oczekiwanym momencie. Siedziałem przy moim biurku na Mokotowie z kubkiem mocnej kawy, gotowy na spokojny przegląd sprintu, kiedy nagle dostépek do systemu wyświetlił mi czerwoną flagę od kluczowego klienta ze Stanów. Transakcja opiewała na sporą kwotę, ale kiedy wszedłem w szczegóły, zamarłem. Zamiast spodziewanej sumy, saldo pokazywało drastyczną ścięwkę – środki wpadły w infamous '21-Day Hold', a do tego system doliczył gigantyczne koszty za pośrednictwo banków korespondentów i skandaliczny spread walutowy. Klient wściekły, bo myślał, że nas oszukał, księgowość puka do drzwi z pytaniem, gdzie są pieniądze, a ja zostałem sam na sam z interfejsem, który przypominał labirynt bez wyjścia.
 
@@ -20,8 +21,6 @@ Przez pierwsze dwie godziny przekopywałem się przez dokumentację pomagającą
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
   <strong>[Key Point]:</strong> Blokada 21-dniowa oraz nagłe cięcia przez banki korespondentów to nie wyrok. Wynikają one ze specyfiki algorytmów oceny ryzyka oraz braku optymalizacji ścieżki rozliczeniowej w `Ustawienia konta`.
 </div>
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-16.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
@@ -61,7 +60,7 @@ Aby nigdy więcej nie przechodzić przez ten zawał serca w środku roboczego dn
 - Zawsze korzystaj z lokalnych kont rozliczeniowych i walutowych w `Metody płatności`, aby ominąć ukryte opłaty banków korespondentów i drastyczne spready.
 - Dbaj o to, aby każda wystawiona pozycja w sekcji `Faktury` miała precyzyjnie opisany przedmiot transakcji i numer śledzenia lub protokół odbioru.
 
-## 5. FAQ: Najczęściej zadawane pytania z praktyki inżyniera płatności
+## 5. Najczęściej zadawane pytania (FAQ): Najczęściej zadawane pytania z praktyki inżyniera płatności
 
 Q1: Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od lat?
 A1: Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacji.

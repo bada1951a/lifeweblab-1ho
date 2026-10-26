@@ -8,6 +8,7 @@ tags: ["Stripe", "PaymentIssues", "Troubleshooting", "CrossBorder", "Invoicing"]
 theme: "Technical Standard Navy"
 ---
 
+## 1. 海外決済・送金エラーと業務停滞の緊急事態
 
 あれは丸の内のオフィスでコーヒーを一口飲んだ直後のことでした。静かな朝の雰囲気を切り裂くように、Slackの通知音がけたたましく鳴り響いたんです。画面を確認すると、海外製SaaSや主力ツールの定期決済がすべて弾かれているという絶望的なアラートの山でした。「おいおい、またかよ…」思わず声が出ましたね。Stripeのダッシュボードを開いてみると、そこには見慣れない、しかし海外決済の現場では恐怖の対象でしかないエラーコード`do_not_honor`の文字がズラリと並んでいたんです。月額の自動引き落としのタイミングと、法人カードの利用限度額が見事にバッティングしてしまい、一斉に決済が落ちてしまったという最悪のシナリオでした。このままだと顧客のサービス利用が停止され、解約の嵐が吹き荒れるのは目に見えています。私は冷や汗を拭いながら、この緊急事態を乗り越えるための孤独な戦いを開始しました。
 
@@ -20,8 +21,6 @@ theme: "Technical Standard Navy"
 </div>
 
 当時の私は、とりあえず「再試行（Retry）」ボタンを連打すればなんとかなるだろうと甘い考えていました。しかし、それが大間違いだったんです。何度も同じカードで決済を試みた結果、銀行側の不正検知システム（Fraud Detection）が「不審なアタック」と判定してしまい、そのカード自体が一時凍結（Lock）されてしまうという二次災害を引き起こしてしまいました。六本木のチームメンバーから「顧客に請求エラーのメールが届いてクレームが来ているぞ！」と内線が入り、私の背筋は一気に凍りつきました。エラーの原因を正しく切り分けずに行動することが、どれほど危険かを身をもって痛感した瞬間でした。
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-13.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 

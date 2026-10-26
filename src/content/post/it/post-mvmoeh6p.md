@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Resolution Emerald Guide"
 ---
 
+## 1. Emergenza improvvisa su pagamenti e bonifici internazionali
 
 Erano le sei e mezza di una mattina di fine autunno nei grigi e frenetici *Centri direzionali di Milano*, quando il mio caffè macchiato era ancora bollente e la scrivania sommersa dalle scartoffie, e mi è arrivata una notifica che mi ha gelato il sangue nelle vene. Avevamo appena avviato il consueto trasferimento di fondi transfrontalieri dal nostro conto di pagamento estero principale verso il conto corrente bancario italiano aziendale, ma l'intera operazione era stata bruscamente respinta. Il motivo? Un fastidiosissimo errore di discrepanza nei nomi in formato inglese tra i registri della banca intermediaria e la nostra anagrafica aziendale su Stripe. Nel giro di pochi minuti, i flussi di cassa per le fatture dei nostri clienti corporate più importanti si erano letteralmente congelati, e il panico ha iniziato a serpeggiare tra i canali Slack del team finanziario.
 

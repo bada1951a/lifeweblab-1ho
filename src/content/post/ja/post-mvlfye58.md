@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Modern Minimalist Modern"
 ---
 
+## 1. 海外決済・送金エラーと業務停滞の緊急事態
 
 あれはちょうど先月の月曜日、丸の内のオフィスでコーヒーを一口飲んだ瞬間に始まった地獄絵図でした。六本木のクライアントから「今すぐ決済したいのに、エラーが出て弾かれる！」という絶叫に近い電話が鳴り響いたんです。ダッシュボードを開いてみると、新規顧客からの高額な決済が次々と「保留（Hold）」や「不審なアクティビティ検出」として処理されていました。売上がリアルタイムでドブに捨てられているようなあの焦燥感、今思い出しても冷や汗が出ます。越境ECや海外B2B決済を扱う現場では、このPayPalの「21日間ホールド（21-Day Hold）」と「自動セキュリティ誤検知」が最大の爆弾なんですよね。今日は、僕が現場で泥をかぶりながら見つけ出した、この悪夢のような状況を即座に打破するための実戦ノウハウをすべてシェアします。
 
@@ -22,8 +23,6 @@ theme: "Modern Minimalist Modern"
 <div style="border-left: 4px solid #4f46e5; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
   <strong>[Key Point]:</strong> 誤検知による売上ストップは、公式の定型文を読むだけでは1分も解決が早まりません。プラットフォーム側の「信頼スコア」を即座に再構築するアプローチが必要です。
 </div>
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-02.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 

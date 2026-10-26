@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Modern Minimalist Modern"
 ---
 
+## 1. Sự cố khẩn cấp khi thanh toán và chuyển tiền quốc tế
 
 Chuyện là thế này anh em ạ, dạo này ngồi ở văn phòng ngay trung tâm Quận 1, Sài Gòn mà mồ hôi hột cứ túa ra dù máy lạnh đang bật 16 độ. Mới sáng tinh mơ, khi ly cà phê sữa đá còn chưa kịp tan đá, đập vào mắt tôi là một cú sốc điện tim: lệnh rút tiền từ tài khoản thanh toán quốc tế về tài khoản nội địa bị ngân hàng trung gian đẩy trả (bounce) ngược lại chỉ vì một lỗi ngớ ngẩn là lệch tên in hoa không khớp dấu cách giữa Stripe và tài khoản thụ hưởng. Tiền đang về thì bị kẹt cứng ngắc, đối tác nước ngoài thì cứ réo đòi hóa đơn VAT và chứng từ thanh toán xuyên biên giới, còn sếp lớn thì đứng đằng sau thở dài. Lúc đó thật sự chỉ muốn độn thổ cho xong.
 
@@ -20,8 +21,6 @@ Quay ngược lại thời điểm cái "búa tạ" ấy giáng xuống, cảm g
 </div>
 
 Hồi ấy, mình cứ ngỡ là chỉ cần bấm nút `Retry payment` là xong chuyện. Kết quả là gì? Stripe nó khóa tạm thời tính năng thanh toán của vài khách hàng VIP vì tưởng đâu bên mình đang cố tình thực hiện các giao dịch bất thường. Ngồi lục tung các tài liệu hỗ trợ của Stripe, gọi qua tổng đài hỗ trợ đối tác, rồi dò hỏi khắp các anh em làm MMO hay SaaS ở Sài Gòn này mới ngộ ra được cái chân lý: càng cuống cuồng bấm nhiều lần, hệ thống càng quét mạnh hơn và dòng tiền của công ty càng bị ngâm lâu hơn.
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-32.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
@@ -61,7 +60,7 @@ Cuối cùng, truy cập vào mục `Hóa đơn` (Invoices) và `Biểu mẫu th
   <strong>[Key Point]:</strong> Tuyệt đối không tự ý thực hiện quá 3 lần lệnh rút tiền hoặc thanh toán lại cho cùng một mã lỗi trong một ngày để tránh bị hệ thống tự động liệt kê vào danh sách đen (Blacklist).
 </div>
 
-## 4. Checklist Vàng Phòng Ngừa Sự Cố Tái Diễn Cho Doanh Nghiệp
+## 4. Danh sách kiểm tra ngăn ngừa đóng băng tài khoản và phí ẩn Vàng Phòng Ngừa Sự Cố Tái Diễn Cho Doanh Nghiệp
 
 Để những buổi sáng uống cà phê không còn bị giật mình bởi mấy cái thông báo lỗi chết tiệt này nữa, anh em hãy bỏ túi ngay danh sách kiểm tra định kỳ hàng tuần dưới đây:
 

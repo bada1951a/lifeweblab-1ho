@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "HelpDesk Clean Slate"
 ---
 
+## 1. Emergencia crítica en cobros internacionales y transferencias
 
 Eran las nueve de la mañana en nuestras oficinas del distrito financiero y corporativo en Madrid, justo cuando el café recién hecho empezaba a hacer efecto, y mi teléfono móvil comenzó a vibrar de manera incontrolable. El canal de Slack de operaciones de pago echaba humo. Nuestro sistema de comercio electrónico internacional estaba rechazando de golpe las transacciones de nuestros clientes corporativos más importantes de Europa, arrojando el temido código de error `do_not_honor` en Stripe. Lo peor de todo no era solo el pitido constante de las alertas de Sentry, sino ver cómo se esfumaban miles de euros en renovaciones de suscripciones B2B en cuestión de minutos.
 
@@ -20,8 +21,6 @@ Durante los primeros treinta minutos, el equipo de soporte técnico y yo estuvim
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
   <strong>[Key Point]:</strong> Cuando un error genérico como `do_not_honor` se dispara de forma masiva en transacciones transfronterizas, rara vez es culpa del banco del cliente; casi siempre es un desajuste técnico en los payloads de la pasarela de pagos.
 </div>
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-19.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
@@ -67,7 +66,7 @@ Realizamos una prueba de pago simulada utilizando tarjetas de prueba en modo liv
   <strong>[Key Point]:</strong> La clave para eliminar el error `do_not_honor` por redondeo es garantizar una paridad matemática exacta entre lo que visualiza el usuario en el checkout y lo que procesa el API en el backend.
 </div>
 
-## 4. Checklist operativo para prevenir futuras incidencias de cobro
+## 4. Lista de verificación para prevenir retenciones de fondos y cargos extra operativo para prevenir futuras incidencias de cobro
 
 Para evitar que este tipo de pesadillas se repitan en el futuro y mantener la salud financiera de la empresa bajo control, implementé un protocolo de revisión periódica que ahora forma parte de nuestras rutinas mensuales de operaciones.
 

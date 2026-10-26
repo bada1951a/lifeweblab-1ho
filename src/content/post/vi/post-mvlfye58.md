@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Emergency Alert Amber"
 ---
 
+## 1. Sự cố khẩn cấp khi thanh toán và chuyển tiền quốc tế
 
 Sáng hôm ấy tại tòa nhà văn phòng tài chính ngay giữa Quận 1, TP. Hồ Chí Minh, không khí đang yên ắng bỗng trở nên vô cùng căng thẳng khi màn hình hệ thống giám sát liên tục reo lên những cảnh báo đỏ rực. Các giao dịch thanh toán quốc tế của khách hàng đồng loạt báo lỗi, tiền không vào được tài khoản mà còn bị treo lơ lửng, trong khi hộp thư hỗ trợ khách hàng thì ngập tràn các khiếu nại vì đơn hàng không thể hoàn tất. 
 
@@ -24,8 +25,6 @@ Ban đầu, chúng tôi cứ nghĩ đây chỉ là một sự cố nghẽn mạn
 </div>
 
 Trong khoảng hai giờ đồng hồ đầu tiên, chúng tôi như những chú ong vò vẽ điên cuồng lật giở từng tài liệu hướng dẫn kỹ thuật của PayPal, gọi điện cho các đối tác tích hợp cổng thanh toán và liên tục trấn an bộ phận chăm sóc khách hàng đang bị tra tấn bởi hàng trăm cuộc gọi khiếu nại. Sự thiếu đồng bộ trong việc xử lý số thập phân của các loại tiền tệ yếu như đồng Yên Nhật hoặc Won Hàn Quốc khi quy đổi sang Đô-la Mỹ chính là ngòi nổ cho toàn bộ thảm họa này.
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-20.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 

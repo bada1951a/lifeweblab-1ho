@@ -8,6 +8,7 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Resolution Emerald Guide"
 ---
 
+## 1. Noodsituatie bij internationale betalingen en overboekingen
 
 Het was een typische regenachtige dinsdagochtend op de Zuidas in Amsterdam. Ik zat achter mijn bureau op de twintigste verdieping met een dampende kop zwarte koffie, klaar om een flinke batch uitstaande facturen van onze internationale freelanceontwikkelaars weg te werken. Alles leek op rolletjes te lopen totdat mijn telefoon ontplofte met paniekerige Slack-berichten van onze hoofdinkoper. Een van onze grootste externe contractanten had zojuist een betaling geprobeerd te voldoen, maar werd geconfronteerd met de gevreesde 'do_not_honor' foutmelding van Stripe. Nog erger: door een rare webhook-bug in ons systeem was diezelfde mislukte transactie ergens op de achtergrond wél dubbel geregistreerd en afgeschreven. Twee keer hetzelfde hoge bedrag afgeschreven van een woedende partner, terwijl de status in ons dashboard bleef hangen op geweigerd. Mijn maag keerde zich om; we moesten dit direct oplossen voordat het onze reputatie zou schaden en we omzet zouden mislopen door afgehaakte partners.
 
@@ -20,8 +21,6 @@ De rillingen liepen over mijn rug toen ik het Dashboard opende en de rode foutme
 </div>
 
 Ik herinner me nog goed dat ik wanhopig door de documentatie van Stripe aan het bladeren was, terwijl de accountmanager naast me stond te ijsberend omdat we diezelfde middag nog goedkeuring moesten geven voor een volgende fase van ons project. We moesten snel handelen, de administratie rechtzetten en vooral voorkomen dat onze betrouwbaarheid bij key-partners een deuk zou oplopen.
-
-
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-26.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
@@ -61,7 +60,7 @@ Klik op de dubbele transactie die teveel is afgeschreven. Kies rechtsboven in he
 
 Ga naar `Ontwikkelaars` (Developers) en vervolgens naar `Webhooks`. Controleer of je endpoints correct reageren op `payment_intent.succeeded` en of je server dubbele events filtert op basis van `event.id`. Ga daarna naar `Instellingen` (Settings) en `Betaalmethoden` (Payment methods) om te zorgen dat alternatieve betaalmethoden zoals iDEAL of SEPA Direct Debit als fallback worden aangeboden wanneer creditcards een 'do_not_honor' weigering geven.
 
-## 4. Checklist om herhaling in de toekomst te voorkomen
+## 4. Checklist om rekeningblokkades en overmatige kosten te voorkomen om herhaling in de toekomst te voorkomen
 
 Om te zorgen dat we nooit meer op een hectische ochtend op de Zuidas met dit bijltje hoeven te hakken, hebben we een strikte checklist opgesteld die nu wekelijks door ons finance-team wordt nagelopen.
 
