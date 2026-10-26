@@ -2,9 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import { GoogleGenAI } from '@google/genai';
 
-// =========================================================================
-// [핵심 설정] Gemini 고정 모델 및 API 키 검증
-// =========================================================================
 const GEMINI_MODEL = 'gemini-3.5-flash-lite';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -15,21 +12,16 @@ if (!GEMINI_API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
-// Astro content 컬렉션 표준 경로
 const POSTS_BASE_DIR = path.resolve('src/content/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
 
-// =========================================================================
-// [사진 61장 순환 로직] 날짜 기반 오프셋으로 연속 중복 원천 방지
-// =========================================================================
 const IMAGE_EXTS = /\.(jpe?g|png|webp|gif|avif)$/i;
 
 if (!fs.existsSync(PHOTO_DIR)) {
   fs.mkdirSync(PHOTO_DIR, { recursive: true });
 }
 
-// 파일명 순서대로 고정 정렬하여 일관된 순환 풀 구성
 const localFiles = fs.readdirSync(PHOTO_DIR).filter(file => IMAGE_EXTS.test(file)).sort();
 let localImages = localFiles.map(file => encodeURI(`/images/billing-photo/${file}`));
 
@@ -53,31 +45,148 @@ function getPostImages(index) {
   return { coverUrl, bodyUrl };
 }
 
-// =========================================================================
-// [수정] 빌드 즉시 목록에 노출되도록 현재 시간(또는 1분 전) 기준 ISO 날짜 생성
-// =========================================================================
 function getKstPublishDateIso(index) {
   const now = new Date(Date.now() - (index * 60 * 1000));
   return now.toISOString();
 }
 
-// =========================================================================
-// 마크다운 최소 정제 함수 (소제목과 줄바꿈은 절대 건드리지 않음)
-// =========================================================================
-function sanitizeMarkdownFormatting(content) {
-  let cleaned = content;
+const I18N_SECTIONS = {
+  ko: {
+    s1: "1. 결제·송금 돌발 오류와 멘붕의 순간",
+    s2: "2. 결제 거절 및 인보이스 반려의 핵심 원인 분석",
+    s3: "3. 1분 만에 해결하는 단계별 실전 조치 매뉴얼",
+    s4: "4. 자금 동결 및 과다 수수료 방지를 위한 실무 체크리스트",
+    s5: "5. 자주 묻는 질문 (FAQ)",
+    tags: ["해외결제", "인보이스", "송금오류", "비즈니스정산"]
+  },
+  en: {
+    s1: "1. Critical Payment & Wire Transfer Emergency",
+    s2: "2. Root Cause Breakdown of Invoicing and Gateway Failures",
+    s3: "3. Step-by-Step Practical Troubleshooting Manual",
+    s4: "4. Essential Checklist to Prevent Fund Holds & Surcharges",
+    s5: "5. Frequently Asked Questions (FAQ)",
+    tags: ["Global Payment", "Invoicing", "Payment Gateway", "Fintech Fix"]
+  },
+  ja: {
+    s1: "1. 海外決済・送金エラーと業務停滞の緊急事態",
+    s2: "2. 決済拒否および請求書差し戻しの根本原因",
+    s3: "3. 1分で解決する実践的なトラブルシューティング手順",
+    s4: "4. アカウント凍結と過剰手数料を防ぐ実務チェックリスト",
+    s5: "5. よくある質問 (FAQ)",
+    tags: ["海外決済", "請求書トラブル", "送金エラー", "越境ビジネス"]
+  },
+  de: {
+    s1: "1. Kritischer Zahlungs- und Überweisungsnotfall im Geschäftsalltag",
+    s2: "2. Detaillierte Ursachenanalyse von Rechnungs- und Transaktionsfehlern",
+    s3: "3. Schritt-für-Schritt-Anleitung zur sofortigen Fehlerbehebung",
+    s4: "4. Praxis-Checkliste zur Vermeidung von Kontensperren und Gebühren",
+    s5: "5. Häufig gestellte Fragen (FAQ)",
+    tags: ["Zahlungsabwicklung", "B2B-Rechnung", "Fintech", "Transaktionsfehler"]
+  },
+  fr: {
+    s1: "1. Situation d'urgence critique sur les paiements et virements",
+    s2: "2. Analyse approfondie des rejets de paiement et factures",
+    s3: "3. Manuel de dépannage étape par étape pour résoudre le litige",
+    s4: "4. Liste de contrôle pour éviter les blocages de fonds et frais excessifs",
+    s5: "5. Foire Aux Questions (FAQ)",
+    tags: ["Paiement International", "Facturation B2B", "Passerelle de Paiement", "Gestion Litiges"]
+  },
+  es: {
+    s1: "1. Emergencia crítica en cobros internacionales y transferencias",
+    s2: "2. Análisis de causas raíz de rechazos de pago y facturas devueltas",
+    s3: "3. Manual paso a paso para resolver incidencias de facturación",
+    s4: "4. Lista de verificación para prevenir retenciones de fondos y cargos extra",
+    s5: "5. Preguntas Frecuentes (FAQ)",
+    tags: ["Pagos Internacionales", "Facturación B2B", "Pasarela de Pago", "Gestión de Cobros"]
+  },
+  it: {
+    s1: "1. Emergenza improvvisa su pagamenti e bonifici internazionali",
+    s2: "2. Analisi approfondita dei rifiuti di pagamento e fatture respinte",
+    s3: "3. Guida pratica di risoluzione passo dopo passo",
+    s4: "4. Checklist essenziale per evitare blocchi conto e commissioni nascoste",
+    s5: "5. Domande Frequenti (FAQ)",
+    tags: ["Pagamenti Globali", "Fatturazione Elettronica", "Gateway Pagamento", "Risoluzione Errori"]
+  },
+  pt: {
+    s1: "1. Emergência crítica com pagamentos globais e remessas internacionais",
+    s2: "2. Análise da causa raiz de recusas de pagamento e faturas rejeitadas",
+    s3: "3. Manual prático passo a passo para liberar fundos e pagamentos",
+    s4: "4. Checklist essencial para evitar retenções de saldo e taxas abusivas",
+    s5: "5. Perguntas Frequentes (FAQ)",
+    tags: ["Pagamentos Globais", "Faturamento B2B", "Gateway de Pagamento", "Finanças"]
+  },
+  nl: {
+    s1: "1. Noodsituatie bij internationale betalingen en overboekingen",
+    s2: "2. Grondige analyse van mislukte betalingen en afgekeurde facturen",
+    s3: "3. Stapsgewijze handleiding voor het direct oplossen van betaalproblemen",
+    s4: "4. Checklist om rekeningblokkades en overmatige kosten te voorkomen",
+    s5: "5. Veelgestelde Vragen (FAQ)",
+    tags: ["Internationale Betalingen", "Facturatie", "Payment Gateway", "Financiële Tips"]
+  },
+  pl: {
+    s1: "1. Awaryjna sytuacja z płatnościami i przelewami zagranicznymi",
+    s2: "2. Szczegółowa analiza przyczyn odrzuceń płatności i błędów faktur",
+    s3: "3. Praktyczny przewodnik rozwiązywania problemów krok po kroku",
+    s4: "4. Lista kontrolna zapobiegająca blokadom środków i prowizjom",
+    s5: "5. Najczęściej zadawane pytania (FAQ)",
+    tags: ["Płatności Globalne", "Fakturowanie B2B", "Bramki Płatności", "Rozliczenia"]
+  },
+  id: {
+    s1: "1. Situasi Kritis Kegagalan Pembayaran dan Transfer Dana Global",
+    s2: "2. Analisis Mendalam Penyebab Penolakan Transaksi dan Faktur",
+    s3: "3. Panduan Langkah demi Langkah Penanganan Masalah Pembayaran",
+    s4: "4. Lembar Periksa Penting Mencegah Penahanan Dana dan Biaya Berlebih",
+    s5: "5. Pertanyaan yang Sering Diajukan (FAQ)",
+    tags: ["Pembayaran Global", "Faktur Bisnis", "Gateway Pembayaran", "Fintech"]
+  },
+  vi: {
+    s1: "1. Sự cố khẩn cấp khi thanh toán và chuyển tiền quốc tế",
+    s2: "2. Phân tích nguyên nhân gốc rễ lỗi từ chối thanh toán và hóa đơn",
+    s3: "3. Quy trình thực tế từng bước xử lý lỗi cổng thanh toán",
+    s4: "4. Danh sách kiểm tra ngăn ngừa đóng băng tài khoản và phí ẩn",
+    s5: "5. Các câu hỏi thường gặp (FAQ)",
+    tags: ["Thanh Toán Quốc Tế", "Hóa Đơn B2B", "Cổng Thanh Toán", "Xử Lý Sự Cố"]
+  }
+};
 
-  // LaTeX 수식 기호 치환
+function sanitizeMarkdownFormatting(content, langCode) {
+  let cleaned = content;
+  const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
+
+  cleaned = cleaned.replace(/^#{1,3}\s*1\.?\s*(\[.*?\]|당시 상황.*?|Critical Payment.*?)/gmi, `## ${i18n.s1}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*2\.?\s*(\[.*?\]|문제의 근본 원인.*?|Root Cause.*?)/gmi, `## ${i18n.s2}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*3\.?\s*(\[.*?\]|즉시 해결한 단계별.*?|Step-by-Step.*?)/gmi, `## ${i18n.s3}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*4\.?\s*(\[.*?\]|재발 방지를 위한.*?|Essential Checklist.*?)/gmi, `## ${i18n.s4}`);
+  cleaned = cleaned.replace(/^#{1,3}\s*5\.?\s*(\[.*?\]|자주 묻는 질문.*?|Frequently Asked Questions.*?|FAQ)/gmi, `## ${i18n.s5}`);
+
+  cleaned = cleaned.replace(/^1\.\s*\[.*?\]/gmi, `## ${i18n.s1}`);
+  cleaned = cleaned.replace(/^2\.\s*\[.*?\]/gmi, `## ${i18n.s2}`);
+  cleaned = cleaned.replace(/^3\.\s*\[.*?\]/gmi, `## ${i18n.s3}`);
+  cleaned = cleaned.replace(/^4\.\s*\[.*?\]/gmi, `## ${i18n.s4}`);
+  cleaned = cleaned.replace(/^5\.\s*(Frequently Asked Questions|자주 묻는 질문)/gmi, `## ${i18n.s5}`);
+
+  cleaned = cleaned.replace(/^(#{1,6}\s*)\*\*(.*?)\*\*/gm, '$1$2');
+
+  cleaned = cleaned.replace(/\*\*\s+([^\*]+?)\s+\*\*/g, '**$1**');
+  cleaned = cleaned.replace(/([가-힣a-zA-Z0-9])\*\*([가-힣a-zA-Z0-9])/g, '$1 **$2');
+
+  cleaned = cleaned.replace(/([^\n])\s*(\*\*?[QA][0-9]*\s*[:.]\*\*?)/gi, '$1\n\n$2');
+  cleaned = cleaned.replace(/([^\n])\s+([QA][0-9]*\s*[:.])/g, '$1\n\n$2');
+  cleaned = cleaned.replace(/([.!?])\s*(\*\*?[QA][0-9]*\s*[:.]\*\*?)/gi, '$1\n\n$2');
+
+  cleaned = cleaned.replace(/\?([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9가-힣])/g, '? $1');
+
+  cleaned = cleaned.replace(/([^0-9][.?!])\s*([¿¡])/g, '$1\n\n$2');
+  cleaned = cleaned.replace(/([.!])\s*(D:|R:|Risposta|Domande)/gi, '$1\n\n$2');
+
   cleaned = cleaned.replace(/\$([^$]+)\$/g, '$1')
                    .replace(/\\times/g, 'x')
                    .replace(/\\circ/g, '°')
                    .replace(/\\approx/g, '≈');
 
-  // 물결표(~) 범위 기호를 안전한 하이픈(-)으로 치환
   cleaned = cleaned.replace(/(\S)\s*~\s*(\S)/g, '$1 - $2');
   cleaned = cleaned.replace(/~/g, '-');
 
-  // 문단 사이 3개 이상 과도한 줄바꿈만 2개로 압축 (문단 분리는 완벽 보존)
   cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
 
   return cleaned;
@@ -99,7 +208,6 @@ if (lines.length === 0) {
 const currentTopic = lines[0];
 console.log(`📌 오늘 처리할 주제: "${currentTopic}"`);
 
-// 글로벌 결제 / 송금 / 인보이스 / 세무 위기 시나리오 30선
 const TROUBLESHOOTING_SCENARIOS_30 = [
   "해외 바이어로부터 거액의 인보이스 결제 완료 알림 직후 결제 게이트웨이 대시보드에 결제 거절(Declined) 경고가 뜬 순간",
   "월말 정산일 당일, 사내 외주 인력 대량 송금을 실행하려다 계정 일시 점검 및 동결 알림을 마주한 아침",
@@ -153,7 +261,7 @@ const TARGET_LANGS = [
   { code: 'nl', name: 'Dutch', persona: 'Specialist in het oplossen van internationale betalings- en factuurproblemen', osUi: 'Dashboard, Betaalmethoden, Facturen, Accountinstellingen, Belastingformulieren', localeContext: 'Zuidas zakendistrict in Amsterdam' },
   { code: 'pl', name: 'Polish', persona: 'Inżynier wsparcia ds. globalnych systemów płatności i fakturowania transgranicznego', osUi: 'Pulpit, Metody płatności, Faktury, Ustawienia konta, Formularze podatkowe', localeContext: 'Warszawskie centrum biznesowe i technologiczne' },
   { code: 'id', name: 'Indonesian', persona: 'Spesialis penanganan masalah pembayaran global dan transfer dana internasional', osUi: 'Dasbor, Metode Pembayaran, Tagihan / Faktur, Pengaturan Akun, Formulir Pajak', localeContext: 'Kawasan bisnis Sudirman Central Business District (SCBD) Jakarta' },
-  { code: 'vi', name: 'Vietnamese', persona: 'Chuyên gia xử lý sự cố cổng thanh toán quốc tế 및 xuất hóa đơn xuyên biên giới', osUi: 'Bảng điều khiển, Phương thức thanh toán, Hóa đơn, Cài đặt tài khoản, Biểu mẫu thuế', localeContext: 'Tòa nhà văn phòng tài chính Quận 1, TP. Hồ Chí Minh' }
+  { code: 'vi', name: 'Vietnamese', persona: 'Chuyên gia xử lý sự cố cổng thanh toán quốc tế và xuất hóa đơn xuyên biên giới', osUi: 'Bảng điều khiển, Phương thức thanh toán, Hóa đơn, Cài đặt tài khoản, Biểu mẫu thuế', localeContext: 'Tòa nhà văn phòng tài chính Quận 1, TP. Hồ Chí Minh' }
 ];
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -165,6 +273,10 @@ async function fetchWithRetry(prompt, maxRetries = 5, delayMs = 5000) {
       const response = await ai.models.generateContent({
         model: GEMINI_MODEL,
         contents: prompt,
+        config: {
+          maxOutputTokens: 8192,
+          temperature: 0.7,
+        }
       });
       return response.text;
     } catch (error) {
@@ -178,70 +290,89 @@ async function fetchWithRetry(prompt, maxRetries = 5, delayMs = 5000) {
 async function generateSinglePost(lang, index) {
   const selectedTheme = THEME_PRESETS[Math.floor(Math.random() * THEME_PRESETS.length)];
   const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
+  const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
-  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 문제 해결 포스팅 생성 중... (테마: ${selectedTheme.name})`);
+  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 포스팅 생성 중... (테마: ${selectedTheme.name})`);
 
   const { coverUrl, bodyUrl } = getPostImages(index);
   const pubDateIso = getKstPublishDateIso(index);
 
   const prompt = `
-당신은 ${lang.persona}입니다.
-반드시 ${lang.name} 언어로만 작성하세요. 번역투가 아닌, 현지 직장 동료에게 본인의 실무 경험담(썰)을 생생하게 들려주는 1인칭 구어체로 작성해야 합니다.
+You are a ${lang.persona}.
+Write a definitive, exhaustive, highly professional cross-border billing and fintech troubleshooting guide natively in ${lang.name}.
+CRITICAL REQUIREMENT: Write 100% natively in ${lang.name}. NEVER mix English template headings or bracketed words unless writing the English post.
 
-[작성 주제]
+[Topic]
 ${currentTopic}
 
-[실무 현장 배경 및 돌발 상황]
-- 대상 도시/문화권: ${lang.localeContext}
-- 발생한 긴급 시나리오: "${selectedScenario}"
+[Workplace Incident Context]
+- Target City/Culture: "${lang.localeContext}"
+- Assigned Emergency Scenario: "${selectedScenario}"
 
-[언어 규칙 - 절대 엄수 (CRITICAL)]
-${lang.code !== 'ko' ? `
-- [매우 중요] 한국어(한글)를 단 한 글자도 포함하지 마세요. 제목, 요약, 태그, 본문, 모든 소제목(##), 강조 박스 문구, FAQ(Q/A)까지 100% ${lang.name} 언어로만 작성해야 합니다.
-- 한국어 예시 문구(예: '당시 상황과 겪었던 혼란', '핵심 포인트', 'FAQ' 등)를 그대로 쓰지 말고, 반드시 ${lang.name}로 완벽히 번역하여 적용하세요.
-` : `
-- 자연스러운 한국어 직장인 실무 구어체로 작성하세요.
-`}
+[MANDATORY TOTAL LENGTH ENFORCEMENT - ZERO CONDENSATION]
+- For Korean (ko): Total body MUST be AT LEAST 2,500 characters (공백 제외 최소 2,000자 이상). Summarizing or brief outputs are strictly prohibited.
+- For other languages: Total body MUST be AT LEAST 1,400 - 1,800 words of rich technical substance.
 
-[필수 마크다운 구조 및 줄바꿈 규칙 - 절대 생략 금지]
-1. 반드시 마크다운 소제목(## 및 ###)을 빠짐없이 사용하여 본문의 시각적 뼈대를 구축하세요. (단, 소제목 제목도 100% ${lang.name} 번역 필수)
-2. 모든 문단 사이에는 반드시 빈 줄을 1개 삽입하여 완벽한 줄바꿈(엔터 2번, \\n\\n)을 적용하세요. 문단이 뭉쳐서 벽돌처럼 출력되면 안 됩니다.
-3. 소제목 바로 앞과 뒤에도 반드시 빈 줄(\\n\\n)을 넣어 여백을 확보하세요.
-4. 기술 파라미터나 에러 코드, 메뉴명은 작은따옴표 백틱(\`code\`)으로 감싸세요.
-5. 테마 스타일의 강조 박스를 본문 중간에 2개 이상 배치하세요 (${lang.name} 번역 적용):
-   <div style="border-left: 4px solid ${selectedTheme.primaryColor}; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-     <strong>[${lang.code === 'ko' ? '핵심 포인트' : 'Key Point'}]:</strong> ${lang.name}로 작성된 실무 핵심 조치 요약
-   </div>
+[EXHAUSTIVE 5-SECTION STRUCTURE REQUIREMENTS]
+You MUST strictly follow these 5 sections using clean H2 markdown headings (## ):
 
-[본문 필수 구성 순서 (AdSense 고품질 E-E-A-T)]
-1. 도입부 (H1, H2 소제목 없이 바로 이야기 시작):
-   - "${selectedScenario}" 상황이 터진 당일 아침의 다급했던 현장 분위기를 1인칭 썰로 흥미진진하게 시작.
-2. ## 1. [${lang.name}로 번역된 '당시 상황과 겪었던 혼란']:
-   - 문제를 처음 맞닥뜨렸을 때의 당혹감, 고객센터나 문서를 뒤지며 겪은 시행착오를 구체적으로 서술.
-3. ## 2. [${lang.name}로 번역된 '문제의 근본 원인 분석']:
-   - 왜 이런 일이 발생했는지 3가지 현실적인 원인을 각각 ### 소제목으로 나누어 분석.
-4. ## 3. [${lang.name}로 번역된 '즉시 해결한 단계별 조치 매뉴얼']:
-   - "${lang.osUi}" 메뉴를 직접 조작하듯 클릭 경로와 해결 방법을 Step 1, Step 2, Step 3으로 상세히 가이드.
-5. ## 4. [${lang.name}로 번역된 '재발 방지를 위한 실무 체크리스트']:
-   - 앞으로 똑같은 사고를 원천 방지하기 위해 정기적으로 확인해야 할 핵심 수칙.
-6. ## 5. [${lang.name}로 번역된 '자주 묻는 질문 FAQ']:
-   - 실무자들이 실제로 가장 곤란해하는 고가치 질문 3개를 엄선하여 Q1, A1 형식으로 작성. (각 Q와 A 사이, 질문들 사이마다 빈 줄 필수).
+## ${i18n.s1}
+- Do NOT summarize. Write at least 4 long, vivid paragraphs describing:
+  1) The intense daily/workplace crisis strictly based on: "${selectedScenario}".
+  2) The exact gateway decline error, tax rejection, or frozen balance and the immediate panic it triggered.
+  3) The naive first attempts to fix it (repeatedly spamming payment cards, submitting unverified IDs) that worsened the hold.
+  4) The realization of what is at stake (lost client deal, cash runway freeze, severe tax withholding penalty).
 
-[분량 규격]
-- 한국어(ko): 공백 포함 최소 2,500자 이상의 깊이 있고 풍부한 본문.
-- 기타 언어: 1,200 ~ 1,500 단어 이상의 충실한 실무 해설.
+## ${i18n.s2}
+- Do NOT just write 3 quick bullets. Write an exhaustive technical analysis across at least 4 detailed paragraphs explaining:
+  1) Payment gateway risk algorithms, 3DS2 authentication protocol failures, or interchange fee structures.
+  2) Tax compliance mismatch (W-8BEN vs W-9, VAT Reverse Charge, foreign TIN validation).
+  3) Intermediary banking routes (SWIFT MT103 tracking, correspondent bank cutoffs, multi-currency conversion margins).
 
-[출력 형식]
-반드시 아래 프론트매터로 시작하세요:
+## ${i18n.s3}
+- Provide at least 3 distinct, complete practical resolution methods matching "${lang.osUi}":
+  * Method 1: Gateway / Dashboard UI fix with exact navigation clicks and verification procedures.
+  * Method 2: Document / Invoicing correction protocol (Exact tax clause wording, VAT Reverse Charge formatting).
+  * Method 3: Direct compliance escalations, alternative routing (ACH/SEPA/Wise B2B bypass).
+  * Write step-by-step with clear numbered lists and explain the financial/technical reason for each step.
+
+## ${i18n.s4}
+- Write at least 2 in-depth paragraphs of professional fintech specialist wisdom:
+  1) Critical hazards: Account termination, rolling reserves, permanent payment processor blacklisting.
+  2) Best operational habits: Secondary gateway redundancy, dispute mitigation, automated tax document audits.
+
+## ${i18n.s5}
+- Provide exactly 3 realistic, highly specific Q&A items:
+  * Each question must be bold (**Q1.**, **Q2.**, **Q3.**) followed by the question text.
+  * Each answer (**A1.**, **A2.**, **A3.**) MUST be a detailed, multi-sentence technical explanation (at least 3-4 sentences per answer).
+  * Put an empty blank line between every Question and Answer.
+
+[STRICT MARKDOWN & FORMATTING RULES]
+1. HEADINGS: Keep clean markdown headings (e.g. "## ${i18n.s2}"). NEVER put bold asterisks (**) inside headings.
+2. BOLD FORMATTING: Use bold (**) ONLY for key button clicks or essential UI/financial terms. Always put a space before and after the bold markup if surrounded by words.
+3. COMMANDS & CODES: Wrap parameters or code snippets in standard 3-backtick code blocks.
+4. NO LATEX & NO TILDE: NEVER use LaTeX ($ or $$). NEVER use tilde (~) for ranges; use hyphen (-).
+${lang.code !== 'ko' ? `- Absolutely NEVER include any Korean characters (가-힣) anywhere in non-Korean posts.` : ''}
+
+[Design Theme & Layout Dynamic Rules]
+- Assigned Theme: "${selectedTheme.name}"
+- Primary Accent Color: ${selectedTheme.primaryColor}
+- Layout Characteristic: ${selectedTheme.layout}
+- Incorporate inline styled HTML callout boxes tailored to this theme:
+  <div style="border-left: 4px solid ${selectedTheme.primaryColor}; padding: 14px 18px; margin: 24px 0; background-color: rgba(0,0,0,0.03); border-radius: 4px; color: #111827;">...</div>
+
+[Strict Output Format]
+Return ONLY raw Markdown starting directly with frontmatter:
 ---
-title: "${lang.name} 언어로 작성된 실무적이고 매력적인 제목"
-description: "${lang.name} 언어로 작성된 150자 이내의 명확한 요약문"
+title: "Native Catchy Title in ${lang.name}"
+description: "Native concise description in ${lang.name} under 160 characters"
 publishDate: ${pubDateIso}
 image: "${coverUrl}"
 category: "troubleshooting"
-tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
+tags: ${JSON.stringify(i18n.tags)}
 theme: "${selectedTheme.name}"
 ---
+(Body starts directly here without H1 header)
 `;
 
   try {
@@ -250,7 +381,6 @@ theme: "${selectedTheme.name}"
     if (text.startsWith('```markdown')) text = text.replace(/^```markdown\n/, '').replace(/\n```$/, '');
     if (text.startsWith('```')) text = text.replace(/^```\n/, '').replace(/\n```$/, '');
 
-    // [수정] 프론트매터 제목 및 본문 제목의 볼드(**) 기호 제거
     text = text.replace(/(title:\s*["'])([^"']*)(["'])/gi, (match, p1, p2, p3) => {
       const cleanTitle = p2.replace(/\*\*/g, '').replace(/[*_~`]/g, '').trim();
       return `${p1}${cleanTitle}${p3}`;
@@ -267,7 +397,6 @@ theme: "${selectedTheme.name}"
       let body = text.slice(frontmatter.length).trim();
       body = body.replace(/^#\s+[^\n]+\n+/, '');
 
-      // [수정] frontmatter 내 title, category, publishDate 등 재정제
       frontmatter = frontmatter.replace(/(title:\s*["'])([^"']*)(["'])/gi, (m, p1, p2, p3) => {
         return `${p1}${p2.replace(/\*\*/g, '').trim()}${p3}`;
       });
@@ -278,11 +407,32 @@ theme: "${selectedTheme.name}"
       frontmatter = frontmatter.replace(/publishDate:\s*[^\n\r]+/i, `publishDate: ${pubDateIso}`);
       frontmatter = frontmatter.replace(/image:\s*["'][^"']*["']/i, `image: '${coverUrl}'`);
 
-      // 텍스트 수식/특수문자만 정리하고 줄바꿈/소제목은 완벽 보존
-      body = sanitizeMarkdownFormatting(body);
+      body = sanitizeMarkdownFormatting(body, lang.code);
 
-      // 본문 중간 삽입 이미지: 레이아웃 넘침 방지 인라인 스타일 적용
-      const middleImageMarkdown = `\n\n<div style="text-align: center; margin: 36px 0;"><img src="${bodyUrl}" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>\n\n`;
+      let retryCount = 0;
+      while (lang.code === 'ko' && body.length < 2200 && retryCount < 2) {
+        console.warn(`⚠️ [2-1호기 분량 부족] 현재 ${body.length}자 -> 목표 2,500자 충족을 위해 재작성 시도 (${retryCount + 1}/2)...`);
+        const retryPrompt = prompt + "\n\nCRITICAL ENFORCEMENT: The previous generated post was strictly too short. You MUST write at least 4 very long, deeply detailed paragraphs for EACH section. Elaborate on every financial protocol, tax clause, and troubleshooting procedure exhaustively to exceed 2,500 Korean characters.";
+
+        let retryRawText = await fetchWithRetry(retryPrompt);
+        let retryText = retryRawText.trim();
+        if (retryText.startsWith('```markdown')) retryText = retryText.replace(/^```markdown\n/, '').replace(/\n```$/, '');
+        if (retryText.startsWith('```')) retryText = retryText.replace(/^```\n/, '').replace(/\n```$/, '');
+
+        const newFmMatch = retryText.match(/^---[\s\S]*?---\n*/);
+        if (newFmMatch) {
+          let newBody = retryText.slice(newFmMatch[0].length).trim();
+          newBody = newBody.replace(/^#\s+[^\n]+\n+/, '');
+          body = sanitizeMarkdownFormatting(newBody, lang.code);
+        }
+        retryCount++;
+      }
+
+      if (lang.code === 'ko') {
+        console.log(`📏 [2-1호기 한국어 본문 최종 글자 수] ${body.length}자 (목표: 2,500자 이상)`);
+      }
+
+      const middleImageMarkdown = `\n\n![Troubleshooting Guide](${bodyUrl})\n\n`;
 
       if (body.includes('## 2.')) {
         body = body.replace(/(## 2\.[^\n]+)/, `${middleImageMarkdown}$1`);
@@ -306,7 +456,7 @@ theme: "${selectedTheme.name}"
 
     const filePath = path.join(targetDir, `${fileSlug}.md`);
     fs.writeFileSync(filePath, text, 'utf-8');
-    console.log(`✅ [성공] 저장 완료: src/content/post/${lang.code}/${fileSlug}.md`);
+    console.log(`✅ [성공] 2-1호기 저장 완료: src/content/post/${lang.code}/${fileSlug}.md`);
     return true;
   } catch (error) {
     console.error(`❌ [최종 실패] ${lang.name} 생성 실패:`, error.message);
