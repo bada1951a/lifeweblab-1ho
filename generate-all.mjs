@@ -13,7 +13,7 @@ if (!GEMINI_API_KEY) {
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
 // =========================================================================
-// [4호기 규격 통일] 포스트 저장 경로: src/data/post
+// [2-1호기 규격 통일] 포스트 저장 경로: src/data/post
 // =========================================================================
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
@@ -60,7 +60,7 @@ function getKstPublishDateIso(index) {
 }
 
 // =========================================================================
-// 1·2·3·4호기 규격 12개국 현지어 표준 소제목 딕셔너리
+// 12개국 현지어 표준 소제목 딕셔너리
 // =========================================================================
 const I18N_SECTIONS = {
   ko: {
@@ -238,7 +238,7 @@ function sanitizeMarkdownFormatting(content, langCode) {
   cleaned = cleaned.replace(/([.!?])\s*(Q[1-9]\.|\*\*Q[1-9]\.\*\*)/g, '$1\n\n$2');
   cleaned = cleaned.replace(/([.!?])\s*(A[1-9]\.|\*\*A[1-9]\.\*\*)/g, '$1\n\n$2');
 
-  // 올바른 볼드로 단 1회 감싸기
+  // 올바른 볼드로 감싸기
   cleaned = cleaned.replace(/^(Q[0-9]*\.)\s*(.*)$/gm, '**$1** $2');
   cleaned = cleaned.replace(/^(A[0-9]*\.)\s*(.*)$/gm, '**$1** $2');
 
@@ -250,7 +250,6 @@ function sanitizeMarkdownFormatting(content, langCode) {
 
   // =========================================================================
   // 🛡️ [영구 방패: 동일 헤딩 연타 박멸 필터]
-  // 중간에 빈 줄이 있든 없든, 직전 헤딩과 동일한 제목이 반복되면 무조건 1개만 남기고 삭제
   // =========================================================================
   const lines = cleaned.split('\n');
   const filteredLines = [];
@@ -263,7 +262,7 @@ function sanitizeMarkdownFormatting(content, langCode) {
     if (/^#{1,6}\s+/.test(trimmed)) {
       const cleanH = trimmed.replace(/^#{1,6}\s+/, '').replace(/\*\*/g, '').trim();
       if (cleanH.length > 0 && cleanH === lastHeadingText) {
-        continue; // 중복 헤딩 즉시 제거
+        continue;
       }
       lastHeadingText = cleanH;
     } else if (trimmed.length > 0) {
@@ -275,7 +274,6 @@ function sanitizeMarkdownFormatting(content, langCode) {
 
   // =========================================================================
   // 🛡️ [영구 방패: 문단 전체를 먹어치운 괴물 볼드만 평문으로 해제]
-  // 150자 이상이면서 개행(\n)을 포함해 문단을 시커멓게 태운 괴물 볼드만 평문 처리 (정상 볼드 100% 보존)
   // =========================================================================
   cleaned = cleaned.replace(/\*\*([^\*]*?\n[^\*]*?){150,}\*\*/g, (match) => {
     return match.replace(/^\*\*/, '').replace(/\*\*$/, '');
@@ -367,7 +365,7 @@ async function fetchWithRetry(prompt, maxRetries = 5, delayMs = 5000) {
         model: GEMINI_MODEL,
         contents: prompt,
         config: {
-          maxOutputTokens: 8192,
+          maxOutputTokens: 4096, // 8192 폭주 차단, 10초대 고속 생성 최적화
           temperature: 0.7,
         }
       });
@@ -393,7 +391,7 @@ async function generateSinglePost(lang, index) {
   const prompt = `
 You are a ${lang.persona}.
 Write a gripping, highly engaging, and practically exhaustive cross-border payment/fintech troubleshooting guide natively in ${lang.name}.
-CRITICAL REQUIREMENT: Write 100% natively in ${lang.name}. NEVER use bland textbook prose or mechanical listing. Write like a seasoned real-world professional sharing an intense workplace story and breakthrough tips on a professional community.
+CRITICAL REQUIREMENT: Write 100% natively in ${lang.name}. Write like a seasoned real-world professional sharing an intense workplace story and breakthrough tips on a professional community.
 
 [Topic]
 ${currentTopic}
@@ -402,43 +400,42 @@ ${currentTopic}
 - Target City/Culture: "${lang.localeContext}"
 - Assigned Emergency Scenario: "${selectedScenario}"
 
-[MANDATORY TOTAL LENGTH ENFORCEMENT - ZERO CONDENSATION]
-- For Korean (ko): Total body MUST be AT LEAST 2,500 characters (공백 제외 최소 2,000자 이상). Summarizing or brief outputs are strictly prohibited.
-- For other languages: Total body MUST be AT LEAST 1,400 - 1,800 words of rich technical substance.
+[BALANCED HIGH-QUALITY LENGTH REQUIREMENT]
+- For Korean (ko): Write a rich, thorough article around 2,500 characters (2,200 - 2,800 characters). Avoid repetitive fluff.
+- For other languages: Write 1,000 - 1,200 words of dense, high-value technical substance. Perfect for standard enterprise guides.
 
-[EXHAUSTIVE 5-SECTION STRUCTURE REQUIREMENTS]
-You MUST strictly follow these 5 sections using clean H2 markdown headings (## ):
+[5-SECTION STRUCTURE REQUIREMENTS]
+Strictly follow these 5 sections using clean H2 markdown headings (## ):
 
 ## ${i18n.s1}
-- Do NOT write a polite greeting or textbook intro. Dive immediately into the intense panic strictly based on: "${selectedScenario}".
-- Write at least 4 long, suspenseful paragraphs describing:
-  1) The sudden cold sweat moment when the payment declined, invoice bounced, or funds were frozen.
-  2) The urgent business deadline (salary payout, supplier cutoff, investor reporting).
-  3) The naive first reactions (panicking, clicking resubmit multiple times, submitting unverified papers) that triggered stricter security locks.
-  4) The high stakes: cash flow paralysis, executive escalations, or painful penalty fees.
+- Dive directly into the workplace panic strictly based on: "${selectedScenario}".
+- Write 2-3 vivid paragraphs describing:
+  1) The sudden cold sweat moment when payment declined or funds were held.
+  2) The urgent business deadline and naive first attempts that failed.
+  3) The critical business risk (cash flow freeze, client trust damage).
 
 ## ${i18n.s2}
-- Write an exhaustive technical analysis across at least 4 detailed paragraphs explaining why this happens:
+- Write an exhaustive technical analysis across 2-3 detailed paragraphs explaining:
   1) Risk scoring engines, 3DS2 / SCA authentication drops, and interchange routing barriers.
-  2) Tax compliance pitfalls (W-8BEN vs W-9 discrepancies, VAT Reverse Charge missing clauses, TIN mismatches).
-  3) Intermediary bank bottlenecks (SWIFT MT103 routing loops, correspondent bank clearing delays, currency conversion spreads).
+  2) Tax compliance pitfalls (W-8BEN vs W-9 discrepancies, VAT Reverse Charge clauses, TIN mismatches).
+  3) Intermediary bank bottlenecks (SWIFT MT103 routing loops, correspondent bank clearing delays).
 
 ## ${i18n.s3}
-- Provide at least 3 distinct, complete practical resolution methods matching "${lang.osUi}":
+- Provide 3 distinct, practical resolution methods matching "${lang.osUi}":
   * Method 1: Exact Dashboard / Gateway UI navigation clicks and parameter resetting.
   * Method 2: Official Document / Invoicing correction protocol (Exact tax clause wording, compliance upload rules).
   * Method 3: Direct compliance escalation route and alternative payment bypass (Wise Business, ACH, SEPA, Virtual Accounts).
   * Write step-by-step with clear numbered lists.
 
 ## ${i18n.s4}
-- Write at least 2 in-depth paragraphs of battle-tested professional wisdom:
+- Write 2 in-depth paragraphs of battle-tested professional wisdom:
   1) Critical hazards: Account termination, rolling reserves, permanent payment processor blacklisting.
   2) Best operational habits: Gateway redundancy, dispute chargeback defense, automated tax document audits.
 
 ## ${i18n.s5}
 - Provide exactly 3 realistic, highly specific Q&A items:
   * Each question must be bold (**Q1.**, **Q2.**, **Q3.**) followed by the question text.
-  * Each answer (**A1.**, **A2.**, **A3.**) MUST be a detailed, multi-sentence technical explanation (at least 3-4 sentences per answer).
+  * Each answer (**A1.**, **A2.**, **A3.**) must be a detailed explanation (3-4 sentences per answer).
   * Put an empty blank line between every Question and Answer.
 
 [STRICT MARKDOWN & FORMATTING RULES]
@@ -504,33 +501,12 @@ theme: "${selectedTheme.name}"
       // 🛡️ 1차 무결 정제
       body = sanitizeMarkdownFormatting(body, lang.code);
 
-      // 🛡️ [2,500자 분량 강제 루프]
-      let retryCount = 0;
-      while (lang.code === 'ko' && body.length < 2200 && retryCount < 2) {
-        console.warn(`⚠️ [2-1호기 분량 부족] 현재 ${body.length}자 -> 목표 2,500자 충족을 위해 재작성 시도 (${retryCount + 1}/2)...`);
-        const retryPrompt = prompt + "\n\nCRITICAL ENFORCEMENT: The previous generated post was strictly too short. You MUST write at least 4 very long, deeply detailed paragraphs for EACH section. Elaborate on every financial protocol, tax clause, and troubleshooting procedure exhaustively to exceed 2,500 Korean characters.";
-
-        let retryRawText = await fetchWithRetry(retryPrompt);
-        let retryText = retryRawText.trim();
-        if (retryText.startsWith('```markdown')) retryText = retryText.replace(/^```markdown\n/, '').replace(/\n```$/, '');
-        if (retryText.startsWith('```')) retryText = retryText.replace(/^```\n/, '').replace(/\n```$/, '');
-
-        const newFmMatch = retryText.match(/^---[\s\S]*?---\n*/);
-        if (newFmMatch) {
-          let newBody = retryText.slice(newFmMatch[0].length).trim();
-          newBody = newBody.replace(/^#\s+[^\n]+\n+/, '');
-          body = sanitizeMarkdownFormatting(newBody, lang.code);
-        }
-        retryCount++;
-      }
-
       if (lang.code === 'ko') {
-        console.log(`📏 [2-1호기 한국어 본문 최종 글자 수] ${body.length}자 (목표: 2,500자 이상)`);
+        console.log(`📏 [2-1호기 한국어 본문 최종 글자 수] ${body.length}자 (목표: 2,500자 내외)`);
       }
 
       const middleImageMarkdown = `\n\n![Troubleshooting Guide](${bodyUrl})\n\n`;
 
-      // 2번 헤딩 직전 안전한 이미지 삽입 (중복 방지)
       if (!body.includes(middleImageMarkdown.trim())) {
         if (body.includes('## 2.')) {
           body = body.replace(/(##\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
@@ -545,7 +521,7 @@ theme: "${selectedTheme.name}"
         }
       }
 
-      // 🛡️ 2차 정제: 이미지 삽입 후 발생할 수 있는 중복 헤딩 재검역
+      // 🛡️ 2차 정제: 이미지 삽입 후 헤딩 중복 차단
       body = sanitizeMarkdownFormatting(body, lang.code);
 
       text = `${frontmatter}\n\n${body}\n`;
@@ -568,7 +544,7 @@ theme: "${selectedTheme.name}"
 
 async function run() {
   console.log("==================================================");
-  console.log(`⚡ LifeWebLab 12개국 고품질 문제해결 자동 포스팅 시작 (모델: ${GEMINI_MODEL}, 방패 가동)`);
+  console.log(`⚡ LifeWebLab 12개국 최적화 고속 자동 포스팅 시작 (모델: ${GEMINI_MODEL}, 방패 가동)`);
   console.log("==================================================");
 
   let successCount = 0;
@@ -577,7 +553,7 @@ async function run() {
     const isSuccess = await generateSinglePost(TARGET_LANGS[i], i);
     if (isSuccess) successCount++;
     if (i < TARGET_LANGS.length - 1) {
-      await delay(2000);
+      await delay(1500);
     }
   }
 
