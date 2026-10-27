@@ -122,7 +122,7 @@ const I18N_SECTIONS = {
     s2: "2. Análise da causa raiz de recusas de pagamento e faturas rejeitadas",
     s3: "3. Manual prático passo a passo para liberar fundos e pagamentos",
     s4: "4. Checklist essencial para evitar retenções de saldo e taxas abusivas",
-    s5: "5. Perguntas Frequentes (FAQ)",
+    s5: "5. Perguntas Frecuentes (FAQ)",
     tags: ["Pagamentos Globais", "Faturamento B2B", "Gateway de Pagamento", "Finanças"]
   },
   nl: {
@@ -160,7 +160,7 @@ const I18N_SECTIONS = {
 };
 
 // =========================================================================
-// [완전체 마크다운 정제 함수] 볼드 서식 보호, 상단 공백 차단, 박스 시인성 확보
+// [완전체 마크다운 정제 함수] 볼드 서식 보호, 상단 공백 차단, FAQ 규격화
 // =========================================================================
 function sanitizeMarkdownFormatting(content, langCode) {
   let cleaned = content;
@@ -219,18 +219,31 @@ function sanitizeMarkdownFormatting(content, langCode) {
   cleaned = cleaned.replace(/\*\*\s+([^*]+?)\*\*/g, '**$1**');
   cleaned = cleaned.replace(/\*\*([^*]+?)\s+\*\*/g, '**$1**');
 
-  // 7) 쪼개진 단어 복원 (스페인어 등)
+  // 6) 쪼개진 단어 복원 (스페인어 등)
   cleaned = cleaned.replace(/derech\s*\n\s*a:/gi, 'derecha:')
                     .replace(/con la energi\s*\n\s*a:/gi, 'con la energía:')
                     .replace(/preventiv\s*\n\s*a:/gi, 'preventiva:');
 
-  // 8) Q&A 줄바꿈 및 물음표 띄어쓰기
-  cleaned = cleaned.replace(/([^\n])\s*(\*\*?[QA][0-9]*\s*[:.]\*\*?)/gi, '$1\n\n$2');
-  cleaned = cleaned.replace(/([^\n])\s+([QA][0-9]*\s*[:.])/g, '$1\n\n$2');
-  cleaned = cleaned.replace(/([.!?])\s*(\*\*?[QA][0-9]*\s*[:.]\*\*?)/gi, '$1\n\n$2');
-  cleaned = cleaned.replace(/\?([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9가-힣])/g, '? $1');
+  // =========================================================================
+  // 🛡️ [Q&A 전면 재정비] FAQ 영역 접두사 표준화 및 볼드 깨짐 원천 차단
+  // =========================================================================
+  // 1) Q와 A 주변에 덕지덕지 붙은 별표(**)를 먼저 완전히 발라내어 순수 텍스트로 환원
+  cleaned = cleaned.replace(/\*{1,4}\s*([QA][0-9]*)\s*[:.]\s*\*{1,4}/gi, '$1.');
+  cleaned = cleaned.replace(/([QA][0-9]*)\s*[:.]/gi, (match, p1) => `${p1.toUpperCase()}.`);
 
-  // 9) 물결표(~) 하이픈 치환 및 과도한 개행 압축
+  // 2) 줄바꿈 강제: Q와 A 앞머리는 무조건 빈 줄 2개로 분리
+  cleaned = cleaned.replace(/([^\n])\s*\n*\s*(Q[0-9]*\.)/gi, '$1\n\n$2');
+  cleaned = cleaned.replace(/([^\n])\s*\n*\s*(A[0-9]*\.)/gi, '$1\n\n$2');
+
+  // 3) 완벽한 마크다운 볼드로 단 1회만 정확하게 감싸기 (**Q1.** 본문)
+  cleaned = cleaned.replace(/^(Q[0-9]*\.)\s*(.*)$/gm, '**$1** $2');
+  cleaned = cleaned.replace(/^(A[0-9]*\.)\s*(.*)$/gm, '**$1** $2');
+
+  // 4) 빈 별표 잔여물 제거
+  cleaned = cleaned.replace(/\*\*\s*\*\*/g, '');
+
+  // 7) 물음표 뒤 띄어쓰기 및 물결표(~) 치환
+  cleaned = cleaned.replace(/\?([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9가-힣])/g, '? $1');
   cleaned = cleaned.replace(/(\S)\s*~\s*(\S)/g, '$1 - $2');
   cleaned = cleaned.replace(/~/g, '-');
   cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
