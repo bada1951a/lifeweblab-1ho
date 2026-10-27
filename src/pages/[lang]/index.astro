@@ -1,0 +1,56 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import BlogList from '~/components/blog/List.astro';
+import Headline from '~/components/blog/Headline.astro';
+import { fetchPosts } from '~/utils/blog';
+
+export async function getStaticPaths() {
+  const posts = await fetchPosts();
+  const languages = ['en', 'ja', 'vi', 'pt', 'de', 'fr', 'es', 'id', 'it', 'nl', 'pl', 'ko'];
+
+  return languages.map((lang) => {
+    // 해당 언어 폴더(예: 'en/...')로 시작하는 포스트만 필터링
+    const langPosts = posts.filter((p) => p.id.startsWith(`${lang}/`));
+    return {
+      params: { lang },
+      props: { posts: langPosts, lang },
+    };
+  });
+}
+
+const { posts, lang } = Astro.props;
+
+const langNames: Record<string, string> = {
+  en: 'English (EN)',
+  ja: '日本語 (JA)',
+  vi: 'Tiếng Việt (VI)',
+  pt: 'Português (PT)',
+  de: 'Deutsch (DE)',
+  fr: 'Français (FR)',
+  es: 'Español (ES)',
+  id: 'Bahasa Indonesia (ID)',
+  it: 'Italiano (IT)',
+  nl: 'Nederlands (NL)',
+  pl: 'Polski (PL)',
+  ko: '한국어 (KO)',
+};
+
+const metadata = {
+  title: `${langNames[lang] || lang.toUpperCase()} Articles`,
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+---
+
+<Layout metadata={metadata}>
+  <section class="px-6 sm:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
+    <Headline
+      subtitle={`Archive of articles published in ${langNames[lang] || lang}.`}
+    >
+      {langNames[lang] || lang.toUpperCase()}
+    </Headline>
+    <BlogList posts={posts} />
+  </section>
+</Layout>

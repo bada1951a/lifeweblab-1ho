@@ -1,0 +1,36 @@
+name: Fix Existing Posts Formatting
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run 4ho Fix Script
+        run: node fix-existing-posts.mjs
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/data/post/
+          if git diff --staged --quiet; then
+            echo "변경되거나 수정할 파일이 없습니다."
+          else
+            git commit -m "style: 4호기 마크다운 서식 정밀 교정 (프롬프트 헤더 규격화 및 박스 글자색 보정)"
+            git push
+          fi

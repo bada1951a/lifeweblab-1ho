@@ -1,23 +1,22 @@
 site:
-  name: 'LifeWeb Lab'
+  name: '⚡ LifeWebLab'
   site: 'https://lifeweblab.com'
   base: '/'
   trailingSlash: false
 
   googleSiteVerificationId: false
-  naverSiteVerificationId: false
 
 # Metadata
 metadata:
   title:
-    default: 'LifeWeb Lab'
-    template: '%s — LifeWeb Lab'
-  description: 'Practical tech troubleshooting, error solutions, and real-world digital guides.'
+    default: 'LifeWebLab'
+    template: '%s — LifeWebLab'
+  description: 'Global Payment & Wire Transfer Troubleshooting, Business Invoicing, and Fintech Solutions.'
   robots:
     index: true
     follow: true
   openGraph:
-    site_name: 'LifeWeb Lab'
+    site_name: 'LifeWebLab'
     type: website
 
 i18n:
@@ -27,7 +26,7 @@ i18n:
 apps:
   blog:
     isEnabled: true
-    postsPerPage: 6
+    postsPerPage: 8 # 6개에서 8개로 최적화
     post:
       isEnabled: true
       permalink: '/%slug%'
@@ -57,4 +56,4 @@ announcement:
 analytics:
   vendors:
     googleAnalytics:
-      id: "G-9L4TLNMJCT"
+      id: 'G-9L4TLNMJCT'

@@ -12,8 +12,10 @@ if (!GEMINI_API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
-// 2-1호기 전용 콘텐츠 경로
-const POSTS_BASE_DIR = path.resolve('src/content/post');
+// =========================================================================
+// [4호기 규격 통일] 포스트 저장 경로: src/data/post
+// =========================================================================
+const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
 
@@ -227,22 +229,17 @@ function sanitizeMarkdownFormatting(content, langCode) {
   // =========================================================================
   // 🛡️ [Q&A 전면 재정비] FAQ 영역 접두사 표준화 및 볼드 깨짐 원천 차단
   // =========================================================================
-  // 1) Q와 A 주변에 덕지덕지 붙은 별표(**)를 먼저 완전히 발라내어 순수 텍스트로 환원
   cleaned = cleaned.replace(/\*{1,4}\s*([QA][0-9]*)\s*[:.]\s*\*{1,4}/gi, '$1.');
   cleaned = cleaned.replace(/([QA][0-9]*)\s*[:.]/gi, (match, p1) => `${p1.toUpperCase()}.`);
 
-  // 2) 줄바꿈 강제: Q와 A 앞머리는 무조건 빈 줄 2개로 분리
   cleaned = cleaned.replace(/([^\n])\s*\n*\s*(Q[0-9]*\.)/gi, '$1\n\n$2');
   cleaned = cleaned.replace(/([^\n])\s*\n*\s*(A[0-9]*\.)/gi, '$1\n\n$2');
 
-  // 3) 완벽한 마크다운 볼드로 단 1회만 정확하게 감싸기 (**Q1.** 본문)
   cleaned = cleaned.replace(/^(Q[0-9]*\.)\s*(.*)$/gm, '**$1** $2');
   cleaned = cleaned.replace(/^(A[0-9]*\.)\s*(.*)$/gm, '**$1** $2');
 
-  // 4) 빈 별표 잔여물 제거
   cleaned = cleaned.replace(/\*\*\s*\*\*/g, '');
 
-  // 7) 물음표 뒤 띄어쓰기 및 물결표(~) 치환
   cleaned = cleaned.replace(/\?([A-Za-z\u00C0-\u024F\u1EA0-\u1EF9가-힣])/g, '? $1');
   cleaned = cleaned.replace(/(\S)\s*~\s*(\S)/g, '$1 - $2');
   cleaned = cleaned.replace(/~/g, '-');
@@ -507,7 +504,6 @@ theme: "${selectedTheme.name}"
         }
       }
 
-      // 상단 공백 차단: frontmatter와 body 사이를 정확히 개행 2줄(\n\n)로 고정
       text = `${frontmatter}\n\n${body}\n`;
     }
 
@@ -518,7 +514,7 @@ theme: "${selectedTheme.name}"
 
     const filePath = path.join(targetDir, `${fileSlug}.md`);
     fs.writeFileSync(filePath, text, 'utf-8');
-    console.log(`✅ [성공] 2-1호기 저장 완료: src/content/post/${lang.code}/${fileSlug}.md`);
+    console.log(`✅ [성공] 2-1호기 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
     return true;
   } catch (error) {
     console.error(`❌ [최종 실패] ${lang.name} 생성 실패:`, error.message);

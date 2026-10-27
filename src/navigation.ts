@@ -11,10 +11,10 @@ export const headerData = {
       href: getBlogPermalink(),
     },
     {
-      text: 'Tech',
-      href: getPermalink('/category/tech'),
+      text: 'Troubleshooting',
+      href: getPermalink('/category/troubleshooting'),
     },
-    // 상단 네비게이션 지구본 다국어 선택 드롭다운
+    // 상단 네비게이션 지구본 다국어 선택 드롭다운 (2-1호기 원본 유지)
     {
       text: '🌐 Language',
       links: [
@@ -36,7 +36,7 @@ export const footerData = {
       title: 'Categories',
       links: [
         { text: 'All Articles', href: getBlogPermalink() },
-        { text: 'Tech', href: getPermalink('/category/tech') },
+        { text: 'Troubleshooting', href: getPermalink('/category/troubleshooting') },
       ],
     },
     {

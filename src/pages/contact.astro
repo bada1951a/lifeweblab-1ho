@@ -1,48 +1,46 @@
 ---
+import Layout from '~/layouts/PageLayout.astro';
+
+const metadata = {
+  title: 'Contact Us - LifeWebLab',
+};
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact Us — LifeWebLab</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Fredoka', 'Plus Jakarta Sans', sans-serif; background: #ffffff; color: #1e293b; line-height: 1.7; margin: 0; padding: 0; }
-    header { border-bottom: 1px solid #f1f5f9; padding: 18px 20px; }
-    .header-inner { max-width: 860px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .logo { text-decoration: none; font-size: 1.45rem; font-weight: 800; color: #0f172a; }
-    .nav-link { text-decoration: none; font-weight: 600; color: #64748b; }
-    .nav-link:hover { color: #2563eb; }
-    main { max-width: 860px; margin: 50px auto 80px auto; padding: 0 20px; }
-    h1 { font-size: 2.4rem; font-weight: 800; color: #0f172a; margin-bottom: 24px; letter-spacing: -0.5px; }
-    p { font-size: 1.05rem; color: #475569; margin-bottom: 18px; font-family: 'Plus Jakarta Sans', sans-serif; }
-    .contact-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 28px; margin-top: 24px; }
-    .contact-item { font-size: 1.1rem; color: #0f172a; font-weight: 600; }
-    .contact-item a { color: #2563eb; text-decoration: none; }
-    footer { border-top: 1px solid #f1f5f9; padding: 40px 20px; text-align: center; color: #94a3b8; font-size: 0.88rem; }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="header-inner">
-      <a href="/" class="logo">🧪 LifeWebLab</a>
-      <a href="/" class="nav-link">← Back to Home</a>
+
+<Layout metadata={metadata}>
+  <section class="px-6 sm:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
+    <header class="mb-8 md:mb-12 text-center">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold leading-tighter tracking-tighter mb-4 font-heading dark:text-gray-200">
+        Contact Us
+      </h1>
+      <p class="text-muted dark:text-slate-400 text-lg">
+        Get in touch with the LifeWebLab editorial and payment systems research team
+      </p>
+    </header>
+
+    <div class="mx-auto prose prose-lg dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 leading-relaxed space-y-6">
+      <p>
+        For inquiries regarding global payment troubleshooting guides, billing API integrations, errata corrections, or business collaboration opportunities, please reach out directly via email.
+      </p>
+      <p>
+        Our editorial team reviews all technical submissions, payment scenario reports, and reader inquiries, striving to respond within <strong>2 to 3 business days</strong>.
+      </p>
+
+      <div class="mt-8 p-6 bg-gray-50 dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 mt-0">
+          Official Contact Address
+        </h2>
+        <p class="text-sm text-muted dark:text-slate-400 mb-4">
+          Direct Editorial & Payment Systems Troubleshooting Inquiries
+        </p>
+        <!--email_off-->
+        <div class="inline-block px-4 py-2 bg-white dark:bg-slate-900 rounded border border-gray-300 dark:border-slate-600 font-mono text-base font-semibold text-gray-800 dark:text-slate-200 select-all">
+          <span>contact</span>&#64;<span>lifeweblab.com</span>
+        </div>
+        <!--/email_off-->
+        <p class="text-xs text-muted dark:text-slate-500 mt-3 mb-0">
+          * Plain text address. Please copy and paste into your email client.
+        </p>
+      </div>
     </div>
-  </header>
-  <main>
-    <h1>Contact Us</h1>
-    <p>Have an inquiry, technical question, or partnership suggestion? We welcome feedback and collaboration from our global readers.</p>
-    
-    <div class="contact-card">
-      <p class="contact-item">📧 Email Inquiry: <a href="mailto:contact@lifeweblab.com">contact@lifeweblab.com</a></p>
-      <p style="margin-bottom: 0; font-size: 0.95rem; color: #64748b;">We typically respond to inquiries within 24 to 48 business hours.</p>
-    </div>
-  </main>
-  <footer>
-    <p>© 2026 LifeWebLab. All rights reserved.</p>
-  </footer>
-</body>
-</html>
+  </section>
+</Layout>

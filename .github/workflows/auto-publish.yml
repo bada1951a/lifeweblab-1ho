@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Run Auto Publishing Script
         env:
@@ -32,10 +32,10 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/content/post/ topics.txt
+          git add src/data/post/ topics.txt
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Auto published new multi-language posts [skip ci]"
+            git commit -m "Auto published new multi-language posts"
             git push
           fi

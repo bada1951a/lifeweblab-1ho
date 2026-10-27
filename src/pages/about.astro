@@ -1,49 +1,54 @@
 ---
+import Layout from '~/layouts/PageLayout.astro';
+
+const metadata = {
+  title: 'About LifeWebLab',
+};
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About Us — LifeWebLab</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Fredoka', 'Plus Jakarta Sans', sans-serif; background: #ffffff; color: #1e293b; line-height: 1.7; margin: 0; padding: 0; }
-    header { border-bottom: 1px solid #f1f5f9; padding: 18px 20px; }
-    .header-inner { max-width: 860px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .logo { text-decoration: none; font-size: 1.45rem; font-weight: 800; color: #0f172a; }
-    .nav-link { text-decoration: none; font-weight: 600; color: #64748b; }
-    .nav-link:hover { color: #2563eb; }
-    main { max-width: 860px; margin: 50px auto 80px auto; padding: 0 20px; }
-    h1 { font-size: 2.4rem; font-weight: 800; color: #0f172a; margin-bottom: 24px; letter-spacing: -0.5px; }
-    h2 { font-size: 1.4rem; font-weight: 700; color: #1e293b; margin-top: 36px; margin-bottom: 12px; }
-    p { font-size: 1.05rem; color: #475569; margin-bottom: 18px; font-family: 'Plus Jakarta Sans', sans-serif; }
-    footer { border-top: 1px solid #f1f5f9; padding: 40px 20px; text-align: center; color: #94a3b8; font-size: 0.88rem; }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="header-inner">
-      <a href="/" class="logo">🧪 LifeWebLab</a>
-      <a href="/" class="nav-link">← Back to Home</a>
+
+<Layout metadata={metadata}>
+  <section class="px-6 sm:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
+    <header class="mb-8 md:mb-12 text-center">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold leading-tighter tracking-tighter mb-4 font-heading dark:text-gray-200">
+        About LifeWebLab
+      </h1>
+      <p class="text-muted dark:text-slate-400 text-lg">
+        Global Payment Solutions, Billing Systems Architecture, and Cross-Border Transaction Troubleshooting
+      </p>
+    </header>
+
+    <div class="mx-auto prose prose-lg dark:prose-invert max-w-none">
+      <h2 class="text-2xl font-bold mt-8 mb-4">Our Mission</h2>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+        <strong>LifeWebLab</strong> (<a href="https://lifeweblab.com" class="text-primary hover:underline">lifeweblab.com</a>) is an independent technical publication dedicated to demystifying global digital payments, electronic invoicing, and cross-border billing troubleshooting.
+      </p>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+        In an increasingly interconnected digital economy, payment failures directly impact revenue, business continuity, and customer trust. Rather than generic banking advice, our focus is on structured, actionable guides—dissecting gateway error codes, multi-currency settlement snags, card decline triggers, and invoice compliance workflows—to deliver practical, deterministic solutions for developers, freelancers, and global merchants.
+      </p>
+
+      <h2 class="text-2xl font-bold mt-10 mb-4">What We Cover</h2>
+      <ul class="list-disc pl-6 space-y-3 text-gray-700 dark:text-gray-300 mb-6">
+        <li>
+          <strong>Payment Gateway Troubleshooting:</strong> Actionable resolutions for cryptic error codes, webhook delivery failures, and dispute handling across Stripe, PayPal, Wise, and global processors.
+        </li>
+        <li>
+          <strong>Credit Card & Merchant Processing:</strong> Root causes of international payment declines, 3D Secure (3DS) authentication failures, address verification (AVS) mismatches, and fraud block bypasses.
+        </li>
+        <li>
+          <strong>Cross-Border Banking & Wire Transfers:</strong> Decoding SWIFT/BIC routes, SEPA processing timelines, intermediary bank fees, and currency conversion fee optimization.
+        </li>
+        <li>
+          <strong>Digital Invoicing & Tax Compliance:</strong> Best practices for automated billing, VAT/GST cross-border invoice requirements, W-8BEN compliance, and recurring subscription churn reduction.
+        </li>
+        <li>
+          <strong>Platform & SaaS Checkout Integrations:</strong> Troubleshooting checkout funnels, API rate limits, sandbox vs. production configuration errors, and localized payment method setups.
+        </li>
+      </ul>
+
+      <h2 class="text-2xl font-bold mt-10 mb-4">Editorial & Technical Standards</h2>
+      <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+        Every troubleshooting framework, API diagnostic step, and payment workflow published on LifeWebLab is grounded in official gateway documentation, real-world testing, and verified financial compliance standards. We prioritize clear step-by-step procedures to help international businesses and individual professionals quickly restore transaction flows and eliminate billing friction.
+      </p>
     </div>
-  </header>
-  <main>
-    <h1>About LifeWebLab</h1>
-    <p>Welcome to <strong>LifeWebLab</strong>, your global digital laboratory dedicated to practical troubleshooting, digital payments, and web tech solutions.</p>
-    
-    <h2>Our Mission</h2>
-    <p>In a fast-paced digital ecosystem, errors in payment gateways, API configurations, and web services can halt business operations. Our mission is to research, document, and share step-by-step solutions that empower professionals and businesses worldwide to solve technical problems swiftly and effectively.</p>
-    
-    <h2>What We Cover</h2>
-    <p>• <strong>Global Payment Gateways:</strong> Troubleshooting checkout failures, webhooks, currency conversions, and gateway API issues.<br>
-       • <strong>IT & System Diagnostics:</strong> Resolving server glitches, deployment bottlenecks, and authentication bugs.<br>
-       • <strong>Practical Guides:</strong> Clear, reproducible walkthroughs designed for international developers, freelancers, and operators.</p>
-  </main>
-  <footer>
-    <p>© 2026 LifeWebLab. All rights reserved.</p>
-  </footer>
-</body>
-</html>
+  </section>
+</Layout>
