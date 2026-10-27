@@ -1,5 +1,5 @@
 site:
-  name: '⚡ LifeWebLab'
+  name: 'LifeWebLab'
   site: 'https://lifeweblab.com'
   base: '/'
   trailingSlash: false
