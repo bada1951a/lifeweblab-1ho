@@ -2,8 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import { GoogleGenAI } from '@google/genai';
 
-const GEMINI_MODEL = 'gemini-3.5-flash-lite';
-
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 if (!GEMINI_API_KEY) {
   console.error("❌ GEMINI_API_KEY 환경변수가 설정되지 않았습니다.");
@@ -11,21 +9,20 @@ if (!GEMINI_API_KEY) {
 }
 
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-
-// =========================================================================
-// [2-1호기 규격 통일] 포스트 저장 경로: src/data/post
-// =========================================================================
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
 
+// =========================================================================
+// [2-1호기 전용] public/images/billing-photo 로컬 이미지 자동 셔플
+// =========================================================================
 const IMAGE_EXTS = /\.(jpe?g|png|webp|gif|avif)$/i;
 
 if (!fs.existsSync(PHOTO_DIR)) {
   fs.mkdirSync(PHOTO_DIR, { recursive: true });
 }
 
-const localFiles = fs.readdirSync(PHOTO_DIR).filter(file => IMAGE_EXTS.test(file)).sort();
+const localFiles = fs.readdirSync(PHOTO_DIR).filter(file => IMAGE_EXTS.test(file));
 let localImages = localFiles.map(file => encodeURI(`/images/billing-photo/${file}`));
 
 if (localImages.length === 0) {
@@ -33,28 +30,32 @@ if (localImages.length === 0) {
   localImages = ['/images/default-billing.jpg'];
 }
 
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+const shuffledPool = shuffleArray(localImages);
+
 function getPostImages(index) {
-  const now = new Date();
-  const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  const year = kstTime.getUTCFullYear();
-  const month = kstTime.getUTCMonth() + 1;
-  const day = kstTime.getUTCDate();
-
-  const daySeed = (year * 372) + (month * 31) + day;
-  const baseOffset = (daySeed * 11) % localImages.length;
-
-  const coverUrl = localImages[(baseOffset + (index * 2)) % localImages.length];
-  const bodyUrl = localImages[(baseOffset + (index * 2) + 1) % localImages.length];
+  const coverUrl = shuffledPool[(index * 2) % shuffledPool.length];
+  const bodyUrl = shuffledPool[(index * 2 + 1) % shuffledPool.length];
   return { coverUrl, bodyUrl };
 }
 
+// =========================================================================
+// 한국 시간(KST) 기준 당일 발행 날짜 생성
+// =========================================================================
 function getKstPublishDateIso(index) {
   const now = new Date();
   const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
   const year = kstTime.getUTCFullYear();
   const month = String(kstTime.getUTCMonth() + 1).padStart(2, '0');
   const day = String(kstTime.getUTCDate()).padStart(2, '0');
-
   const minute = String((index * 5) % 60).padStart(2, '0');
   return `${year}-${month}-${day}T03:${minute}:00.000Z`;
 }
@@ -116,7 +117,7 @@ const I18N_SECTIONS = {
     s2: "2. Analisi approfondita dei rifiuti di pagamento e fatture respinte",
     s3: "3. Guida pratica di risoluzione passo dopo passo",
     s4: "4. Checklist essenziale per evitare blocchi conto e commissioni nascoste",
-    s5: "5. Domande Frecuenti (FAQ)",
+    s5: "5. Domande Frequenti (FAQ)",
     tags: ["Pagamenti Globali", "Fatturazione Elettronica", "Gateway Pagamento", "Risoluzione Errori"]
   },
   pt: {
@@ -124,7 +125,7 @@ const I18N_SECTIONS = {
     s2: "2. Análise da causa raiz de recusas de pagamento e faturas rejeitadas",
     s3: "3. Manual prático passo a passo para liberar fundos e pagamentos",
     s4: "4. Checklist essencial para evitar retenções de saldo e taxas abusivas",
-    s5: "5. Perguntas Frecuentes (FAQ)",
+    s5: "5. Perguntas Frequentes (FAQ)",
     tags: ["Pagamentos Globais", "Faturamento B2B", "Gateway de Pagamento", "Finanças"]
   },
   nl: {
@@ -180,11 +181,11 @@ function sanitizeMarkdownFormatting(content, langCode) {
                    .replace(/\\circ/g, '°')
                    .replace(/\\approx/g, '≈');
 
-  // 3) 🛡️ [FAQ 헤딩과 Q1 분리 방패] 헤딩 뒤에 Q1이 붙어 거대 헤딩화되는 것 원천 차단
+  // 3) 🛡️ [FAQ 헤딩과 Q1 분리 방패]
   cleaned = cleaned.replace(/([#]+[^\n]*?FAQ[^\n]*?)\s*(Q[1-9]\.|\*\*Q[1-9]\.\*\*)/gi, '$1\n\n$2');
   cleaned = cleaned.replace(/(FAQ\)?)\s*(Q[1-9]\.|\*\*Q[1-9]\.\*\*)/gi, '$1\n\n$2');
 
-  // 4) 구버전 캡처 헤더 및 영문 대괄호 헤더를 100% 현지어 표준 규격으로 치환
+  // 4) 구버전 헤더 및 영문 대괄호 헤더를 100% 현지어 표준 규격으로 치환
   cleaned = cleaned.replace(/^#{1,3}\s*1\.?\s*(\[.*?\]|당시 상황.*?|Critical Payment.*?|Opening Story.*?|Die Panik.*?)/gmi, `## ${i18n.s1}`);
   cleaned = cleaned.replace(/^#{1,3}\s*2\.?\s*(\[.*?\]|문제의 근본 원인.*?|Root Cause.*?|Ursachenanalyse.*?|Die wahren Wurzeln.*?)/gmi, `## ${i18n.s2}`);
   cleaned = cleaned.replace(/^#{1,3}\s*3\.?\s*(\[.*?\]|즉시 해결한 단계별.*?|Step-by-Step.*?|Schritt-für-Schritt.*?|Der Masterplan.*?)/gmi, `## ${i18n.s3}`);
@@ -232,7 +233,6 @@ function sanitizeMarkdownFormatting(content, langCode) {
   cleaned = cleaned.replace(/\*{1,4}\s*([QA][0-9]*)\s*[:.]\s*\*{1,4}/gi, '$1.');
   cleaned = cleaned.replace(/([QA][0-9]*)\s*[:.]/gi, (match, p1) => `${p1.toUpperCase()}.`);
 
-  // 마침표나 글자 뒤에 붙은 Q/A를 무조건 빈 줄 2개로 분리
   cleaned = cleaned.replace(/([^\n])\s*\n*\s*(Q[0-9]*\.)/gi, '$1\n\n$2');
   cleaned = cleaned.replace(/([^\n])\s*\n*\s*(A[0-9]*\.)/gi, '$1\n\n$2');
   cleaned = cleaned.replace(/([.!?])\s*(Q[1-9]\.|\*\*Q[1-9]\.\*\*)/g, '$1\n\n$2');
@@ -284,10 +284,10 @@ function sanitizeMarkdownFormatting(content, langCode) {
 }
 
 // =========================================================================
-// 🛡️ [topics.txt 파싱 및 윈도우 줄바꿈 완벽 방어]
+// topics.txt 파싱 및 줄바꿈 처리
 // =========================================================================
 if (!fs.existsSync(TOPICS_FILE)) {
-  console.error("❌ topics.txt 파일이 루트 경로에 존재하지 않습니다.");
+  console.error("❌ topics.txt 파일이 존재하지 않습니다.");
   process.exit(1);
 }
 
@@ -297,11 +297,9 @@ const lines = fileContent
   .map(l => l.trim())
   .filter(l => l.length > 0);
 
-console.log(`📋 [진단] topics.txt 로드 완료! 인식된 전체 주제 개수: ${lines.length}개`);
-
 if (lines.length === 0) {
-  console.error("❌ topics.txt 안에 유효한 텍스트 줄이 없습니다! 파일 내용을 확인하세요.");
-  process.exit(1);
+  console.log("⚠️ topics.txt에 남은 주제가 없습니다. 생성을 건너뜁니다.");
+  process.exit(0);
 }
 
 const currentTopic = lines[0];
@@ -367,30 +365,22 @@ const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const fileSlug = `post-${Date.now().toString(36)}`;
 
 // =========================================================================
-// 🛡️ [하드 킬] SDK 내부 무한 대기를 JS 엔진 레벨에서 35초 만에 강제 차단 (Promise.race)
-// 구글 SDK의 abortSignal 묵살 버그를 원천 무력화하고 35초 만에 강제 탈출
+// [1호기 100% 동일] 순수하고 검증된 SDK 직접 호출 함수 (8192 토큰 확보)
 // =========================================================================
-async function fetchWithRetry(prompt, maxRetries = 5, delayMs = 3000) {
+async function fetchWithRetry(prompt, maxRetries = 5, delayMs = 5000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const apiCallPromise = ai.models.generateContent({
-        model: GEMINI_MODEL,
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.5-flash-lite',
         contents: prompt,
         config: {
-          maxOutputTokens: 3000, // 2,200~2,600자 최적화 분량 (속도 대폭 상승)
+          maxOutputTokens: 8192,
           temperature: 0.7,
         }
       });
-
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('HARD_TIMEOUT_35S')), 35000)
-      );
-
-      // 둘 중 먼저 끝나는 놈이 이김 (35초 초과 시 구글 응답 기다리지 않고 에러 발생 후 탈출)
-      const response = await Promise.race([apiCallPromise, timeoutPromise]);
       return response.text;
     } catch (error) {
-      console.warn(`⚠️ [호출 재시도] ${attempt}/${maxRetries} (${error.message})`);
+      console.warn(`⚠️ [호출 재시도] ${attempt}/${maxRetries}: ${error.message}`);
       if (attempt === maxRetries) { throw error; }
       await delay(delayMs);
     }
@@ -402,7 +392,7 @@ async function generateSinglePost(lang, index) {
   const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
-  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 포스팅 생성 중... (적용 테마: ${selectedTheme.name})`);
+  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 포스팅 생성 중... (테마: ${selectedTheme.name})`);
 
   const { coverUrl, bodyUrl } = getPostImages(index);
   const pubDateIso = getKstPublishDateIso(index);
@@ -419,22 +409,22 @@ ${currentTopic}
 - Target City/Culture: "${lang.localeContext}"
 - Assigned Emergency Scenario: "${selectedScenario}"
 
-[BALANCED HIGH-QUALITY LENGTH REQUIREMENT]
-- For Korean (ko): Write a rich, thorough article around 2,500 characters (2,200 - 2,800 characters). Avoid repetitive fluff.
-- For other languages: Write 1,000 - 1,200 words of dense, high-value technical substance. Perfect for standard enterprise guides.
+[MANDATORY TOTAL LENGTH ENFORCEMENT - ZERO CONDENSATION]
+- For Korean (ko): Total body MUST be AT LEAST 2,500 characters (공백 제외 최소 2,000자 이상). Summarizing or brief outputs are strictly prohibited.
+- For other languages: Total body MUST be AT LEAST 1,400 - 1,800 words of rich technical substance.
 
 [5-SECTION STRUCTURE REQUIREMENTS]
 Strictly follow these 5 sections using clean H2 markdown headings (## ):
 
 ## ${i18n.s1}
 - Dive directly into the workplace panic strictly based on: "${selectedScenario}".
-- Write 2-3 vivid paragraphs describing:
+- Write at least 3-4 vivid paragraphs describing:
   1) The sudden cold sweat moment when payment declined or funds were held.
   2) The urgent business deadline and naive first attempts that failed.
   3) The critical business risk (cash flow freeze, client trust damage).
 
 ## ${i18n.s2}
-- Write an exhaustive technical analysis across 2-3 detailed paragraphs explaining:
+- Write an exhaustive technical analysis across at least 3-4 detailed paragraphs explaining:
   1) Risk scoring engines, 3DS2 / SCA authentication drops, and interchange routing barriers.
   2) Tax compliance pitfalls (W-8BEN vs W-9 discrepancies, VAT Reverse Charge clauses, TIN mismatches).
   3) Intermediary bank bottlenecks (SWIFT MT103 routing loops, correspondent bank clearing delays).
@@ -520,11 +510,31 @@ theme: "${selectedTheme.name}"
       // 🛡️ 1차 무결 정제
       body = sanitizeMarkdownFormatting(body, lang.code);
 
-      if (lang.code === 'ko') {
-        console.log(`📏 [2-1호기 한국어 본문 최종 글자 수] ${body.length}자 (목표: 2,500자 내외)`);
+      // 🛡️ [글자 수 물리적 강제 루프: 2,200자 미만 시 즉시 재작성]
+      let retryCount = 0;
+      while (lang.code === 'ko' && body.length < 2200 && retryCount < 2) {
+        console.warn(`⚠️ [분량 부족] 현재 ${body.length}자 -> 목표 2,500자 충족을 위해 재작성 시도 (${retryCount + 1}/2)...`);
+        const retryPrompt = prompt + "\n\nCRITICAL ENFORCEMENT: The previous generated post was strictly too short. You MUST write at least 4 very long, deeply detailed paragraphs for EACH section. Elaborate on every technical concept and troubleshooting step exhaustively to exceed 2,500 Korean characters.";
+        
+        let retryRawText = await fetchWithRetry(retryPrompt);
+        let retryText = retryRawText.trim();
+        if (retryText.startsWith('```markdown')) retryText = retryText.replace(/^```markdown\n/, '').replace(/\n```$/, '');
+        if (retryText.startsWith('```')) retryText = retryText.replace(/^```\n/, '').replace(/\n```$/, '');
+
+        const newFmMatch = retryText.match(/^---[\s\S]*?---\n*/);
+        if (newFmMatch) {
+          let newBody = retryText.slice(newFmMatch[0].length).trim();
+          newBody = newBody.replace(/^#\s+[^\n]+\n+/, '');
+          body = sanitizeMarkdownFormatting(newBody, lang.code);
+        }
+        retryCount++;
       }
 
-      const middleImageMarkdown = `\n\n![Troubleshooting Guide](${bodyUrl})\n\n`;
+      if (lang.code === 'ko') {
+        console.log(`📏 [2-1호기 한국어 본문 최종 글자 수] ${body.length}자 (목표: 2,500자 이상)`);
+      }
+
+      const middleImageMarkdown = `\n\n![Billing Troubleshooting Guide](${bodyUrl})\n\n`;
 
       if (!body.includes(middleImageMarkdown.trim())) {
         if (body.includes('## 2.')) {
@@ -563,7 +573,7 @@ theme: "${selectedTheme.name}"
 
 async function run() {
   console.log("==================================================");
-  console.log(`⚡ LifeWebLab 12개국 최적화 고속 자동 포스팅 시작 (모델: ${GEMINI_MODEL}, 방패 가동)`);
+  console.log("⚡ LifeWebLab 12개국 최적화 고속 자동 포스팅 시작 (1호기 엔진 탑재)");
   console.log("==================================================");
 
   let successCount = 0;
@@ -572,7 +582,7 @@ async function run() {
     const isSuccess = await generateSinglePost(TARGET_LANGS[i], i);
     if (isSuccess) successCount++;
     if (i < TARGET_LANGS.length - 1) {
-      await delay(1500);
+      await delay(2000);
     }
   }
 
