@@ -367,32 +367,30 @@ const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const fileSlug = `post-${Date.now().toString(36)}`;
 
 // =========================================================================
-// 🛡️ [핵심 개선] 35초 강제 타임아웃 방어막 탑재 fetch 함수
-// 소켓 지연 및 구글 서버 멍때림 발생 시 35초 만에 스스로 끊고 재시도
+// 🛡️ [하드 킬] SDK 내부 무한 대기를 JS 엔진 레벨에서 35초 만에 강제 차단 (Promise.race)
+// 구글 SDK의 abortSignal 묵살 버그를 원천 무력화하고 35초 만에 강제 탈출
 // =========================================================================
 async function fetchWithRetry(prompt, maxRetries = 5, delayMs = 3000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      controller.abort();
-    }, 35000); // 35초 초과 시 자동 강제 차단
-
     try {
-      const response = await ai.models.generateContent({
+      const apiCallPromise = ai.models.generateContent({
         model: GEMINI_MODEL,
         contents: prompt,
         config: {
-          maxOutputTokens: 3500, // 8192 폭주 차단, 2,200~2,600자 황금 분량에 최적화
+          maxOutputTokens: 3000, // 2,200~2,600자 최적화 분량 (속도 대폭 상승)
           temperature: 0.7,
-          abortSignal: controller.signal // 구글 SDK 타임아웃 신호 연동
         }
       });
-      clearTimeout(timeoutId);
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('HARD_TIMEOUT_35S')), 35000)
+      );
+
+      // 둘 중 먼저 끝나는 놈이 이김 (35초 초과 시 구글 응답 기다리지 않고 에러 발생 후 탈출)
+      const response = await Promise.race([apiCallPromise, timeoutPromise]);
       return response.text;
     } catch (error) {
-      clearTimeout(timeoutId);
-      const isTimeout = error.name === 'AbortError' || error.message?.includes('aborted');
-      console.warn(`⚠️ [호출 재시도] ${attempt}/${maxRetries} (${isTimeout ? '35초 타임아웃으로 강제 재시도' : error.message})`);
+      console.warn(`⚠️ [호출 재시도] ${attempt}/${maxRetries} (${error.message})`);
       if (attempt === maxRetries) { throw error; }
       await delay(delayMs);
     }
