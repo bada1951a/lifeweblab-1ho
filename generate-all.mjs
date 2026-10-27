@@ -175,8 +175,8 @@ function sanitizeMarkdownFormatting(content, langCode) {
   });
   cleaned = cleaned.replace(/\$([A-Za-z0-9_-]+)\$/g, '`$1`');
   cleaned = cleaned.replace(/\\times/g, 'x')
-                   .replace(/\\circ/g, '°')
-                   .replace(/\\approx/g, '≈');
+                     .replace(/\\circ/g, '°')
+                     .replace(/\\approx/g, '≈');
 
   // 3) 구버전 캡처 헤더 및 영문 대괄호 헤더를 100% 현지어 표준 규격으로 치환
   cleaned = cleaned.replace(/^#{1,3}\s*1\.?\s*(\[.*?\]|당시 상황.*?|Critical Payment.*?|Opening Story.*?|Die Panik.*?)/gmi, `## ${i18n.s1}`);
@@ -205,12 +205,24 @@ function sanitizeMarkdownFormatting(content, langCode) {
     return match;
   });
 
-  // 6) 헤더에 붙은 불필요한 볼드 정제 (### **제목** -> ### 제목)
-  cleaned = cleaned.replace(/^(#{1,6}\s*)\*\*(.*?)\*\*/gm, '$1$2');
+  // =========================================================================
+  // 🛡️ [핵심 보정 1] 헤딩(#) 줄 내부의 모든 ** 제거 (제목 중간 별표 노출 완벽 박멸)
+  // =========================================================================
+  cleaned = cleaned.replace(/^(#{1,6}\s+[^\n]+)$/gm, (match) => {
+    return match.replace(/\*\*/g, '');
+  });
 
-  // 7) 본문 볼드(**) 기호 띄어쓰기 및 깨짐 교정
-  cleaned = cleaned.replace(/\*\*\s+([^\*]+?)\s+\*\*/g, '**$1**');
-  cleaned = cleaned.replace(/([가-힣a-zA-Z0-9])\*\*([가-힣a-zA-Z0-9])/g, '$1 **$2');
+  // =========================================================================
+  // 🛡️ [핵심 보정 2] 볼드(**) 기호 안쪽 공백 제거 (본문 ** 노출 버그 완벽 차단)
+  // =========================================================================
+  cleaned = cleaned.replace(/\*\*\s+([^*]+?)\s+\*\*/g, '**$1**');
+  cleaned = cleaned.replace(/\*\*\s+([^*]+?)\*\*/g, '**$1**');
+  cleaned = cleaned.replace(/\*\*([^*]+?)\s+\*\*/g, '**$1**');
+
+  // 7) 쪼개진 단어 복원 (스페인어 등)
+  cleaned = cleaned.replace(/derech\s*\n\s*a:/gi, 'derecha:')
+                    .replace(/con la energi\s*\n\s*a:/gi, 'con la energía:')
+                    .replace(/preventiv\s*\n\s*a:/gi, 'preventiva:');
 
   // 8) Q&A 줄바꿈 및 물음표 띄어쓰기
   cleaned = cleaned.replace(/([^\n])\s*(\*\*?[QA][0-9]*\s*[:.]\*\*?)/gi, '$1\n\n$2');
@@ -331,7 +343,6 @@ async function generateSinglePost(lang, index) {
   const { coverUrl, bodyUrl } = getPostImages(index);
   const pubDateIso = getKstPublishDateIso(index);
 
-  // 1·2·3·4호기와 동일한 직장인 썰 + 볼드 하이라이트 강제 프롬프트
   const prompt = `
 You are a ${lang.persona}.
 Write a gripping, highly engaging, and practically exhaustive cross-border payment/fintech troubleshooting guide natively in ${lang.name}.
@@ -383,10 +394,11 @@ You MUST strictly follow these 5 sections using clean H2 markdown headings (## )
   * Each answer (**A1.**, **A2.**, **A3.**) MUST be a detailed, multi-sentence technical explanation (at least 3-4 sentences per answer).
   * Put an empty blank line between every Question and Answer.
 
-[VISUAL HIGHLIGHTING & STYLING RULES - CRITICAL FOR READABILITY]
-1. BOLD HIGHLIGHTS (**): Liberally use bold text (**keyword**) for crucial terms, exact button names, critical error codes, and key financial takeaways in EVERY single paragraph so the text NEVER looks monotone. Always place a space before and after the bold markup if surrounded by words.
-2. INLINE CODE BLOCKS: Wrap error codes, API parameters, or financial forms (e.g. \`W-8BEN\`, \`MT103\`, \`3DS2\`, \`do_not_honor\`) in inline backticks (\`code\`).
-3. NO LATEX & NO TILDE: NEVER use LaTeX ($ or $$). NEVER wrap variables, keys, or dollar amounts in raw dollar signs like $100$. Wrap them in normal text or backticks. NEVER use tilde (~) for ranges; use hyphen (-).
+[STRICT MARKDOWN & FORMATTING RULES]
+1. HEADINGS: Keep clean markdown headings (e.g. "## ${i18n.s2}"). NEVER put bold asterisks (**) inside headings.
+2. BOLD FORMATTING: Use bold (**word**) STRICTLY WITHOUT SPACES inside the asterisks. Never write "** word **".
+3. INLINE CODE BLOCKS: Wrap error codes, API parameters, or financial forms (e.g. \`W-8BEN\`, \`MT103\`, \`3DS2\`, \`do_not_honor\`) in inline backticks (\`code\`).
+4. NO LATEX & NO TILDE: NEVER use LaTeX ($ or $$). NEVER wrap variables, keys, or dollar amounts in raw dollar signs like $100$. Wrap them in normal text or backticks. NEVER use tilde (~) for ranges; use hyphen (-).
 ${lang.code !== 'ko' ? `- Absolutely NEVER include any Korean characters (가-힣) anywhere in non-Korean posts.` : ''}
 
 [Design Theme & Layout Dynamic Rules]
