@@ -3,11 +3,11 @@ import Layout from '~/layouts/PageLayout.astro';
 import Hero from '~/components/widgets/Hero.astro';
 import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 
-// 생성된 은하수 대문 이미지 불러오기 (src/assets/images/galaxy.png)
+// 4호기 대문 이미지 불러오기 (src/assets/images/galaxy.png)
 import galaxyImg from '~/assets/images/galaxy.png';
 
 const metadata = {
-  title: 'Daily Prompt Hack — Advanced AI & Prompt Engineering Insights',
+  title: 'LifeWebLab — Global Web & Tech Troubleshooting Solutions',
   ignoreTitleTemplate: true,
 };
 ---
@@ -18,30 +18,30 @@ const metadata = {
     actions={[
       {
         variant: 'primary',
-        text: 'Explore Prompts',
+        text: 'Explore Solutions',
         href: '/blog',
         icon: 'tabler:chevron-right',
       },
     ]}
     image={{
       src: galaxyImg,
-      alt: 'Daily Prompt Hack - Advanced AI & Prompt Engineering Blueprints',
+      alt: 'LifeWebLab - Global Web & Tech Solutions',
     }}
   >
     <Fragment slot="title">
-      Advanced AI & Prompt Engineering,<br />
-      <span class="text-accent dark:text-white highlight">Daily Prompt Hack</span>
+      Global Web & Tech Solutions,<br />
+      <span class="text-accent dark:text-white highlight">LifeWebLab</span>
     </Fragment>
 
     <Fragment slot="subtitle">
-      Bridge the gap between human intent and machine execution. Actionable prompt blueprints, LLM reasoning workflows, and AI optimization guides.
+      Practical troubleshooting guides, payment gateway fixes, and actionable digital workflow blueprints for modern creators and entrepreneurs.
     </Fragment>
   </Hero>
 
   <!-- Latest Posts Section -->
   <BlogLatestPosts
-    title="Latest Prompt Blueprints"
-    information="Explore battle-tested generative AI workflows and advanced prompt architectures."
+    title="Latest Troubleshooting Guides"
+    information="Explore battle-tested solutions for global payment platforms, web infrastructure, and SaaS troubleshooting."
     count={8}
   />
 </Layout>
