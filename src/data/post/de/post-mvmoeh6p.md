@@ -1,5 +1,5 @@
 ---
-title: "Wie wir den Stripe Error Code do_not_honor und verschollene **MT103**-Überweisungen ohne Umsatzverlust gelöst haben"
+title: "Wie wir den Stripe Error Code do_not_honor und verschollene MT103-Überweisungen ohne Umsatzverlust gelöst haben"
 description: "Erfahren Sie aus erster Hand, wie wir im Frankfurter Finanzdistrikt und Berliner Tech-Campus kritische Stripe-Zahlungsfehler und hängende Korrespondenzbank-Überweisungen behoben haben."
 publishDate: 2026-10-24T17:29:26.051Z
 image: '/images/billing-photo/billing-14.jpg'
