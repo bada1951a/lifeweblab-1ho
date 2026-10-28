@@ -381,7 +381,10 @@ Topic: "${topic}"
 [ADSENSE QUALITY & LENGTH REQUIREMENT]
 - For Korean (ko): Write exactly around 2,400 - 2,600 characters (do NOT exceed 3,000 characters).
 - For other languages: Write exactly 900 - 1,100 words.
-- Tone: Highly informative, professional, practical workplace advice.\n- Never invent first-hand experience, credentials, tested results, customer stories, provider settings, financial regulations or tax rules.\n- Give concrete actionable steps; when provider policies differ, clearly state the limitation.\n- Avoid repetition and include a concise conclusion in section 4.
+- Tone: Highly informative, professional, practical workplace advice.
+- Never invent first-hand experience, credentials, tested results, customer stories, provider settings, financial regulations or tax rules.
+- Give concrete actionable steps; when provider policies differ, clearly state the limitation.
+- Avoid repetition and include a concise conclusion in section 4.
 
 [STRUCTURE - STRICT 5 H2 HEADINGS]
 Use these exact H2 headings:
@@ -485,7 +488,14 @@ tags: ${JSON.stringify(i18n.tags)}
   }
 }
 
-async function run() {\n  if (DRY_RUN) {\n    console.log('DRY RUN: API 호출 및 글 발행 없이 기본 검수 함수를 확인합니다.');\n    const sample = '---\\ntitle: test\\ndescription: test\\npublishDate: 2026-10-28\\nimage: /test.jpg\\ncategory: troubleshooting\\n---\\n\\n## 1. Test\\nShort';\n    if (!validateGeneratedPost(sample, 'ko').some(x => x.includes('분량'))) throw new Error('분량 검수 자체 테스트 실패');\n    console.log('PASS: 짧은 글 발행 차단 검수');\n    return;\n  }
+async function run() {
+  if (DRY_RUN) {
+    console.log('DRY RUN: API 호출 및 글 발행 없이 기본 검수 함수를 확인합니다.');
+    const sample = '---\\ntitle: test\\ndescription: test\\npublishDate: 2026-10-28\\nimage: /test.jpg\\ncategory: troubleshooting\\n---\\n\\n## 1. Test\\nShort';
+    if (!validateGeneratedPost(sample, 'ko').some(x => x.includes('분량'))) throw new Error('분량 검수 자체 테스트 실패');
+    console.log('PASS: 짧은 글 발행 차단 검수');
+    return;
+  }
   console.log("==================================================");
   console.log("LifeWebLab: 발행 전 검수 및 실패 언어 복구 시작");
   console.log("==================================================");
