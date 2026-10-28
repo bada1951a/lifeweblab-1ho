@@ -8,11 +8,9 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Modern Minimalist Modern"
 ---
 
-## 1. Sự cố khẩn cấp khi thanh toán và chuyển tiền quốc tế
+## 1. Sự cố khẩn cấp khi thanh toán và chuyển tiền
 
 Chuyện là thế này anh em ạ, dạo này ngồi ở văn phòng ngay trung tâm Quận 1, Sài Gòn mà mồ hôi hột cứ túa ra dù máy lạnh đang bật 16 độ. Mới sáng tinh mơ, khi ly cà phê sữa đá còn chưa kịp tan đá, đập vào mắt tôi là một cú sốc điện tim: lệnh rút tiền từ tài khoản thanh toán quốc tế về tài khoản nội địa bị ngân hàng trung gian đẩy trả (bounce) ngược lại chỉ vì một lỗi ngớ ngẩn là lệch tên in hoa không khớp dấu cách giữa Stripe và tài khoản thụ hưởng. Tiền đang về thì bị kẹt cứng ngắc, đối tác nước ngoài thì cứ réo đòi hóa đơn VAT và chứng từ thanh toán xuyên biên giới, còn sếp lớn thì đứng đằng sau thở dài. Lúc đó thật sự chỉ muốn độn thổ cho xong.
-
-## 1. Hoảng Loạn Buổi Sáng Và Đống Hỗn Lộn Tên Tuổi
 
 Quay ngược lại thời điểm cái "búa tạ" ấy giáng xuống, cảm giác lúc đó đúng là đứng ngồi không yên. Hệ thống hiển thị mã lỗi `do_not_honor` trên bảng điều khiển trong khi hóa đơn xuất khẩu dịch vụ thì đã được phát hành đi từ tối hôm trước. Đội ngũ tài chính bên mình cứ cặm cụi check đi check lại xem có sai sót gì về mã `CVC` hay ngày hết hạn của thẻ không. Nhưng không, nguyên nhân sâu xa chẳng phải do thẻ giả hay tài khoản không đủ tiền, mà là do bộ lọc rủi ro của ngân hàng phát hành thẻ đã kích hoạt chế độ tự động từ chối. 
 
@@ -24,7 +22,7 @@ Hồi ấy, mình cứ ngỡ là chỉ cần bấm nút `Retry payment` là xong
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-32.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
-## 2. Phân Tích Căn Nguyên Vấn Đảo Dòng Tiền Xuyên Biên Giới
+## 2. Phân tích nguyên nhân gốc rễ lỗi từ chối thanh toán
 
 Để không lặp lại vết xe đổ đó, mình đã ngồi đúc kết lại 3 nguyên nhân cốt lõi khiến dòng tiền bị đứt gãy đột ngột như vậy. Anh em cùng xem liệu công ty mình có đang vướng phải những lỗi kinh điển này không nhé.
 
@@ -40,7 +38,7 @@ Khi doanh nghiệp của anh em vừa có một cú hích doanh số, lượng g
 
 Nhiều anh em kế toán có thói quen tách bạch hoàn toàn giữa việc xuất hóa đơn điện tử xuyên biên giới và việc nhận tiền qua Stripe. Khi dòng tiền về, tổng số tiền trên Stripe không khớp với giá trị sau khi trừ phí ẩn hoặc tỷ giá quy đổi trên hóa đơn đã phát hành. Sự chênh lệch dù chỉ vài xu USD này qua hệ thống đối chiếu tự động sẽ khiến ngân hàng nghi ngờ và tạm ngưng xử lý giao dịch.
 
-## 3. Quy Trình Các Bước Xử Lý Khẩn Cấp Để Cứu Vãn Doanh Thu
+## 3. Quy trình thực tế từng bước xử lý lỗi cổng thanh toán
 
 Đừng để mất khách hàng chỉ vì mấy cái lỗi ngớ ngẩn này. Dưới đây là quy trình thao tác thực chiến mà mình đã áp dụng thành công để đưa dòng tiền trở lại guồng quay bình thường chỉ trong vòng chưa đầy 24 giờ.
 
@@ -60,7 +58,7 @@ Cuối cùng, truy cập vào mục `Hóa đơn` (Invoices) và `Biểu mẫu th
   <strong>[Key Point]:</strong> Tuyệt đối không tự ý thực hiện quá 3 lần lệnh rút tiền hoặc thanh toán lại cho cùng một mã lỗi trong một ngày để tránh bị hệ thống tự động liệt kê vào danh sách đen (Blacklist).
 </div>
 
-## 4. Danh sách kiểm tra ngăn ngừa đóng băng tài khoản và phí ẩn Vàng Phòng Ngừa Sự Cố Tái Diễn Cho Doanh Nghiệp
+## 4. Danh sách kiểm tra ngăn ngừa đóng băng tài khoản
 
 Để những buổi sáng uống cà phê không còn bị giật mình bởi mấy cái thông báo lỗi chết tiệt này nữa, anh em hãy bỏ túi ngay danh sách kiểm tra định kỳ hàng tuần dưới đây:
 
@@ -69,18 +67,8 @@ Cuối cùng, truy cập vào mục `Hóa đơn` (Invoices) và `Biểu mẫu th
 *   Chủ động thông báo trước cho ngân hàng trong nước về các chiến dịch kinh doanh lớn có doanh thu quốc tế tăng vọt để tránh bị khóa dòng tiền đột ngột.
 *   Lưu trữ đầy đủ các bản sao hóa đơn xuyên biên giới và chứng từ thanh toán điện tử ở một thư mục riêng biệt để sẵn sàng cung cấp khi Stripe yêu cầu kiểm tra ngẫu nhiên.
 
-## 5. Câu Hỏi Thường Gặp (FAQ) Từ Các Giám Đốc Tài Chính Thực Chiến
+## 5. Các câu hỏi thường gặp (FAQ)
 
 Dưới đây là tổng hợp những thắc mắc mà các đồng nghiệp hay hỏi mình nhất mỗi khi gặp sự cố tương tự với cổng thanh toán quốc tế:
 
-Q1: Tại sao giao dịch của khách hàng hiển thị là thành công trên hệ thống của họ nhưng Stripe lại trả về mã lỗi `do_not_honor`?
-
-A1: Điều này xảy ra khi ngân hàng phát hành thẻ của khách hàng quyết định chặn giao dịch vào phút chót do các quy tắc bảo mật nội bộ hoặc nghi ngờ rủi ro gian lận địa lý, mặc dù tài khoản của họ hoàn toàn có đủ số dư.
-
-Q2: Tôi nên làm gì ngay lập tức khi tiền bị kẹt giữa đường do lệch tên người thụ hưởng?
-
-A2: Bạn cần liên hệ ngay với bộ phận hỗ trợ khách hàng của Stripe, cung cấp giấy phép kinh doanh bản dịch tiếng Anh có công chứng và giấy xác nhận tài khoản ngân hàng chính chủ để họ cập nhật lại thông tin định danh thủ công cho bạn.
-
-Q3: Việc thay đổi thông tin tên công ty trên Stripe có làm gián đoạn các hóa đơn đã phát hành trước đó không?
-
-A3: Không ảnh hưởng đến các hóa đơn cũ đã được ghi nhận trên hệ thống, nhưng nó sẽ giúp các hóa đơn và lệnh rút tiền mới được xử lý suôn sẻ mà không bị vướng lỗi đối chiếu tên tuổi nữa.
+**Q1.**Tại sao giao dịch của khách hàng hiển thị là thành công trên hệ thống của họ nhưng Stripe lại trả về mã lỗi `do_not_honor`?**A1.**Điều này xảy ra khi ngân hàng phát hành thẻ của khách hàng quyết định chặn giao dịch vào phút chót do các quy tắc bảo mật nội bộ hoặc nghi ngờ rủi ro gian lận địa lý, mặc dù tài khoản của họ hoàn toàn có đủ số dư.**Q2.**Tôi nên làm gì ngay lập tức khi tiền bị kẹt giữa đường do lệch tên người thụ hưởng?**A2.**Bạn cần liên hệ ngay với bộ phận hỗ trợ khách hàng của Stripe, cung cấp giấy phép kinh doanh bản dịch tiếng Anh có công chứng và giấy xác nhận tài khoản ngân hàng chính chủ để họ cập nhật lại thông tin định danh thủ công cho bạn.**Q3.**Việc thay đổi thông tin tên công ty trên Stripe có làm gián đoạn các hóa đơn đã phát hành trước đó không?**A3.** Không ảnh hưởng đến các hóa đơn cũ đã được ghi nhận trên hệ thống, nhưng nó sẽ giúp các hóa đơn và lệnh rút tiền mới được xử lý suôn sẻ mà không bị vướng lỗi đối chiếu tên tuổi nữa.
