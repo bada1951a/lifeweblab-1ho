@@ -12,7 +12,7 @@ theme: "Technical Standard Navy"
 
 Eram por volta das oito e meia da manhã aqui no meu escritório na Avenida Paulista, o tráfego típico de São Paulo já estava caótico lá embaixo, e eu com aquela xícara de café fresco na mão, achando que seria mais um día tranquilo de conciliação cambial.
 
-Abri o meu e-mail corporativo e levei um susto daqueles que fazem o café quase entornar no teclado: um cliente corporativo graúdo lá dos Estados Unidos tinha acabado de me enviar uma mensagem dizendo que o departamento financeiro deles travou o meu pagamento de cinco mil dólares porque eu não havia enviado o formulário `W-9`.
+Abri o meu e-mail corporativo e levei um susto daqueles que fazem o café quase entornar no teclado: um cliente corporativo graúdo lá dos Estados Unidos tinha acabado de me enviar uma mensagem dizendo que o departamento financeiro deles travou o meu pagamento de cinco mil dólares porque eu não havia enviado o formulário **`W-9`**.
 
 Para piorar a situação, o maldito saldo do PayPal continuava preso naquele infame bloqueio cautelar de 21 dias, e eu precisava urgentemente do dinheiro para cobrir custos operacionais da agência.
 
@@ -54,13 +54,13 @@ Eles não fazem isso por malícia, mas sim por puro medo de sofrer auditorias pe
 
 ### A Armadilha Psicológica e Operacional do Bloqueio de 21 Dias
 
-O PayPal aplica o bloqueio de 21 dias automaticamente quando detecta uma mudança repentina no volume de vendas, contas novas recebendo valores altos ou prestação de serviços intangíveis (como consultoria e desenvolvimento de software) onde não há um código de rastreio físico de transportadora.
+O PayPal aplica o **bloqueio de 21 dias** automaticamente quando detecta uma mudança repentina no volume de vendas, contas novas recebendo valores altos ou prestação de serviços intangíveis (como consultoria e desenvolvimento de software) onde não há um código de rastreio físico de transportadora.
 
 A plataforma faz isso para se proteger contra fraudes e contestações de cartões (chargebacks), mas acaba asfixiando o fluxo de caixa de nós, profissionais liberais e agências que dependem de liquidez imediata.
 
 ### Falha na Comunicação Prévia de Documentação Fiscal
 
-O erro inicial foi meu e da minha equipe por não termos enviado de forma proativa o documento substituto correto (`W-8BEN`) logo no início do contrato, antes mesmo de emitir a primeira `Fatura` de cobrança internacional.
+O erro inicial foi meu e da minha equipe por não termos enviado de forma proativa o documento substituto correto (**`W-8BEN`**) logo no início do contrato, antes mesmo de emitir a primeira `Fatura` de cobrança internacional.
 
 Se tivéssemos antecipado essa exigência burocrática, o departamento fiscal do cliente jamais teria bloqueado o nosso cadastro no portal deles.
 
@@ -68,7 +68,7 @@ Se tivéssemos antecipado essa exigência burocrática, o departamento fiscal do
 
 Para resolver essa bagunça de uma vez por todas e destravar o dinheiro, executei um plano de ação cirúrgico dividido em etapas bem claras que você pode replicar aí na sua operação.
 
-### Step 1: Gerando o Formulário Correto e Explicando a Legislação ao Cliente
+### Passo 1: Gerar o formulário correto e explicar a legislação ao cliente
 
 Esqueci completamente o `W-9` e fui direto ao site oficial da IRS baixar a versão atualizada do formulário `W-8BEN` (Certificate of Foreign Status of Beneficial Owner for United States Tax Withholding).
 
@@ -76,7 +76,7 @@ Preenchi cuidadosamente os meus dados cadastrais como pessoa física ou jurídic
 
 Enviei o documento por e-mail para o gerente de contas americano acompanhado de uma cartinha em inglês bem direta, explicando que, por sermos uma empresa não residente e sem presença física nos EUA, somos legalmente isentos de apresentar o `W-9`, sendo o `W-8BEN` o único documento válido perante a lei americana para certificar nossa condição de isenção de retenção na fonte.
 
-### Step 2: Navegando pelas Configurações do PayPal para Acelerar a Liberação
+### Passo 2: Verificar as configurações do PayPal para agilizar a liberação
 
 Com o problema fiscal externo resolvido, fui focar no travamento interno do saldo.
 
@@ -88,7 +88,7 @@ Cliquei em `Configurações de Conta` e depois naveguei até a aba de `Formulár
 
 Como o serviço era de consultoria digital, adicionei manualmente no campo de detalhes da transação o link do relatório de entregas, o escopo assinado pelo cliente e as trocas de e-mails que comprovavam que o projeto havia sido entregue com 100% de satisfação.
 
-### Step 3: Acionando o Botão de Confirmação de Entrega e Contato Direto com o Suporte
+### Passo 3: Confirmar a entrega e entrar em contato com o suporte
 
 Fui até a transação retida e cliquei no botão `Confirmar Recebimento` ou `Atualizar Status do Pedido`, alterando o status para "Serviço Concluído".
 
@@ -102,7 +102,7 @@ Em menos de duas horas, o cliente fez isso, o status mudou de "Retido" para "Dis
 <strong>[Key Point]:</strong> Acelerar a liberação de saldo no PayPal exige evidências robustas de entrega (contratos, e-mails, relatórios) e a cooperação ativa do pagador na confirmação do serviço dentro da plataforma.
 </div>
 
-## 4. Checklist essencial para evitar retenções de saldo e taxas abusivas Prático para Evitar Novas Dores de Cabeça
+## 4. Checklist prático para evitar retenções de saldo e taxas abusivas
 
 Para garantir que eu nunca mais passe por esse sufoco no meio do expediente na Paulista, montei um checklist interno que agora sigo religiosamente antes de emitir qualquer fatura internacional:
 
@@ -111,16 +111,16 @@ Para garantir que eu nunca mais passe por esse sufoco no meio do expediente na P
 * Histórico de Transações Claras: Ao emitir faturas pelo PayPal ou plataformas parceiras, sempre incluo descrições detalhadas do escopo do serviço prestado para evitar gatilhos automáticos de fraude.
 * Verificação de Contas: Checo mensalmente se o `Painel` e as `Formas de Pagamento` estão sem nenhum alerta de segurança ou pendência documental.
 
-## 5. 자주 묻는 질문 (FAQ)
+## 5. Perguntas frequentes (FAQ)
 
-Q: O que acontece se eu preencher o W-9 mesmo sendo brasileiro e morando no Brasil?
+**Pergunta:** O que acontece se eu preencher o W-9 mesmo sendo brasileiro e morando no Brasil?
 
-A: Você estará cometendo uma falsidade ideológica fiscal perante o governo dos Estados Unidos, o que pode resultar em bloqueio permanente de contas em instituições financeiras americanas e problemas graves de compliance internacional. Sempre utilize o `W-8BEN`
+**Resposta:** Você estará cometendo uma falsidade ideológica fiscal perante o governo dos Estados Unidos, o que pode resultar em bloqueio permanente de contas em instituições financeiras americanas e problemas graves de compliance internacional. Sempre utilize o `W-8BEN`
 
-Q: É possível antecipar a liberação do saldo bloqueado por 21 dias no PayPal sem a ajuda do cliente?
+**Pergunta:** É possível antecipar a liberação do saldo bloqueado por 21 dias no PayPal sem a ajuda do cliente?
 
-A: É difícil, mas não impossível. Adicionando comprovantes de rastreio, documentações de entrega de serviços e mantendo um histórico limpo, o algoritmo pode liberar antes. No entanto, a confirmação direta feita pelo comprador no painel dele é sempre o gatilho mais rápido
+**Resposta:** É difícil, mas não impossível. Adicionando **comprovantes de rastreio**, documentações de entrega de serviços e mantendo um histórico limpo, o algoritmo pode liberar antes. No entanto, a confirmação direta feita pelo comprador no painel dele é sempre o gatilho mais rápido
 
-Q: O formulário W-8BEN tem validade indeterminada?
+**Pergunta:** O formulário W-8BEN tem validade indeterminada?
 
-A: Não. O formulário `W-8BEN` geralmente tem validade de três anos civis completos, contados a partir da data em que foi assinado, a menos que ocorra alguma mudança significativa nas informações declaradas. É preciso renová-lo periodicamente.
+**Resposta:** Não. O formulário `W-8BEN` geralmente tem validade de três anos civis completos, contados a partir da data em que foi assinado, a menos que ocorra alguma mudança significativa nas informações declaradas. É preciso renová-lo periodicamente.
