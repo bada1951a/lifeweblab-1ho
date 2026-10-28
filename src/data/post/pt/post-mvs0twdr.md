@@ -38,4 +38,16 @@ Manter uma operação financeira blindada contra bloqueios inesperados exige a a
 
 Além disso, estabeleça um canal de comunicação direto com o suporte especializado da sua plataforma de pagamentos sempre que houver alteração significativa no volume de transações ou nos valores faturados. Documentar a natureza B2B das operações e anexar contratos comerciais diretamente aos registros de cobrança reduz drasticamente a incidência de bloqueios automatizados. Com esses cuidados, sua empresa garante previsibilidade financeira e evita surpresas desagradáveis no fechamento contábil.
 
-## 5. Perguntas Frecuentes (FAQ)**Q1.**Por que o sistema bloqueia transações legítimas como fraude?**A1.**O sistema utiliza algoritmos automatizados que detectam qualquer desvio no padrão de faturamento ou dados fiscais inconsistentes. Quando uma fatura é rejeitada por falta de impostos e refeita rapidamente, o risco é recalculado incorretamente.**Q2.**Como o VAT Reverse Charge afeta a aprovação do pagamento?**A2.**A ausência dessa menção legal impede que o banco do cliente processe o crédito corporativo devido às normativas fiscais locais. Isso força o estorno ou a retenção, acionando os mecanismos de segurança da adquirentes.**Q3.**O que devo fazer se o painel permanecer bloqueado após a correção?**A3.** Entre em contato imediatamente com o suporte técnico da plataforma fornecendo o comprovante de conformidade fiscal e o contrato assinado. Isso acelera a liberação manual pelo setor de análise de risco.
+## 5. Perguntas frequentes (FAQ)
+
+**Pergunta 1:** Por que o sistema bloqueia transações legítimas como fraude?
+
+**Resposta 1:** O sistema utiliza algoritmos automatizados que detectam qualquer desvio no padrão de faturamento ou dados fiscais inconsistentes. Quando uma fatura é rejeitada por falta de impostos e refeita rapidamente, o risco é recalculado incorretamente.
+
+**Pergunta 2:** Como o VAT Reverse Charge afeta a aprovação do pagamento?
+
+**Resposta 2:** A ausência dessa menção legal impede que o banco do cliente processe o crédito corporativo devido às normativas fiscais locais. Isso força o estorno ou a retenção, acionando os mecanismos de segurança da adquirentes.
+
+**Pergunta 3:** O que devo fazer se o painel permanecer bloqueado após a correção?
+
+**Resposta 3:**  Entre em contato imediatamente com o suporte técnico da plataforma fornecendo o comprovante de conformidade fiscal e o contrato assinado. Isso acelera a liberação manual pelo setor de análise de risco.
