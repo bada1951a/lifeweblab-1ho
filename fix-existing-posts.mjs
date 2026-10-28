@@ -1,35 +1,43 @@
-// =========================================================================
-// 📌 [애드센스 승인 최우선] 12개국 전체 포스트 ** 기호 100% 완전 박멸 스크립트
-// =========================================================================
-
 import fs from 'fs';
 import path from 'path';
 
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 
-function stripAllBolds(content) {
-  // 1. 모든 ** 기호 문자 그대로 100% 삭제
-  let text = content.replaceAll('**', '');
+function cleanFaqGarbage(content) {
+  let lines = content.split(/\r?\n/);
+  let newLines = [];
+  let seenQuestions = new Set();
 
-  // 2. 혹시 남아있을 수 있는 단독 줄의 불필요한 별표 라인 제거
-  text = text.replace(/^\s*\*{1,4}\s*$/gm, '');
+  for (let line of lines) {
+    let trimmed = line.trim();
 
-  // 3. Q1. A1. 등 머리말 앞뒤 불필요한 공백 정돈
-  text = text.replace(/\b([QA][1-3])\s*\.\s*/g, '$1. ');
+    // 1. "Q1. 질문 (FAQ) FAQ" 같은 무의미한 찌꺼기 라인 즉시 제외
+    if (/^Q\d*\.\s*질문/i.test(trimmed)) {
+      continue;
+    }
 
-  // 4. 3개 이상 연속된 빈 줄을 최대 2개로 압축
-  return text.replace(/\n{3,}/g, '\n\n').trim();
+    // 2. 문장 끝에 붙어버린 (FAQ) 태그 제거 (예: 어떻게 해야 하나요? (FAQ) -> 어떻게 해야 하나요?)
+    if (/^Q[1-3]\./i.test(trimmed)) {
+      trimmed = trimmed.replace(/\s*\(FAQ\)[\s(FAQ)]*$/gi, '');
+      
+      // 3. 바로 앞에 나온 질문과 내용이 중복되면 제외 (Q1 3연타 방지)
+      const qTextOnly = trimmed.replace(/^Q[1-3]\.\s*/, '').trim();
+      if (seenQuestions.has(qTextOnly)) {
+        continue;
+      }
+      seenQuestions.add(qTextOnly);
+      newLines.push(trimmed);
+      continue;
+    }
+
+    newLines.push(line);
+  }
+
+  return newLines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
 async function run() {
-  console.log("==================================================");
-  console.log("⚡ [전수 조치] 12개국 전체 포스트 ** 기호 완전 박멸 시작");
-  console.log("==================================================");
-
-  if (!fs.existsSync(POSTS_BASE_DIR)) {
-    console.error(`❌ 경로 없음: ${POSTS_BASE_DIR}`);
-    process.exit(1);
-  }
+  if (!fs.existsSync(POSTS_BASE_DIR)) process.exit(1);
 
   const langDirs = fs.readdirSync(POSTS_BASE_DIR, { withFileTypes: true })
     .filter(d => d.isDirectory())
@@ -45,26 +53,23 @@ async function run() {
       const filePath = path.join(langPath, file);
       const original = fs.readFileSync(filePath, 'utf-8');
 
-      // Frontmatter 영역 분리 (제목, 슬러그 등 메타데이터 보존)
       const fmMatch = original.match(/^---[\s\S]*?---\n*/);
       if (!fmMatch) continue;
 
       const frontmatter = fmMatch[0];
       const body = original.slice(fmMatch[0].length);
 
-      // 본문에서 모든 ** 삭제 적용
-      const cleanedBody = stripAllBolds(body);
+      const cleanedBody = cleanFaqGarbage(body);
       const result = `${frontmatter}${cleanedBody}\n`;
 
       if (result !== original) {
         fs.writeFileSync(filePath, result, 'utf-8');
-        console.log(`🧹 [** 삭제 완료] ${lang}/${file}`);
         updatedCount++;
       }
     }
   }
 
-  console.log(`\n🎉 완료: 12개국 총 ${updatedCount}개 파일에서 모든 ** 기호가 깨끗하게 제거되었습니다.`);
+  console.log(`[완료] 총 ${updatedCount}개 파일의 중복 질문 및 찌꺼기 줄 정리 완료`);
 }
 
 run();
