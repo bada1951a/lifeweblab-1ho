@@ -67,14 +67,14 @@ Om te zorgen dat we dit nooit meer meemaken, hebben we een strikt intern protoco
 - Zorg altijd voor een automatische API-koppeling die bij digitale levering direct een leveringsbevestiging naar het betalingsplatform stuurt.
 - Houd een testaccount paraat om nieuwe risicofilters eerst op kleine schaal te testen voordat je ze live zet voor al je klanten.
 
-## 5. Veelgestelde vragen (FAQ)
+## 5. 자주 묻는 질문 (FAQ)
 
-**Q1.** Wat moet ik doen als de knop 'Ontvangst bevestigen' niet zichtbaar is voor mijn digitale diensten?Als deze knop ontbreekt, moet je via het transactiedepot de optie 'Transactiegegevens bijwerken' selecteren en handmatig kiezen voor 'Dienst of digitaal product geleverd'. Voeg daarna direct een PDF-factuur toe als bewijs.
+**Q1.**   Wat moet ik doen als de knop 'Ontvangst bevestigen' niet zichtbaar is voor mijn digitale diensten?Als deze knop ontbreekt, moet je via het transactiedepot de optie 'Transactiegegevens bijwerken' selecteren en handmatig kiezen voor 'Dienst of digitaal product geleverd'. Voeg daarna direct een PDF-factuur toe als bewijs
 
-**Q2.** Heeft het zin om de klantenservice van PayPal te bellen tijdens een 21-day hold?
+**Q2.**   Heeft het zin om de klantenservice van PayPal te bellen tijdens een 21-day hold
 
-**A2.** Alleen bellen heeft weinig zin als je backend-instellingen niet kloppen. Zorg eerst dat je risicofilters en documentatie op orde zijn in je `Accountinstellingen`, en neem daarna pas contact op met de merchantsupport met concrete bewijzen.
+**A2.**   Alleen bellen heeft weinig zin als je backend-instellingen niet kloppen. Zorg eerst dat je risicofilters en documentatie op orde zijn in je `Accountinstellingen`, en neem daarna pas contact op met de merchantsupport met concrete bewijzen
 
-**Q3.** Hoe voorkom ik dat grote betalingen automatisch als verdacht worden aangemerkt?
+**Q3.**   Hoe voorkom ik dat grote betalingen automatisch als verdacht worden aangemerkt
 
-**A3.** Communiceer vooraf met je betalingspartner als je een enorme omzetpiek verwacht, en zorg dat je `Fraud Risk Score`-filters geleidelijk worden aangepast naarmate je bedrijfsgroei toeneemt.
+**A3.**   Communiceer vooraf met je betalingspartner als je een enorme omzetpiek verwacht, en zorg dat je `Fraud Risk Score`-filters geleidelijk worden aangepast naarmate je bedrijfsgroei toeneemt.

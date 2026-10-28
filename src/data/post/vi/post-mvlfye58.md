@@ -84,18 +84,18 @@ Trong nội dung yêu cầu, hãy giải thích rõ ràng rằng sự cố phát
 - Lưu trữ toàn bộ các tệp nhật ký API và bản sao `Hóa đơn` điện tử của các giao dịch xuyên biên giới vào một kho lưu trữ riêng biệt nhằm sẵn sàng cung cấp khi cổng thanh toán yêu cầu xác minh.
 - Đào tạo định kỳ cho đội ngũ chăm sóc khách hàng và kỹ thuật viên về cách xử lý nhanh các mã lỗi liên quan đến tiền tệ quốc tế để giảm thiểu thời gian chết của hệ thống.
 
-## 5. Giải đáp các câu hỏi thường gặp về sự cố thanh toán và giữ tiền (FAQ)
+## 5. 자주 묻는 질문 (FAQ)
 
-Trong quá trình chia sẻ kinh nghiệm xử lý sự cố này với các đồng nghiệp tại nhiều doanh nghiệp khác nhau ở Sài Gòn, tôi nhận thấy có rất nhiều thắc mắc tương tự xoay quanh vấn đề này. Dưới đây là ba câu hỏi quan trọng nhất kèm theo câu trả lời chi tiết để giúp các bạn làm chủ tình hình.
+Trong quá trình chia sẻ kinh nghiệm xử lý sự cố này với các đồng nghiệp tại nhiều doanh nghiệp khác nhau ở Sài Gòn, tôi nhận thấy có rất nhiều thắc mắc tương tự xoay quanh vấn đề này. Dưới đây là ba câu hỏi quan trọng nhất kèm theo câu trả lời chi tiết để giúp các bạn làm chủ tình hình
 
-**Q1.** Tại sao cổng thanh toán lại tự động giữ tiền của chúng tôi trong 21 ngày dù giao dịch đã thành công?
+**Q1.**   Tại sao cổng thanh toán lại tự động giữ tiền của chúng tôi trong 21 ngày dù giao dịch đã thành công
 
-**A1.** Việc giữ tiền trong 21 ngày là cơ chế bảo vệ tiêu chuẩn của các cổng thanh toán quốc tế nhằmphòng ngừa rủi ro tranh chấp hoặc khiếu nại từ phía người mua. Khi hệ thống phát hiện các dấu hiệu bất thường như sai lệch định dạng tiền tệ, thay đổi địa chỉ IP đột ngột hoặc thiếu thông tin xác thực doanh nghiệp, chúng sẽ tự động kích hoạt chế độ này để đảm bảo an toàn cho cả hai phía cho đến khi giao dịch được xác minh hoàn tất.
+**A1.**   Việc giữ tiền trong 21 ngày là cơ chế bảo vệ tiêu chuẩn của các cổng thanh toán quốc tế nhằmphòng ngừa rủi ro tranh chấp hoặc khiếu nại từ phía người mua. Khi hệ thống phát hiện các dấu hiệu bất thường như sai lệch định dạng tiền tệ, thay đổi địa chỉ IP đột ngột hoặc thiếu thông tin xác thực doanh nghiệp, chúng sẽ tự động kích hoạt chế độ này để đảm bảo an toàn cho cả hai phía cho đến khi giao dịch được xác minh hoàn tất
 
-**Q2.** Làm thế nào để phân biệt rõ ràng giữa lỗi làm tròn tiền tệ và lỗi do thẻ ngân hàng của khách hàng bị từ chối?
+**Q2.**   Làm thế nào để phân biệt rõ ràng giữa lỗi làm tròn tiền tệ và lỗi do thẻ ngân hàng của khách hàng bị từ chối
 
-**A2.** Bạn có thể phân biệt thông qua mã lỗi trả về từ API của cổng thanh toán. Lỗi làm tròn tiền tệ thường đi kèm với các mã thông báo liên quan đến định dạng dữ liệu không hợp lệ hoặc sai lệch tổng số tiền, trong khi lỗi từ phía thẻ ngân hàng của khách hàng thường hiển thị các thông báo từ chối do không đủ số dư, hết hạn thẻ hoặc bị ngân hàng phát hành chặn giao dịch quốc tế.
+**A2.**   Bạn có thể phân biệt thông qua mã lỗi trả về từ API của cổng thanh toán. Lỗi làm tròn tiền tệ thường đi kèm với các mã thông báo liên quan đến định dạng dữ liệu không hợp lệ hoặc sai lệch tổng số tiền, trong khi lỗi từ phía thẻ ngân hàng của khách hàng thường hiển thị các thông báo từ chối do không đủ số dư, hết hạn thẻ hoặc bị ngân hàng phát hành chặn giao dịch quốc tế
 
-**Q3.** Chúng tôi có thể yêu cầu bồi thường hoặc khiếu nại phí giao dịch khi xảy ra lỗi hệ thống như thế này không?
+**Q3.**   Chúng tôi có thể yêu cầu bồi thường hoặc khiếu nại phí giao dịch khi xảy ra lỗi hệ thống như thế này không
 
-**A3.** Hoàn toàn có thể nếu lỗi phát sinh từ phía hạ tầng kỹ thuật của cổng thanh toán. Tuy nhiên, trong trường hợp lỗi xuất phát từ việc cấu hình sai số thập phân hoặc thiếu sót trong biểu mẫu thuế của phía doanh nghiệp chúng ta, các cổng thanh toán thường sẽ không hoàn lại phí giao dịch ban đầu, do đó việc tuân thủ nghiêm ngặt danh sách kiểm tra phòng ngừa là điều cực kỳ quan trọng để bảo vệ lợi nhuận tài chính của công ty.
+**A3.**   Hoàn toàn có thể nếu lỗi phát sinh từ phía hạ tầng kỹ thuật của cổng thanh toán. Tuy nhiên, trong trường hợp lỗi xuất phát từ việc cấu hình sai số thập phân hoặc thiếu sót trong biểu mẫu thuế của phía doanh nghiệp chúng ta, các cổng thanh toán thường sẽ không hoàn lại phí giao dịch ban đầu, do đó việc tuân thủ nghiêm ngặt danh sách kiểm tra phòng ngừa là điều cực kỳ quan trọng để bảo vệ lợi nhuận tài chính của công ty.

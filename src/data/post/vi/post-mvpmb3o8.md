@@ -56,14 +56,16 @@ Sự cố khủng hoảng vừa qua để lại những bài học xương máu 
 <strong>Kinh nghiệm thực tế:</strong> Luôn ký kết hợp đồng dịch vụ trực tiếp với các đơn vị cung cấp giải pháp tài chính có văn phòng đại diện hoặc đối tác pháp lý tại Việt Nam để được hỗ trợ ưu tiên khi xảy ra tranh chấp dòng tiền xuyên biên giới.
 </div>
 
-## 5. Các câu hỏi thường gặp (FAQ)
+## 5. 자주 묻는 질문 (FAQ)
 
-**Q1.A3.** Khi tài khoản bị giữ tiền, tuyệt đối không được tạo tài khoản mới bằng thông tin cũ vì điều này sẽ bị hệ thống phát hiện và khóa vĩnh viễn toàn bộ liên kết pháp lý. Thay vào đó, hãy lập tức chuẩn bị một bộ hồ sơ giải trình bao gồm giấy phép kinh doanh dịch vụ, hợp đồng cung cấp dịch vụ có chữ ký của khách hàng, hóa đơn VAT, và bằng chứng vận chuyển hoặc bàn giao sản phẩm/dịch vụ kỹ thuật số. Gửi toàn bộ các tài liệu này thông qua bảng điều khiển hỗ trợ chính thức kèm theo lời giải thích chi tiết bằng tiếng Anh để đội ngũ tuân thủ xem xét mở khóa.
+**Q1
 
-**Q2.** Làm thế nào để bảo toàn dòng tiền khi công nợ kéo dài mà không gặp rủi ro tài khoản?
+**A3.**   Khi tài khoản bị giữ tiền, tuyệt đối không được tạo tài khoản mới bằng thông tin cũ vì điều này sẽ bị hệ thống phát hiện và khóa vĩnh viễn toàn bộ liên kết pháp lý. Thay vào đó, hãy lập tức chuẩn bị một bộ hồ sơ giải trình bao gồm giấy phép kinh doanh dịch vụ, hợp đồng cung cấp dịch vụ có chữ ký của khách hàng, hóa đơn VAT, và bằng chứng vận chuyển hoặc bàn giao sản phẩm/dịch vụ kỹ thuật số. Gửi toàn bộ các tài liệu này thông qua bảng điều khiển hỗ trợ chính thức kèm theo lời giải thích chi tiết bằng tiếng Anh để đội ngũ tuân thủ xem xét mở khóa
 
-**A2.** Ghi rõ điều khoản thanh toán theo giai đoạn trong hợp đồng và giới hạn thời gian gia hạn tối đa 7 ngày cùng cơ chế tự động tạm ngừng dịch vụ.
+**Q2.**   Làm thế nào để bảo toàn dòng tiền khi công nợ kéo dài mà không gặp rủi ro tài khoản
 
-**Q3.** Cần làm gì ngay khi nhận cảnh báo bồi hoàn (chargeback) từ Stripe?
+**A2.**   Ghi rõ điều khoản thanh toán theo giai đoạn trong hợp đồng và giới hạn thời gian gia hạn tối đa 7 ngày cùng cơ chế tự động tạm ngừng dịch vụ
 
-**A3.** Nộp hồ sơ đối chất trong vòng 48 giờ bao gồm hợp đồng, bằng chứng giao hàng và nhật ký IP để tránh phí phạt và nguy cơ bị phong tỏa tài khoản.
+**Q3.**   Cần làm gì ngay khi nhận cảnh báo bồi hoàn (chargeback) từ Stripe
+
+**A3.**   Nộp hồ sơ đối chất trong vòng 48 giờ bao gồm hợp đồng, bằng chứng giao hàng và nhật ký IP để tránh phí phạt và nguy cơ bị phong tỏa tài khoản.

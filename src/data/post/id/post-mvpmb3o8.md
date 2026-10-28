@@ -60,6 +60,26 @@ Pengalaman menghadapi krisis di pusat bisnis SCBD memberikan pelajaran berharga 
 
 Untuk membangun benteng pertahanan operasional yang kokoh, tim keuangan wajib menerapkan kebiasaan terbaik (*best operational habits*) secara konsisten. Langkah pertama adalah menerapkan **gateway redundancy**, yaitu menggunakan lebih dari satu penyedia gerbang pembayaran (misalnya mengkombinasikan Stripe dengan Adyen atau PayPal Business) guna memitigasi risiko kegagalan sistem tunggal. Langkah kedua adalah memperkuat pertahanan sengketa pembayaran (dispute chargeback defense)**dengan mengotomatiskan pengumpulan bukti pengiriman layanan dan persetujuan syarat ketentuan pelanggan. Terakhir, jadwalkan audit dokumen pajak otomatis **setiap triwulan untuk memastikan seluruh kepatuhan legal selalu sinkron dengan regulasi yurisdiksi global yang berlaku.
 
-## 5. Pertanyaan yang Sering Diajukan 1.A3.** Jika dana tertahan dalam bentuk rolling reserves, langkah pertama adalah segera menghentikan semua aktivitas penagihan bermasalah dan mengalihkan lalu lintas transaksi ke gateway cadangan. Selanjutnya, ajukan banding resmi kepada tim compliance dengan menyertakan laporan audit keuangan, kontrak kerja klien yang sah, serta bukti pemenuhan layanan secara transparan guna membuktikan bahwa bisnis Anda beroperasi secara legal dan profesional. Q2.** Bagaimana cara mengamankan arus kas saat piutang tertunda tanpa risiko akun ditangguhkan? A2.** Terapkan pembayaran bertahap (milestone) dalam kontrak dan batasi masa tenggang maksimal 7 hari dengan penghentian layanan otomatis. Q3.** Apa tindakan cepat yang harus diambil saat ada peringatan chargeback di Stripe? A3.** Kirimkan dokumen sanggahan dalam waktu 48 jam (kontrak, bukti serah terima, dan log IP) untuk mencegah penalti biaya dan pembekuan akun. (FAQ)
+## 5. Pertanyaan yang Sering Diajukan 1
 
-**Q1.** Q1.A3.** Jika dana tertahan dalam bentuk rolling reserves, langkah pertama adalah segera menghentikan semua aktivitas penagihan bermasalah dan mengalihkan lalu lintas transaksi ke gateway cadangan. Selanjutnya, ajukan banding resmi kepada tim compliance dengan menyertakan laporan audit keuangan, kontrak kerja klien yang sah, serta bukti pemenuhan layanan secara transparan guna membuktikan bahwa bisnis Anda beroperasi secara legal dan profesional. Q2.** Bagaimana cara mengamankan arus kas saat piutang tertunda tanpa risiko akun ditangguhkan? A2.** Terapkan pembayaran bertahap (milestone) dalam kontrak dan batasi masa tenggang maksimal 7 hari dengan penghentian layanan otomatis. Q3.** Apa tindakan cepat yang harus diambil saat ada peringatan chargeback di Stripe? A3.** Kirimkan dokumen sanggahan dalam waktu 48 jam (kontrak, bukti serah terima, dan log IP) untuk mencegah penalti biaya dan pembekuan akun.
+**A3.**   Jika dana tertahan dalam bentuk rolling reserves, langkah pertama adalah segera menghentikan semua aktivitas penagihan bermasalah dan mengalihkan lalu lintas transaksi ke gateway cadangan. Selanjutnya, ajukan banding resmi kepada tim compliance dengan menyertakan laporan audit keuangan, kontrak kerja klien yang sah, serta bukti pemenuhan layanan secara transparan guna membuktikan bahwa bisnis Anda beroperasi secara legal dan profesional
+
+**Q2.**   Bagaimana cara mengamankan arus kas saat piutang tertunda tanpa risiko akun ditangguhkan
+
+**A2.**   Terapkan pembayaran bertahap (milestone) dalam kontrak dan batasi masa tenggang maksimal 7 hari dengan penghentian layanan otomatis
+
+**Q3.**   Apa tindakan cepat yang harus diambil saat ada peringatan chargeback di Stripe
+
+**A3.**   Kirimkan dokumen sanggahan dalam waktu 48 jam (kontrak, bukti serah terima, dan log IP) untuk mencegah penalti biaya dan pembekuan akun. (FAQ)
+
+**Q1.Q1
+
+**A3.**   Jika dana tertahan dalam bentuk rolling reserves, langkah pertama adalah segera menghentikan semua aktivitas penagihan bermasalah dan mengalihkan lalu lintas transaksi ke gateway cadangan. Selanjutnya, ajukan banding resmi kepada tim compliance dengan menyertakan laporan audit keuangan, kontrak kerja klien yang sah, serta bukti pemenuhan layanan secara transparan guna membuktikan bahwa bisnis Anda beroperasi secara legal dan profesional
+
+**Q2.**   Bagaimana cara mengamankan arus kas saat piutang tertunda tanpa risiko akun ditangguhkan
+
+**A2.**   Terapkan pembayaran bertahap (milestone) dalam kontrak dan batasi masa tenggang maksimal 7 hari dengan penghentian layanan otomatis
+
+**Q3.**   Apa tindakan cepat yang harus diambil saat ada peringatan chargeback di Stripe
+
+**A3.**   Kirimkan dokumen sanggahan dalam waktu 48 jam (kontrak, bukti serah terima, dan log IP) untuk mencegah penalti biaya dan pembekuan akun.

@@ -34,6 +34,26 @@ Một nguyên nhân kỹ thuật khác ít được chú ý là vấn đề xác
 
 Bên cạnh đó, việc phân bổ dòng tiền qua nhiều cổng thanh toán khác nhau thay vì phụ thuộc hoàn toàn vào một nhà cung cấp duy nhất là chiến lược quản trị rủi ro tối ưu. Khi xảy ra sự cố tại một kênh, các kênh dự phòng sẽ gánh vác phần giao dịch còn lại, giúp duy trì hoạt động kinh doanh liền mạch mà không bị gián đoạn nguồn vốn. Đội ngũ pháp chế và tài chính cũng cần cập nhật liên tục các thay đổi về chính sách tuân thủ toàn cầu để kịp thời điều chỉnh mô hình vận hành phù hợp.
 
-## 5. Các câu hỏi thường gặp 1.** Tại sao tài khoản của tôi bị giữ tiền 21 ngày mà không có cảnh báo trước? A1.** Các cổng thanh toán quốc tế sử dụng hệ thống tự động để rà soát rủi ro dựa trên biến động giao dịch hoặc tỷ lệ khiếu nại từ khách hàng. Khi phát hiện dấu hiệu bất thường vượt ngưỡng an toàn, hệ thống sẽ tự động phong tỏa dòng tiền để bảo vệ người tiêu dùng và tuân thủ quy định pháp luật. Q2.** Tôi cần chuẩn bị những giấy tờ gì để rút ngắn thời gian xử lý yêu cầu giữ tiền? A2.** Bạn cần chuẩn bị giấy phép kinh doanh, sao kê tài khoản ngân hàng doanh nghiệp, hóa đơn thương mại, bằng chứng giao hàng thành công và hợp đồng dịch vụ có chữ ký hợp lệ. Việc cung cấp đầy đủ và minh bạch các tài liệu này sẽ giúp đội ngũ hỗ trợ xét duyệt nhanh chóng hơn. Q3.** Làm thế nào để liên hệ trực tiếp với đội ngũ hỗ trợ cấp cao của cổng thanh toán? A3.** Bạn nên truy cập vào mục trợ giúp trực tuyến trong bảng điều khiển quản trị và sử dụng tính năng trò chuyện trực tiếp (`live chat`) với tài khoản doanh nghiệp đã được xác thực. Tránh gửi email qua các hộp thư chung vì thời gian phản hồi thường rất lâu và khó theo dõi tiến độ xử lý vụ việc. (FAQ)
+## 5. Các câu hỏi thường gặp 1.** Tại sao tài khoản của tôi bị giữ tiền 21 ngày mà không có cảnh báo trước
 
-**Q1.** Q1.** Tại sao tài khoản của tôi bị giữ tiền 21 ngày mà không có cảnh báo trước? A1.** Các cổng thanh toán quốc tế sử dụng hệ thống tự động để rà soát rủi ro dựa trên biến động giao dịch hoặc tỷ lệ khiếu nại từ khách hàng. Khi phát hiện dấu hiệu bất thường vượt ngưỡng an toàn, hệ thống sẽ tự động phong tỏa dòng tiền để bảo vệ người tiêu dùng và tuân thủ quy định pháp luật. Q2.** Tôi cần chuẩn bị những giấy tờ gì để rút ngắn thời gian xử lý yêu cầu giữ tiền? A2.** Bạn cần chuẩn bị giấy phép kinh doanh, sao kê tài khoản ngân hàng doanh nghiệp, hóa đơn thương mại, bằng chứng giao hàng thành công và hợp đồng dịch vụ có chữ ký hợp lệ. Việc cung cấp đầy đủ và minh bạch các tài liệu này sẽ giúp đội ngũ hỗ trợ xét duyệt nhanh chóng hơn. Q3.** Làm thế nào để liên hệ trực tiếp với đội ngũ hỗ trợ cấp cao của cổng thanh toán? A3.** Bạn nên truy cập vào mục trợ giúp trực tuyến trong bảng điều khiển quản trị và sử dụng tính năng trò chuyện trực tiếp (`live chat`) với tài khoản doanh nghiệp đã được xác thực. Tránh gửi email qua các hộp thư chung vì thời gian phản hồi thường rất lâu và khó theo dõi tiến độ xử lý vụ việc.
+**A1.**   Các cổng thanh toán quốc tế sử dụng hệ thống tự động để rà soát rủi ro dựa trên biến động giao dịch hoặc tỷ lệ khiếu nại từ khách hàng. Khi phát hiện dấu hiệu bất thường vượt ngưỡng an toàn, hệ thống sẽ tự động phong tỏa dòng tiền để bảo vệ người tiêu dùng và tuân thủ quy định pháp luật
+
+**Q2.**   Tôi cần chuẩn bị những giấy tờ gì để rút ngắn thời gian xử lý yêu cầu giữ tiền
+
+**A2.**   Bạn cần chuẩn bị giấy phép kinh doanh, sao kê tài khoản ngân hàng doanh nghiệp, hóa đơn thương mại, bằng chứng giao hàng thành công và hợp đồng dịch vụ có chữ ký hợp lệ. Việc cung cấp đầy đủ và minh bạch các tài liệu này sẽ giúp đội ngũ hỗ trợ xét duyệt nhanh chóng hơn
+
+**Q3.**   Làm thế nào để liên hệ trực tiếp với đội ngũ hỗ trợ cấp cao của cổng thanh toán
+
+**A3.**   Bạn nên truy cập vào mục trợ giúp trực tuyến trong bảng điều khiển quản trị và sử dụng tính năng trò chuyện trực tiếp (`live chat`) với tài khoản doanh nghiệp đã được xác thực. Tránh gửi email qua các hộp thư chung vì thời gian phản hồi thường rất lâu và khó theo dõi tiến độ xử lý vụ việc. (FAQ)
+
+**Q1.Q1.**   Tại sao tài khoản của tôi bị giữ tiền 21 ngày mà không có cảnh báo trước
+
+**A1.**   Các cổng thanh toán quốc tế sử dụng hệ thống tự động để rà soát rủi ro dựa trên biến động giao dịch hoặc tỷ lệ khiếu nại từ khách hàng. Khi phát hiện dấu hiệu bất thường vượt ngưỡng an toàn, hệ thống sẽ tự động phong tỏa dòng tiền để bảo vệ người tiêu dùng và tuân thủ quy định pháp luật
+
+**Q2.**   Tôi cần chuẩn bị những giấy tờ gì để rút ngắn thời gian xử lý yêu cầu giữ tiền
+
+**A2.**   Bạn cần chuẩn bị giấy phép kinh doanh, sao kê tài khoản ngân hàng doanh nghiệp, hóa đơn thương mại, bằng chứng giao hàng thành công và hợp đồng dịch vụ có chữ ký hợp lệ. Việc cung cấp đầy đủ và minh bạch các tài liệu này sẽ giúp đội ngũ hỗ trợ xét duyệt nhanh chóng hơn
+
+**Q3.**   Làm thế nào để liên hệ trực tiếp với đội ngũ hỗ trợ cấp cao của cổng thanh toán
+
+**A3.**   Bạn nên truy cập vào mục trợ giúp trực tuyến trong bảng điều khiển quản trị và sử dụng tính năng trò chuyện trực tiếp (`live chat`) với tài khoản doanh nghiệp đã được xác thực. Tránh gửi email qua các hộp thư chung vì thời gian phản hồi thường rất lâu và khó theo dõi tiến độ xử lý vụ việc.
