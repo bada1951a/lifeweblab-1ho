@@ -1,6 +1,5 @@
 // =========================================================================
-// 📌 [2-1호기 전용] 마크다운 볼드 오염 박멸 및 Q&A·헤딩 완벽 복구 스크립트
-// ⚠️ 별표(**) 노출 박멸, 볼드 뒤 글자 떡짐 방지, Q1~Q3 2열 개행 보장
+// 📌 [2-1호기 전용] 과거 글 볼드(**) 오염 및 띄어쓰기 100% 박멸 수술 스크립트
 // =========================================================================
 
 import fs from 'fs';
@@ -56,14 +55,14 @@ const I18N_SECTIONS = {
     s2: "2. Analisi approfondita dei rifiuti di pagamento",
     s3: "3. Guida pratica di risoluzione passo dopo passo",
     s4: "4. Checklist essenziale per evitare blocchi del conto",
-    s5: "5. Domande Frecuenti (FAQ)"
+    s5: "5. Domande Frequenti (FAQ)"
   },
   pt: {
     s1: "1. Emergência com pagamentos e transferências globais",
     s2: "2. Análise da causa raiz de recusas de pagamento",
     s3: "3. Manual prático passo a passo de resolução",
     s4: "4. Checklist essencial para evitar retenções de saldo",
-    s5: "5. Perguntas Frecuentes (FAQ)"
+    s5: "5. Perguntas Frequentes (FAQ)"
   },
   nl: {
     s1: "1. Noodsituatie bij internationale betalingen",
@@ -95,45 +94,48 @@ const I18N_SECTIONS = {
   }
 };
 
+function cleanBoldAndTypography(text) {
+  let s = text;
+
+  // 1. 헤딩 라인 안의 볼드(**) 무조건 박멸
+  s = s.replace(/^(#{1,6}[^\n*]*?)\*\*(.*?)\*\*/gm, '$1$2');
+
+  // 2. 빈 볼드 및 찌꺼기 삭제
+  s = s.replace(/\*{3,}/g, '**');
+  s = s.replace(/\*\*\s*\*\*/g, '');
+
+  // 3. [핵심] 볼드 내부 공백 제거 및 한국어 조사 밀착
+  // **인보이스 **가 -> **인보이스**가
+  // **Stripe **는 -> **Stripe**는
+  // **enterprise invoice **of -> **enterprise invoice** of
+  s = s.replace(/\*\*\s*([^\n*]+?)\s*\*\*([가-힣])/g, '**$1**$2');
+  s = s.replace(/\*\*\s*([^\n*]+?)\s*\*\*([a-zA-Z0-9])/g, '**$1** $2');
+  s = s.replace(/([a-zA-Z0-9가-힣])\*\*\s*([^\n*]+?)\s*\*\*/g, '$1 **$2**');
+  s = s.replace(/\*\*\s*([^\n*]+?)\s*\*\*/g, '**$1**');
+
+  // 4. Method 1: ... **1. 처럼 리스트 번호가 붙은 경우 강제 분리
+  s = s.replace(/(\*\*[^*]+?\*\*)\s*([1-9]\.)/g, '$1\n\n$2');
+
+  return s;
+}
+
 function healMarkdownPost(body, langCode) {
   const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
   let text = body.trim();
 
-  // 1. 헤딩 내부의 볼드 문법(**) 완전 박멸 (## **제목** -> ## 제목)
-  text = text.replace(/^(#{1,6}\s*)\*\*(.*?)\*\*/gm, '$1$2');
-
-  // 2. 소제목 중첩(### ### -> ###) 교정
+  // 1. 중복 소제목 서브헤더(### ###) 정돈
   text = text.replace(/^#{3,6}\s*#{3,6}\s*/gm, '### ');
 
-  // 3. Method 뒤에 숫자가 바로 붙는 리스트 강제 분리 (**Method 1: ... **1. -> **Method 1: ...**\n1.)
-  text = text.replace(/(\*\*[^*]+?\*\*)\s*([1-9]\.)/g, '$1\n$2');
-
-  // 4. [핵심] 볼드 안쪽 공백 및 조사 달라붙음/띄어쓰기 완전 교정
-  // Case A: **단어 **조사 -> **단어** 조사 (예: **인보이스 **가 -> **인보이스**가, **급여일 **이자 -> **급여일**이자)
-  text = text.replace(/\*\*([^\n*]+?)\s+\*\*([가-힣a-zA-Z0-9])/g, '**$1**$2');
-
-  // Case B: ** 단어 ** -> **단어**
-  text = text.replace(/\*\*\s+([^\n*]+?)\s+\*\*/g, '**$1**');
-  text = text.replace(/\*\*\s+([^\n*]+?)\*\*/g, '**$1**');
-  text = text.replace(/\*\*([^\n*]+?)\s+\*\*/g, '**$1**');
-
-  // Case C: 단어**단어**단어 처럼 영문/숫자 뒤에 붙은 볼드 사이 공백 보정
-  text = text.replace(/([a-zA-Z0-9가-힣])\*\*([a-zA-Z0-9_-]+)\*\*/g, '$1 **$2**');
-  text = text.replace(/\*\*([a-zA-Z0-9_-]+)\*\*([a-zA-Z0-9])/g, '**$1** $2');
-
-  // Case D: 혼자 덩그러니 남은 짝 없는 ** 또는 빈 찌꺼기(****) 삭제
-  text = text.replace(/\*\*\s*\*\*/g, '');
-
-  // 5. 소제목 1~5 정규화 (헤딩 뒤에 반드시 빈 줄 2개 보장)
+  // 2. 소제목 1~4 정규화 (전후 빈 줄 2개 보장)
   text = text.replace(/^#{1,6}\s*1[.\s]+[^\n]+/m, `## ${i18n.s1}\n\n`);
   text = text.replace(/^#{1,6}\s*2[.\s]+[^\n]+/m, `\n\n## ${i18n.s2}\n\n`);
   text = text.replace(/^#{1,6}\s*3[.\s]+[^\n]+/m, `\n\n## ${i18n.s3}\n\n`);
   text = text.replace(/^#{1,6}\s*4[.\s]+[^\n]+/m, `\n\n## ${i18n.s4}\n\n`);
-  
-  // 6. FAQ 헤딩 분리 (FAQ 뒤 본문이 붙어 H2로 인식되는 거대 폰트 참사 차단)
+
+  // 3. FAQ 헤딩 정규화 (FAQ 뒤에 본문이 한 줄로 붙어 H2 제목으로 커지는 문제 원천 차단)
   text = text.replace(/^#{1,6}\s*5[.\s]+.*?(?=(?:\*\*?Q[1-3]|\bQ[1-3][:.]|\n|$))/is, `\n\n## ${i18n.s5}\n\n`);
 
-  // 7. 연속 중복 H2 헤딩 제거
+  // 4. 연속 중복 H2 헤딩 제거
   const lines = text.split('\n');
   const filteredLines = [];
   let lastH2 = '';
@@ -149,18 +151,18 @@ function healMarkdownPost(body, langCode) {
   }
   text = filteredLines.join('\n');
 
-  // 8. Q&A 포맷 완전 정돈 (줄바꿈 강제 확보 및 온점 뒤 공백 보장)
+  // 5. 볼드 및 띄어쓰기 완전 정돈
+  text = cleanBoldAndTypography(text);
+
+  // 6. Q&A 줄바꿈 및 서식 완전 정돈
   text = text.replace(/(?:^|[^\n])\s*(?:\*\*)?(?:Q|Question)\s*([1-3])\s*[:.]\s*(?:\*\*)?\s*/gi, '\n\n**Q$1.** ');
   text = text.replace(/(?:^|[^\n])\s*(?:\*\*)?(?:A|Answer)\s*([1-3])\s*[:.]\s*(?:\*\*)?\s*/gi, '\n\n**A$1.** ');
 
-  // 이중 볼드 찌꺼기 정돈
+  // Q&A 내부 찌꺼기 볼드 정돈
   text = text.replace(/\*\*\s*\*\*(Q[1-3]\.|A[1-3]\.)\*\*\s*\*\*/gi, '**$1**');
   text = text.replace(/\*\*(Q[1-3]\.|A[1-3]\.)\*\*/gi, '**$1**');
 
-  // 9. 리스트(1. 2. 3. 또는 - ) 앞에 줄바꿈 확보
-  text = text.replace(/([^\n])\n([1-9]\.\s|\*\s|-\s)/g, '$1\n\n$2');
-
-  // 10. 빈 줄 3줄 이상 연속된 것 2줄로 압축
+  // 7. 빈 줄 정리 (최대 2줄)
   text = text.replace(/\n{3,}/g, '\n\n').trim();
 
   return text;
@@ -168,7 +170,7 @@ function healMarkdownPost(body, langCode) {
 
 async function run() {
   console.log("==================================================");
-  console.log("⚡ [2-1호기] 마크다운 볼드 오염 및 띄어쓰기 정밀 수술 시작");
+  console.log("⚡ [2-1호기] 볼드 오염/띄어쓰기/FAQ 완전 박멸 수술 시작");
   console.log("==================================================");
 
   if (!fs.existsSync(POSTS_BASE_DIR)) {
@@ -199,7 +201,7 @@ async function run() {
       frontmatter = frontmatter.replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
                                .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
 
-      // 1차 치유 및 2차 교차 검증
+      // 2회 교차 실행으로 찌꺼기 100% 제거
       let healed = healMarkdownPost(body, lang);
       healed = healMarkdownPost(healed, lang);
 
@@ -207,13 +209,13 @@ async function run() {
 
       if (result !== original) {
         fs.writeFileSync(filePath, result, 'utf-8');
-        console.log(`✨ [볼드/줄바꿈 수술 완료] ${lang}/${file}`);
+        console.log(`✨ [수술 완료] ${lang}/${file}`);
         updatedCount++;
       }
     }
   }
 
-  console.log(`\n🎉 총 ${updatedCount}개 파일의 볼드 기호(**) 및 띄어쓰기 오류가 완벽히 치유되었습니다.`);
+  console.log(`\n🎉 총 ${updatedCount}개 파일의 볼드/띄어쓰기 수술이 완료되었습니다.`);
 }
 
 run();
