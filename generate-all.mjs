@@ -235,13 +235,9 @@ function inspectAndHealMarkdown(body, langCode) {
   const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
   const auditLogs = [];
 
-  // 1. [헤딩 검수 & 치유] 볼드 제거 및 2-1호기 표준 띄어쓰기 소제목 강제 안착
-  healed = healed.replace(/^(#{1,6}\s+)\*\*(.*?)\*\*/gm, '$1$2');
-  healed = healed.replace(/^#{1,6}\s*1[.\s]+([^\n]+)/m, `## ${i18n.s1}`);
-  healed = healed.replace(/^#{1,6}\s*2[.\s]+([^\n]+)/m, `## ${i18n.s2}`);
-  healed = healed.replace(/^#{1,6}\s*3[.\s]+([^\n]+)/m, `## ${i18n.s3}`);
-  healed = healed.replace(/^#{1,6}\s*4[.\s]+([^\n]+)/m, `## ${i18n.s4}`);
-  healed = healed.replace(/^#{1,6}\s*5[.\s]+([^\n]+)/m, `## ${i18n.s5}`);
+  // 1. 제목의 의미를 보존합니다. 모델이 작성한 구체적인 제목을 고정 문구로 덮어쓰지 않습니다.
+  // 잘못된 번호나 누락은 validateGeneratedPost에서 감지하여 재생성을 요구합니다.
+  healed = healed.replace(/^(#{1,6}\\s+)\\*\\*(.*?)\\*\\*/gm, '$1$2');
 
   // 누락된 제목을 빈 섹션으로 채우지 않습니다. 검증 단계에서 재생성을 요구합니다.
 
