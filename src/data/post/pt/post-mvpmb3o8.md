@@ -1,6 +1,6 @@
 ---
-title: "Stripe Payment Declined: Como Resolver Erros de 3DS e faturas Rejeitadas"
-description: "Guia prático para resolver falhas de 3DS, Stripe generic_decline e travas de pagamentos globais em operações B2B."
+title: "Stripe: como entender recusas generic_decline e falhas no 3DS2"
+description: "Veja como investigar recusas de pagamento no Stripe, entender o código generic_decline e avaliar falhas de autenticação em transações entre empresas."
 publishDate: 2026-10-27T03:35:00.000Z
 image: '/images/billing-photo/billing-48.jpg'
 category: 'troubleshooting'
