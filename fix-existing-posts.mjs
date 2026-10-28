@@ -1,6 +1,5 @@
 // =========================================================================
-// 📌 [2-1호기 전용] 텍스트 유실 0% 라인 단위 정밀 복구 스크립트
-// ⚠️ 글자 삭제 절대 없음 / H2 거대 폰트 뭉개짐 박멸 / 볼드 기호 정돈
+// 📌 [2-1호기 전용] 텍스트 보존 + 단독 별표(**) 찌꺼기 박멸 + FAQ 중복 제거 스크립트
 // =========================================================================
 
 import fs from 'fs';
@@ -8,96 +7,115 @@ import path from 'path';
 
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 
-function fixLineFormatting(line) {
-  let s = line;
+function cleanMarkdownLine(line) {
+  let s = line.trim();
 
-  // 1. 헤딩(#) 라인 안의 볼드(**) 기호 제거 -> 헤딩 폰트 깨짐 방지
-  if (/^#{1,6}\s/.test(s)) {
-    s = s.replace(/\*\*/g, '');
+  // 1. 단독으로 덩그러니 남은 ** 별표 라인 완전 박멸
+  if (s === '**' || s === '****' || s === '***') {
+    return '';
   }
 
-  // 2. 소제목 중첩(### ### -> ###) 교정
+  // 2. 헤딩 라인(#) 내부의 볼드 기호 제거 및 중복 (FAQ) 제거
+  if (/^#{1,6}\s/.test(s)) {
+    s = s.replace(/\*\*/g, '');
+    s = s.replace(/\(FAQ\)\s*\(FAQ\)/gi, '(FAQ)');
+  }
+
+  // 3. 소제목 중첩(### ### -> ###) 정돈
   s = s.replace(/^#{3,6}\s*#{3,6}\s*/g, '### ');
 
-  // 3. **단어 **조사 -> **단어** 조사 (볼드 안쪽 닫는 공백 제거)
+  // 4. 볼드 안쪽 공백 및 특수문자 정리 (** 단어 ** -> **단어**)
   s = s.replace(/\*\*\s*([^\n*]+?)\s+\*\*([가-힣a-zA-Z0-9])/g, '**$1** $2');
-  s = s.replace(/\*\*\s*([^\n*]+?)\s+\*\*/g, '**$1**');
-  s = s.replace(/\*\*\s+([^\n*]+?)\*\*/g, '**$1**');
+  s = s.replace(/\*\*\s*([^\n*]+?)\s*\*\*/g, '**$1**');
 
-  // 4. 단어**볼드** -> 단어 **볼드** (붙어있는 볼드 간격 확보)
-  s = s.replace(/([가-힣a-zA-Z0-9])\*\*([가-힣a-zA-Z0-9_-]+)\*\*/g, '$1 **$2**');
-
-  // 5. 빈 볼드(****) 삭제
+  // 5. 단독 찌꺼기 빈 볼드 제거
   s = s.replace(/\*\*\s*\*\*/g, '');
 
   return s;
 }
 
-function healPostByLines(body) {
-  // 줄 단위 분리
-  const rawLines = body.split(/\r?\n/);
+function healPost(body) {
+  const lines = body.split(/\r?\n/);
   const cleanLines = [];
 
-  for (let i = 0; i < rawLines.length; i++) {
-    let line = rawLines[i].trim();
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i].trim();
 
-    // 빈 줄은 그대로 통과
+    // 빈 줄 통과
     if (!line) {
       cleanLines.push('');
       continue;
     }
 
-    // 소제목 5번(FAQ) 뒤에 본문이 한 줄로 붙어버린 치명적 버그 분리
-    // 예: ## 5. 자주 묻는 질문 (FAQ) **Q1.** -> 2줄로 강제 분리
-    const faqMerged = line.match(/^(#{1,6}\s*5[.\s][^\n*]*?)\s*(\*\*?[QA][1-3][:.]|\b[QA][1-3][:.]|###\s*Q.*)/i);
-    if (faqMerged) {
-      cleanLines.push(faqMerged[1].trim());
-      cleanLines.push(''); // 빈 줄 강제 삽입
-      cleanLines.push(faqMerged[2].trim());
+    // 단독 ** 라인은 아예 버림
+    if (line === '**' || line === '****' || line === '***') {
       continue;
     }
 
-    // Q1., Q2., A1., A2.가 앞 문장과 붙은 경우 분리
-    line = line.replace(/([^\n])\s*(\*\*Q[1-3]\.\*\*|\bQ[1-3]\.|\*\*Q[1-3]:\*\*)/g, '$1\n\n$2');
-    line = line.replace(/([^\n])\s*(\*\*A[1-3]\.\*\*|\bA[1-3]\.|\*\*A[1-3]:\*\*)/g, '$1\n\n$2');
+    // 소제목 5번(FAQ) 뒤에 본문이 붙은 경우 2줄로 강제 분리
+    const faqMerged = line.match(/^(#{1,6}\s*5[.\s][^\n*]*?)\s*(\*\*?[QA][1-3][:.]|\b[QA][1-3][:.]|###\s*Q.*)/i);
+    if (faqMerged) {
+      let h5 = faqMerged[1].replace(/\(FAQ\)\s*\(FAQ\)/gi, '(FAQ)').replace(/\*\*/g, '').trim();
+      cleanLines.push(h5);
+      cleanLines.push('');
+      cleanLines.push(cleanMarkdownLine(faqMerged[2]));
+      continue;
+    }
 
-    const subLines = line.split('\n');
-    for (const sub of subLines) {
-      cleanLines.push(fixLineFormatting(sub));
+    // Q1., A1. 질문/답변 라인 정규화 (앞뒤 줄바꿈 확보 및 단독 ** 박멸)
+    const qMatch = line.match(/^(?:#{3,4}\s*)?(?:\*\*)?(?:Q|Question)\s*([1-3])\s*[:.]\s*(?:\*\*)?\s*(.*)/i);
+    const aMatch = line.match(/^(?:#{3,4}\s*)?(?:\*\*)?(?:A|Answer)\s*([1-3])\s*[:.]\s*(?:\*\*)?\s*(.*)/i);
+
+    if (qMatch) {
+      let qText = qMatch[2].replace(/^\*\*/, '').replace(/\*\*$/, '').trim();
+      cleanLines.push('');
+      cleanLines.push(`**Q${qMatch[1]}.** ${qText}`);
+      cleanLines.push('');
+      continue;
+    }
+
+    if (aMatch) {
+      let aText = aMatch[2].replace(/^\*\*/, '').replace(/\*\*$/, '').trim();
+      cleanLines.push('');
+      cleanLines.push(`**A${aMatch[1]}.** ${aText}`);
+      cleanLines.push('');
+      continue;
+    }
+
+    const processed = cleanMarkdownLine(line);
+    if (processed) {
+      cleanLines.push(processed);
     }
   }
 
-  // 중복 연속 H2 헤딩 제거 (동일한 ## 1. 이 연달아 나오는 것 방지)
-  const resultLines = [];
-  let lastH2Prefix = '';
+  // 중복 연속 H2 헤딩 제거
+  const finalLines = [];
+  let lastH2 = '';
 
   for (let i = 0; i < cleanLines.length; i++) {
     const cur = cleanLines[i];
-    const h2Match = cur.match(/^##\s*([1-5])\./);
+    const match = cur.match(/^##\s*([1-5])\./);
 
-    if (h2Match) {
-      if (h2Match[1] === lastH2Prefix) {
-        continue; // 중복 헤딩 건너뜀
-      }
-      lastH2Prefix = h2Match[1];
-      resultLines.push(''); // 헤딩 앞 빈 줄
-      resultLines.push(cur);
-      resultLines.push(''); // 헤딩 뒤 빈 줄
+    if (match) {
+      if (match[1] === lastH2) continue;
+      lastH2 = match[1];
+      finalLines.push('');
+      finalLines.push(cur);
+      finalLines.push('');
     } else {
       if (/^##\s*/.test(cur)) {
-        lastH2Prefix = '';
+        lastH2 = '';
       }
-      resultLines.push(cur);
+      finalLines.push(cur);
     }
   }
 
-  // 빈 줄이 3개 이상 연속되지 않도록 정돈
-  return resultLines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  return finalLines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
 async function run() {
   console.log("==================================================");
-  console.log("⚡ [2-1호기] 라인 단위 안전 서식 수술 시작 (텍스트 유실 0%)");
+  console.log("⚡ [2-1호기] 단독 ** 찌꺼기 박멸 및 FAQ 정밀 수술 시작");
   console.log("==================================================");
 
   if (!fs.existsSync(POSTS_BASE_DIR)) {
@@ -125,18 +143,18 @@ async function run() {
       const frontmatter = fmMatch[0].trim();
       const body = original.slice(fmMatch[0].length).trim();
 
-      const healedBody = healPostByLines(body);
+      const healedBody = healPost(body);
       const result = `${frontmatter}\n\n${healedBody}\n`;
 
       if (result !== original) {
         fs.writeFileSync(filePath, result, 'utf-8');
-        console.log(`✨ [수술 완료] ${lang}/${file}`);
+        console.log(`✨ [정밀 정돈 완료] ${lang}/${file}`);
         updatedCount++;
       }
     }
   }
 
-  console.log(`\n🎉 총 ${updatedCount}개 파일 교정 완료! 본문 유실 없이 완벽하게 정돈되었습니다.`);
+  console.log(`\n🎉 총 ${updatedCount}개 파일에서 단독 ** 기호 및 FAQ 서식이 완벽 교정되었습니다.`);
 }
 
 run();
