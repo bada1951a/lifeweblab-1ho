@@ -10,10 +10,10 @@ theme: "HelpDesk Clean Slate"
 
 ## 1. Situasi Kritis Kegagalan Pembayaran dan Transfer Dana Global
 
-Pagi itu di kawasan SCBD Jakarta, suasana kantor mendadak panas meskipun AC sentral bekerja maksimal. Jam baru menunjukkan pukul 09.00 WIB, tapi saya sudah dikepung oleh tim keuangan yang wajahnya pucat pasi. Masalah klasik tapi mematikan baru saja meledak di depan mata kami: dana dari klien besar senilai ribuan dolar tertahan habis di sistem akibat kebijakan 'PayPal 21-Day Hold'. Lebih parahnya lagi, hal ini terjadi gara-gara kalimat tenggat waktu pembayaran atau due date di invoice yang kami kirimkan beberapa bulan lalu ternyata sangat ambigu. Klien bingung, sistem mendeteksi anomali, dan arus kas perusahaan langsung darurat merah.
+Pagi itu di kawasan SCBD Jakarta, suasana kantor mendadak panas meskipun AC sentral bekerja maksimal. Jam baru menunjukkan pukul 09.00 WIB, tapi saya sudah dikepung oleh tim keuangan yang wajahnya pucat pasi. Masalah klasik tapi mematikan baru saja meledak di depan mata kami: dana dari klien besar senilai ribuan dolar tertahan habis di sistem akibat kebijakan '**PayPal** 21-Day Hold'. Lebih parahnya lagi, hal ini terjadi gara-gara kalimat tenggat waktu pembayaran atau due date di **invoice** yang kami kirimkan beberapa bulan lalu ternyata sangat ambigu. Klien bingung, sistem mendeteksi anomali, dan arus kas perusahaan langsung darurat merah.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> Kalimat invoice yang ambigu memicu algoritma keamanan PayPal untuk menahan dana hingga 21 hari, melumpuhkan cash flow operasional kantor di SCBD secara mendadak.
+<strong>Poin penting:</strong> Kalimat invoice yang ambigu memicu algoritma keamanan PayPal untuk menahan dana hingga 21 hari, melumpuhkan **cash flow** operasional kantor di SCBD secara mendadak.
 </div>
 
 Panik? Pasti. Sebagai orang yang memegang kendali atas urusan pembayaran global di kantor, hari itu rasanya seperti duduk di atas bara api. Bayangkan saja, tagihan yang seharusnya cair untuk membiayai operasional proyek berjalan malah nyangkut entah di mana. Awalnya, kami mengira ini hanya masalah verifikasi akun biasa seperti yang sering dialami pelaku bisnis di Indonesia.
@@ -49,7 +49,7 @@ Langkah pertama, saya masuk ke dalam `Dasbor` utama akun bisnis dan mengarahkan 
 Langkah kedua, saya menuju ke bagian `Pengaturan Akun` untuk memperbarui informasi verifikasi bisnis, termasuk menyinkronkan ulang data rekening bank lokal di Indonesia dan memastikan status verifikasi identitas perusahaan dalam kondisi prima tanpa ada dokumen yang kedaluwarsa.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> Konfirmasi pengiriman jasa secara manual di dalam dasbor dan unggah dokumen pendukung adalah kunci utama untuk memaksa sistem melepaskan dana 21 hari secara instan.
+<strong>Poin penting:</strong> Konfirmasi pengiriman jasa secara manual di dalam dasbor dan unggah dokumen pendukung adalah kunci utama untuk memaksa sistem melepaskan dana 21 hari secara instan.
 </div>
 
 Langkah ketiga, saya menginstruksikan klien untuk melakukan konfirmasi penerimaan layanan langsung dari akun mereka. Setelah itu, saya masuk kembali ke detail transaksi di `Metode Pembayaran`, lalu mengeklik tombol 'Confirm Receipt' atau konfirmasi pengiriman pesanan, dan mengunggah dokumen berita acara serah terima proyek ke kolom bukti pelacakan. Hanya dalam hitungan jam setelah langkah ini tuntas, status 'Hold' berubah menjadi 'Completed' dan dana segar langsung mendarat di saldo aktif kami.
@@ -63,16 +63,16 @@ Agar kejadian mendebarkan di jantung bisnis Jakarta ini tidak terulang kembali, 
 - Lakukan pengecekan rutin pada menu `Pengaturan Akun` untuk memastikan semua `Metode Pembayaran` dan `Formulir Pajak` selalu terbarukan dan valid.
 - Berikan edukasi singkat kepada klien internasional mengenai pentingnya melakukan konfirmasi penerimaan jasa di platform pembayaran agar dana tidak tersangkut oleh algoritma keamanan.
 
-## 5. 자주 묻는 질문 (FAQ)
+## 5. Pertanyaan yang Sering Diajukan (FAQ)
 
-Q: Apakah dana yang tertahan 21 hari benar-benar bisa dicairkan lebih cepat tanpa harus menunggu waktu habis?
+**Pertanyaan:** Apakah dana yang tertahan 21 hari benar-benar bisa dicairkan lebih cepat tanpa harus menunggu waktu habis?
 
-A: Ya, sangat bisa. Kuncinya adalah membuktikan kepada sistem bahwa transaksi tersebut aman dengan cara memperbarui status pengiriman jasa, meminta konfirmasi dari pihak pembeli melalui akun mereka, dan merevisi detail faktur jika ditemukan kesalahan redaksional
+**Jawaban:** Ya, sangat bisa. Kuncinya adalah membuktikan kepada sistem bahwa transaksi tersebut aman dengan cara memperbarui status pengiriman jasa, meminta konfirmasi dari pihak pembeli melalui akun mereka, dan merevisi detail faktur jika ditemukan kesalahan redaksional
 
-Q: Mengapa kalimat tenggat waktu pada invoice bisa memicu penahanan dana oleh sistem pembayaran global?
+**Pertanyaan:** Mengapa kalimat tenggat waktu pada invoice bisa memicu penahanan dana oleh sistem pembayaran global?
 
-A: Algoritma keamanan membaca kalimat yang tidak jelas sebagai indikasi potensi sengketa dagang di masa depan. Sistem dirancang untuk melindungi pembeli dan penjual, sehingga mereka menahan dana sampai ada bukti nyata bahwa transaksi berjalan lancar tanpa masalah
+**Jawaban:** Algoritma keamanan membaca kalimat yang tidak jelas sebagai indikasi potensi sengketa dagang di masa depan. Sistem dirancang untuk melindungi pembeli dan penjual, sehingga mereka menahan dana sampai ada bukti nyata bahwa transaksi berjalan lancar tanpa masalah
 
-Q: Apa langkah pertama yang harus diambil ketika melihat status transaksi berubah menjadi 'Pending Hold' di dasbor?
+**Pertanyaan:** Apa langkah pertama yang harus diambil ketika melihat status transaksi berubah menjadi '**Pending Hold**' di dasbor?
 
-A: Segera periksa detail transaksi di menu `Tagihan / Faktur`, pastikan semua dokumen pendukung seperti bukti penyerahan pekerjaan sudah diunggah, dan jangan ragu untuk meminta klien melakukan konfirmasi penerimaan di sistem mereka secara bersamaan.
+**Jawaban:** Segera periksa detail transaksi di menu `Tagihan / Faktur`, pastikan semua dokumen pendukung seperti bukti penyerahan pekerjaan sudah diunggah, dan jangan ragu untuk meminta klien melakukan konfirmasi penerimaan di sistem mereka secara bersamaan.
