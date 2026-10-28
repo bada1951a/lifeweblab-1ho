@@ -459,8 +459,6 @@ async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
 async function generateSinglePost(lang, index, topic, slug, publishDateBase = new Date()) {
   const selectedScenario =
     TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
-  const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
-
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
 
   const { coverUrl, bodyUrl } = getPostImages(index);
@@ -475,7 +473,7 @@ Optional illustrative situation (use ONLY if directly relevant to the topic; nev
 Topic: "${topic}"
 
 [ADSENSE QUALITY & LENGTH REQUIREMENT]
-- For Korean (ko): Write exactly around 2,400 - 2,600 characters (do NOT exceed 3,000 characters).
+- For Korean (ko): Write 2,400 - 2,600 Korean characters EXCLUDING whitespace, Markdown markers, and frontmatter (do NOT exceed 3,000 characters). Prioritize additional genuinely useful diagnostic checks and exceptions over filler.
 - For other languages: Write exactly 900 - 1,100 words.
 - Tone: Highly informative, professional, practical workplace advice.
 - Never invent first-hand experience, credentials, tested results, customer stories, provider settings, financial regulations or tax rules.
@@ -483,21 +481,21 @@ Topic: "${topic}"
 - Avoid repetition and include a concise conclusion in section 4.\n- Answer the exact user search intent in the topic; do not force unrelated banking, tax, or payment examples.\n- Give a symptom-to-cause-to-check-to-fix sequence with specific, verifiable UI steps where applicable.\n- Distinguish confirmed facts from possibilities; never promise guaranteed resolution, approval, refunds, or outcomes.\n- Do not pad the article to hit a length target: add useful edge cases, decision criteria and safe next steps instead.
 
 [STRUCTURE - STRICT 5 H2 HEADINGS]
-Use these exact H2 headings:
+Write topic-specific, naturally localized H2 headings following these five numbered sections. Never use generic payment or account-freeze headings for unrelated topics. Preserve the exact numbering 1 through 5.
 
-## ${i18n.s1}
+## 1. [Native heading about the actual symptom and first checks]
 Write 2 informative paragraphs identifying the exact symptoms and immediate safe checks for "${topic}". Use the optional situation only when genuinely relevant; no fabricated urgency or panic.
 
-## ${i18n.s2}
+## 2. [Native heading about causes specific to the topic]
 Write 2 analytical paragraphs explaining plausible causes specifically relevant to "${topic}". Do not list unrelated gateway, tax, or banking causes.
 
-## ${i18n.s3}
+## 3. [Native heading about practical resolution steps]
 Provide 3 concrete, ordered resolution steps for "${topic}". Use UI labels from "${lang.osUi}" only when they are accurate and applicable; otherwise explain how to find the correct provider-specific setting.
 
-## ${i18n.s4}
+## 4. [Native heading about verification, risks and next steps]
 Write 2 paragraphs of topic-specific precautions, failure checks, escalation criteria, and realistic next steps.
 
-## ${i18n.s5}
+## 5. [Native heading for frequently asked questions]
 Provide exactly 3 practical Q&A items. You MUST put an empty line between Question and Answer:
 
 **Q1.** Question text
@@ -526,7 +524,7 @@ description: "Native concise description in ${lang.name} under 160 characters"
 publishDate: ${pubDateIso}
 image: "${coverUrl}"
 category: "troubleshooting"
-tags: ${JSON.stringify(i18n.tags)}
+tags: ["3 to 5 short native-language tags directly relevant to the exact topic; replace this instruction with actual individual YAML string items"]
 ---
 `;
 
