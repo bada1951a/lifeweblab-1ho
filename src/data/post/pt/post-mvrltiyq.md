@@ -1,6 +1,6 @@
 ---
-title: "Guia Prático: Como Corrigir faturas B2B Globais e Desbloquear Pagamentos"
-description: "Aprenda a resolver faturas B2B internacionais rejeitadas por falta de VAT Reverse Charge e evite bloqueios de pagamentos globais."
+title: "Como corrigir faturas B2B internacionais e entender o VAT Reverse Charge"
+description: "Entenda quando a regra de VAT Reverse Charge pode ser aplicável, como revisar uma fatura internacional e quais dados confirmar antes de reenviá-la."
 publishDate: 2026-10-28T03:35:00.000Z
 image: "/images/billing-photo/billing-38.jpg"
 category: "troubleshooting"
@@ -25,7 +25,7 @@ Outro fator determinante envolve divergências nas validações de dados cadastr
 
 Para normalizar o fluxo da sua operação e liberar o repasse financeiro retido, siga rigorosamente o procedimento padrão de ajuste e reemissão estruturado abaixo:
 
-1. painel : Acesse o dashboard principal da sua plataforma de faturamento ou provedor de pagamentos e localize a transação problemática na aba de faturas recentes.
+1. Painel:  Acesse o painel principal da sua plataforma de faturamento ou provedor de pagamentos e localize a transação problemática na seção de faturas recentes.
 2. Formas de pagamento : Verifique se os dados bancários internacionais e o código `IBAN/SWIFT` correspondem exatamente às exigências do contrato firmado com o parceiro europeu.
 3. faturas : Cancele a fatura incorreta aplicando a **nota de crédito** correspondente e emita uma nova fatura incluindo explicitamente a linha de `VAT Reverse Charge` conforme o artigo da diretiva europeia aplicável.
 4. Configurações : Atualize permanentemente o perfil fiscal do cliente no seu sistema para que o campo de impostos traga essa exceção de forma automatizada em faturas futuras.
