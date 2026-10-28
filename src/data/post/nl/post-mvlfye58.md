@@ -10,17 +10,17 @@ theme: "Emergency Alert Amber"
 
 ## 1. Noodsituatie bij internationale betalingen en overboekingen
 
-Het was een typische regenachtige dinsdagochtend op de Zuidas in Amsterdam. Ik zat achter mijn bureau op de twintigste verdieping met een kop sterke espresso toen de hel losbarstte. Onze klantenservice-afdeling stormde bijna mijn kantoor binnen. Het dashboard van onze online betalingen stond volledig rood. Door een fatale administratieve en technische blunder in onze 'Accountinstellingen' hadden we de `Fraud Risk Score`-filters veel te streng ingesteld. Het gevolg? Duizenden legitieme betalingen van trouwe Europese zakelijke klanten werden massaal geblokkeerd, en al deze transacties belandden direct in de gevreesde 'PayPal 21-Day Hold'. Onze omzetstroom lag in één klap lam en de telefoon bleef maar overgaan met boze klanten.
+Het was een typische regenachtige dinsdagochtend op de Zuidas in Amsterdam. Ik zat achter mijn bureau op de twintigste verdieping met een kop sterke espresso toen de hel losbarstte. Onze klantenservice-afdeling stormde bijna mijn kantoor binnen. Het dashboard van onze online betalingen stond volledig rood. Door een fatale administratieve en technische blunder in onze 'Accountinstellingen' hadden we de `Fraud Risk Score`-filters veel te streng ingesteld. Het gevolg? Duizenden legitieme betalingen van trouwe Europese zakelijke klanten werden massaal geblokkeerd, en al deze transacties belandden direct in de gevreesde '**PayPal 21-Day Hold**'. Onze omzetstroom lag in één klap lam en de telefoon bleef maar overgaan met boze klanten.
 
 De paniek die door onze afdeling gierde was met geen pen te beschrijven. In het hart van de Amsterdamsefinanciële wereld kun je je geen uitvaltijd van vierentwintig uur veroorloven, laat staan een blokkade van drie weken op onze inkomende cashflow. Normaal gesproken denk je bij een 'PayPal 21-Day Hold' aan een standaardroutine voor nieuwe accounts, maar dit was een zelfgecreëerde nachtmerrie door een verkeerde configuratie van onze risicoprofielen.
 
 We probeerden meteen via de standaard klantenservice van PayPal contact te leggen, maar daar liepen we tegen een muur van geautomatiseerde antwoorden aan. Elke medewerker die we via de chat spraken, herhaalde als een mantra dat we simpelweg moesten wachten tot de wettelijke termijn van eenentwintig dagen was verstreken of tot de klanten bevestigden dat ze hun product hadden ontvangen. Maar we praten hier over B2B-diensten en digitale licenties, geen fysieke pakketjes met track-and-trace-codes! De wanhoop nabij besloot ik het heft in eigen handen te nemen en de diepere lagen van ons merchant-account door te lichten.
 
 <div style="border-left: 4px solid #d97706; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> Paniek in de boardroom los je niet op met afwachten, maar door direct de root-cause van je filterinstellingen te identificeren en proactief te handelen.
+<strong>Belangrijk punt:</strong> Paniek in de boardroom los je niet op met afwachten, maar door direct de root-cause van je filterinstellingen te identificeren en proactief te handelen.
 </div>
 
-<div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-14.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
+<div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-14.jpg" alt="Handleiding voor probleemoplossing" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
 ## 2. Diepe duik in de oorzaken van de blokkade
 
@@ -30,7 +30,7 @@ Om dit probleem op te lossen moesten we eerst begrijpen hoe het algoritme van Pa
 
 Door een grote marketingcampagne in de Benelux verdubbelde ons transactievolume in twaalf uur tijd. Het beveiligingssysteem van PayPal zag dit niet als succes, maar als een verdachte poging tot witwassen of creditcardfrauduleuze praktijken. Het algoritme greep direct in en zette alle inkomende gelden op slot.
 
-### Verkeerd geconfigureerde risicofilters in de backend
+### Verkeerd geconfigureerde **risicofilters** in de backend
 
 Dit was onze eigen schuld. Bij het aanpassen van onze `Accountinstellingen` hadden we de gevoeligheid van de `Fraud Risk Score` op het hoogste niveau gezet. Hierdoor werd elke transactie van een IP-adres buiten Nederland direct aangemerkt als 'High Risk', waardoor de 21-daagde hold automatisch werd getriggerd.
 
@@ -55,10 +55,10 @@ Vervolgens gingen we naar het tabblad `Betaalmethoden` en selecteerden we de vas
 Om het systeem te voeden met de juiste compliance-data, doken we de `Facturen`-sectie in. Voor elke geblokkeerde betaling hebben we een gedetailleerde zakelijke factuur gekoppeld, inclusief btw-nummers van onze entiteit op de Zuidas en de KvK-gegevens van de koper. Binnen vierentwintig uur na deze acties zagen we de status van de fondsen veranderen van 'In afwachting' naar 'Beschikbaar'.
 
 <div style="border-left: 4px solid #d97706; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> Door handmatig de transactiestatus te wijzigen naar 'Dienst geleverd' en sluitende facturen te koppelen, dwing je het systeem feitelijk om de hold op te heffen.
+<strong>Belangrijk punt:</strong> Door handmatig de transactiestatus te wijzigen naar 'Dienst geleverd' en sluitende facturen te koppelen, dwing je het systeem feitelijk om de hold op te heffen.
 </div>
 
-## 4. Checklist om rekeningblokkades en overmatige kosten te voorkomen ter voorkoming van toekomstige crises
+## 4. Checklist om rekeningblokkades en onnodige kosten te voorkomen
 
 Om te zorgen dat we dit nooit meer meemaken, hebben we een strikt intern protocol opgesteld dat elke financieel medewerker op kantoor nu uit zijn hoofd kent.
 
@@ -67,12 +67,12 @@ Om te zorgen dat we dit nooit meer meemaken, hebben we een strikt intern protoco
 - Zorg altijd voor een automatische API-koppeling die bij digitale levering direct een leveringsbevestiging naar het betalingsplatform stuurt.
 - Houd een testaccount paraat om nieuwe risicofilters eerst op kleine schaal te testen voordat je ze live zet voor al je klanten.
 
-## 5. 자주 묻는 질문 (FAQ)
+## 5. Veelgestelde vragen (FAQ)
 
-Q: Heeft het zin om de klantenservice van PayPal te bellen tijdens een 21-day hold?
+**Vraag:** Heeft het zin om de klantenservice van PayPal te bellen tijdens een 21-day hold?
 
-A: Alleen bellen heeft weinig zin als je backend-instellingen niet kloppen. Zorg eerst dat je risicofilters en documentatie op orde zijn in je `Accountinstellingen`, en neem daarna pas contact op met de merchantsupport met concrete bewijzen
+**Antwoord:** Alleen bellen heeft weinig zin als je backend-instellingen niet kloppen. Zorg eerst dat je risicofilters en documentatie op orde zijn in je `Accountinstellingen`, en neem daarna pas contact op met de merchantsupport met concrete bewijzen
 
-Q: Hoe voorkom ik dat grote betalingen automatisch als verdacht worden aangemerkt?
+**Vraag:** Hoe voorkom ik dat grote betalingen automatisch als verdacht worden aangemerkt?
 
-A: Communiceer vooraf met je betalingspartner als je een enorme omzetpiek verwacht, en zorg dat je `Fraud Risk Score`-filters geleidelijk worden aangepast naarmate je bedrijfsgroei toeneemt.
+**Antwoord:** Communiceer vooraf met je betalingspartner als je een enorme omzetpiek verwacht, en zorg dat je `Fraud Risk Score`-filters geleidelijk worden aangepast naarmate je bedrijfsgroei toeneemt.
