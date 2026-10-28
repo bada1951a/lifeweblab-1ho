@@ -108,6 +108,16 @@ function validateGeneratedPost(text, langCode) {
     if (questionMatches.length !== 1) errors.push('FAQ Q' + n + ' 누락 또는 중복');
     if (answerMatches.length !== 1) errors.push('FAQ A' + n + ' 누락 또는 중복');
   }
+  const faqSection = body.split(/^## 5\. /m)[1] || '';
+  for (let n = 1; n <= 3; n++) {
+    const q = faqSection.indexOf('**Q' + n + '.**');
+    const a = faqSection.indexOf('**A' + n + '.**');
+    if (q < 0 || a < 0 || q >= a) errors.push('FAQ ' + n + '번 질문/답변 순서 오류');
+    if (n < 3) {
+      const nextQ = faqSection.indexOf('**Q' + (n + 1) + '.**');
+      if (nextQ >= 0 && a >= nextQ) errors.push('FAQ ' + n + '번 답변 위치 오류');
+    }
+  }
   if ((body.match(/^```/gm) || []).length % 2 !== 0) errors.push('코드블록 닫힘 누락');
   if (/^#{2,6}[^ #\n]/m.test(body)) errors.push('제목 마크다운 공백 누락');
   if (/\*\*\*\*/.test(body)) errors.push('볼드 별표 중복');
