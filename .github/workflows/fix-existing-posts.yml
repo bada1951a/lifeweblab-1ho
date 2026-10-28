@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 20
 
-      - name: Run 4ho Fix Script
+      - name: Run 2-1ho Fix Script
         run: node fix-existing-posts.mjs
 
       - name: Commit and Push Changes
@@ -31,6 +31,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "변경되거나 수정할 파일이 없습니다."
           else
-            git commit -m "style: 4호기 마크다운 서식 정밀 교정 (프롬프트 헤더 규격화 및 박스 글자색 보정)"
+            git commit -m "style: 2-1호기 마크다운 서식 정밀 교정 (소제목 및 Q&A 2열 분리)"
             git push
           fi
