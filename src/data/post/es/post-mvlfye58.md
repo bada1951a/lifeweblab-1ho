@@ -61,6 +61,16 @@ Para evitar que este tipo de pesadillas se repitan en los cierres mensuales, est
 - Mantén actualizadas las claves de API y verifica que los webhooks de notificación de pago devuelvan códigos de estado `200 OK` de manera constante.
 - Revisa trimestralmente el estado de tus `Formularios fiscales` y la documentación de cumplimiento normativo (KYC y AML) dentro del panel corporativo.
 
-## 5. Preguntas Frecuentes (FAQ)
+## 5. Preguntas Frecuentes (FA
 
-**Q1.**¿Por qué mi cliente ve un error de aprobación a pesar de tener fondos suficientes en su cuenta bancaria?**A1.**El error suele producirse porque la suma de los decimales de la cesta de la compra y los impuestos difiere en una milésima de la cifra que procesa la pasarela. Al no coincidir el céntimo exacto, el banco emisor bloquea la autorización de seguridad.**Q2.**¿Cómo puedo liberar los fondos retenidos por veintiún días de forma anticipada tras solucionar el error técnico?**A2.**Debes ir a los detalles de la transacción en tu `Panel de control`, hacer clic en 'Confirmar estado del pedido' o 'Actualizar información de entrega' y adjuntar los comprobantes de envío o la factura comercial firmada. Esto suele reducir el plazo de retención a un máximo de setenta y dos horas.**Q3.**¿Es recomendable desactivar la opción de conversión automática de divisa en PayPal para cuentas corporativas B2B?**A3.** Absolutamente sí. Dejar que el banco del cliente o su propia entidad gestione el tipo de cambio reduce drásticamente los conflictos de redondeo y evita que el motor de riesgos de PayPal interprete variaciones extrañas como comportamientos fraudulentos.
+**Q1.** ¿Por qué mi cliente ve un error de aprobación a pesar de tener fondos suficientes en su cuenta bancari
+
+**A1.** El error suele producirse porque la suma de los decimales de la cesta de la compra y los impuestos difiere en una milésima de la cifra que procesa la pasarela. Al no coincidir el céntimo exacto, el banco emisor bloquea la autorización de segurida
+
+**Q2.** ¿Cómo puedo liberar los fondos retenidos por veintiún días de forma anticipada tras solucionar el error técnic
+
+**A2.** Debes ir a los detalles de la transacción en tu `Panel de control`, hacer clic en 'Confirmar estado del pedido' o 'Actualizar información de entrega' y adjuntar los comprobantes de envío o la factura comercial firmada. Esto suele reducir el plazo de retención a un máximo de setenta y dos hora
+
+**Q3.** ¿Es recomendable desactivar la opción de conversión automática de divisa en PayPal para cuentas corporativas B2
+
+**A3.** Absolutamente sí. Dejar que el banco del cliente o su propia entidad gestione el tipo de cambio reduce drásticamente los conflictos de redondeo y evita que el motor de riesgos de PayPal interprete variaciones extrañas como comportamientos fraudulentos.

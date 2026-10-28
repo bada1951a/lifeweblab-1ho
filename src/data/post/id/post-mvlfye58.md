@@ -63,6 +63,16 @@ Agar kejadian mendebarkan di jantung bisnis Jakarta ini tidak terulang kembali, 
 - Lakukan pengecekan rutin pada menu `Pengaturan Akun` untuk memastikan semua `Metode Pembayaran` dan `Formulir Pajak` selalu terbarukan dan valid.
 - Berikan edukasi singkat kepada klien internasional mengenai pentingnya melakukan konfirmasi penerimaan jasa di platform pembayaran agar dana tidak tersangkut oleh algoritma keamanan.
 
-## 5. Pertanyaan yang Sering Diajukan (FAQ)
+## 5. Pertanyaan yang Sering Diajukan (FA
 
-**Q1.**Apakah dana yang tertahan 21 hari benar-benar bisa dicairkan lebih cepat tanpa harus menunggu waktu habis?**A1.**Ya, sangat bisa. Kuncinya adalah membuktikan kepada sistem bahwa transaksi tersebut aman dengan cara memperbarui status pengiriman jasa, meminta konfirmasi dari pihak pembeli melalui akun mereka, dan merevisi detail faktur jika ditemukan kesalahan redaksional.**Q2.**Mengapa kalimat tenggat waktu pada invoice bisa memicu penahanan dana oleh sistem pembayaran global?**A2.**Algoritma keamanan membaca kalimat yang tidak jelas sebagai indikasi potensi sengketa dagang di masa depan. Sistem dirancang untuk melindungi pembeli dan penjual, sehingga mereka menahan dana sampai ada bukti nyata bahwa transaksi berjalan lancar tanpa masalah.**Q3.**Apa langkah pertama yang harus diambil ketika melihat status transaksi berubah menjadi 'Pending Hold' di dasbor?**A3.** Segera periksa detail transaksi di menu `Tagihan / Faktur`, pastikan semua dokumen pendukung seperti bukti penyerahan pekerjaan sudah diunggah, dan jangan ragu untuk meminta klien melakukan konfirmasi penerimaan di sistem mereka secara bersamaan.
+**Q1.** Apakah dana yang tertahan 21 hari benar-benar bisa dicairkan lebih cepat tanpa harus menunggu waktu habi
+
+**A1.** Ya, sangat bisa. Kuncinya adalah membuktikan kepada sistem bahwa transaksi tersebut aman dengan cara memperbarui status pengiriman jasa, meminta konfirmasi dari pihak pembeli melalui akun mereka, dan merevisi detail faktur jika ditemukan kesalahan redaksiona
+
+**Q2.** Mengapa kalimat tenggat waktu pada invoice bisa memicu penahanan dana oleh sistem pembayaran globa
+
+**A2.** Algoritma keamanan membaca kalimat yang tidak jelas sebagai indikasi potensi sengketa dagang di masa depan. Sistem dirancang untuk melindungi pembeli dan penjual, sehingga mereka menahan dana sampai ada bukti nyata bahwa transaksi berjalan lancar tanpa masala
+
+**Q3.** Apa langkah pertama yang harus diambil ketika melihat status transaksi berubah menjadi 'Pending Hold' di dasbo
+
+**A3.** Segera periksa detail transaksi di menu `Tagihan / Faktur`, pastikan semua dokumen pendukung seperti bukti penyerahan pekerjaan sudah diunggah, dan jangan ragu untuk meminta klien melakukan konfirmasi penerimaan di sistem mereka secara bersamaan.
