@@ -18,3 +18,7 @@ jobs:
         run: node --check generate-all.mjs
       - name: No API, no publishing smoke test
         run: node generate-all.mjs --dry-run
+      - name: Approved single Korean sample
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/gpt-luna-single-sample.mjs
