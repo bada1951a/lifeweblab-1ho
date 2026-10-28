@@ -15,7 +15,7 @@ Sytuacja ta doskonale ilustruje, z jakimi absurdami mierzą się nowoczesne spó
 
 
 
-![Troubleshooting Guide](/images/billing-photo/billing-48.jpg)
+![Poradnik rozwiązywania problemów](/images/billing-photo/billing-48.jpg)
 
 ## 2. Analiza przyczyn odrzuceń płatności i błędów
 
@@ -42,4 +42,16 @@ Stabilność finansowa przedsiębiorstwa w segmencie B2B zależy od proaktywnego
 
 Kluczowym elementem ochrony przed fałszywymi blokadami jest również utrzymywanie bezpośredniego kontaktu z dedykowanym opiekunem handlowym w instytucji płatniczej. W przypadku obrotów przekraczających sześciocyfrowe kwoty miesięcznie, standardowe algorytmy wsparcia technicznego są niewystarczające, a white-listowanie kluczowych partnerów biznesowych staje się absolutną koniecznością. Dzięki temu unikniemy sytuacji, w której legalna wypłata środków zostaje wstrzymana z powodu błędnie zinterpretowanego sygnału o podwyższonym ryzyku transakcyjnym.
 
-## 5. Najczęściej zadawane pytania (FAQ)**Q1.**Dlaczego system bramki płatniczej pobrał podwójną prowizję za jedną transakcję międzynarodową?**A1.**Podwójne potrącenie najczęściej wynika z jednoczesnego naliczenia opłaty przez sieć kart płatniczych oraz prowizji za przewalutowanie dynamiczne `DCC` ze strony banku pośredniczącego. Często algorytm ryzyka traktuje nieudaną próbę autoryzacji jako osobną operację i pobiera opłatę administracyjną. Należy niezwłocznie zgłosić ten incydent do supportu z załączonym numerem `charge_id` w celu uzyskania automatycznego zwrotu.**Q2.**Jak skutecznie odblokować środki zamrożone przez algorytm wykrywający fałszywe transakcje?**A2.**Aby odblokować kapitał, musisz dostarczyć do działu compliance potwierdzenie wykonania przelewu SWIFT oraz podpisaną umowę handlową z kontrahentem. W panelu zarządzania należy oznaczyć transakcję jako zweryfikowaną i poprosić o manualny przegląd przez menedżera ryzyka. Czas oczekiwania na odblokowanie środków wynosi zazwyczaj od 3 do 5 dni roboczych.**Q3.**Czy można całkowicie wyłączyć filtry `False Positive` w systemie rozliczeniowym?**A3.** Całkowite wyłączenie zabezpieczeń antyfraudowych jest niemożliwe ze względu na regulacje prawne `PSD2` oraz politykę bezpieczeństwa operatora. Możesz jednak dostosować progi wrażliwości w ustawieniach konta oraz dodać zaufane domeny i numery NIP partnerów do wewnętrznej białej listy. Pozwala to drastycznie ograniczyć liczbę fałszywych odrzuceń bez narażania firmy na realne ryzyko fraudów.
+## 5. Najczęściej zadawane pytania (FAQ)
+
+**Pytanie 1:** Dlaczego system bramki płatniczej pobrał podwójną prowizję za jedną transakcję międzynarodową?
+
+**Odpowiedź 1:** Podwójne potrącenie najczęściej wynika z jednoczesnego naliczenia opłaty przez sieć kart płatniczych oraz prowizji za przewalutowanie dynamiczne `DCC` ze strony banku pośredniczącego. Często algorytm ryzyka traktuje nieudaną próbę autoryzacji jako osobną operację i pobiera opłatę administracyjną. Należy niezwłocznie zgłosić ten incydent do supportu z załączonym numerem `charge_id` w celu uzyskania automatycznego zwrotu.
+
+**Pytanie 2:** Jak skutecznie odblokować środki zamrożone przez algorytm wykrywający fałszywe transakcje?
+
+**Odpowiedź 2:** Aby odblokować kapitał, musisz dostarczyć do działu compliance potwierdzenie wykonania przelewu SWIFT oraz podpisaną umowę handlową z kontrahentem. W panelu zarządzania należy oznaczyć transakcję jako zweryfikowaną i poprosić o manualny przegląd przez menedżera ryzyka. Czas oczekiwania na odblokowanie środków wynosi zazwyczaj od 3 do 5 dni roboczych.
+
+**Pytanie 3:** Czy można całkowicie wyłączyć filtry `False Positive` w systemie rozliczeniowym?
+
+**Odpowiedź 3:**  Całkowite wyłączenie zabezpieczeń antyfraudowych jest niemożliwe ze względu na regulacje prawne `PSD2` oraz politykę bezpieczeństwa operatora. Możesz jednak dostosować progi wrażliwości w ustawieniach konta oraz dodać zaufane domeny i numery NIP partnerów do wewnętrznej białej listy. Pozwala to drastycznie ograniczyć liczbę fałszywych odrzuceń bez narażania firmy na realne ryzyko fraudów.
