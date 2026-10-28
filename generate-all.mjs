@@ -96,6 +96,9 @@ function validateGeneratedPost(text, langCode) {
   if ((body.match(/^##\s+/gm) || []).length !== 5) errors.push('H2 섹션은 정확히 5개 필요');
   if ((body.match(/\*\*Q[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 질문 3개 미만');
   if ((body.match(/\*\*A[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 답변 3개 미만');
+  if ((body.match(/^```/gm) || []).length % 2 !== 0) errors.push('코드블록 닫힘 누락');
+  if (/^#{2,6}[^ #\n]/m.test(body)) errors.push('제목 마크다운 공백 누락');
+  if (/\*\*\*\*/.test(body)) errors.push('볼드 별표 중복');
   if (langCode !== 'ko' && /[가-힣]/.test(body)) errors.push('비한국어 본문에 한글 포함');
   return errors;
 }
