@@ -1,31 +1,18 @@
-name: Fix Existing Posts Formatting
+// =========================================================================
+// 📌 [2-1호기 전용] 12개 언어 40개 포스트 전체를 1초 만에 정상 원본으로 일괄 롤백
+// =========================================================================
 
-on:
-  workflow_dispatch:
+import { execSync } from 'child_process';
 
-permissions:
-  contents: write
+console.log("==================================================");
+console.log("⚡ 40개 포스트 원본(9b0fe34 커밋)으로 긴급 복원 시작...");
+console.log("==================================================");
 
-jobs:
-  revert:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Reset Posts to Clean State
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # 글자 잘리기 전(9b0fe34) 원본으로 src/data/post 40개 글 통째로 일괄 복구
-          git checkout 9b0fe34 -- src/data/post/
-          
-          if git diff --staged --quiet; then
-            echo "복구할 변경 사항이 없습니다."
-          else
-            git commit -m "revert: 12개 언어 40개 포스트 전체 원본으로 일괄 복구"
-            git push origin main
-          fi
+try {
+  // 글자 잘리기 전 정상 발행 커밋(9b0fe34) 시점의 포스트 폴더 상태로 강제 복원
+  execSync('git checkout 9b0fe34 -- src/data/post/', { stdio: 'inherit' });
+  console.log("🎉 [성공] 12개 언어 40개 포스트 전체가 정상 원본으로 복구되었습니다.");
+} catch (error) {
+  console.error("❌ 복구 실패:", error.message);
+  process.exit(1);
+}
