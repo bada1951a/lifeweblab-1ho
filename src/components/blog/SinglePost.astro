@@ -132,7 +132,7 @@ const { post, url } = Astro.props;
             imgP.className = 'my-6 text-center';
             imgP.innerHTML = `<img src="${rawSrc}" alt="${altText}" class="mx-auto rounded-md shadow-lg max-w-full h-auto inline-block" />`;
             
-            p1.parentNode.insertBefore(imgP, p1);
+            p1.parentNode?.insertBefore(imgP, p1);
             p1.remove();
             p2.remove();
             i++;
