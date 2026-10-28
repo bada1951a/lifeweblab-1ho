@@ -599,6 +599,10 @@ async function run() {
     if (!faqErrors.some((x) => x.includes('Q2')) || !faqErrors.some((x) => x.includes('Q3')))
       throw new Error('FAQ 중복/누락 검수 테스트 실패');
     console.log('PASS: FAQ 3쌍 정상 및 중복/누락 차단 검수');
+    const wrongOrder = fullSample.replace('## 2. Test', '## 4. Test');
+    if (!validateGeneratedPost(wrongOrder, 'ko').some((x) => x.includes('제목 순서')))
+      throw new Error('H2 순서 검수 테스트 실패');
+    console.log('PASS: H2 번호 및 순서 오류 차단 검수');
     return;
   }
   console.log('==================================================');
