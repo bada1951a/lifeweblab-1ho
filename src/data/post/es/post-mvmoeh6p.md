@@ -17,10 +17,10 @@ Recuerdo perfectamente mirar la pantalla de mi ordenador sintiendo ese nudo en e
 Durante los primeros treinta minutos, el equipo de soporte técnico y yo estuvimos completamente a ciegas. Revisamos los registros del servidor, pensamos que se trataba de una caída temporal del sistema antifraude `Radar` de Stripe, e incluso culpamos a las pasarelas intermedias de autenticación de 3D Secure. Llamé a nuestro gestor de cuentas en Madrid y me repitió lo de siempre: "Es un problema del emisor de la tarjeta, el banco dice que no". Sin embargo, mi instinto me decía que culpar al banco emisor era una excusa barata cuando la tasa de fallos superaba el cuarenta por ciento en carritos que utilizaban conversión de moneda dinámica.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> Cuando un error genérico como `do_not_honor` se dispara de forma masiva en transacciones transfronterizas, rara vez es culpa del banco del cliente; casi siempre es un desajuste técnico en los payloads de la pasarela de pagos.
+<strong>Punto clave:</strong> Cuando un error genérico como `do_not_honor` se dispara de forma masiva en transacciones transfronterizas, rara vez es culpa del banco del cliente; casi siempre es un desajuste técnico en los payloads de la pasarela de pagos.
 </div>
 
-<div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-19.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
+<div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-19.jpg" alt="Guía de resolución de problemas de pagos" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
 ## 2. Análisis profundo de la causa raíz del fallo
 
@@ -61,10 +61,10 @@ Por último, me trasladé a los `Formularios fiscales` de nuestra pasarela de pa
 Realizamos una prueba de pago simulada utilizando tarjetas de prueba en modo live restringido con diferentes divisas (EUR, GBP, CHF). En menos de veinte minutos, las transacciones volvieron a aprobarse con normalidad y el flujo de ingresos se restableció por completo.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> La clave para eliminar el error `do_not_honor` por redondeo es garantizar una paridad matemática exacta entre lo que visualiza el usuario en el checkout y lo que procesa el API en el backend.
+<strong>Punto clave:</strong> La clave para eliminar el error `do_not_honor` por redondeo es garantizar una paridad matemática exacta entre lo que visualiza el usuario en el checkout y lo que procesa el API en el backend.
 </div>
 
-## 4. Lista de verificación para prevenir retenciones de fondos y cargos extra operativo para prevenir futuras incidencias de cobro
+## 4. Lista de verificación para prevenir retenciones de fondos y cargos adicionales
 
 Para evitar que este tipo de pesadillas se repitan en el futuro y mantener la salud financiera de la empresa bajo control, implementé un protocolo de revisión periódica que ahora forma parte de nuestras rutinas mensuales de operaciones.
 
@@ -73,16 +73,18 @@ Para evitar que este tipo de pesadillas se repitan en el futuro y mantener la sa
 - Monitoreo de alertas de rechazo: Configurar notificaciones automáticas en Slack cada vez que el código `do_not_honor` supere un umbral del 2% sobre el volumen total de transacciones diarias.
 - Pruebas de regresión en pasarelas: Ejecutar pruebas de pago automatizadas cada vez que se despliegue una actualización importante en los módulos de checkout o pasarela.
 
-## 5. Preguntas frecuentes sobre el error do_not_honor y pasarelas de pago
+## 5. Preguntas frecuentes (FAQ)
 
-Q: ¿Es recomendable reintentar automáticamente los pagos que fallan por este motivo?
+**Pregunta:** ¿Es recomendable reintentar automáticamente los pagos que fallan por este motivo?
 
-A: Sí, pero con precaución. Si el error fue causado por un problema temporal de redondeo o sincronización que ya has solucionado en el panel, configurar un sistema de reintentos inteligentes (`Smart Retries`) recuperará una gran parte de los ingresos perdidos sin saturar al cliente
+**Respuesta:** Sí, pero con precaución. Si el error fue causado por un problema temporal de redondeo o sincronización que ya has solucionado en el panel, configurar un sistema de reintentos inteligentes (`Smart Retries`) recuperará una gran parte de los ingresos perdidos sin saturar al cliente
 
-Q: ¿Cómo puedo diferenciar si el error se debe a un fraude real o a un fallo técnico de redondeo?
+**Pregunta:** ¿Cómo puedo diferenciar si el error se debe a un fraude real o a un fallo técnico de redondeo?
 
-A: Debes analizar la tasa de concentración geográfica y el tipo de cliente. Si el error `do_not_honor` se concentra masivamente en cuentas corporativas que utilizan una moneda extranjera específica tras una actualización web, se trata de un fallo técnico de redondeo y no de un problema de fraude.
+**Respuesta:** Debes analizar la tasa de concentración geográfica y el tipo de cliente. Si el error `do_not_honor` se concentra masivamente en cuentas corporativas que utilizan una moneda extranjera específica tras una actualización web, se trata de un fallo técnico de redondeo y no de un problema de fraude.
 
-Q: ¿Por qué Stripe devuelve do_not_honor si el cliente tiene fondos suficientes en su tarjeta corporativa?Aunque el cliente tenga fondos, los bancos emisores utilizan sistemas de seguridad automatizados que bloquean la transacción si detectan la más mínima discrepancia en los decimales, el código postal o las conversiones de moneda extranjera, etiquetando el bloqueo bajo el código genérico `do_not_honor`?
+**Pregunta:** ¿Por qué Stripe devuelve `do_not_honor` si el cliente tiene fondos suficientes en su tarjeta corporativa?
 
-A: Sí, pero con precaución. Si el error fue causado por un problema temporal de redondeo o sincronización que ya has solucionado en el panel, configurar un sistema de reintentos inteligentes (`Smart Retries`) recuperará una gran parte de los ingresos perdidos sin saturar al cliente
+**Respuesta:** Aunque el cliente tenga fondos, los bancos emisores pueden bloquear una transacción por motivos de seguridad, límites de gasto u otras comprobaciones internas. El código por sí solo no permite confirmar que la causa sea un problema de redondeo.
+
+**Respuesta:** Sí, pero con precaución. Si el error fue causado por un problema temporal de redondeo o sincronización que ya has solucionado en el panel, configurar un sistema de reintentos inteligentes (`Smart Retries`) recuperará una gran parte de los ingresos perdidos sin saturar al cliente
