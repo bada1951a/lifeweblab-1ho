@@ -3,137 +3,119 @@ import path from 'path';
 
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 
-function cleanFaqText(text) {
+function cleanText(text) {
   return text
     .replace(/\*\*/g, '')
+    // 기존의 Q1, A2, Q3 등 모든 번호표와 찌꺼기 기호 제거
+    .replace(/^(?:[QA][1-9][.:\s\-_]+)+/i, '')
+    // 문장 앞의 Q:, A: 형태도 일단 제거 후 아래에서 통일
+    .replace(/^(?:Q|A):\s*/i, '')
     .replace(/\s*\(FAQ\)[\s(FAQ).]*$/gi, '')
     .trim();
 }
 
 function fixPostContent(rawContent) {
-  // 1. Frontmatter 분리 및 완벽 보존
   const fmMatch = rawContent.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n*/);
   if (!fmMatch) return rawContent;
 
   const frontmatter = fmMatch[0].trim();
   let body = rawContent.slice(fmMatch[0].length);
-
-  // 보이지 않는 특수 공백 문자(Zero-width space) 제거 (3번 섹션 들여쓰기 깨짐 방지)
   body = body.replace(/[\u200B-\u200D\uFEFF]/g, '');
 
-  // 2. 5번 FAQ 섹션 시작 위치 찾기
   const faqHeaderRegex = /^##\s*5\.\s*([^\r\n]+)/m;
   const faqMatch = body.match(faqHeaderRegex);
-
-  // 5번 섹션이 없으면 원본 그대로 반환 (안전장치)
   if (!faqMatch) return rawContent;
 
   const faqStartIndex = faqMatch.index;
   const faqHeaderLine = `## 5. ${faqMatch[1].replace(/\*\*/g, '').trim()}`;
-
-  // 1~4번 본문은 원본 그대로 보존
   const mainBody = body.slice(0, faqStartIndex).trim();
   const faqRawSection = body.slice(faqStartIndex + faqMatch[0].length).trim();
 
-  // 3. 번호별 바구니(Bucket) 초기화
-  const buckets = {
-    1: { q: '', a: '' },
-    2: { q: '', a: '' },
-    3: { q: '', a: '' }
-  };
-
-  const lines = faqRawSection
-    .split(/\r?\n/)
-    .map(l => l.trim())
-    .filter(l => l.length > 0);
-
-  let currentType = null; // 'q' or 'a'
-  let currentNum = null;  // 1, 2, or 3
+  // 5번 섹션 안의 모든 텍스트 라인을 읽어서 Q와 A 항목들을 순서대로 수집
+  const lines = faqRawSection.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  
+  const extractedPairs = [];
+  let currentQ = '';
+  let currentA = '';
 
   for (const line of lines) {
-    // Q1., Q2., Q3. 감지 (앞에 ** 이나 공백이 있어도 인식)
-    const qMatch = line.match(/^(?:\*\*)?Q([1-3])[.:\s]+([\s\S]*)/i);
-    if (qMatch) {
-      const num = parseInt(qMatch[1], 10);
-      const text = cleanFaqText(qMatch[2]);
-      currentType = 'q';
-      currentNum = num;
-
-      if (text) {
-        // 기존에 저장된 질문이 없거나, 새 질문에 물음표(?)가 포함되어 더 온전한 경우 업데이트
-        if (!buckets[num].q || (text.includes('?') && !buckets[num].q.includes('?'))) {
-          buckets[num].q = text;
+    // Q로 시작하거나 물음표가 포함된 질문 라인 감지
+    if (/^Q[1-9][.:]/i.test(line) || (!line.startsWith('A') && line.endsWith('?'))) {
+      if (currentQ && currentA) {
+        extractedPairs.push({ q: cleanText(currentQ), a: cleanText(currentA) });
+        currentA = '';
+      }
+      currentQ = line;
+    } else if (/^A[1-9][.:]/i.test(line) || currentQ) {
+      if (/^A[1-9][.:]/i.test(line)) {
+        if (currentQ && currentA) {
+          extractedPairs.push({ q: cleanText(currentQ), a: cleanText(currentA) });
+          currentQ = '';
+          currentA = '';
         }
       }
-      continue;
-    }
-
-    // A1., A2., A3. 감지
-    const aMatch = line.match(/^(?:\*\*)?A([1-3])[.:\s]+([\s\S]*)/i);
-    if (aMatch) {
-      const num = parseInt(aMatch[1], 10);
-      const text = cleanFaqText(aMatch[2]);
-      currentType = 'a';
-      currentNum = num;
-
-      if (text) {
-        // 기존에 저장된 답변이 없거나, 새 텍스트가 더 길고 온전한 경우에만 저장 (중복 A2, A3 자동 무시)
-        if (!buckets[num].a || text.length > buckets[num].a.length) {
-          buckets[num].a = text;
-        }
-      }
-      continue;
-    }
-
-    // 만약 줄바꿈되어 이어지는 답변 문장이 있다면 현재 항목에 이어붙임 (단, 중복 문장이 아닐 때만)
-    if (currentType && currentNum && buckets[currentNum][currentType]) {
-      const extraText = cleanFaqText(line);
-      if (extraText && !buckets[currentNum][currentType].includes(extraText)) {
-        buckets[currentNum][currentType] += ' ' + extraText;
+      if (!currentQ) {
+        // Q가 없는 상태로 A가 먼저 나오면 이전 페어의 A로 처리하거나 임시 저장
+        currentA = currentA ? currentA + ' ' + line : line;
+      } else {
+        currentA = currentA ? currentA + ' ' + line : line;
       }
     }
   }
+  if (currentQ && currentA) {
+    extractedPairs.push({ q: cleanText(currentQ), a: cleanText(currentA) });
+  }
 
-  // 4. [안전장치] Q1~Q3, A1~A3 총 6개 항목이 모두 정상적으로 채워졌는지 검증
-  const isComplete = [1, 2, 3].every(
-    num => buckets[num].q.length > 2 && buckets[num].a.length > 2
-  );
-
-  // 하나라도 비어있다면 구조를 임의로 건드리지 않고 원본 그대로 반환 (데이터 파괴 0%)
-  if (!isComplete) {
+  // 안전장치: 최소 2개 이상의 Q&A 쌍이 추출되지 않으면 원본 보호
+  if (extractedPairs.length < 2) {
     return rawContent;
   }
 
-  // 5. Q1 -> A1 -> Q2 -> A2 -> Q3 -> A3 정방향 순서로 재조립
-  const formattedFaq = [
-    faqHeaderLine,
-    `Q1. ${buckets[1].q}`,
-    `A1. ${buckets[1].a}`,
-    `Q2. ${buckets[2].q}`,
-    `A2. ${buckets[2].a}`,
-    `Q3. ${buckets[3].q}`,
-    `A3. ${buckets[3].a}`
-  ].join('\n\n');
+  // 중복된 질문 제거 (Set 활용하여 순서 유지)
+  const seenQ = new Set();
+  const uniquePairs = [];
+  for (const pair of extractedPairs) {
+    const qKey = pair.q.toLowerCase().slice(0, 30);
+    if (!seenQ.has(qKey) && pair.q.length > 5 && pair.a.length > 10) {
+      seenQ.add(qKey);
+      uniquePairs.push(pair);
+    }
+  }
 
+  if (uniquePairs.length < 2) {
+    return rawContent;
+  }
+
+  // 숫자를 아예 없애고 무조건 Q: 와 A: 형식으로만 조합
+  const faqOutputLines = [faqHeaderLine];
+
+  uniquePairs.forEach((pair) => {
+    let qText = pair.q;
+    let aText = pair.a;
+
+    if (!qText.endsWith('?')) qText += '?';
+
+    faqOutputLines.push(`Q: ${qText}`);
+    faqOutputLines.push(`A: ${aText}`);
+  });
+
+  const formattedFaq = faqOutputLines.join('\n\n');
   return `${frontmatter}\n\n${mainBody}\n\n${formattedFaq}\n`;
 }
 
 async function run() {
   console.log('==================================================');
-  console.log('🛡️ [안전 모드] 번호별 버킷 기반 FAQ 정밀 복원 시작');
+  console.log('🛡️ [Q / A 포맷 통일] 번호 제거 및 Q:, A: 변환 시작');
   console.log('==================================================');
 
-  if (!fs.existsSync(POSTS_BASE_DIR)) {
-    console.error(`경로를 찾을 수 없습니다: ${POSTS_BASE_DIR}`);
-    process.exit(1);
-  }
+  if (!fs.existsSync(POSTS_BASE_DIR)) process.exit(1);
 
   const langDirs = fs.readdirSync(POSTS_BASE_DIR, { withFileTypes: true })
     .filter(d => d.isDirectory())
     .map(d => d.name);
 
   let updatedCount = 0;
-  let skippedCount = 0;
+  let intactCount = 0;
 
   for (const lang of langDirs) {
     const langPath = path.join(POSTS_BASE_DIR, lang);
@@ -148,12 +130,12 @@ async function run() {
         fs.writeFileSync(filePath, fixed, 'utf-8');
         updatedCount++;
       } else {
-        skippedCount++;
+        intactCount++;
       }
     }
   }
 
-  console.log(`✅ 복원 완료: ${updatedCount}개 파일 수정됨 (변경 불필요/보호된 파일: ${skippedCount}개)`);
+  console.log(`✅ 변환 완료: ${updatedCount}개 파일이 Q: / A: 형식으로 정리됨 (정상 파일: ${intactCount}개)`);
 }
 
 run();
