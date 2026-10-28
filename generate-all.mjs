@@ -96,7 +96,12 @@ function validateGeneratedPost(text, langCode) {
     errors.push('본문 분량 범위 이탈: ' + count + (langCode === 'ko' ? '자' : '단어'));
   if (/^#\s+/m.test(body)) errors.push('본문 H1 중복');
   if (/\*\*\*\*|\*\*\*Q[1-3]/.test(body)) errors.push('볼드 마크다운 오류');
-  if ((body.match(/^##\s+/gm) || []).length !== 5) errors.push('H2 섹션은 정확히 5개 필요');
+  const headings = body.match(/^##\s+[^\n]+/gm) || [];
+  if (headings.length !== 5) errors.push('H2 섹션은 정확히 5개 필요');
+  for (let n = 1; n <= 5; n++) {
+    if (!headings[n - 1] || !headings[n - 1].startsWith('## ' + n + '. '))
+      errors.push('H2 ' + n + '번 제목 순서 또는 번호 오류');
+  }
   for (let n = 1; n <= 3; n++) {
     const questionMatches = body.match(new RegExp('\\*\\*Q' + n + '\\.\\*\\*', 'gi')) || [];
     const answerMatches = body.match(new RegExp('\\*\\*A' + n + '\\.\\*\\*', 'gi')) || [];
