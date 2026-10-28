@@ -79,6 +79,7 @@ Status: Agreed operating principles; not a claim of deployment or AdSense approv
 - Next: confirm latest safe dry-run run/job status, examine generation and existing-post repair code for side effects, then audit representative posts across all 12 languages and propose/fix issues ONLY on the review branch. Report significant changes, blockers, and decisions rather than routine chatter.
 
 ## Image QA owner: 지사진 주임 (approved 2026-10-29)
+
 - Scope: audit hero/frontmatter and inline images for all existing posts, in all 12 languages. Classify topic relevance, broken references, duplicates, alt text and mobile suitability. Produce a reviewable manifest of post path, image URL, topic, suspected issue, replacement candidate, source/license evidence, and duplicate key.
 - Prefer genuinely topic-relevant, legally reusable free photographs (e.g. Pexels/Unsplash subject to the image's actual license). Do not assume every search result is free or redistribute unverified assets. Never scrape or bypass provider terms; respect API limits.
 - Prioritize replacing unrelated scenery in 2ho/3ho/4ho. Preserve 1ho/2-1ho user-managed local image workflows and existing assets unless a specific change is reviewed. For 2ho/3ho/4ho prefer the existing externally linked Pexels workflow unless a change is approved.
@@ -87,12 +88,14 @@ Status: Agreed operating principles; not a claim of deployment or AdSense approv
 - Report audit findings to 지이사 for aggregation; escalate only significant risks or approval decisions to the owner. This is a work assignment, not proof that an autonomous image agent is running.
 
 ## Owner priority directive (2026-10-29): AdSense readiness first
+
 - PRIORITY 1: storydailyview.com (1ho); PRIORITY 2: lifeweblab.com (2-1ho). Focus work on correcting existing multilingual article defects, factual quality, mobile readability, appropriate unique image/card-news pilots, and site/indexing/navigation readiness before scaling production.
 - Defer large-scale image/content changes for 2ho/3ho/4ho until the first two sites are ready for AdSense review; only critical maintenance on the deferred sites.
 - Preserve existing content and images until verified replacements are ready. Work only on review branches. Scheduled publishing remains paused on all five main branches; do not restart, merge, deploy, or call paid APIs without owner approval.
 - Report measured progress, blockers, and AdSense readiness to 지이사 for a consolidated owner update; never promise approval or imply autonomous work without an actual scheduled workflow.
 
 ## Owner authorization (2026-10-29): conditional automatic publishing after readiness
+
 - Owner authorizes resuming automatic publishing for priority sites 1ho and 2-1ho WHEN their new generation/publishing pipelines are actually validated as ready; do not wait for every preexisting post to be manually repaired.
 - Target cadence: one post per language per day (12 languages per site). Start with 1ho and 2-1ho; 2ho/3ho/4ho remain paused pending separate prioritization.
 - Before re-enabling any production schedule, verify working model/API credentials without exposing secrets, dry-run/build, publish safeguards for broken Markdown/HTML, language mismatch, duplicate topics/slugs, and image availability. Never knowingly publish broken content.
