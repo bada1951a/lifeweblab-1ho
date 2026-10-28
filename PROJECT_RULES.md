@@ -91,3 +91,10 @@ Status: Agreed operating principles; not a claim of deployment or AdSense approv
 - Defer large-scale image/content changes for 2ho/3ho/4ho until the first two sites are ready for AdSense review; only critical maintenance on the deferred sites.
 - Preserve existing content and images until verified replacements are ready. Work only on review branches. Scheduled publishing remains paused on all five main branches; do not restart, merge, deploy, or call paid APIs without owner approval.
 - Report measured progress, blockers, and AdSense readiness to 지이사 for a consolidated owner update; never promise approval or imply autonomous work without an actual scheduled workflow.
+
+## Owner authorization (2026-10-29): conditional automatic publishing after readiness
+- Owner authorizes resuming automatic publishing for priority sites 1ho and 2-1ho WHEN their new generation/publishing pipelines are actually validated as ready; do not wait for every preexisting post to be manually repaired.
+- Target cadence: one post per language per day (12 languages per site). Start with 1ho and 2-1ho; 2ho/3ho/4ho remain paused pending separate prioritization.
+- Before re-enabling any production schedule, verify working model/API credentials without exposing secrets, dry-run/build, publish safeguards for broken Markdown/HTML, language mismatch, duplicate topics/slugs, and image availability. Never knowingly publish broken content.
+- Post-publication: free QA checks detect issues; automated corrections only for safe, deterministic fixes, with logging and rollback. Complex factual or editorial fixes require reviewed PR, not unverified blind changes.
+- This is conditional permission, NOT an instruction to immediately enable broken workflows. Report verified readiness and actual activation status to director Ji and owner.
