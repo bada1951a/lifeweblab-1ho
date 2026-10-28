@@ -14,12 +14,12 @@ Pagi itu di kawasan SCBD Jakarta, suasananya sudah tegang bahkan sebelum jam sem
 
 Semuanya berawal dari pergerakan pasar valas global yang super liar minggu itu. Rupiah melemah tajam, dan manajemen kita kelamaan ngambil keputusan buat nge-lock kurs konversi di sistem pembayaran. Akibatnya, pas kita mau batch settlement, gap kursnya udah kejauhan banget dari estimasi awal. Pas sistem nge-trigger penarikan dana massal, bank penerbit kartu kredit di luar negeri langsung nolak mentah-mentah transaksi tersebut dengan alasan risiko keamanan.
 
-Gue inget banget, waktu pertama kali kode `do_not_honor` nongol beruntun di log transaksi Stripe, jantung gue kayak mau copot. Masalahnya, pesan error ini tuh sifatnya sangat umum dari bank. Artinya, bank si klien bilang "jangan kasih ACC", tapi mereka gak mau ngasih tau alasan spesifiknya lewat API response.
+Gue inget banget, waktu pertama kali kode `do_not_honor` nongol beruntun di log transaksi **Stripe**, jantung gue kayak mau copot. Masalahnya, pesan error ini tuh sifatnya sangat umum dari bank. Artinya, bank si klien bilang "jangan kasih ACC", tapi mereka gak mau ngasih tau alasan spesifiknya lewat API response.
 
-Gue langsung loncat ke meja sebelah buat ngecek dokumentasi resmi sambil keringetan. Awalnya gue kira cuma isu jaringan lokal atau maintenance bank biasa. Tapi pas gue cek dashboard, volume transaksi yang gagal udah tembus angka ratusan juta Rupiah dalam kurun waktu kurang dari dua jam. Tim CS kita di lantai bawah juga udah mulai panik karena klien-klien VIP dari Singapura dan Amerika pada protes kenapa langganan software mereka gagal diproses padahal limit kartu mereka masih banyak.
+Gue langsung loncat ke meja sebelah buat ngecek dokumentasi resmi sambil keringetan. Awalnya gue kira cuma isu jaringan lokal atau maintenance bank biasa. Tapi pas gue cek **dashboard**, volume transaksi yang gagal udah tembus angka ratusan juta Rupiah dalam kurun waktu kurang dari dua jam. Tim CS kita di lantai bawah juga udah mulai panik karena klien-klien VIP dari Singapura dan Amerika pada protes kenapa langganan software mereka gagal diproses padahal limit kartu mereka masih banyak.
 
 <div style="border-left: 4px solid #d97706; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> Error `do_not_honor` saat volatilitas tinggi sering kali disalahartikan sebagai masalah kartu kadaluarsa, padahal ini adalah mekanisme perlindungan risiko dari bank penerbit akibat ketidakcocokan kurs atau indikasi fraud mendadak.
+<strong>Poin penting:</strong> Error `do_not_honor` saat volatilitas tinggi sering kali disalahartikan sebagai masalah kartu kadaluarsa, padahal ini adalah mekanisme perlindungan risiko dari bank penerbit akibat ketidakcocokan kurs atau indikasi fraud mendadak.
 </div>
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-30.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
@@ -31,7 +31,7 @@ Setelah gue telusuri lebih dalam sembari ditemani tiga cangkir kopi hitam pahit,
 ### A. Pembatasan Ketat dari Bank Penerbit Terhadap Transaksi Lintas Batas (Cross-Border)
 Waktu kurs lagi liar-liarnya, algoritma fraud detection di bank-bank internasional langsung dinaikin tingkat sensitivitasnya ke level maksimum. Transaksi lintas batas dari Indonesia ke merchant luar yang nominalnya dikonversi secara tidak wajar langsung ditandai sebagai aktivitas mencurigakan. Bank lebih baik nolak transaksi (`do_not_honor`) daripada ambil risiko fraud atau selisih kurs yang merugikan nasabah mereka.
 
-### B. Ketidaksesuaian Dynamic Currency Conversion (DCC) dan Nilai Tagihan
+### B. Ketidaksesuaian **Dynamic Currency Conversion** (**DCC**) dan Nilai Tagihan
 Ini dia jebakan batman yang sering dilupain praktisi pembayaran. Sistem kita mencoba menarik tagihan dalam mata uang asal, tapi karena fluktuasi ekstrem, bank klien mendeteksi adanya lonjakan nilai tagihan di luar ambang batas toleransi otomatis yang mereka pasang di kartu kredit nasabah. Akibatnya, transaksi langsung diblokir secara otomatis oleh sistem internal bank tersebut.
 
 ### C. Gagal Paham Antara Retry Otomatis dan Kondisi Pasar
@@ -52,7 +52,7 @@ Setelah itu, gue masuk ke `Pengaturan Akun` (`Account Settings`) untuk menyesuai
 Terakhir, gue periksa bagian `Formulir Pajak` (`Tax Forms`) dan pengaturan mata uang penagihan untuk memastikan kepatuhan pelaporan tetap terjaga meskipun kita sedang melakukan penyesuaian kurs darurat pada hari itu.
 
 <div style="border-left: 4px solid #d97706; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> Jangan pernah melakukan retry otomatis secara masif pada error `do_not_honor`. Gunakan pendekatan komunikasi langsung atau arahkan klien untuk melakukan otorisasi ulang secara manual melalui portal pembayaran yang aman.
+<strong>Poin penting:</strong> Jangan pernah melakukan retry otomatis secara masif pada error `do_not_honor`. Gunakan pendekatan komunikasi langsung atau arahkan klien untuk melakukan otorisasi ulang secara manual melalui portal pembayaran yang aman.
 </div>
 
 ## 4. Lembar Periksa Penting Mencegah Penahanan Dana dan Biaya Berlebih Pencegahan Agar Tidak Kecolongan Lagi
@@ -67,14 +67,14 @@ Buat mastikan kejadian horor di SCBD kemarin gak terulang lagi minggu depan, gue
 
 ## 5. Tanya Jawab Seputar Penanganan Error Pembayaran Global
 
-Q: Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor?
+**Pertanyaan:** Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor?
 
-A: Secara umum sangat tidak disarankan untuk langsung melakukan retry manual berkali-kali pada hari yang sama, terutama saat terjadi fluktuasi kurs tajam. Sebaiknya hubungi pelanggan terlebih dahulu untuk meminta mereka mengonfirmasi transaksi ke bank penerbit kartu mereka
+**Jawaban:** Secara umum sangat tidak disarankan untuk langsung melakukan retry manual berkali-kali pada hari yang sama, terutama saat terjadi fluktuasi kurs tajam. Sebaiknya hubungi pelanggan terlebih dahulu untuk meminta mereka mengonfirmasi transaksi ke bank penerbit kartu mereka
 
-Q: Mengapa bank penerbit kartu langsung menolak transaksi dengan do_not_honor alih-alih memberikan alasan spesifik?
+**Pertanyaan:** Mengapa bank penerbit kartu langsung menolak transaksi dengan do_not_honor alih-alih memberikan alasan spesifik?
 
-A: Kebijakan privasi dan keamanan perbankan global memang dirancang demikian untuk melindungi data nasabah serta mencegah potensi eksploitasi celah keamanan siber oleh pihak yang tidak bertanggung jawab
+**Jawaban:** Kebijakan privasi dan keamanan perbankan global memang dirancang demikian untuk melindungi data nasabah serta mencegah potensi eksploitasi celah keamanan siber oleh pihak yang tidak bertanggung jawab
 
-Q: Bagaimana cara mencegah terputusnya layanan langganan klien saat terjadi lonjakan gagal bayar massal?
+**Pertanyaan:** Bagaimana cara mencegah terputusnya layanan langganan klien saat terjadi lonjakan gagal bayar massal?
 
-A: Anda harus mengatur grace period (masa tenggang) yang lebih panjang di pengaturan penagihan sistem Anda, serta menyiapkan email otomatis yang ramah untuk mengarahkan klien memperbarui metode pembayaran mereka secara mandiri.
+**Jawaban:** Anda harus mengatur grace period (masa tenggang) yang lebih panjang di pengaturan penagihan sistem Anda, serta menyiapkan email otomatis yang ramah untuk mengarahkan klien memperbarui metode pembayaran mereka secara mandiri.
