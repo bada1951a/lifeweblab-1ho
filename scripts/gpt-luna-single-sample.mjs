@@ -47,5 +47,8 @@ if (!response.ok) {
     })
   );
   if (!text || data.status === 'incomplete') process.exitCode = 1;
-  else { fs.mkdirSync('tmp-quality-review', { recursive: true }); fs.writeFileSync('tmp-quality-review/ko-sample.md', text, 'utf8'); }
+  else {
+    fs.mkdirSync('tmp-quality-review', { recursive: true });
+    fs.writeFileSync('tmp-quality-review/ko-sample.md', text, 'utf8');
+  }
 }
