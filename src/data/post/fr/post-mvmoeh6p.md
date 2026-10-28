@@ -19,10 +19,10 @@ La panique s'est installée presque instantanément. Quatre-vingt mille euros, c
 J'ai ouvert le support Stripe dans un onglet et lu la documentation officielle, mais soyons honnêtes, la définition de `do_not_honor` est d'une opacité totale. Elle se résume à : « La banque émettrice refuse la transaction sans donner de raison spécifique ». Super, merci pour l'aide. J'étais bloqué entre un client furieux, un service commercial qui me mettait la pression et un système de paiement qui jouait les sourds-muets. J'ai dû prendre une grande inspiration, fermer mes onglets inutiles et me rappeler que j'étais le spécialiste en facturation internationale censé maîtriser ce genre de tempêtes.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> L'erreur `do_not_honor` est une mesure de précaution de la banque du client, et non un dysfonctionnement de votre passerelle. Ne tentez jamais de relancer la même carte en boucle, car cela déclenchera un blocage anti-fraude permanent.
+<strong>Point clé :</strong> L'erreur `do_not_honor` est une mesure de précaution de la banque du client, et non un dysfonctionnement de votre passerelle. Ne tentez jamais de relancer la même carte en boucle, car cela déclenchera un blocage anti-fraude permanent.
 </div>
 
-<div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-17.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
+<div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-17.jpg" alt="Guide de dépannage des paiements" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
 ## 2. Analyse approfondie des causes profondes
 
@@ -57,7 +57,7 @@ Plutôt que de laisser le client dans le flou, je l'ai appelé directement. Je l
 Pour éviter toute perte de revenus, nous avions préparé un plan B. Je suis allé dans l'onglet `Factures` pour dupliquer l'élément en modifiant le `Modes de paiement` autorisé, en basculant temporairement d'un paiement par carte classique vers un virement bancaire sécurisé SEPA / SWIFT, tout en maintenant la pression sur la banque pour qu'elle débloque la carte. Finalement, après un coup de fil du client à son banquier pour valider l'opération, nous avons relancé la carte via le `Formulaires fiscaux` et les paramètres validés, et le paiement est passé comme une lettre à la poste.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> Avoir toujours une alternative de paiement instantanée (comme le virement bancaire direct ou un lien de paiement alternatif) permet de sauver 90% des transactions bloquées par un `do_not_honor` en moins d'une heure.
+<strong>Point clé :</strong> Avoir toujours une alternative de paiement instantanée (comme le virement bancaire direct ou un lien de paiement alternatif) permet de sauver 90% des transactions bloquées par un `do_not_honor` en moins d'une heure.
 </div>
 
 ## 4. Check-list opérationnelle pour éviter les récidives
@@ -76,16 +76,14 @@ Nous avons configuré des alternatives automatiques dans nos `Paramètres du com
 
 Chaque fin de mois, j'analyse les rapports de notre `Tableau de bord` pour identifier les banques ou les zones géographiques qui posent le plus de problèmes de refus injustifiés. Cela nous permet d'anticiper les frictions et d'adapter nos formulaires fiscaux et nos options de paiement en conséquence.
 
-## 5. 자주 묻는 질문 (FAQ)
+## 5. Foire aux questions (FAQ)
 
-Q: questions?
+**Introduction :** Voici les réponses aux questions les plus fréquentes sur les refus de paiement `do_not_honor`.
 
-A: Pour clore ce retour d'expérience, voici les réponses aux questions que l'on me pose le plus souvent lors de nos ateliers internes sur la gestion des litiges de paiement
+**Question :** Pourquoi une banque refuse-t-elle un paiement alors que le client a largement les fonds nécessaires?
 
-Q: Pourquoi une banque refuse-t-elle un paiement alors que le client a largement les fonds nécessaires?
+**Réponse :** Le code `do_not_honor` ne signifie pas nécessairement que le compte est vide. Il indique que la banque refuse de honorer la transaction pour des raisons de sécurité interne, de suspicion de fraude, de non-conformité avec les limites de dépenses en ligne, ou d'absence de validation 3D Secure conforme
 
-A: Le code `do_not_honor` ne signifie pas nécessairement que le compte est vide. Il indique que la banque refuse de honorer la transaction pour des raisons de sécurité interne, de suspicion de fraude, de non-conformité avec les limites de dépenses en ligne, ou d'absence de validation 3D Secure conforme
+**Question :** Comment rassurer un client grand compte dont le paiement a été rejeté sans paraître incompétent?
 
-Q: Comment rassurer un client grand compte dont le paiement a été rejeté sans paraître incompétent?
-
-A: Il faut dédramatiser la situation immédiatement en expliquant que c'est une mesure de sécurité standard des banques pour les facturations internationales élevées. En lui fournissant tout de suite une solution de contournement fluide (comme un lien de paiement alternatif ou un virement), vous transformez un incident technique en une démonstration de réactivité et de professionnalisme.
+**Réponse :** Il faut dédramatiser la situation immédiatement en expliquant que c'est une mesure de sécurité standard des banques pour les facturations internationales élevées. En lui fournissant tout de suite une solution de contournement fluide (comme un lien de paiement alternatif ou un virement), vous transformez un incident technique en une démonstration de réactivité et de professionnalisme.
