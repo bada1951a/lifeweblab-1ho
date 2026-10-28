@@ -37,16 +37,16 @@ La prevención es la clave para evitar que las operaciones financieras de la com
 
 Asimismo, mantener actualizados los datos de contacto y habilitar las notificaciones mediante SMS o aplicaciones móviles garantiza una respuesta inmediata ante cualquier incidencia de cobro. Disponer siempre de una tarjeta de respaldo de una entidad financiera diferente o de una cuenta multidivisa previene que un fallo puntual en una pasarela comprometa la productividad de los equipos en Madrid. Una correcta gestión de los medios de pago consolida la salud financiera de la empresa y asegura relaciones comerciales fluidas con proveedores internacionales.
 
-## 5. Preguntas Frecuentes 1. ¿Qué ocurre si la herramienta SaaS suspende mi cuenta antes de que pueda modificar el límite de la tarjeta
+## 5. Preguntas frecuentes (FAQ)
 
-Q: ¿Qué ocurre si la herramienta SaaS suspende mi cuenta antes de que pueda modificar el límite de la tarjeta?
+**Pregunta:** ¿Qué ocurre si la herramienta SaaS suspende mi cuenta antes de que pueda modificar el límite de la tarjeta?
 
-A: Si el servicio se suspende, la mayoría de los proveedores mantienen los datos almacenados durante un periodo de gracia que suele oscilar entre 7 y 30 días. En cuanto el pago se procese correctamente tras actualizar el límite diarioen tu banco, el acceso se restaurará de forma automática sin pérdida de información
+**Respuesta:** Si el servicio se suspende, la mayoría de los proveedores mantienen los datos almacenados durante un periodo de gracia que suele oscilar entre 7 y 30 días. En cuanto el pago se procese correctamente tras actualizar el límite diario en tu banco, el acceso se restaurará de forma automática sin pérdida de información
 
-Q: ¿Es recomendable utilizar tarjetas virtuales para el pago de suscripciones tecnológicas recurrentes?
+**Pregunta:** ¿Es recomendable utilizar tarjetas virtuales para el pago de suscripciones tecnológicas recurrentes?
 
-A: Sí, el uso de tarjetas virtuales dedicadas es altamente recomendable para gestionar servicios corporativos y suscripciones internacionales. Estas herramientas permiten establecer topes de gasto específicos y bloqueos temporales, minimizando los riesgos asociados a fraudes y facilitando el control estricto del presupuesto mensual
+**Respuesta:** Sí, el uso de tarjetas virtuales dedicadas es altamente recomendable para gestionar servicios corporativos y suscripciones internacionales. Estas herramientas permiten establecer topes de gasto específicos y bloqueos temporales, minimizando los riesgos asociados a fraudes y facilitando el control estricto del presupuesto mensual
 
-Q: ¿Por qué mi banco sigue rechazando el pago a pesar de haber ampliado el límite diario?
+**Pregunta:** ¿Por qué mi banco sigue rechazando el pago a pesar de haber ampliado el límite diario?
 
-A: En ocasiones, las entidades financieras aplican filtros adicionales por sospecha de fraude internacional o exigen completar una validación mediante `3DS2`. Si persiste el error, se debe contactar directamente con el soporte del banco para autorizar de forma manual el comercio extranjero o utilizar una pasarela alternativa como transferencia bancaria directa.
+**Respuesta:** En ocasiones, las entidades financieras aplican filtros adicionales por sospecha de fraude internacional o exigen completar una validación mediante `3DS2`. Si persiste el error, se debe contactar directamente con el soporte del banco para autorizar de forma manual el comercio extranjero o utilizar una pasarela alternativa como transferencia bancaria directa.
