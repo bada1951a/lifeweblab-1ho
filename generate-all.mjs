@@ -1,3 +1,12 @@
+// =========================================================================
+// 📌 [고정 식별자] 이 파일은 '2-1호기 (LifeWebLab)' 전용 스크립트입니다.
+// ⚠️ [혼동 방지 및 영구 고정 규칙]
+// 1. 이 파일은 '2-1호기'입니다. 본진 1호기, 2호기, 3호기, 4호기나 향후 서브호기와 절대 혼동 금지!
+// 2. 카테고리는 대표님의 지시 전까지 'troubleshooting'으로 영구 고정한다. (임의 변경 절대 금지)
+// 3. 이미지 경로는 'public/images/billing-photo'로 영구 고정한다.
+// 4. 대표님과의 모든 설명, 질문, 대화 및 주석은 반드시 100% 한국어로만 진행한다.
+// =========================================================================
+
 import fs from 'fs';
 import path from 'path';
 import { GoogleGenAI } from '@google/genai';
@@ -14,7 +23,7 @@ const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
 
 // =========================================================================
-// [이미지 안전 로드] public/images/billing-photo 100% 안전 매핑
+// [2-1호기 전용] public/images/billing-photo 로컬 이미지 자동 셔플
 // =========================================================================
 const IMAGE_EXTS = /\.(jpe?g|png|webp|gif|avif)$/i;
 
@@ -57,7 +66,7 @@ function getKstPublishDateIso(index) {
 }
 
 // =========================================================================
-// 12개국 현지어 표준 소제목 규격
+// [2-1호기 전용] 12개국 100% 현지어 섹션 제목 및 치환 딕셔너리 (영구 고정)
 // =========================================================================
 const I18N_SECTIONS = {
   ko: {
@@ -159,14 +168,14 @@ const I18N_SECTIONS = {
 };
 
 // =========================================================================
-// 🛡️ [자가 검수 및 치유 엔진: Self-Healing Inspector]
+// 🛡️ [2-1호기 자가 검수 및 치유 엔진: Self-Healing Inspector]
 // =========================================================================
 function inspectAndHealMarkdown(body, langCode) {
   let healed = body.trim();
   const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
   const auditLogs = [];
 
-  // 1. [헤딩 검수 & 치유] 볼드 제거 및 1~5번 표준 띄어쓰기 소제목 강제 안착
+  // 1. [헤딩 검수 & 치유] 볼드 제거 및 2-1호기 표준 띄어쓰기 소제목 강제 안착
   healed = healed.replace(/^(#{1,6}\s+)\*\*(.*?)\*\*/gm, '$1$2');
   healed = healed.replace(/^#{1,6}\s*1[.\s]+([^\n]+)/m, `## ${i18n.s1}`);
   healed = healed.replace(/^#{1,6}\s*2[.\s]+([^\n]+)/m, `## ${i18n.s2}`);
@@ -237,7 +246,7 @@ if (lines.length === 0) {
 }
 
 const currentTopic = lines[0];
-console.log(`📌 오늘 처리할 주제: "${currentTopic}"`);
+console.log(`📌 오늘 처리할 주제 [2-1호기 LifeWebLab]: "${currentTopic}"`);
 
 const TROUBLESHOOTING_SCENARIOS_30 = [
   "해외 바이어로부터 거액의 인보이스 결제 완료 알림 직후 결제 게이트웨이 대시보드에 결제 거절(Declined) 경고가 뜬 순간",
@@ -314,20 +323,21 @@ async function generateSinglePost(lang, index) {
   const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
-  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 애드센스 표준 포스팅 생성 중...`);
+  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
 
   const { coverUrl, bodyUrl } = getPostImages(index);
   const pubDateIso = getKstPublishDateIso(index);
 
-  // 🎯 [프롬프트: Q&A 빈 줄 2개 규격 명확화]
+  // 🎯 [프롬프트: 2,400~2,600자 정량화 및 Q&A 빈 줄 2개 규격 명확화]
   const prompt = `
 You are a ${lang.persona}.
 Write a high-quality, practical troubleshooting guide natively in ${lang.name}.
 Target Culture: "${lang.localeContext}"
 Assigned Situation: "${selectedScenario}"
+Topic: "${currentTopic}"
 
 [ADSENSE QUALITY & LENGTH REQUIREMENT]
-- For Korean (ko): Write exactly around 2,400 - 2,600 characters.
+- For Korean (ko): Write exactly around 2,400 - 2,600 characters (do NOT exceed 3,000 characters).
 - For other languages: Write exactly 900 - 1,100 words.
 - Tone: Highly informative, professional, practical workplace advice.
 
@@ -391,11 +401,15 @@ tags: ${JSON.stringify(i18n.tags)}
       let body = text.slice(fmMatch[0].length).trim();
       body = body.replace(/^#\s+[^\n]+\n+/, '');
 
+      // ⚠️ 2-1호기 카테고리 'troubleshooting' 영구 보존 강제 검증
+      frontmatter = frontmatter.replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
+                               .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
+
       // 🩺 [자가 검수 및 치유 엔진 실행]
       body = inspectAndHealMarkdown(body, lang.code);
 
       if (lang.code === 'ko') {
-        console.log(`   📏 [본문 최종 글자 수] ${body.length}자 (애드센스 표준: 2,400~2,600자)`);
+        console.log(`   📏 [2-1호기 본문 최종 글자 수] ${body.length}자 (애드센스 표준: 2,400~2,600자)`);
       }
 
       // 본문 중간 이미지 배치 (2번 섹션 직전)
@@ -416,7 +430,7 @@ tags: ${JSON.stringify(i18n.tags)}
 
     const filePath = path.join(targetDir, `${fileSlug}.md`);
     fs.writeFileSync(filePath, text, 'utf-8');
-    console.log(`   ✅ [성공] 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
+    console.log(`   ✅ [성공] 2-1호기 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
     return true;
   } catch (error) {
     console.error(`❌ [최종 실패] ${lang.name} 생성 실패:`, error.message);
@@ -426,7 +440,7 @@ tags: ${JSON.stringify(i18n.tags)}
 
 async function run() {
   console.log("==================================================");
-  console.log("⚡ LifeWebLab 자가 검수·치유 탑재 12개국 고속 포스팅");
+  console.log("⚡ [2-1호기 LifeWebLab] (카테고리: troubleshooting) 12개국 고속 자동 포스팅 시작");
   console.log("==================================================");
 
   let successCount = 0;
