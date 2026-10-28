@@ -67,4 +67,14 @@ Nachdem der Brand gelöscht war, haben wir uns im Team zusammengesetzt, um nie w
 
 ## 5. Häufig gestellte Fragen (FAQ)
 
-**Q1.** Was mache ich, wenn der Kunde sich weigert, den Erhalt der Dienstleistung im PayPal-Account zu bestätigen?**A1.**In diesem Fall musst du dem PayPal-Support wasserdichte Alternativnachweise vorlegen. Dazu gehören E-Mail-Protokolle, in denen der Kunde die bisherige Arbeitsleistung explizit lobt oder abnimmt, sowie das unterschriebene Projektabbruch-Protokoll. Dokumentiere jede Kommunikation lückenlos im Ticket.**Q2.**Kann eine PayPal-Sperre bei B2B-Transaktionen komplett vermieden werden?**A2.**Komplett ausschließen kann man sie nie, da automatisierte Risikosysteme arbeiten. Du kannst das Risiko aber drastisch minimieren, indem du deinen Account als verifiziertes Geschäftskonto führst, regelmäßige Umsätze hast und bei hohen Beträgen im Vorfeld den PayPal-Business-Support über anstehende Großtransaktionen informierst.**Q3.**Warum reicht eine einfache PDF-Rechnung oft nicht aus, um die Sperre aufzuheben?**A3.** Weil eine PDF-Rechnung von jedem in fünf Minuten selbst erstellt werden kann. PayPal verlangt rechtssichere Belege, dass die Leistung tatsächlich erbracht wurde oder dass beide Parteien sich über die Abwicklung einig sind – wie zum Beispiel ein von beiden Seiten unterzeichnetes Abnahme- oder Abbruchprotokoll in Kombination mit Kommunikationsnachweisen.
+**Q1.** Was mache ich, wenn der Kunde sich weigert, den Erhalt der Dienstleistung im PayPal-Account zu bestätigen?
+
+**A1.** In diesem Fall musst du dem PayPal-Support wasserdichte Alternativnachweise vorlegen. Dazu gehören E-Mail-Protokolle, in denen der Kunde die bisherige Arbeitsleistung explizit lobt oder abnimmt, sowie das unterschriebene Projektabbruch-Protokoll. Dokumentiere jede Kommunikation lückenlos im Ticket.
+
+**Q2.** Kann eine PayPal-Sperre bei B2B-Transaktionen komplett vermieden werden?
+
+**A2.** Komplett ausschließen kann man sie nie, da automatisierte Risikosysteme arbeiten. Du kannst das Risiko aber drastisch minimieren, indem du deinen Account als verifiziertes Geschäftskonto führst, regelmäßige Umsätze hast und bei hohen Beträgen im Vorfeld den PayPal-Business-Support über anstehende Großtransaktionen informierst.
+
+**Q3.** Warum reicht eine einfache PDF-Rechnung oft nicht aus, um die Sperre aufzuheben?
+
+**A3.** Weil eine PDF-Rechnung von jedem in fünf Minuten selbst erstellt werden kann. PayPal verlangt rechtssichere Belege, dass die Leistung tatsächlich erbracht wurde oder dass beide Parteien sich über die Abwicklung einig sind – wie zum Beispiel ein von beiden Seiten unterzeichnetes Abnahme- oder Abbruchprotokoll in Kombination mit Kommunikationsnachweisen.
