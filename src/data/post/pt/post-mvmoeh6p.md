@@ -10,7 +10,7 @@ theme: "Resolution Emerald Guide"
 
 ## 1. Emergência crítica com pagamentos globais e remessas internacionais
 
-Eram por volta das oito e meia da manhã em um escritório movimentado na Avenida Paulista, bem no coração financeiro de São Paulo. O café ainda fumegaba na minha xícara quando abri o painel de controle para conferir os recebimentos do nosso marketplace global. A expectativa era alta, mas o que encontrei foi um verdadeiro banho de água fria: os pagamentos das vendas internacionais haviam caído, sim, mas junto com eles vinha um rombo inexplicável. Uma taxa abusiva tinha sido descontada em duplicidade, e o código de erro `do_not_honor` piscava em várias transações recentes, bloqueando o fluxo de caixa de dezenas de clientes importantes.
+Eram por volta das oito e meia da manhã em um escritório movimentado na Avenida Paulista, bem no coração financeiro de São Paulo. O café ainda fumegaba na minha xícara quando abri o painel de controle para conferir os recebimentos do nosso marketplace global. A expectativa era alta, mas o que encontrei foi um verdadeiro banho de água fria: os pagamentos das vendas internacionais haviam caído, sim, mas junto com eles vinha um rombo inexplicável. Uma taxa abusiva tinha sido descontada em duplicidade, e o código de erro **`do_not_honor`** piscava em várias transações recentes, bloqueando o fluxo de caixa de dezenas de clientes importantes.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
 <strong>[Key Point]:</strong> O erro `do_not_honor` não significa necessariamente que seu cliente não tem dinheiro; muitas vezes é um bloqueio preventivo do banco emissor que exige uma abordagem estratégica para não queimar a conversão.
@@ -58,25 +58,25 @@ Por fim, entre em `Configurações de Conta` e depois em `Formulários Fiscais` 
 <strong>[Key Point]:</strong> Agir rapidamente nos menus de faturamento e ajustar os parâmetros de retentativa salva a conversão e evita que o seu negócio sofra sanções severas de chargeback.
 </div>
 
-## 4. Checklist essencial para evitar retenções de saldo e taxas abusivas Definitivo para Prevenção de Futuros Incidentes
+## 4. Checklist definitivo para prevenir incidentes futuros
 
 Para garantir que aquela cena de terror na Avenida Paulista nunca mais se repita, criei um checklist rigoroso que nossa equipe agora executa religiosamente toda semana:
 
-- Monitorar diariamente os logs de API em busca de códigos de erro recorrentes como `do_not_honor` ou `stolen_card`.
+- Monitorar diariamente os logs de API em busca de códigos de erro recorrentes como `do_not_honor` ou **`stolen_card`**.
 - Realizar auditorias quinzenais nas faturas para identificar qualquer anomalía nas taxas de câmbio aplicadas.
 - Manter contato direto com os gerentes de conta dos provedores de pagamento para antecipar atualizações nas regras de segurança.
 - Configurar alertas automáticos no Slack para notificar a equipe financeira sempre que uma taxa duplicada ultrapassar o limite tolerável.
 
-## 5. 자주 묻는 질문 (FAQ)
+## 5. Perguntas frequentes (FAQ)
 
-Q: O que exatamente significa o código de erro `do_not_honor` no meu relatório?
+**Pergunta:** O que exatamente significa o código de erro `do_not_honor` no meu relatório?
 
-A: É uma resposta genérica enviada pelo banco emissor do cartão do cliente indicando que eles recusaram a transação. O banco geralmente não especifica o motivo exato por questões de sigilo, mas na maioria das vezes trata-se de uma suspeita de fraude ou limite excedido
+**Resposta:** É uma resposta genérica enviada pelo banco emissor do cartão do cliente indicando que eles recusaram a transação. O banco geralmente não especifica o motivo exato por questões de sigilo, mas na maioria das vezes trata-se de uma suspeita de fraude ou limite excedido
 
-Q: Devo incentivar meus clientes a tentarem o pagamento novamente logo após receberem esse erro?
+**Pergunta:** Devo incentivar meus clientes a tentarem o pagamento novamente logo após receberem esse erro?
 
-A: Não imediatamente. Tentar passar o mesmo cartão várias vezes seguidas pode fazer com que o banco bloqueie o cartão permanentemente por suspeita de fraude. O ideal é orientar o cliente a entrar em contato com o banco dele para autorizar a compra internacional ou sugerir que utilizem outro meio de pagamento, como Pix ou transferência bancária
+**Resposta:** Não imediatamente. Tentar passar o mesmo cartão várias vezes seguidas pode fazer com que o banco bloqueie o cartão permanentemente por suspeita de fraude. O ideal é orientar o cliente a entrar em contato com o banco dele para autorizar a compra internacional ou sugerir que utilizem outro meio de pagamento, como Pix ou transferência bancária
 
-Q: Como posso recuperar as taxas que foram descontadas em duplicidade no meu saldo?
+**Pergunta:** Como posso recuperar as taxas que foram descontadas em duplicidade no meu saldo?
 
-A: Você deve abrir um ticket de contestação diretamente no suporte do seu processador de pagamentos, anexando os relatórios detalhados com os IDs das transações afetadas. Comprovando a duplicidade técnica, o estorno do valor cobrado a mais é processado e devolvido ao seu saldo operacional em poucos dias úteis.
+**Resposta:** Você deve abrir um ticket de contestação diretamente no suporte do seu processador de pagamentos, anexando os relatórios detalhados com os IDs das transações afetadas. Comprovando a duplicidade técnica, o estorno do valor cobrado a mais é processado e devolvido ao seu saldo operacional em poucos dias úteis.
