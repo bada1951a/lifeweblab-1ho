@@ -472,7 +472,7 @@ async function generateSinglePost(lang, index, topic, slug, publishDateBase = ne
 You are a ${lang.persona}.
 Write a high-quality, practical troubleshooting guide natively in ${lang.name}.
 Target Culture: "${lang.localeContext}"
-Assigned Situation: "${selectedScenario}"
+Optional illustrative situation (use ONLY if directly relevant to the topic; never present as a real case): "${selectedScenario}"
 Topic: "${topic}"
 
 [ADSENSE QUALITY & LENGTH REQUIREMENT]
@@ -481,22 +481,22 @@ Topic: "${topic}"
 - Tone: Highly informative, professional, practical workplace advice.
 - Never invent first-hand experience, credentials, tested results, customer stories, provider settings, financial regulations or tax rules.
 - Give concrete actionable steps; when provider policies differ, clearly state the limitation.
-- Avoid repetition and include a concise conclusion in section 4.
+- Avoid repetition and include a concise conclusion in section 4.\n- Answer the exact user search intent in the topic; do not force unrelated banking, tax, or payment examples.\n- Give a symptom-to-cause-to-check-to-fix sequence with specific, verifiable UI steps where applicable.\n- Distinguish confirmed facts from possibilities; never promise guaranteed resolution, approval, refunds, or outcomes.\n- Do not pad the article to hit a length target: add useful edge cases, decision criteria and safe next steps instead.
 
 [STRUCTURE - STRICT 5 H2 HEADINGS]
 Use these exact H2 headings:
 
 ## ${i18n.s1}
-Write 2 detailed paragraphs describing the sudden payment error emergency, the business risk, and initial panic based on: "${selectedScenario}".
+Write 2 informative paragraphs identifying the exact symptoms and immediate safe checks for "${topic}". Use the optional situation only when genuinely relevant; no fabricated urgency or panic.
 
 ## ${i18n.s2}
-Write 2 analytical paragraphs explaining the technical root causes (gateway risk rules, 3DS authentication, tax form issues, or intermediary bank holds).
+Write 2 analytical paragraphs explaining plausible causes specifically relevant to "${topic}". Do not list unrelated gateway, tax, or banking causes.
 
 ## ${i18n.s3}
-Provide 3 concrete resolution steps matching "${lang.osUi}". Use clean numbered lists with practical action items.
+Provide 3 concrete, ordered resolution steps for "${topic}". Use UI labels from "${lang.osUi}" only when they are accurate and applicable; otherwise explain how to find the correct provider-specific setting.
 
 ## ${i18n.s4}
-Write 2 paragraphs of practical precautions and operational tips to prevent recurring payment blocks and charges.
+Write 2 paragraphs of topic-specific precautions, failure checks, escalation criteria, and realistic next steps.
 
 ## ${i18n.s5}
 Provide exactly 3 practical Q&A items. You MUST put an empty line between Question and Answer:
