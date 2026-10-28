@@ -87,6 +87,10 @@ function validateGeneratedPost(text, langCode) {
     if (!new RegExp('^' + field + ':\\s*\\S', 'm').test(meta)) errors.push(field + ' 누락');
   }
   if (!/^category:\s*['"]?troubleshooting['"]?\s*$/m.test(meta)) errors.push('category 오류');
+  const tagsLine = meta.match(/^tags:\s*\[([^\]\r\n]*)\]\s*$/m);
+  const tags = tagsLine ? tagsLine[1].split(',').map((x) => x.trim().replace(/^['"]|['"]$/g, '')) : [];
+  if (tags.length < 3 || tags.length > 5 || tags.some((x) => !x || /placeholder|relevant topic tag|tag [1-5]/i.test(x)))
+    errors.push('주제별 태그 3~5개 필요');
   const readable = body
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
     .replace(/[#*_`>]/g, '')
