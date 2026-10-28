@@ -421,7 +421,7 @@ tags: ${JSON.stringify(i18n.tags)}
 `;
 
   try {
-    let rawText = await fetchWithRetry(prompt);
+    let rawText = await fetchWithRetry(prompt, 1, 3000);
     let text = rawText.trim();
     if (text.startsWith('```markdown')) text = text.replace(/^```markdown\n/, '').replace(/\n```$/, '');
     if (text.startsWith('```')) text = text.replace(/^```\n/, '').replace(/\n```$/, '');
