@@ -335,7 +335,6 @@ const TARGET_LANGS = [
 ];
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-const fileSlug = `post-${Date.now().toString(36)}`;
 
 async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
