@@ -46,9 +46,7 @@ const metadata = {
 
 <Layout metadata={metadata}>
   <section class="px-6 sm:px-6 py-12 sm:py-16 lg:py-20 mx-auto max-w-4xl">
-    <Headline
-      subtitle={`Archive of articles published in ${langNames[lang] || lang}.`}
-    >
+    <Headline subtitle={`Archive of articles published in ${langNames[lang] || lang}.`}>
       {langNames[lang] || lang.toUpperCase()}
     </Headline>
     <BlogList posts={posts} />
