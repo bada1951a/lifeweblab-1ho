@@ -35,4 +35,16 @@ Um langfristig im harten Geschäft der grenzüberschreitenden Zahlungen zu beste
 
 Zusätzlich empfiehlt sich die kontinuierliche Pflege der Kundendaten und die Nutzung erweiterter Authentifizierungsverfahren wie `SCA` (Strong Customer Authentication) bei allen B2B-Transaktionen. Eine transparente Dokumentation der wirtschaftlichen Berechtigten und regelmäßige Audits der verwendeten API-Schlüssel minimieren das Risiko von plötzlichen Kontensperren drastisch. Wer hier strukturiert vorgeht, schützt sein Unternehmen vor vermeidbaren Ausfällen in harten Marktphasen.
 
-## 5. Häufig gestellte Fragen (FAQ)**Q1.**Warum werden plötzliche Großtransaktionen während einer Wechselkurskrise von Stripe abgelehnt?**A1.**Stripe-Algorithmen bewerten ungewöhnliche Verhaltensänderungen, wie plötzliche Großbeträge oder neue Währungspaare, automatisch als erhöhtes Betrugsrisiko. Wenn das System keine historischen Muster für dieses Volumen findet, greift der automatische Schutzmechanismus und blockiert die Zahlung als False Positive.**Q2.**Wie kann ich eine irrtümliche Betrugssperre im Stripe-Dashboard am schnellsten aufheben?**A2.**Öffnen Sie die betroffene Transaktion im Dashboard unter dem Reiter Zahlungen und prüfen Sie die spezifischen Radar-Risikowerte. Sie können die Transaktion oft manuell freigeben oder eine temporäre Ausnahme in den Radar-Regeln definieren, um den Zahlungsfluss sofort wiederherzustellen.**Q3.**Welche vorbeugenden Maßnahmen helfen, um zukünftige False Positives bei internationalen Überweisungen zu verhindern?**A3.** Pflegen Sie stets vollständige KYC- und Unternehmensdaten, nutzen Sie standardisierte `3DS2`-Authentifizierungen und kündigen Sie außergewöhnlich hohe Transaktionsvolumina idealerweise im Vorfeld beim Support an. Dies verhindert, dass automatisierte Risikofilter legitime geschäftliche Zahlungen stoppen.
+## 5. Häufig gestellte Fragen (FAQ)
+
+**Frage 1:** Warum werden plötzliche Großtransaktionen während einer Wechselkurskrise von Stripe abgelehnt?
+
+**Antwort 1:** Stripe-Algorithmen bewerten ungewöhnliche Verhaltensänderungen, wie plötzliche Großbeträge oder neue Währungspaare, automatisch als erhöhtes Betrugsrisiko. Wenn das System keine historischen Muster für dieses Volumen findet, greift der automatische Schutzmechanismus und blockiert die Zahlung als False Positive.
+
+**Frage 2:** Wie kann ich eine irrtümliche Betrugssperre im Stripe-Dashboard am schnellsten aufheben?
+
+**Antwort 2:** Öffnen Sie die betroffene Transaktion im Dashboard unter dem Reiter Zahlungen und prüfen Sie die spezifischen Radar-Risikowerte. Sie können die Transaktion oft manuell freigeben oder eine temporäre Ausnahme in den Radar-Regeln definieren, um den Zahlungsfluss sofort wiederherzustellen.
+
+**Frage 3:** Welche vorbeugenden Maßnahmen helfen, um zukünftige False Positives bei internationalen Überweisungen zu verhindern?
+
+**Antwort 3:**  Pflegen Sie stets vollständige KYC- und Unternehmensdaten, nutzen Sie standardisierte `3DS2`-Authentifizierungen und kündigen Sie außergewöhnlich hohe Transaktionsvolumina idealerweise im Vorfeld beim Support an. Dies verhindert, dass automatisierte Risikofilter legitime geschäftliche Zahlungen stoppen.
