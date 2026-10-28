@@ -232,7 +232,6 @@ const I18N_SECTIONS = {
 // =========================================================================
 function inspectAndHealMarkdown(body, langCode) {
   let healed = body.trim();
-  const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
   const auditLogs = [];
 
   // 1. 제목의 의미를 보존합니다. 모델이 작성한 구체적인 제목을 고정 문구로 덮어쓰지 않습니다.
