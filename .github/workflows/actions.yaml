@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check auto-publisher JavaScript syntax
+        run: node --check generate-all.mjs
+
       - name: Run checks
         run: npm run check
 
