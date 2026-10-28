@@ -51,3 +51,10 @@ Zu den absoluten Best Practices im modernen Geschäftsalltag gehört die Impleme
 **Q1.** 
 
 **A3.** Bei einer vollständigen Kontosperrung durch das Risikoteam bewahren Sie absolute Ruhe und reichen Sie keinesfalls unüberlegt neue Transaktionen ein, da dies die Sperrung verfestigt. Kontaktieren Sie den Support sofort über das offizielle Dashboard-Ticket und stellen Sie alle geforderten Nachweise wie Handelsregisterauszüge, Rechnungsbelege, Kundenverträge und schriftliche Erklärungen zum Webhook-Vorfall gesammelt zur Verfügung. Transparenz und die lückenlose Dokumentation der Geschäftsprozesse sind der einzige Weg, um das Vertrauen des Risikoteams zurückzugewinnen und die Freigabe der eingefrorenen Gelder zu beschleunigen.
+**Q2.** Wie sichert man den Cashflow bei Zahlungsverzug, ohne Kontensperren zu riskieren?
+
+**A2.** Vereinbaren Sie Meilensteinzahlungen im Vertrag und begrenzen Sie Zahlungsfristen auf maximal 7 Tage mit automatischen Dienstsperren bei Zahlungsverzug.
+
+**Q3.** Was ist bei einer Stripe-Rückbuchungswarnung (Chargeback) sofort zu tun?
+
+**A3.** Reichen Sie innerhalb von 48 Stunden Nachweise ein – einschließlich Verträgen, Liefernachweisen und IP-Protokollen –, um Gebühren und Kontensperren abzuwenden.
