@@ -58,16 +58,6 @@ Aby nigdy więcej nie przechodzić przez ten zawał serca w środku roboczego dn
 - Zawsze korzystaj z lokalnych kont rozliczeniowych i walutowych w `Metody płatności`, aby ominąć ukryte opłaty banków korespondentów i drastyczne spready.
 - Dbaj o to, aby każda wystawiona pozycja w sekcji `Faktury` miała precyzyjnie opisany przedmiot transakcji i numer śledzenia lub protokół odbioru.
 
-## 5. Najczęściej zadawane pytania (FA
+## 5. Najczęściej zadawane pytania (FAQ)
 
-**Q1.** Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od la
-
-**A1.** Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacj
-
-**Q2.** Czy mogę całkowicie uniknąć prowizji banków pośredniczących przy przelewach międzynarodowyc
-
-**A2.** W klasycznym modelu SWIFT jest to niezwykle trudne, ponieważ każdy bank na trasie ma prawo pobrać opłatę za transfer. Najlepszym rozwiązaniem jest zmiana `Metody płatności` na lokalne rozliczenia kont clearingowych lub korzystanie z dedykowanych platform fintechowych oferujących lokalne rachunki wirtualn
-
-**Q3.** Co zrobić, jeśli klient nie chce potwierdzić odbioru usługi w systemie PayPa
-
-**A3.** W takiej sytuacji kluczowe jest dostarczenie do panelu alternatywnych dowodów: podpisanego przez klienta protokołu zdawczo-odbiorczego, logów z systemu potwierdzających dostęp do platformy lub korespondencji mailowej z wyraźnym podziękowaniem za zrealizowane prace. Support akceptuje takie dokumenty w procesie ręcznego zdejmowania blokady.
+**Q1.**Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od la**A1.**Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacj**Q2.**Czy mogę całkowicie uniknąć prowizji banków pośredniczących przy przelewach międzynarodowyc**A2.**W klasycznym modelu SWIFT jest to niezwykle trudne, ponieważ każdy bank na trasie ma prawo pobrać opłatę za transfer. Najlepszym rozwiązaniem jest zmiana `Metody płatności` na lokalne rozliczenia kont clearingowych lub korzystanie z dedykowanych platform fintechowych oferujących lokalne rachunki wirtualn**Q3.**Co zrobić, jeśli klient nie chce potwierdzić odbioru usługi w systemie PayPa**A3.** W takiej sytuacji kluczowe jest dostarczenie do panelu alternatywnych dowodów: podpisanego przez klienta protokołu zdawczo-odbiorczego, logów z systemu potwierdzających dostęp do platformy lub korespondencji mailowej z wyraźnym podziękowaniem za zrealizowane prace. Support akceptuje takie dokumenty w procesie ręcznego zdejmowania blokady.

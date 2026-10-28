@@ -75,14 +75,4 @@ Cette mésaventure m'a servi de leçon. Depuis ce jour-là, nous avons instauré
 
 Pour répondre aux interrogations les plus fréquentes que je reçois de la part de mes collègues de la communauté tech et financ
 
-**Q1.** Est-il vraiment possible de contourner le délai de 21 jours imposé par PayPal sur les nouvelles transaction
-
-**A1.** Oui, tout à fait. Ce délai n'est pas une fatalité juridique mais une mesure de précaution algorithmique. En mettant à jour le statut de la commande avec des preuves de livraison tangibles ou des documents professionnels validant la transaction, vous incitez le système (ou le support humain) à lever la retenue de manière anticipé
-
-**Q2.** Que faire si le prestataire refuse de confirmer le remboursement du double prélèvemen
-
-**A2.** Si le prestataire fait de la résistance, fournissez immédiatement les captures d'écran du virement bancaire ou du reçu PayPal prouvant le double mouvement de fonds au support de la plateforme. Dans la majorité des cas, l'analyse des logs techniques permettra au gestionnaire de litige de trancher en votre faveu
-
-**Q3.** Comment s'assurer qu'un webhook dupliqué ne provoque plus jamais de double facturatio
-
-**A3.** La solution technique réside dans l'utilisation d'une clé d'idempotence (idempotency key) au niveau de l'appel API de votre passerelle. Cela garantit que même si le réseau envoie la même requête dix fois de suite à cause d'un bug, le serveur de paiement n'exécutera la transaction qu'une seule et unique fois.
+**Q1.**Est-il vraiment possible de contourner le délai de 21 jours imposé par PayPal sur les nouvelles transaction**A1.**Oui, tout à fait. Ce délai n'est pas une fatalité juridique mais une mesure de précaution algorithmique. En mettant à jour le statut de la commande avec des preuves de livraison tangibles ou des documents professionnels validant la transaction, vous incitez le système (ou le support humain) à lever la retenue de manière anticipé**Q2.**Que faire si le prestataire refuse de confirmer le remboursement du double prélèvemen**A2.**Si le prestataire fait de la résistance, fournissez immédiatement les captures d'écran du virement bancaire ou du reçu PayPal prouvant le double mouvement de fonds au support de la plateforme. Dans la majorité des cas, l'analyse des logs techniques permettra au gestionnaire de litige de trancher en votre faveu**Q3.**Comment s'assurer qu'un webhook dupliqué ne provoque plus jamais de double facturatio**A3.** La solution technique réside dans l'utilisation d'une clé d'idempotence (idempotency key) au niveau de l'appel API de votre passerelle. Cela garantit que même si le réseau envoie la même requête dix fois de suite à cause d'un bug, le serveur de paiement n'exécutera la transaction qu'une seule et unique fois.

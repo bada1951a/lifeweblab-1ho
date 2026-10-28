@@ -36,4 +36,4 @@ Mantenere la continuità operativa richiede l'adozione di protocolli di controll
 
 Un altro aspetto cruciale riguarda la gestione trasparente della documentazione fiscale e dei registri contabili. Ogni rettifica dovuta a differenze di cambio deve essere tracciata correttamente per evitare contestazioni durante gli audit fiscali di fine anno. Implementare una politica di gestione del rischio basata su soglie di tolleranza prestabilite permette di assorbire micro-variazioni senza compromettere l'esperienza d'acquisto del cliente corporate e proteggendo al contempo il **flusso di cassa** aziendale.
 
-## 5. Domande Frequenti (FAQ)
+## 5. Domande Frecuenti (FAQ)

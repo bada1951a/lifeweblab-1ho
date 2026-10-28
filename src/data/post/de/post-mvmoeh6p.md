@@ -61,16 +61,6 @@ Aus diesem Vorfall haben wir gelernt und einen strikten internen Leitfaden entwi
 3. Wir führen wöchentliche Audits unserer Stripe-`Kontoeinstellungen` durch, um sicherzustellen, dass keine veralteten Risikofilter legitime B2B-Zahlungen blockieren.
 4. Die Validierung von Firmenadressen und Steuernummern erfolgt bei uns nun vollautomatisiert über Schnittstellen vor der Rechnungsstellung.
 
-## 5. Häufig gestellte Fragen (FA
+## 5. Häufig gestellte Fragen (FAQ)
 
-**Q1.** Was genau ist zu tun, wenn ein Kunde trotz gültiger Kreditkarte immer wieder den Fehler `do_not_honor` erhäl
-
-**A1.** In diesem Fall sollten Sie den Kunden bitten, direkt seine Bank anzurufen. Die Bank sperrt solche Transaktionen oft präventiv, weil sie das Zahlungsmuster als ungewöhnlich einstuft. Ein kurzer Anruf des Karteninhabers bei seiner Bank genügt meist, um die Sperre innerhalb von Minuten aufzuhebe
-
-**Q2.** Warum verlangt die Bank bei internationalen Überweisungen unbedingt das `MT103`-Dokument, und woher bekomme ich e
-
-**A2.** Das `MT103`-Dokument ist im Grunde der offizielle SWIFT-Überweisungsbeleg, der alle Details wie Sender, Empfänger, Zwischenbanken und Referenznummern enthält. Sie erhalten dieses Dokument ausschließlich von der ausstellenden Bank des Zahlers. Ohne dieses Dokument weigern sich Korrespondenzbanken oft, nach vermissten Geldern zu suche
-
-**Q3.** Wie lange darf eine internationale B2B-Überweisung maximal dauern, bevor man intervenieren mus
-
-**A3.** Innerhalb der EU sollte eine SEPA-Überweisung am nächsten Werktag da sein. Bei internationalen SWIFT-Überweisungen außerhalb der Eurozone sind zwei bis fünf Werktage normal. Sobald Tag vier anbricht und das Geld nicht verbucht ist, sollten Sie sofort den Kundenservice der involvierten Banken einschalten und das Tracking einfordern.
+**Q1.**Was genau ist zu tun, wenn ein Kunde trotz gültiger Kreditkarte immer wieder den Fehler `do_not_honor` erhäl**A1.**In diesem Fall sollten Sie den Kunden bitten, direkt seine Bank anzurufen. Die Bank sperrt solche Transaktionen oft präventiv, weil sie das Zahlungsmuster als ungewöhnlich einstuft. Ein kurzer Anruf des Karteninhabers bei seiner Bank genügt meist, um die Sperre innerhalb von Minuten aufzuhebe**Q2.**Warum verlangt die Bank bei internationalen Überweisungen unbedingt das `MT103`-Dokument, und woher bekomme ich e**A2.**Das `MT103`-Dokument ist im Grunde der offizielle SWIFT-Überweisungsbeleg, der alle Details wie Sender, Empfänger, Zwischenbanken und Referenznummern enthält. Sie erhalten dieses Dokument ausschließlich von der ausstellenden Bank des Zahlers. Ohne dieses Dokument weigern sich Korrespondenzbanken oft, nach vermissten Geldern zu suche**Q3.**Wie lange darf eine internationale B2B-Überweisung maximal dauern, bevor man intervenieren mus**A3.** Innerhalb der EU sollte eine SEPA-Überweisung am nächsten Werktag da sein. Bei internationalen SWIFT-Überweisungen außerhalb der Eurozone sind zwei bis fünf Werktage normal. Sobald Tag vier anbricht und das Geld nicht verbucht ist, sollten Sie sofort den Kundenservice der involvierten Banken einschalten und das Tracking einfordern.

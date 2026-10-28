@@ -75,18 +75,12 @@ Per evitare di vivere un'altra mattinata di terrore nei nostri uffici di Milano,
 
 #
 
-**Q1.** Cosa significa esattamente il codice di errore do_not_honor e perché appare durante i trasferimenti transfrontalier
-
-**A1.** Il codice `do_not_honor` è un rifiuto generico emesso dalla banca emittente o dai sistemi di controllo del circuito di pagamento. Significa che la banca ha deciso di non autorizzare la transazione per motivi di sicurezza, che possono includere discrepanze anagrafiche, sospetti di frode o problemi di conformità normativa internazionale sui fondi in transito.
+**Q1.**Cosa significa esattamente il codice di errore do_not_honor e perché appare durante i trasferimenti transfrontalier**A1.** Il codice `do_not_honor` è un rifiuto generico emesso dalla banca emittente o dai sistemi di controllo del circuito di pagamento. Significa che la banca ha deciso di non autorizzare la transazione per motivi di sicurezza, che possono includere discrepanze anagrafiche, sospetti di frode o problemi di conformità normativa internazionale sui fondi in transito.
 
 #
 
-**Q2.** Come posso evitare che una discrepanza nei nomi blocchi i miei prelievi aziendal
-
-**A2.** La chiave è la perfetta sincronizzazione. Assicurati che il nome del beneficiario registrato sulla tua piattaforma di pagamento corrisponda esattamente, carattere per carattere, all'intestazione ufficiale del conto bancario aziendale depositato presso la tua banca.
+**Q2.**Come posso evitare che una discrepanza nei nomi blocchi i miei prelievi aziendal**A2.** La chiave è la perfetta sincronizzazione. Assicurati che il nome del beneficiario registrato sulla tua piattaforma di pagamento corrisponda esattamente, carattere per carattere, all'intestazione ufficiale del conto bancario aziendale depositato presso la tua banca.
 
 #
 
-**Q3.** Quali sezioni della Dashboard devo controllare per prima cosa in caso di emergenza sui pagament
-
-**A3.** Devi accedere immediatamente alle sezioni `Impostazioni account`, `Moduli fiscali` e `Metodi di pagamento`. Lì troverai i campi relativi all'identità legale e alle coordinate bancarie che causano la maggior parte dei blocchi amministrativi e dei rifiuti di trasferimento.
+**Q3.**Quali sezioni della Dashboard devo controllare per prima cosa in caso di emergenza sui pagament**A3.** Devi accedere immediatamente alle sezioni `Impostazioni account`, `Moduli fiscali` e `Metodi di pagamento`. Lì troverai i campi relativi all'identità legale e alle coordinate bancarie che causano la maggior parte dei blocchi amministrativi e dei rifiuti di trasferimento.
