@@ -40,4 +40,16 @@ Mantenere un flusso di incassi internazionale fluido richiede una serie di preca
 
 Inoltre, si consiglia di monitorare costantemente le notifiche di rischio sul proprio pannello di controllo e di mantenere un contatto diretto con il supporto tecnico dei processori di pagamento. Adottare una politica di trasparenza preventiva con i reparti amministrativi dei clienti esteri riduce drasticamente i rischi di blocco dei bonifici. La tempestività nella risposta alle verifiche di conformità e la corretta formattazione delle fatture elettroniche con indicazione chiara del regime IVA transfrontaliero garantiscono la massima**continuità finanziaria**aziendale.
 
-## 5. Domande Frequenti (FAQ)**Q1.**Perché il cliente statunitense insiste nel volere il modulo W-9 anziché il W-8BEN?**A1.**I reparti amministrativi statunitensi utilizzano spesso flussi di onboarding automatizzati che richiedono il modulo `W-9` per qualsiasi fornitore. Essendo abituati a gestire fornitori interni, ignorano le normative per i soggetti esteri. Spiegare formalmente che in qualità di non residenti si opera al di fuori della giurisdizione `IRS` risolve immediatamente l'equivoco normativo.**Q2.**Quanto tempo rimane valido il modulo W-8BEN-E una volta consegnato al cliente?**A2.**Il modulo mantiene la sua validità legale per l'anno in corso in cui viene sottoscritto e per i tre anni successivi, salvo variazioni sostanziali nei dati aziendali. È consigliabile impostare un promemoria amministrativo per rinnovarlo tempestivamente prima della scadenza naturale triennale.**Q3.**Cosa fare se Stripe continua a rifiutare i pagamenti nonostante la documentazione sia corretta?**A3.** In questo scenario anomalo, è necessario aprire immediatamente un ticket di supporto tecnico allegando le comunicazioni ufficiali e verificando che i parametri di autenticazione `3DS` siano correttamente allineati. Spesso l'intervento manuale di un operatore sblocca il filtro di rischio fraudolento in poche ore.
+## 5. Domande frequenti (FAQ)
+
+**Domanda 1:** Perché il cliente statunitense insiste nel volere il modulo W-9 anziché il W-8BEN?
+
+**Risposta 1:** I reparti amministrativi statunitensi utilizzano spesso flussi di onboarding automatizzati che richiedono il modulo `W-9` per qualsiasi fornitore. Essendo abituati a gestire fornitori interni, ignorano le normative per i soggetti esteri. Spiegare formalmente che in qualità di non residenti si opera al di fuori della giurisdizione `IRS` risolve immediatamente l'equivoco normativo.
+
+**Domanda 2:** Quanto tempo rimane valido il modulo W-8BEN-E una volta consegnato al cliente?
+
+**Risposta 2:** Il modulo mantiene la sua validità legale per l'anno in corso in cui viene sottoscritto e per i tre anni successivi, salvo variazioni sostanziali nei dati aziendali. È consigliabile impostare un promemoria amministrativo per rinnovarlo tempestivamente prima della scadenza naturale triennale.
+
+**Domanda 3:** Cosa fare se Stripe continua a rifiutare i pagamenti nonostante la documentazione sia corretta?
+
+**Risposta 3:**  In questo scenario anomalo, è necessario aprire immediatamente un ticket di supporto tecnico allegando le comunicazioni ufficiali e verificando che i parametri di autenticazione `3DS` siano correttamente allineati. Spesso l'intervento manuale di un operatore sblocca il filtro di rischio fraudolento in poche ore.
