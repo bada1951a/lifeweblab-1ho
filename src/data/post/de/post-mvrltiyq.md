@@ -1,5 +1,5 @@
 ---
-title: "B2B-Rechnung vom europäischen Partner abgelehnt: So lösen Sie das **VAT-Reverse-Charge**-Problem"
+title: "B2B-Rechnung vom europäischen Partner abgelehnt: So lösen Sie das VAT-Reverse-Charge-Problem"
 description: "Praxis-Leitfaden für grenzüberschreitende Zahlungen: Was tun, wenn das Rechnungs-Setup wegen fehlender VAT-Angaben klemmt."
 publishDate: 2026-10-28T03:15:00.000Z
 image: "/images/billing-photo/billing-27.jpg"
