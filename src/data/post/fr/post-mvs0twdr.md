@@ -38,4 +38,16 @@ Pour pérenniser vos encaissements B2B depuis Paris et prévenir l'apparition de
 
 Sur le plan technique, collaborez étroitement avec votre support de passerelle de paiement pour affiner les seuils de tolérance de votre**profil de risque**. En signalant proactivement les transactions atypiques mais légitimes et en maintenant vos métadonnées à jour, vous apprenez aux algorithmes à reconnaître le profil de vos acheteurs réguliers. Cette rigueur administrative protège durablement votre réputation financière auprès des institutions bancaires internationales.
 
-## 5. Foire Aux Questions (FAQ)**Q1.**Quel est le délai légal pour répondre à un avis de chargeback ?**A1.**En règle générale, les réseaux de cartes accordent un délai strict de 7 à 14 jours calendaires pour soumettre votre dossier de défense complet. Il est donc crucial d'agir dès la première notification pour rassembler les pièces justificatives.**Q2.**Comment prouver qu'un client a bien reçu un service immatériel ?**A2.**Vous devez fournir des preuves tangibles telles que des journaux de connexion, des rapports de livraison de livrables, des e-mails de remerciement ou des captures d'écran validant l'utilisation effective de la plateforme.**Q3.**Les frais de chargeback sont-ils remboursables en cas de victoire ?**A3.** Malheureusement, les frais fixes de dossier appliqués par la passerelle lors de l'ouverture du litige ne sont généralement pas restitués, même si la décision finale vous donne entièrement raison.
+## 5. Foire aux questions (FAQ)
+
+**Question 1:** Quel est le délai légal pour répondre à un avis de chargeback ?
+
+**Réponse 1:** En règle générale, les réseaux de cartes accordent un délai strict de 7 à 14 jours calendaires pour soumettre votre dossier de défense complet. Il est donc crucial d'agir dès la première notification pour rassembler les pièces justificatives.
+
+**Question 2:** Comment prouver qu'un client a bien reçu un service immatériel ?
+
+**Réponse 2:** Vous devez fournir des preuves tangibles telles que des journaux de connexion, des rapports de livraison de livrables, des e-mails de remerciement ou des captures d'écran validant l'utilisation effective de la plateforme.
+
+**Question 3:** Les frais de chargeback sont-ils remboursables en cas de victoire ?
+
+**Réponse 3:**  Malheureusement, les frais fixes de dossier appliqués par la passerelle lors de l'ouverture du litige ne sont généralement pas restitués, même si la décision finale vous donne entièrement raison.
