@@ -70,3 +70,10 @@ Status: Agreed operating principles; not a claim of deployment or AdSense approv
 - 1ho and 2-1ho: images are manually uploaded and managed by the user; preserve this workflow and existing assets.
 - 2ho, 3ho, 4ho: use external Pexels image links for lower-maintenance publishing; verify links and image rights when auditing.
 - Do not change image sources, upload strategy, or production workflows without explicit approval.
+
+## QA handoff and deduplication (2026-10-29)
+
+- User transferred 2-1ho (lifeweblab-1ho) GPT-6 Luna QA management from another chat into the main project conversation. Treat PR #1 and this review branch as the single existing workstream; inspect before adding any QA tools, scripts, or workflows to avoid duplicates.
+- At handoff, PR #1 remained open at e686702af2d54ee7bced95210f4b66521038d425; associated CI run 40735830764 succeeded (Check and Build). This does not itself verify the separate GPT Luna dry-run workflow, paid quality sample, or 12-language editorial quality.
+- Preserve existing features, images, scheduling, and publishing pipeline. Do not merge into main, deploy, trigger production publishing, or trigger paid API tests without explicit approval.
+- Next: confirm latest safe dry-run run/job status, examine generation and existing-post repair code for side effects, then audit representative posts across all 12 languages and propose/fix issues ONLY on the review branch. Report significant changes, blockers, and decisions rather than routine chatter.
