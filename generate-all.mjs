@@ -501,8 +501,7 @@ async function run() {
       throw new Error('분량 검수 자체 테스트 실패');
     console.log('PASS: 짧은 글 발행 차단 검수');
     const normalizedHeading = inspectAndHealMarkdown('## **1. 제목 예시**\n\n설명');
-    if (!normalizedHeading.startsWith('## 1. 제목 예시'))
-      throw new Error('H2 볼드 마크다운 정돈 자체 테스트 실패');
+    if (!normalizedHeading.startsWith('## 1. 제목 예시')) throw new Error('H2 볼드 마크다운 정돈 자체 테스트 실패');
     console.log('PASS: H2 볼드 마크다운 정돈 검수');
     const fullSample =
       '---\ntitle: test\ndescription: test\npublishDate: 2026-10-28\nimage: /test.jpg\ncategory: troubleshooting\ntags: [test-one, test-two, test-three]\n---\n\n' +
