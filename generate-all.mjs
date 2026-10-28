@@ -585,7 +585,7 @@ async function run() {
     console.log('PASS: 짧은 글 발행 차단 검수');
     const fullSample =
       '---\ntitle: test\ndescription: test\npublishDate: 2026-10-28\nimage: /test.jpg\ncategory: troubleshooting\n---\n\n' +
-      [1, 2, 3, 4, 5].map((n) => '## ' + n + '. Test\n\n' + '설명 문장입니다. '.repeat(220)).join('\n\n') +
+      [1, 2, 3, 4, 5].map((n) => '## ' + n + '. Test\n\n' + '설명 문장입니다. '.repeat(65)).join('\n\n') +
       '\n\n**Q1.** 질문\n\n**A1.** 답변\n\n**Q2.** 질문\n\n**A2.** 답변\n\n**Q3.** 질문\n\n**A3.** 답변';
     const validErrors = validateGeneratedPost(fullSample, 'ko');
     if (validErrors.length) throw new Error('정상 FAQ 테스트 실패: ' + validErrors.join(', '));
