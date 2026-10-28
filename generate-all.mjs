@@ -95,9 +95,13 @@ function validateGeneratedPost(text, langCode) {
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
     .replace(/[#*_`>]/g, '')
     .trim();
-  const count = langCode === 'ko' ? [...readable.replace(/\s/g, '')].length : (readable.match(/\S+/g) || []).length;
-  if (count < (langCode === 'ko' ? 1900 : 750) || count > (langCode === 'ko' ? 3100 : 1350))
-    errors.push('본문 분량 범위 이탈: ' + count + (langCode === 'ko' ? '자' : '단어'));
+  // 일본어는 공백으로 단어를 구분하지 않으므로 한국어처럼 글자 수로 검증합니다.
+  const characterBased = langCode === 'ko' || langCode === 'ja';
+  const count = characterBased ? [...readable.replace(/\s/g, '')].length : (readable.match(/\S+/g) || []).length;
+  const minCount = langCode === 'ko' ? 1900 : langCode === 'ja' ? 1800 : 750;
+  const maxCount = langCode === 'ko' ? 3100 : langCode === 'ja' ? 3300 : 1350;
+  if (count < minCount || count > maxCount)
+    errors.push('본문 분량 범위 이탈: ' + count + (characterBased ? '자' : '단어'));
   if (/^#\s+/m.test(body)) errors.push('본문 H1 중복');
   if (/\*\*\*\*|\*\*\*Q[1-3]/.test(body)) errors.push('볼드 마크다운 오류');
   const headings = body.match(/^##\s+[^\n]+/gm) || [];
@@ -125,6 +129,8 @@ function validateGeneratedPost(text, langCode) {
   if ((body.match(/^```/gm) || []).length % 2 !== 0) errors.push('코드블록 닫힘 누락');
   if (/^#{2,6}[^ #\n]/m.test(body)) errors.push('제목 마크다운 공백 누락');
   if (/\*\*\*\*/.test(body)) errors.push('볼드 별표 중복');
+  if (langCode === 'ko' && !/[가-힣]/.test(body)) errors.push('한국어 본문에 한글 누락');
+  if (langCode === 'ja' && !/[ぁ-んァ-ヶ]/.test(body)) errors.push('일본어 본문에 가나 문자 누락');
   if (langCode !== 'ko' && /[가-힣]/.test(body)) errors.push('비한국어 본문에 한글 포함');
   return errors;
 }
@@ -376,7 +382,8 @@ Topic: "${topic}"
 
 [ADSENSE QUALITY & LENGTH REQUIREMENT]
 - For Korean (ko): Write 2,400 - 2,600 Korean characters EXCLUDING whitespace, Markdown markers, and frontmatter (do NOT exceed 3,000 characters). Prioritize additional genuinely useful diagnostic checks and exceptions over filler.
-- For other languages: Write exactly 900 - 1,100 words.
+- For Japanese (ja): Write approximately 2,200 - 2,800 Japanese characters excluding whitespace and Markdown markers; do not use space-separated word counts for Japanese.
+- For other languages: Write approximately 900 - 1,100 words.
 - Tone: Highly informative, professional, practical workplace advice.
 - Never invent first-hand experience, credentials, tested results, customer stories, provider settings, financial regulations or tax rules.
 - Give concrete actionable steps; when provider policies differ, clearly state the limitation.
@@ -512,6 +519,18 @@ async function run() {
     if (!validateGeneratedPost(misplacedFaq, 'ko').some((x) => x.includes('질문/답변 순서')))
       throw new Error('FAQ 답변 선행 오류 검수 테스트 실패');
     console.log('PASS: FAQ 답변이 질문보다 앞서는 오류 차단 검수');
+    const japaneseBody = [1, 2, 3, 4, 5]
+      .map((n) => '## ' + n + '. 決済の確認手順\n\n' + '決済が拒否された場合は取引履歴と通知を確認します。'.repeat(22))
+      .join('\n\n');
+    const japaneseSample =
+      '---\ntitle: 日本語のテスト\ndescription: 決済の確認手順\npublishDate: 2026-10-28\nimage: /test.jpg\ncategory: troubleshooting\ntags: [決済, 取引, 確認]\n---\n\n' +
+      japaneseBody +
+      '\n\n**Q1.** 質問\n\n**A1.** 回答\n\n**Q2.** 質問\n\n**A2.** 回答\n\n**Q3.** 質問\n\n**A3.** 回答';
+    const japaneseErrors = validateGeneratedPost(japaneseSample, 'ja');
+    if (japaneseErrors.length) throw new Error('일본어 글자 수 검수 실패: ' + japaneseErrors.join(', '));
+    if (!validateGeneratedPost(japaneseSample.replace(/[ぁ-んァ-ヶ]/g, ''), 'ja').some((x) => x.includes('가나 문자')))
+      throw new Error('일본어 문자 검수 실패');
+    console.log('PASS: 일본어 글자 수 및 가나 문자 검수');
     return;
   }
   console.log('==================================================');
