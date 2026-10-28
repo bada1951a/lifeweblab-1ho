@@ -10,7 +10,7 @@ theme: "Resolution Emerald Guide"
 
 ## 1. Emergencia crítica en cobros internacionales y transferencias
 
-Eran las nueve de la mañana en nuestras oficinas del distrito financiero de Madrid, justo cuando el café recién hecho empezaba a hacer efecto, y mi teléfono móvil comenzó a vibrar sin parar. Nuestro cliente principal en el Paseo de la Castellana intentaba cerrar una transacción B2B transfronteriza de gran volumen a través de PayPal, pero el sistema rechazaba el pago una y otra vez con un enigmático código de error. Al mismo tiempo, el panel de control nos mostraba una retención de veintiún días sobre los fondos, paralizando el flujo de caja operativo que tanto nos había costado asegurar para el cierre del trimestre.
+Eran las nueve de la mañana en nuestras oficinas del distrito financiero de Madrid, justo cuando el café recién hecho empezaba a hacer efecto, y mi teléfono móvil comenzó a vibrar sin parar. Nuestro cliente principal en el Paseo de la Castellana intentaba cerrar una transacción B2B transfronteriza de gran volumen a través de PayPal, pero el sistema rechazaba el pago una y otra vez con un enigmático código de error. Al mismo tiempo, el **panel de control** nos mostraba una retención de veintiún días sobre los fondos, paralizando el flujo de caja operativo que tanto nos había costado asegurar para el cierre del trimestre.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
 <strong>[Punto Clave]:</strong> Un fallo técnico por discrepancias de redondeo en pagos multidivisa no solo bloquea las ventas en tiempo real, sino que activa automáticamente los algoritmos de retención de riesgos de PayPal.
@@ -20,7 +20,7 @@ La situación era un auténtico dolor de cabeza porque el cliente estaba al tel�
 
 Durante la primera hora probamos a regenerar las credenciales API, a vaciar las cachés del servidor de pasarelas y a cambiar manualmente las divisas predeterminadas, pero nada funcionaba. Recuerdo haber pasado por tres agentes distintos del soporte de PayPal que me repetían una y otra vez que debíamos esperar el plazo estándar de veintiún días por motivos de seguridad comercial. Esa respuesta genérica encendió todas mis alarmas y me obligó a bucear en foros de desarrolladores y en la documentación avanzada de `Configuración de cuenta`.
 
-<div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-08.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
+<div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-08.jpg" alt="Guía de resolución de problemas de pagos" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
 ## 2. Análisis profundo de la causa raíz del problema
 
@@ -61,16 +61,16 @@ Para evitar que este tipo de pesadillas se repitan en los cierres mensuales, est
 - Mantén actualizadas las claves de API y verifica que los webhooks de notificación de pago devuelvan códigos de estado `200 OK` de manera constante.
 - Revisa trimestralmente el estado de tus `Formularios fiscales` y la documentación de cumplimiento normativo (KYC y AML) dentro del panel corporativo.
 
-## 5. Preguntas frecuentes sobre el bloqueo y redondeo en PayPal
+## 5. Preguntas frecuentes (FAQ)
 
-Q: ¿Por qué mi cliente ve un error de aprobación a pesar de tener fondos suficientes en su cuenta bancaria?
+**Pregunta:** ¿Por qué mi cliente ve un error de aprobación a pesar de tener fondos suficientes en su cuenta bancaria?
 
-A: El error suele producirse porque la suma de los decimales de la cesta de la compra y los impuestos difiere en una milésima de la cifra que procesa la pasarela. Al no coincidir el céntimo exacto, el banco emisor bloquea la autorización de seguridad
+**Respuesta:** El error suele producirse porque la suma de los decimales de la cesta de la compra y los impuestos difiere en una milésima de la cifra que procesa la pasarela. Al no coincidir el céntimo exacto, el banco emisor bloquea la autorización de seguridad
 
-Q: ¿Cómo puedo liberar los fondos retenidos por veintiún días de forma anticipada tras solucionar el error técnico?
+**Pregunta:** ¿Cómo puedo liberar los fondos retenidos por veintiún días de forma anticipada tras solucionar el error técnico?
 
-A: Debes ir a los detalles de la transacción en tu `Panel de control`, hacer clic en 'Confirmar estado del pedido' o 'Actualizar información de entrega' y adjuntar los comprobantes de envío o la factura comercial firmada. Esto suele reducir el plazo de retención a un máximo de setenta y dos horas
+**Respuesta:** Debes ir a los detalles de la transacción en tu `Panel de control`, hacer clic en 'Confirmar estado del pedido' o 'Actualizar información de entrega' y adjuntar los comprobantes de envío o la factura comercial firmada. Esto suele reducir el plazo de retención a un máximo de setenta y dos horas
 
-Q: ¿Es recomendable desactivar la opción de conversión automática de divisa en PayPal para cuentas corporativas B2B?
+**Pregunta:** ¿Es recomendable desactivar la opción de conversión automática de divisa en PayPal para cuentas corporativas B2B?
 
-A: Absolutamente sí. Dejar que el banco del cliente o su propia entidad gestione el tipo de cambio reduce drásticamente los conflictos de redondeo y evita que el motor de riesgos de PayPal interprete variaciones extrañas como comportamientos fraudulentos.
+**Respuesta:** Absolutamente sí. Dejar que el banco del cliente o su propia entidad gestione el tipo de cambio reduce drásticamente los conflictos de redondeo y evita que el motor de riesgos de PayPal interprete variaciones extrañas como comportamientos fraudulentos.
