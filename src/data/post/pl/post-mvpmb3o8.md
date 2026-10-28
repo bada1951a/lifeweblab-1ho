@@ -22,11 +22,11 @@ Dopiero głęboki oddech i szybka konsultacja z zewnętrznym ekspertem ds. infra
 <strong>Wskazówka ratunkowa:</strong> Nigdy nie ponawiaj odrzuconych płatności masowych więcej niż dwa razy z rzędu w krótkim odstępie czasu. Powtarzające się próby przy statusie `generic_decline` aktywują automatyczną kwarantannę konta przez algorytmy wykrywania oszustw.
 </div>
 
-![Troubleshooting Guide](/images/billing-photo/billing-53.jpg)
+![Poradnik rozwiązywania problemów](/images/billing-photo/billing-53.jpg)
 
 ## 2. Szczegółowa analiza przyczyn odrzuceń płatności i błędów faktur
 
-Głównym źródłem naszych problemów był bezduszny silnik oceny ryzyka , który w ułamku sekundy analizuje setki zmiennych behawioralnych i transakcyjnych. Kiedy nagle wysyłamy przelew o wartości dziesięciokrotnie przewyższającej naszą średnią dzienną normę, system automatycznie uruchamia procedurę ochrony przed chargebackiem i oszustwami. Co więcej, rygorystyczne protokoły 3DS2 (3D Secure 2)oraz silne uwierzytelnianie klienta ( SCA ) często odrzucają transakcje B2B, jeśli dane posiadacza karty lub rachunku firmowego nie pokrywają się idealnie z profilem zarejestrowanym w panelu handlowca, powodując tajemnicze błędy typu `do_not_honor`.
+Głównym źródłem naszych problemów był bezduszny silnik oceny ryzyka , który w ułamku sekundy analizuje setki zmiennych behawioralnych i transakcyjnych. Kiedy nagle wysyłamy przelew o wartości dziesięciokrotnie przewyższającej naszą średnią dzienną normę, system automatycznie uruchamia procedurę ochrony przed chargebackiem i oszustwami. Co więcej, rygorystyczne protokoły **3DS2** (3D Secure 2)oraz silne uwierzytelnianie klienta ( SCA ) często odrzucają transakcje B2B, jeśli dane posiadacza karty lub rachunku firmowego nie pokrywają się idealnie z profilem zarejestrowanym w panelu handlowca, powodując tajemnicze błędy typu `do_not_honor`.
 
 Drugim ukrytym zapalnikiem były błędy w compliance podatkowym i fakturowym , które rzadko bywają oczywiste na pierwszy rzut oka. W transakcjach transgranicznych brak aktualnych formularzy podatkowych, takich jak W-8BEN lub W-9 , albo rozbieżności w numerach identyfikacji podatkowej ( TIN ) natychmiast alarmują działy zgodności z przepisami. Dodatkowo, niepoprawnie skonstruowane klauzule o odwrotnym obciążeniu VAT (VAT Reverse Charge) na fakturach generowanych przez system mogą spowodować, że lokalne organy skarbowe lub sam dostawca bramki zakwestionują legalność źródła pochodzenia środków, blokując wypływ kapitału.
 
@@ -59,16 +59,16 @@ Doświadczenie to nauczyło nasz zespół, że zapobieganie kryzysom płatniczym
 
 Aby zabezpieczyć firmę przed nagłymi zamrożeniami kapitału, należy wdrożyć politykę dywersyfikacji bramek płatniczych (Gateway Redundancy), posiadając zawsze co najmniej jednego zapasowego operatora zdolnego do natychmiastowego przejęcia wolumenu transakcyjnego. Ponadto, kluczowe znaczenie ma regularny audyt dokumentacji podatkowej kontrahentów oraz automatyczna weryfikacja poprawności danych adresowych przed każdym cyklem rozliczeniowym. Wprowadzenie tych prostych nawików operacyjnych pozwala spać spokojnie nawet wtedy, gdy na szali leżą miliony dolarów globalnych rozliczeń B2B.
 
-## 5. Najczęściej zadawane pytania 1. Dlaczego
+## 5. Najczęściej zadawane pytania (FAQ)
 
-Q: Dlaczego Stripe zwraca błąd `generic_decline`, skoro karta zagraniczna ma wystarczające środki?
+**Pytanie:** Dlaczego Stripe zwraca błąd `generic_decline`, skoro karta zagraniczna ma wystarczające środki?
 
-A: Komunikat `generic_decline` oznacza, że bank wydający kartę lub algorytm antyfraudowy bramki odrzucił transakcję bez podania konkretnej przyczyny ze względów bezpieczeństwa. Często wynika to z niedopasowania lokalizacji IP, przekroczenia dziennych limitów transakcyjnych lub restrykcyjnych ustawień autoryzacyjnych banku odbiorcy dla płatności internetowych. Aby to ominąć, należy skontaktować się z wydawcą karty w celu odblokowania płatności międzynarodowych lub skorzystać z alternatywnej metody płatności, takiej jak przelew bankowy
+**Odpowiedź:** Komunikat `generic_decline` oznacza, że bank wydający kartę lub algorytm antyfraudowy bramki odrzucił transakcję bez podania konkretnej przyczyny ze względów bezpieczeństwa. Często wynika to z niedopasowania lokalizacji IP, przekroczenia dziennych limitów transakcyjnych lub restrykcyjnych ustawień autoryzacyjnych banku odbiorcy dla płatności internetowych. Aby to ominąć, należy skontaktować się z wydawcą karty w celu odblokowania płatności międzynarodowych lub skorzystać z alternatywnej metody płatności, takiej jak przelew bankowy
 
-Q: Jak szybko Stripe odblokowuje konto po przesłaniu wymaganych dokumentów weryfikacyjnych KYB?
+**Pytanie:** Jak szybko Stripe odblokowuje konto po przesłaniu wymaganych dokumentów weryfikacyjnych KYB?
 
-A: Standardowy czas rozpatrzenia dokumentów weryfikacyjnych przez dział compliance wynosi od 24 do 72 godzin w dni robocze. W sytuacjach krytycznych, po zaznaczeniu odpowiedniego priorytetu w zgłoszeniu do supportu i dostarczeniu kompletnych, bezbłędnych danych rejestrowych firmy, proces ten udaje się skrócić nawet do kilku godzin. Kluczem jest dostarczenie czytelnych skanów w formacie PDF oraz zgodność danych firmy z rejestrami publicznymi
+**Odpowiedź:** Standardowy czas rozpatrzenia dokumentów weryfikacyjnych przez dział compliance wynosi od 24 do 72 godzin w dni robocze. W sytuacjach krytycznych, po zaznaczeniu odpowiedniego priorytetu w zgłoszeniu do supportu i dostarczeniu kompletnych, bezbłędnych danych rejestrowych firmy, proces ten udaje się skrócić nawet do kilku godzin. Kluczem jest dostarczenie czytelnych skanów w formacie PDF oraz zgodność danych firmy z rejestrami publicznymi
 
-Q: Co zrobić, gdy zagraniczny kontrahent nie chce podać numeru NIP/VAT do międzynarodowej faktury B2B?
+**Pytanie:** Co zrobić, gdy zagraniczny kontrahent nie chce podać numeru NIP/VAT do międzynarodowej faktury B2B?
 
-A: Brak numeru identyfikacji podatkowej uniemożliwia legalne zastosowanie procedury odwrotnego obciążenia VAT i drastycznie zwiększa ryzyko odrzucenia transakcji przez systemy rozliczeniowe. W takiej sytuacji należy wstrzymać realizację płatności do momentu uzupełnienia danych, ponieważ organy podatkowe mogą zakwestionować transakcję jako sprzedaż B2C, nakładając na Twoją firmę obowiązek naliczenia lokalnego podatku VAT. Zaleca się przesłanie kontrahentowi oficjalnego przypomnienia o wymogach prawnych obowiązujących w międzynarodowym obrocie gospodarczym.
+**Odpowiedź:** Brak numeru identyfikacji podatkowej uniemożliwia legalne zastosowanie procedury odwrotnego obciążenia VAT i drastycznie zwiększa ryzyko odrzucenia transakcji przez systemy rozliczeniowe. W takiej sytuacji należy wstrzymać realizację płatności do momentu uzupełnienia danych, ponieważ organy podatkowe mogą zakwestionować transakcję jako sprzedaż B2C, nakładając na Twoją firmę obowiązek naliczenia lokalnego podatku VAT. Zaleca się przesłanie kontrahentowi oficjalnego przypomnienia o wymogach prawnych obowiązujących w międzynarodowym obrocie gospodarczym.
