@@ -1,6 +1,6 @@
 ---
-title: "Como Resolver o Erro'do_not_honor' no Stripe sem Perder faturamento"
-description: "Aprenda a lidar com o temido código do_not_honor no Stripe e resolva cobranças duplicadas e taxas inesperadas em São Paulo."
+title: "Como lidar com a recusa do_not_honor no Stripe e investigar cobranças duplicadas"
+description: "Saiba o que o código do_not_honor pode indicar, como orientar o cliente e como investigar possíveis cobranças duplicadas no Stripe."
 publishDate: 2026-10-24T17:26:13.233Z
 image: '/images/billing-photo/billing-22.jpg'
 category: 'troubleshooting'
