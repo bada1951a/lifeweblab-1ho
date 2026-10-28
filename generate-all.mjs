@@ -613,6 +613,10 @@ async function run() {
     if (!validateGeneratedPost(wrongOrder, 'ko').some((x) => x.includes('제목 순서')))
       throw new Error('H2 순서 검수 테스트 실패');
     console.log('PASS: H2 번호 및 순서 오류 차단 검수');
+    const misplacedFaq = fullSample.replace('**Q1.** 질문\n\n**A1.** 답변', '**A1.** 답변\n\n**Q1.** 질문');
+    if (!validateGeneratedPost(misplacedFaq, 'ko').some((x) => x.includes('질문/답변 순서')))
+      throw new Error('FAQ 답변 선행 오류 검수 테스트 실패');
+    console.log('PASS: FAQ 답변이 질문보다 앞서는 오류 차단 검수');
     return;
   }
   console.log('==================================================');
