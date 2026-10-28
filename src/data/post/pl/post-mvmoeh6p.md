@@ -75,7 +75,7 @@ Ostatnim etapem było upewnienie się, że polski partner nie ma już żadnych f
 - Wyślij zaktualizowaną e-fakturę bezpośrednio przez zintegrowany system powiadomień do działu księgowości partnera, dodając krótki komentarz wyjaśniający techniczną naturę wcześniejszego błędu.
 
 <div style="border-left: 4px solid #4f46e5; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Pro Tip]:</strong> Nigгда nie zostawiaj odrzuconych płatności z błędem `do_not_honor` samych sobie w nadziei, że klient spróbuje ponownie. Natychmiastowa korektura danych podatkowych i ręczna autoryzacja w module Radar to klucz do odzyskania nawet 85% zagrożonych przychodów w ciągu pierwszej godziny od awarii.
+<strong>Praktyczna wskazówka:</strong> Nigгда nie zostawiaj odrzuconych płatności z błędem `do_not_honor` samych sobie w nadziei, że klient spróbuje ponownie. Natychmiastowa korekta danych podatkowych i ręczna autoryzacja w module Radar to klucz do odzyskania nawet 85% zagrożonych przychodów w ciągu pierwszej godziny od awarii.
 </div>
 
 ## 4. Lista kontrolna zapobiegająca blokadom środków i prowizjoma zapobiegawcza: Jak unikać takich kryzysów w przyszłości
