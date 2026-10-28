@@ -97,8 +97,12 @@ function validateGeneratedPost(text, langCode) {
   if (/^#\s+/m.test(body)) errors.push('본문 H1 중복');
   if (/\*\*\*\*|\*\*\*Q[1-3]/.test(body)) errors.push('볼드 마크다운 오류');
   if ((body.match(/^##\s+/gm) || []).length !== 5) errors.push('H2 섹션은 정확히 5개 필요');
-  if ((body.match(/\*\*Q[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 질문 3개 미만');
-  if ((body.match(/\*\*A[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 답변 3개 미만');
+  for (let n = 1; n <= 3; n++) {
+    const questionMatches = body.match(new RegExp('\\*\\*Q' + n + '\\.\\*\\*', 'gi')) || [];
+    const answerMatches = body.match(new RegExp('\\*\\*A' + n + '\\.\\*\\*', 'gi')) || [];
+    if (questionMatches.length !== 1) errors.push('FAQ Q' + n + ' 누락 또는 중복');
+    if (answerMatches.length !== 1) errors.push('FAQ A' + n + ' 누락 또는 중복');
+  }
   if ((body.match(/^```/gm) || []).length % 2 !== 0) errors.push('코드블록 닫힘 누락');
   if (/^#{2,6}[^ #\n]/m.test(body)) errors.push('제목 마크다운 공백 누락');
   if (/\*\*\*\*/.test(body)) errors.push('볼드 별표 중복');
