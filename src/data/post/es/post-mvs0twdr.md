@@ -37,4 +37,16 @@ Para evitar que este tipo de bloqueos paralice nuevamente las finanzas de su emp
 
 Asimismo, supervise de forma constante las métricas de devoluciones de cargo y rechazos de tarjetas para detectar anomalías antes de que alcancen el límite crítico. Implementar validaciones previas en el proceso de pago ayuda a filtrar clientes con historiales de riesgo elevado, protegiendo tanto la reputación del**merchant account**como la estabilidad del flujo de caja corporativo frente a futuras auditorías algorítmicas imprevistas.
 
-## 5. Preguntas Frecuentes (FAQ)**Q1.**¿Por qué mi pasarela de pago retiene los fondos durante veintiún días sin previo aviso?**A1.**Esta retención actúa como un mecanismo de garantía estándar frente a posibles disputas, devoluciones de cargo o actividades consideradas de alto riesgo por el procesador. Los algoritmos detectan picos inusuales de facturación o cambios en el comportamiento comercial y congelan temporalmente el saldo para mitigar pérdidas financieras.**Q2.**¿Cómo puedo acelerar la liberación de los fondos retenidos en mi cuenta comercial?**A2.**Debe aportar de inmediato documentación probatoria que incluya facturas comerciales firmadas, albaranes de entrega, confirmaciones de servicio y la identificación oficial del representante legal. Contactar al soporte prioritario con estos archivos reduce notablemente el tiempo de revisión técnica.**Q3.**¿Qué medidas debo tomar para evitar que los falsos positivos rechacen pagos legítimos de clientes?**A3.**Es fundamental configurar reglas personalizadas de aceptación en su pasarela, exigir la autenticación avanzada `3DS2` en todas las transacciones y mantener actualizados los datos fiscales en el panel de**Facturación**. Estas acciones mejoran la confianza del sistema hacia su operativa comercial.
+## 5. Preguntas frecuentes (FAQ)
+
+**Pregunta 1:** ¿Por qué mi pasarela de pago retiene los fondos durante veintiún días sin previo aviso?
+
+**Respuesta 1:** Esta retención actúa como un mecanismo de garantía estándar frente a posibles disputas, devoluciones de cargo o actividades consideradas de alto riesgo por el procesador. Los algoritmos detectan picos inusuales de facturación o cambios en el comportamiento comercial y congelan temporalmente el saldo para mitigar pérdidas financieras.
+
+**Pregunta 2:** ¿Cómo puedo acelerar la liberación de los fondos retenidos en mi cuenta comercial?
+
+**Respuesta 2:** Debe aportar de inmediato documentación probatoria que incluya facturas comerciales firmadas, albaranes de entrega, confirmaciones de servicio y la identificación oficial del representante legal. Contactar al soporte prioritario con estos archivos reduce notablemente el tiempo de revisión técnica.
+
+**Pregunta 3:** ¿Qué medidas debo tomar para evitar que los falsos positivos rechacen pagos legítimos de clientes?
+
+**Respuesta 3:** Es fundamental configurar reglas personalizadas de aceptación en su pasarela, exigir la autenticación avanzada `3DS2` en todas las transacciones y mantener actualizados los datos fiscales en el panel de**Facturación**. Estas acciones mejoran la confianza del sistema hacia su operativa comercial.
