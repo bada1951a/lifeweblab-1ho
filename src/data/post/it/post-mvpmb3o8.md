@@ -1,5 +1,5 @@
 ---
-title: "Stripe Payment Declined: Guida Definitiva al genericdecline e al W-8BEN"
+title: "Stripe Payment Declined: Guida Definitiva al generic_decline e al W-8BEN"
 description: "Risolvi i rifiuti Stripe generic_decline e gestisci la conformità W-8BEN per clienti USA senza blocchi sui conti aziendali."
 publishDate: 2026-10-27T03:30:00.000Z
 image: '/images/billing-photo/billing-46.jpg'
