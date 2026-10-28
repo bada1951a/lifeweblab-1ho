@@ -78,6 +78,8 @@ Chaque fin de mois, j'analyse les rapports de notre `Tableau de bord` pour ident
 
 ## 5. Foire aux questions (FAQ)
 
+**Q1.** questions (FAQ)
+
 Pour clore ce retour d'expérience, voici les réponses aux questions que l'on me pose le plus souvent lors de nos ateliers internes sur la gestion des litiges de paiement.
 
 **Q1.** Dois-je immédiatement réessayer de débiter la même carte après un message do_not_honor ?Absolument pas. Relancer une carte refusée plusieurs fois d'affilée est la pire erreur à commettre. Les algorithmes de sécurité interprètent cet acharnement comme une tentative de fraude par force brute, ce qui entraîne un blocage définitif de la carte par la banque émettrice. Mieux vaut contacter le client ou proposer une autre méthode.

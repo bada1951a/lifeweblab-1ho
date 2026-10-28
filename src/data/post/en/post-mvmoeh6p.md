@@ -38,7 +38,7 @@ The `do_not_honor` code is notoriously opaque because it originates entirely fro
 
 Our startup scales across multiple currencies, and we utilize Stripe’s dynamic currency conversion and multi-currency payout features. During this specific payout cycle, a minor lag in exchange rate synchronization between the clearing house and our merchant account caused a rounding discrepancy. When the system tried to reconcile the unsettled funds, it created orphaned ledger entries. These orphan entries were misclassified by our automated bookkeeping scripts as secondary processing fees, resulting in the terrifying double-deduction anomaly we spotted on our dashboard.
 
-### 3. Webhook Latency and Race Conditions in Invoicing
+## 3. Webhook Latency and Race Conditions in Invoicing
 
 Another major factor was webhook congestion. Because our platform handles thousands of simultaneous cross-border invoices, our webhook endpoints experienced a brief queue delay due to an external DNS blip. Stripe's servers, attempting to ensure delivery of `charge.dispute.created` and `payout.paid` events, retried payloads out of sequence. This race condition tricked our internal database into logging the same marketplace settlement twice, feeding inaccurate net revenue figures directly into our corporate finance reporting tools.
 
@@ -93,6 +93,8 @@ Fixing the crisis is only half the battle; ensuring it never happens again requi
 - **Educate Customer Support on Decline Taxonomy:** Train your frontline support reps to understand that `do_not_honor` is an issuer-side refusal. Equipping them with clear scripts helps guide international clients to resolve bank blocks smoothly without blaming your platform.
 
 ## 5. Frequently Asked Questions (FAQ)
+
+**Q1.** Questions (FAQ)
 
 To wrap things up, here are the answers to the most critical questions our finance and engineering teams wrestled with during and after the incident.
 

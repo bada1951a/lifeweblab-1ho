@@ -111,7 +111,7 @@ Para garantir que eu nunca mais passe por esse sufoco no meio do expediente na P
 * **Histórico de Transações Claras:** Ao emitir faturas pelo PayPal ou plataformas parceiras, sempre incluo descrições detalhadas do escopo do serviço prestado para evitar gatilhos automáticos de fraude.
 * **Verificação de Contas:** Checo mensalmente se o `Painel` e as `Formas de Pagamento` estão sem nenhum alerta de segurança ou pendência documental.
 
-## 5. Perguntas Frequentes sobre Bloqueios e Tributação Internacional
+## 5. Perguntas Frequentes sobre Bloqueios e Tributação Internacional (FAQ)
 
 Aqui estão as três dúvidas mais comuns que recebo de colegas que enfrentam o mesmo perrengue no dia a dia do faturamento global:
 

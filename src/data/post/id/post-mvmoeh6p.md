@@ -65,7 +65,9 @@ Buat mastikan kejadian horor di SCBD kemarin gak terulang lagi minggu depan, gue
 - Lakukan edukasi berkala kepada pelanggan VIP atau korporat besar mengenai potensi verifikasi manual jika terjadi volatilitas nilai tukar yang tajam.
 - Uji coba skenario pemulihan darurat secara berkala bersama tim IT agar otot respons krisis kita sudah terlatih dengan baik.
 
-## 5. Tanya Jawab Seputar Penanganan Error Pembayaran Global **Q1.** Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor?
+## 5. Tanya Jawab Seputar Penanganan Error Pembayaran Global **Q1.** Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor? (FAQ)
+
+**Q1.** Q1.** Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor?
 
 **A1.** Secara umum sangat tidak disarankan untuk langsung melakukan retry manual berkali-kali pada hari yang sama, terutama saat terjadi fluktuasi kurs tajam. Sebaiknya hubungi pelanggan terlebih dahulu untuk meminta mereka mengonfirmasi transaksi ke bank penerbit kartu mereka.
 

@@ -73,6 +73,8 @@ Cette mésaventure m'a servi de leçon. Depuis ce jour-là, nous avons instauré
 
 ## 5. Foire aux questions (FAQ)
 
+**Q1.** questions (FAQ)
+
 Pour répondre aux interrogations les plus fréquentes que je reçois de la part de mes collègues de la communauté tech et finance :
 
 **Q1.** Est-il vraiment possible de contourner le délai de 21 jours imposé par PayPal sur les nouvelles transactions ?

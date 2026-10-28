@@ -63,6 +63,8 @@ To ensure our finance team never has to experience that heart-stopping morning p
 
 ## 5. Frequently Asked Questions (FAQ)
 
+**Q1.** Questions (FAQ)
+
 **Q1.** Can I really release a PayPal 21-day hold before the actual deadline?
 
 **A1.** Yes, absolutely. The 21-day hold is an automated safety net designed for unverified accounts or sudden velocity spikes. By immediately updating the transaction status to 'Completed', providing digital delivery proof or contract documentation, and having your customer confirm receipt on their end, the algorithm often releases the funds within 24 to 48 hours instead of three full weeks.

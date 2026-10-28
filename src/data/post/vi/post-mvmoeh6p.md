@@ -67,7 +67,7 @@ Cuối cùng, truy cập vào mục `Hóa đơn` (Invoices) và `Biểu mẫu th
 *   Chủ động thông báo trước cho ngân hàng trong nước về các chiến dịch kinh doanh lớn có doanh thu quốc tế tăng vọt để tránh bị khóa dòng tiền đột ngột.
 *   Lưu trữ đầy đủ các bản sao hóa đơn xuyên biên giới và chứng từ thanh toán điện tử ở một thư mục riêng biệt để sẵn sàng cung cấp khi Stripe yêu cầu kiểm tra ngẫu nhiên.
 
-## 5. Câu Hỏi Thường Gặp (FAQ) Từ Các Giám Đốc Tài Chính Thực Chiến
+## 5. Câu Hỏi Thường Gặp Từ Các Giám Đốc Tài Chính Thực Chiến (FAQ)
 
 Dưới đây là tổng hợp những thắc mắc mà các đồng nghiệp hay hỏi mình nhất mỗi khi gặp sự cố tương tự với cổng thanh toán quốc tế:
 

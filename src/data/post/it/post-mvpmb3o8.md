@@ -55,7 +55,7 @@ La risoluzione di questa emergenza richiede l'esecuzione rigorosa di tre procedu
 <strong>Consiglio Pro:</strong> Mantenete sempre una copia in PDF del modulo W-8BEN-E firmato e timbrato digitalmente all'interno della cartella condivisa con i vostri clienti esteri principali. Questo azzera i tempi di attesa amministrativi in caso di audit fiscali improvvisi da parte dei loro reparti contabili.
 </div>
 
-## 4. Checklist essenziale per evitare blocchi conto e commissioni nascoste essenziale per evitare blocchi conto e commissioni nascoste
+## 4. Checklist essenziale per evitare blocchi conto e commissioni nascoste
 
 Gestire i pagamenti internazionali e i rapporti fiscali con clienti statunitensi senza una preparazione adeguata espone l'azienda a rischi operativi devastanti. Il pericolo più grave non è rappresentato unicamente dal singolo pagamento rifiutato, ma dalla possibilità concreta di subire la chiusura definitiva dell'account**da parte dei processori di pagamento come Stripe**o PayPal**, a causa di violazioni involontarie delle policy di conformità o di tassi di contestazione (*chargeback rate*) eccessivamente elevati. Quando un conto viene segnalato per anomalie fiscali non risolte, i fondi residui possono essere trattenuti in **riserva rotativa** (*rolling reserve*) per un periodo che va dai novanta ai centottanta giorni, paralizzando completamente la liquidità aziendale e impedendo il pagamento di stipendi e fornitori strategici.
 

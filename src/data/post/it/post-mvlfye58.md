@@ -67,7 +67,7 @@ Da quel giorno drammatico ho cambiato completamente il nostro metodo di lavoro i
 - Anticipare i picchi di spesa eccezionali avvisando preventivamente il supporto clienti di PayPal almeno una settimana prima.
 - Mantenere sempre aggiornati i `Moduli fiscali` e le verifiche di identità aziendale all'interno della piattaforma.
 
-## 5. Domande frequenti (FAQ) dai colleghi del settore
+## 5. Domande frequenti dai colleghi del settore (FAQ)
 
 Molti responsabili amministrativi mi hanno chiesto chiarimenti dopo aver saputo della mia disavventura. Ecco le risposte alle domande più comuni che ricevo dai colleghi nei grattacieli milanesi:
 

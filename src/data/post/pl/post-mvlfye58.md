@@ -58,7 +58,9 @@ Aby nigdy więcej nie przechodzić przez ten zawał serca w środku roboczego dn
 - Zawsze korzystaj z lokalnych kont rozliczeniowych i walutowych w `Metody płatności`, aby ominąć ukryte opłaty banków korespondentów i drastyczne spready.
 - Dbaj o to, aby każda wystawiona pozycja w sekcji `Faktury` miała precyzyjnie opisany przedmiot transakcji i numer śledzenia lub protokół odbioru.
 
-## 5. Najczęściej zadawane pytania (FAQ): Najczęściej zadawane pytania z praktyki inżyniera płatności **Q1.** Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od lat?Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacji.
+## 5. Najczęściej zadawane pytania : Najczęściej zadawane pytania z praktyki inżyniera płatności **Q1.** Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od lat?Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacji. (FAQ)
+
+**Q1.** Q1.** Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od lat?Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacji.
 
 **Q2.** Czy mogę całkowicie uniknąć prowizji banków pośredniczących przy przelewach międzynarodowych?
 

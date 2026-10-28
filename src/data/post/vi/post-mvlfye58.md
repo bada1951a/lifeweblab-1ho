@@ -84,7 +84,7 @@ Trong nội dung yêu cầu, hãy giải thích rõ ràng rằng sự cố phát
 - Lưu trữ toàn bộ các tệp nhật ký API và bản sao `Hóa đơn` điện tử của các giao dịch xuyên biên giới vào một kho lưu trữ riêng biệt nhằm sẵn sàng cung cấp khi cổng thanh toán yêu cầu xác minh.
 - Đào tạo định kỳ cho đội ngũ chăm sóc khách hàng và kỹ thuật viên về cách xử lý nhanh các mã lỗi liên quan đến tiền tệ quốc tế để giảm thiểu thời gian chết của hệ thống.
 
-## 5. Giải đáp các câu hỏi thường gặp về sự cố thanh toán và giữ tiền
+## 5. Giải đáp các câu hỏi thường gặp về sự cố thanh toán và giữ tiền (FAQ)
 
 Trong quá trình chia sẻ kinh nghiệm xử lý sự cố này với các đồng nghiệp tại nhiều doanh nghiệp khác nhau ở Sài Gòn, tôi nhận thấy có rất nhiều thắc mắc tương tự xoay quanh vấn đề này. Dưới đây là ba câu hỏi quan trọng nhất kèm theo câu trả lời chi tiết để giúp các bạn làm chủ tình hình.
 
