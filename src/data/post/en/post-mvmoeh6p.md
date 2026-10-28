@@ -94,7 +94,7 @@ Fixing the crisis is only half the battle; ensuring it never happens again requi
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Q1. Questions (FAQ)
+Q1. Questions
 
 To wrap things up, here are the answers to the most critical questions our finance and engineering teams wrestled with during and after the incident
 

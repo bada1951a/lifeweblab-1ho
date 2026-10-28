@@ -63,7 +63,7 @@ To ensure our finance team never has to experience that heart-stopping morning p
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Q1. Questions (FAQ)
+Q1. Questions
 
 Q1. Can I really release a PayPal 21-day hold before the actual deadline
 

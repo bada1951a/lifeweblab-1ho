@@ -78,7 +78,7 @@ Chaque fin de mois, j'analyse les rapports de notre `Tableau de bord` pour ident
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Q1. questions (FAQ)
+Q1. questions
 
 Pour clore ce retour d'expérience, voici les réponses aux questions que l'on me pose le plus souvent lors de nos ateliers internes sur la gestion des litiges de paiement
 

@@ -60,7 +60,7 @@ Aby nigdy więcej nie przechodzić przez ten zawał serca w środku roboczego dn
 
 ## 5. Najczęściej zadawane pytania : Najczęściej zadawane pytania z praktyki inżyniera płatności
 
-Q1. Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od lat?Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacji. (FAQ)
+Q1. Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od lat?Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacji.
 
 Q1. Q1. Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od lat?Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacji
 

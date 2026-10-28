@@ -67,7 +67,7 @@ Buat mastikan kejadian horor di SCBD kemarin gak terulang lagi minggu depan, gue
 
 ## 5. Tanya Jawab Seputar Penanganan Error Pembayaran Global
 
-Q1. Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor? (FAQ)
+Q1. Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor?
 
 Q1. Q1. Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor
 

@@ -73,7 +73,7 @@ Cette mésaventure m'a servi de leçon. Depuis ce jour-là, nous avons instauré
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Q1. questions (FAQ)
+Q1. questions
 
 Pour répondre aux interrogations les plus fréquentes que je reçois de la part de mes collègues de la communauté tech et finance :
 

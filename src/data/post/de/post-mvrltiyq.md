@@ -53,10 +53,6 @@ Q1. Q1. Was passiert, wenn die fehlerhafte Rechnung nicht innerhalb von 48 Stund
 
 A1. Bei einer Verzögerung droht die vollständige Stornierung des Auftrags im System des Partners, was zu erneuten internen Freigabeprozessen und spürbaren Verzögerungen beim Zahlungseingang führt. Zudem kann dies bei wiederholten Vorfällen zu strengeren Compliance-Prüfungen und temporären Zahlungssperrenfür Ihr Firmenkonto führen
 
-Q2. Muss für jede europäische B2B-Transaktion zwingend das Reverse-Charge-Verfahren angewendet werden
-
 A2. Grundsätzlich greift die Steuerschuldumkehr bei fast allen grenzüberschreitenden Dienstleistungen und Lieferungen an Unternehmer innerhalb der EU. Voraussetzung ist jedoch, dass beide Geschäftspartner eine gültige und im VIES-Systemverifizierte Umsatzsteuer-Identifikationsnummer besitzen, die fehlerfrei auf dem Beleg ausgewiesen sein muss
-
-Q3. Wie kann ich verhindern, dass mein ERP-System Rechnungen ohne VAT-Hinweis überhaupt generiert
 
 A3. Sie sollten in Ihrem ERP- oder Buchhaltungssystem eine harte Validierungsregel hinterlegen, die das Erstellen von Rechnungen an EU-Kunden ohne die Eingabe einer validen USt-IdNr. blockiert. Diese systemseitige Sperre verhindert menschliche Fehler und schützt zuverlässig vor erneuten Rechnungsablehnungen durch europäische Partner.
