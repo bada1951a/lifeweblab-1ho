@@ -13,16 +13,16 @@ theme: "Resolution Emerald Guide"
 Erano le sei e mezza di una mattina di fine autunno nei grigi e frenetici *Centri direzionali di Milano*, quando il mio caffè macchiato era ancora bollente e la scrivania sommersa dalle scartoffie, e mi è arrivata una notifica che mi ha gelato il sangue nelle vene. Avevamo appena avviato il consueto trasferimento di fondi transfrontalieri dal nostro conto di pagamento estero principale verso il conto corrente bancario italiano aziendale, ma l'intera operazione era stata bruscamente respinta. Il motivo? Un fastidiosissimo errore di discrepanza nei nomi in formato inglese tra i registri della banca intermediaria e la nostra anagrafica aziendale su Stripe. Nel giro di pochi minuti, i flussi di cassa per le fatture dei nostri clienti corporate più importanti si erano letteralmente congelati, e il panico ha iniziato a serpeggiare tra i canali Slack del team finanziario.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Un blocco nei trasferimenti internazionali causato da incongruenze nominali può paralizzare la liquidità aziendale in poche ore, richiedendo interventi mirati sulla Dashboard di Stripe e un coordinamento immediato con il dipartimento di compliance bancaria.
+<strong>[Key Point]:</strong> Un blocco nei trasferimenti internazionali causato da incongruenze nominali può paralizzare la liquidità aziendale in poche ore, richiedendo interventi mirati sulla Dashboard di Stripe e un coordinamento immediato con il dipartimento di compliance bancaria.
 </div>
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-21.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
 ## La situazione iniziale e la confusione vissuta sul campo
 
-All'inizio, lo smarrimento è stato totale. Vedere quel bonifico internazionale bloccato all'alba, con i clienti che continuavano a transare e i gateway di pagamento che restituivano codici anomali legati al famigerato `do_not_honor`, mi ha fatto sudare freddo. Pensavo a un blocco preventivo antifrode della banca emittente o a una verifica fiscale straordinaria da parte delle autorità doganali e finanziarie. 
+All'inizio, lo smarrimento è stato totale. Vedere quel bonifico internazionale bloccato all'alba, con i clienti che continuavano a transare e i gateway di pagamento che restituivano codici anomali legati al famigerato `do_not_honor`, mi ha fatto sudare freddo. Pensavo a un blocco preventivo antifrode della banca emittente o a una verifica fiscale straordinaria da parte delle autorità doganali e finanziarie.
 
-Ho passato la prima mezzora a rimpallare ticket tra il supporto di Stripe e il nostro istituto di credito a Milano, ricevendo risposte automatiche e inconcludenti. Nessuno sembrava capire che la nostra entità legale aveva una ragione sociale complessa, scritta con abbreviazioni e caratteri speciali che il sistema di verifica automatizzato del beneficiario aveva interpretato come un tentativo di frode o un errore di digitazione. 
+Ho passato la prima mezzora a rimpallare ticket tra il supporto di Stripe e il nostro istituto di credito a Milano, ricevendo risposte automatiche e inconcludenti. Nessuno sembrava capire che la nostra entità legale aveva una ragione sociale complessa, scritta con abbreviazioni e caratteri speciali che il sistema di verifica automatizzato del beneficiario aveva interpretato come un tentativo di frode o un errore di digitazione.
 
 Continuavo a ripetermi che stavamo perdendo entrate preziose a ogni minuto che passava, mentre le transazioni B2B dei nostri partner europei continuavano a essere rifiutate a catena. È stato in quel momento di pura crisi che ho capito che dovevo smettere di affidarmi ai bot del supporto e iniziare a mettere le mani direttamente nei parametri tecnici della nostra infrastruttura di pagamento.
 
@@ -59,7 +59,7 @@ Successivamente, mi sono spostato nella sezione dedicata ai `Moduli fiscali` e a
 Infine, ho aperto la sezione `Fatture` per tracciare i pagamenti dei clienti che erano stati bloccati a causa del panico generato dai sistemi di sicurezza. Ho eseguito una riconciliazione manuale delle transazioni contrassegnate dall'errore `do_not_honor`, contattando direttamente i clienti chiave per rassicurarli e invitandoli a riprovare il pagamento tramite un metodo alternativo (come il bonifico bancario diretto o un token di carta di credito aggiornato) mentre il sistema principale veniva ricalibrato.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> La precisione millimetrica nell'inserimento della ragione sociale e l'allineamento dei documenti KYC salvano l'azienda da ore di fermo operativo e perdite di fatturato difficilmente recuperabili.
+<strong>[Key Point]:</strong> La precisione millimetrica nell'inserimento della ragione sociale e l'allineamento dei documenti KYC salvano l'azienda da ore di fermo operativo e perdite di fatturato difficilmente recuperabili.
 ```</div>
 
 ## Checklist pratica per la prevenzione di futuri blocchi transfrontalieri

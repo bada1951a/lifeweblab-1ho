@@ -12,14 +12,12 @@ theme: "Modern Minimalist Modern"
 
 Letztes Quartal erlebte ich in unserem Büro im Frankfurter Finanzdistrikt einen echten Albtraum, den ich so schnell nicht vergessen werde. Es war ein Montagmorgen, und unser Hauptbildschirm zeigte eine beunruhigende rote Welle von abgelehnten B2B-Transaktionen. Gleichzeitig meldete unser Team im Berliner Technologie-Campus, dass eine gigantische internationale Firmenüberweisung spurlos verschwunden war. Die beauftragte Korrespondenzbank steckte fest, und das `MT103`-Dokument war absolut unauffindbar. Unsere Kunden warteten ungeduldig auf die Freischaltung ihrer Enterprise-Lizenzen, während der Kundenservice mit panischen E-Mails überflutet wurde. Wer schon einmal miterlebt hat, wie zehntausende Euros im Nirgendwo der Intermediärbanken versinken, weiß genau, wie sich nackte Panik im Großraumbüro anfühlt.
 
-## 1. Das Chaos und die Verwirrung von damals
-
-An jenem Morgen blickte ich fassungslos auf unser Stripe-Dashboard, wo der berüchtigte `do_not_honor`-Fehler bei fast jedem dritten Premium-Kunden aufblinkte. Normalerweise bedeutet dieser Code schlicht, dass die ausstellende Bank die Transaktion ohne nähere Angabe von Gründen blockiert. Doch die Kombination aus diesem plötzlichen Kreditkartenfehler und der gleichzeitig hängenden Überweisung über das SWIFT-Netzwerk brachte uns an den Rand eines Nervenzusammenbruchs. 
+An jenem Morgen blickte ich fassungslos auf unser Stripe-Dashboard, wo der berüchtigte `do_not_honor`-Fehler bei fast jedem dritten Premium-Kunden aufblinkte. Normalerweise bedeutet dieser Code schlicht, dass die ausstellende Bank die Transaktion ohne nähere Angabe von Gründen blockiert. Doch die Kombination aus diesem plötzlichen Kreditkartenfehler und der gleichzeitig hängenden Überweisung über das SWIFT-Netzwerk brachte uns an den Rand eines Nervenzusammenbruchs.
 
 Wir wussten zunächst nicht, wo wir ansetzen sollten. Lag es an den verschärften Compliance-Prüfungen der Geldwäschebehörden, an fehlerhaften IBAN-Strukturen oder an den neuen Risikoeinstellungen in unserem Stripe-Konto? Jede Minute, die verging, kostete uns wertvollen Umsatz und das Vertrauen unserer wichtigsten Geschäftspartner. Die Dokumentation von Stripe half uns in diesem spezifischen Moment nur bedingt weiter, da der Fehler tief im Zusammenspiel zwischen dem Acquirer und den traditionellen Korrespondenzbanken begründet lag.
 
 <div style="border-left: 4px solid #4f46e5; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Wenn der Fehler `do_not_honor` gleichzeitig mit eingefrorenen SWIFT-Zahlungen auftritt, handelt es sich fast immer um ein systemweites Compliance- oder Risikolimit-Problem, das man nicht mit Standard-Klicks im Frontend lösen kann.
+<strong>[Key Point]:</strong> Wenn der Fehler `do_not_honor` gleichzeitig mit eingefrorenen SWIFT-Zahlungen auftritt, handelt es sich fast immer um ein systemweites Compliance- oder Risikolimit-Problem, das man nicht mit Standard-Klicks im Frontend lösen kann.
 </div>
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-15.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
@@ -51,7 +49,7 @@ Step 2: Für die hängenden B2B-Rechnungen wechselten wir in die `Rechnungen`-Se
 Step 3: Wir überprüften penibel die `Kontoeinstellungen` und `Steuerformulare`. Jedes einzelne Unternehmensprofil wurde manuell validiert, um sicherzustellen, dass die `USt-IdNr.` im VIES-System der EU verifiziert war. Dies gab den ausstellenden Banken die nötige Sicherheit, den `do_not_honor`-Status aufzuheben.
 
 <div style="border-left: 4px solid #4f46e5; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Ein strukturierter Gang durch Dashboard, Rechnungs- und Kontoeinstellungen rettet im Ernstfall jede blockierte Transaktion und verhindert teure Chargebacks.
+<strong>[Key Point]:</strong> Ein strukturierter Gang durch Dashboard, Rechnungs- und Kontoeinstellungen rettet im Ernstfall jede blockierte Transaktion und verhindert teure Chargebacks.
 </div>
 
 ## 4. Praxis-Checkliste zur Vermeidung von Kontensperren und Gebührene zur Vermeidung zukünftiger Vorfälle

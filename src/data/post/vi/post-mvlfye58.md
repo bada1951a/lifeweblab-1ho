@@ -10,18 +10,16 @@ theme: "Emergency Alert Amber"
 
 ## 1. Sự cố khẩn cấp khi thanh toán và chuyển tiền quốc tế
 
-Sáng hôm ấy tại tòa nhà văn phòng tài chính ngay giữa Quận 1, TP. Hồ Chí Minh, không khí đang yên ắng bỗng trở nên vô cùng căng thẳng khi màn hình hệ thống giám sát liên tục reo lên những cảnh báo đỏ rực. Các giao dịch thanh toán quốc tế của khách hàng đồng loạt báo lỗi, tiền không vào được tài khoản mà còn bị treo lơ lửng, trong khi hộp thư hỗ trợ khách hàng thì ngập tràn các khiếu nại vì đơn hàng không thể hoàn tất. 
+Sáng hôm ấy tại tòa nhà văn phòng tài chính ngay giữa Quận 1, TP. Hồ Chí Minh, không khí đang yên ắng bỗng trở nên vô cùng căng thẳng khi màn hình hệ thống giám sát liên tục reo lên những cảnh báo đỏ rực. Các giao dịch thanh toán quốc tế của khách hàng đồng loạt báo lỗi, tiền không vào được tài khoản mà còn bị treo lơ lửng, trong khi hộp thư hỗ trợ khách hàng thì ngập tràn các khiếu nại vì đơn hàng không thể hoàn tất.
 
 Ngay lúc đó, tôi và đội ngũ kỹ thuật phát hiện ra một cơn ác mộng mang tên lỗi làm tròn đa tiền tệ trong giao dịch thương mại điện tử, khiến cổng thanh toán PayPal từ chối phê duyệt giao dịch, đồng thời kích hoạt cơ chế giữ tiền 21 ngày khét tiếng đối với các dòng doanh thu mới. Giữa cái nóng oi ả của Sài Gòn và áp lực từ ban giám đốc, tôi buộc phải xắn tay áo lao vào giải quyết đống hỗn độn công nghệ này ngay lập tức.
 
-## 1. Bối cảnh hỗn loạn và những bỡ ngỡ ban đầu khi đối mặt sự cố
+Khoảng 9 giờ sáng, khi ly cà phê sữa đá trên bàn còn chưa kịp tan đá, hàng loạt thông báo lỗi từ hệ thống API thanh toán bắt đầu đổ về dồn dập. Khách hàng ở Mỹ và châu Âu đang cố gắng thanh toán các gói dịch vụ phần mềm bằng nhiều loại tiền tệ khác nhau, nhưng cổng thanh toán liên tục trả về các mã lỗi từ chối không rõ nguyên nhân.
 
-Khoảng 9 giờ sáng, khi ly cà phê sữa đá trên bàn còn chưa kịp tan đá, hàng loạt thông báo lỗi từ hệ thống API thanh toán bắt đầu đổ về dồn dập. Khách hàng ở Mỹ và châu Âu đang cố gắng thanh toán các gói dịch vụ phần mềm bằng nhiều loại tiền tệ khác nhau, nhưng cổng thanh toán liên tục trả về các mã lỗi từ chối không rõ nguyên nhân. 
-
-Ban đầu, chúng tôi cứ nghĩ đây chỉ là một sự cố nghẽn mạng tạm thời của nhà mạng viễn thông hoặc hệ thống cáp quang biển quen thuộc. Thế nhưng, khi kiểm tra kỹ lưỡng bảng điều khiển, tình hình thực tế lại tồi tệ hơn rất nhiều: các giao dịch bị từ chối do lệch số thập phân giữa hệ thống giỏ hàng nội bộ và cổng thanh toán quốc tế, dẫn đến việc PayPal tự động gắn cờ rủi ro và giam giữ số dư hiện có trong 21 ngày. 
+Ban đầu, chúng tôi cứ nghĩ đây chỉ là một sự cố nghẽn mạng tạm thời của nhà mạng viễn thông hoặc hệ thống cáp quang biển quen thuộc. Thế nhưng, khi kiểm tra kỹ lưỡng bảng điều khiển, tình hình thực tế lại tồi tệ hơn rất nhiều: các giao dịch bị từ chối do lệch số thập phân giữa hệ thống giỏ hàng nội bộ và cổng thanh toán quốc tế, dẫn đến việc PayPal tự động gắn cờ rủi ro và giam giữ số dư hiện có trong 21 ngày.
 
 <div style="border-left: 4px solid #d97706; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Đừng vội hoảng loạn khi thấy tiền bị giữ. Việc xác định chính xác nguyên nhân kỹ thuật đằng sau các mã lỗi từ chối giao dịch chính là chìa khóa vàng để cứu vãn doanh thu ngay lập tức.
+<strong>[Key Point]:</strong> Đừng vội hoảng loạn khi thấy tiền bị giữ. Việc xác định chính xác nguyên nhân kỹ thuật đằng sau các mã lỗi từ chối giao dịch chính là chìa khóa vàng để cứu vãn doanh thu ngay lập tức.
 </div>
 
 Trong khoảng hai giờ đồng hồ đầu tiên, chúng tôi như những chú ong vò vẽ điên cuồng lật giở từng tài liệu hướng dẫn kỹ thuật của PayPal, gọi điện cho các đối tác tích hợp cổng thanh toán và liên tục trấn an bộ phận chăm sóc khách hàng đang bị tra tấn bởi hàng trăm cuộc gọi khiếu nại. Sự thiếu đồng bộ trong việc xử lý số thập phân của các loại tiền tệ yếu như đồng Yên Nhật hoặc Won Hàn Quốc khi quy đổi sang Đô-la Mỹ chính là ngòi nổ cho toàn bộ thảm họa này.
@@ -34,7 +32,7 @@ Trong khoảng hai giờ đồng hồ đầu tiên, chúng tôi như những ch�
 
 ### Lỗi không tương thích định dạng số thập phân đa tiền tệ
 
-Nguyên nhân đầu tiên xuất phát từ sự khác biệt về quy chuẩn hiển thị số thập phân giữa hệ thống website thương mại điện tử của chúng tôi và hệ thống nhận thanh toán toàn cầu. Trong khi giỏ hàng của chúng tôi cấu hình hiển thị giá tiền với bốn chữ số thập phân để đảm bảo độ chính xác tuyệt đối cho các thuật toán chiết khấu, thì cổng thanh toán PayPal lại chỉ tiếp nhận tối đa hai chữ số thập phân. 
+Nguyên nhân đầu tiên xuất phát từ sự khác biệt về quy chuẩn hiển thị số thập phân giữa hệ thống website thương mại điện tử của chúng tôi và hệ thống nhận thanh toán toàn cầu. Trong khi giỏ hàng của chúng tôi cấu hình hiển thị giá tiền với bốn chữ số thập phân để đảm bảo độ chính xác tuyệt đối cho các thuật toán chiết khấu, thì cổng thanh toán PayPal lại chỉ tiếp nhận tối đa hai chữ số thập phân.
 
 Sự chênh lệch này vô tình tạo ra một khoảng trống sai số nhỏ mỗi khi hệ thống tiến hành quy đổi tỷ giá ngoại tệ tự động. Khi cổng thanh toán nhận được một con số có cấu trúc không khớp với chuẩn dữ liệu của họ, các thuật toán bảo mật tự động sẽ lập tức đánh dấu đây là một giao dịch bất thường, dẫn đến việc từ chối phê duyệt ngay lập tức và giam giữ dòng tiền để phòng ngừa rủi ro gian lận.
 
@@ -61,7 +59,7 @@ Sau khi đã nắm rõ tường tận nguyên nhân, tôi đã trực tiếp ch�
 Chúng ta phải lập tức vô hiệu hóa tính năng tự động quy đổi tiền tệ thủ công và chuyển sang chế độ chấp nhận nguyên bản đồng tiền thanh toán từ phía khách hàng. Tiếp theo, hãy cập nhật lại quy tắc làm tròn số thập phân thành chuẩn hai chữ số ở phần cài đặt giỏ hàng trên website, đồng thời đồng bộ hóa thông số này với `Hóa đơn` điện tử đang phát hành để đảm bảo không còn bất kỳ sự lệch lạc nào về mặt con số.
 
 <div style="border-left: 4px solid #d97706; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Hãy chắc chắn rằng thông số trong `Cài đặt tài khoản` về định dạng tiền tệ phải khớp 100% với dữ liệu xuất ra trên từng `Hóa đơn` xuyên biên giới để tránh bị hệ thống quét lỗi lần hai.
+<strong>[Key Point]:</strong> Hãy chắc chắn rằng thông số trong `Cài đặt tài khoản` về định dạng tiền tệ phải khớp 100% với dữ liệu xuất ra trên từng `Hóa đơn` xuyên biên giới để tránh bị hệ thống quét lỗi lần hai.
 </div>
 
 ### Bước 2: Cập nhật thông tin pháp lý và Biểu mẫu thuế

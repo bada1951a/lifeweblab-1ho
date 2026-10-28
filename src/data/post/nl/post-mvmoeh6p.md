@@ -12,12 +12,10 @@ theme: "Resolution Emerald Guide"
 
 Het was een typische regenachtige dinsdagochtend op de Zuidas in Amsterdam. Ik zat achter mijn bureau op de twintigste verdieping met een dampende kop zwarte koffie, klaar om een flinke batch uitstaande facturen van onze internationale freelanceontwikkelaars weg te werken. Alles leek op rolletjes te lopen totdat mijn telefoon ontplofte met paniekerige Slack-berichten van onze hoofdinkoper. Een van onze grootste externe contractanten had zojuist een betaling geprobeerd te voldoen, maar werd geconfronteerd met de gevreesde 'do_not_honor' foutmelding van Stripe. Nog erger: door een rare webhook-bug in ons systeem was diezelfde mislukte transactie ergens op de achtergrond wél dubbel geregistreerd en afgeschreven. Twee keer hetzelfde hoge bedrag afgeschreven van een woedende partner, terwijl de status in ons dashboard bleef hangen op geweigerd. Mijn maag keerde zich om; we moesten dit direct oplossen voordat het onze reputatie zou schaden en we omzet zouden mislopen door afgehaakte partners.
 
-## 1. De paniek en de eerste chaos op de werkvloer
-
-De rillingen liepen over mijn rug toen ik het Dashboard opende en de rode foutmeldingen ons tegemoet blonken. In eerste instantie dacht ik dat het aan de bank van de freelancer lag, zoals zo vaak het geval is bij internationale overboekingen in de financiële sector hier in Amsterdam. Maar toen ik dieper groef in de logs, zag ik de ware nachtmerrie: de webhook-server had een time-out gekregen precies op het moment dat de 'do_not_honor' respons binnenkwam, waardoor de retry-logica van Stripe ten onrechte twee keer een poging had gedaan om de kaarten te belasten. 
+De rillingen liepen over mijn rug toen ik het Dashboard opende en de rode foutmeldingen ons tegemoet blonken. In eerste instantie dacht ik dat het aan de bank van de freelancer lag, zoals zo vaak het geval is bij internationale overboekingen in de financiële sector hier in Amsterdam. Maar toen ik dieper groef in de logs, zag ik de ware nachtmerrie: de webhook-server had een time-out gekregen precies op het moment dat de 'do_not_honor' respons binnenkwam, waardoor de retry-logica van Stripe ten onrechte twee keer een poging had gedaan om de kaarten te belasten.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Een 'do_not_honor' code betekent simpelweg dat de uitgevende bank van de klant de transactie weigert zonder specifieke reden te geven. Combineer dat met een slecht geconfigureerde webhook en je hebt een recept voor dubbele afschrijvingen en pure paniek.
+<strong>[Key Point]:</strong> Een 'do_not_honor' code betekent simpelweg dat de uitgevende bank van de klant de transactie weigert zonder specifieke reden te geven. Combineer dat met een slecht geconfigureerde webhook en je hebt een recept voor dubbele afschrijvingen en pure paniek.
 </div>
 
 Ik herinner me nog goed dat ik wanhopig door de documentatie van Stripe aan het bladeren was, terwijl de accountmanager naast me stond te ijsberend omdat we diezelfde middag nog goedkeuring moesten geven voor een volgende fase van ons project. We moesten snel handelen, de administratie rechtzetten en vooral voorkomen dat onze betrouwbaarheid bij key-partners een deuk zou oplopen.
@@ -45,7 +43,7 @@ Dit was de grootste technische omissie. We hadden geen `Idempotency-Key` headers
 Geen tijd te verliezen; we moesten de schade beperken en de klant direct terugbetalen zonder administratieve chaos te veroorzaken. Hier is exact hoe we dit via het dashboard en onze systemen hebben aangepakt.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Ga nooit direct handmatig geld overmaken via je eigen bankrekening om dit soort fouten op te lossen. Gebruik altijd de ingebouwde refund-tools van Stripe om je belasting- en omzetrapportages waterdicht te houden.
+<strong>[Key Point]:</strong> Ga nooit direct handmatig geld overmaken via je eigen bankrekening om dit soort fouten op te lossen. Gebruik altijd de ingebouwde refund-tools van Stripe om je belasting- en omzetrapportages waterdicht te houden.
 </div>
 
 ### Stap 1: Controleer de transacties in het Dashboard

@@ -10,15 +10,13 @@ theme: "HelpDesk Clean Slate"
 
 ## 1. Situation d'urgence critique sur les paiements et virements
 
-Salut les gars, installez-vous confortablement avec un bon café, je vais vous raconter une de ces matinées cauchemardesques dont on se passerait bien dans les tours de La Défense. C'était un mardi gris de novembre, et alors que je préparais tranquillement mon premier espresso, notre service financier a débarqué en trombe dans mon bureau avec le visage blafard. 
+Salut les gars, installez-vous confortablement avec un bon café, je vais vous raconter une de ces matinées cauchemardesques dont on se passerait bien dans les tours de La Défense. C'était un mardi gris de novembre, et alors que je préparais tranquillement mon premier espresso, notre service financier a débarqué en trombe dans mon bureau avec le visage blafard.
 
 La situation était critique : en voulant régler un prestataire externe pour une mission critique de développement, un méchant bug de webhook lié à notre système de double facturation a littéralement prélevé la même somme deux fois sur le compte de notre partenaire. Le pire dans tout ça ? PayPal a immédiatement appliqué sa fameuse retenue de 21 jours sur les fonds en raison du litige soudain et du pic d'activité suspect, bloquant net notre trésorerie opérationnelle alors que nous devions honorer d'autres factures urgentes dans la foulée.
 
-## 1. La panique à bord : quand le bug frappe au pire moment
+Pour être tout à fait honnête avec vous, sur le coup, j'ai failli recracher mon café par le nez. Voir le `Tableau de bord` afficher un solde bloqué avec ce satané message de retenue de 21 jours, c'est le genre de vision qui vous donne des sueurs froides, surtout quand le prestataire commence à paniquer de son côté en menaçant de couper les serveurs.
 
-Pour être tout à fait honnête avec vous, sur le coup, j'ai failli recracher mon café par le nez. Voir le `Tableau de bord` afficher un solde bloqué avec ce satané message de retenue de 21 jours, c'est le genre de vision qui vous donne des sueurs froides, surtout quand le prestataire commence à paniquer de son côté en menaçant de couper les serveurs. 
-
-Au début, j'ai naïvement cliqué partout en essayant de trouver un bouton magique 'Débloquer maintenant'. Grosse erreur de débutant. Le support automatisé de PayPal tournait en rond, me renvoyant des réponses pré-mâchées sur la politique de protection des acheteurs. J'ai perdu deux bonnes heures précieuses à fouiller dans les méandres de l'interface, pestant contre les algorithmes de sécurité trop zélés. 
+Au début, j'ai naïvement cliqué partout en essayant de trouver un bouton magique 'Débloquer maintenant'. Grosse erreur de débutant. Le support automatisé de PayPal tournait en rond, me renvoyant des réponses pré-mâchées sur la politique de protection des acheteurs. J'ai perdu deux bonnes heures précieuses à fouiller dans les méandres de l'interface, pestant contre les algorithmes de sécurité trop zélés.
 
 C'est là que j'ai compris qu'il fallait arrêter de paniquer, reprendre la main méthodiquement et traiter ce problème non pas comme un simple bug technique, mais comme un incident de conformité et de flux de trésorerie international.
 
@@ -41,7 +39,7 @@ Le système de surveillance des risques de PayPal a immédiatement détecté une
 Nos `Paramètres du compte` n'étaient pas configurés pour bloquer automatiquement les doublons au niveau de la couche applicative avant même l'appel de l'API de paiement. C'est cette faille procédurale qui a permis au second ordre de paiement de s'exécuter.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Un bug de webhook non géré combiné à une double facturation déclenchera quasi systématiquement une retenue de sécurité chez PayPal. Il faut agir sur les preuves de livraison et le statut de suivi pour lever ce blocage en quelques heures.
+<strong>[Key Point]:</strong> Un bug de webhook non géré combiné à une double facturation déclenchera quasi systématiquement une retenue de sécurité chez PayPal. Il faut agir sur les preuves de livraison et le statut de suivi pour lever ce blocage en quelques heures.
 </div>
 
 ## 3. Le plan d'action d'urgence : étapes pas à pas pour libérer les fonds
@@ -61,7 +59,7 @@ Pour forcer l'algorithme à lever la retenue de 21 jours sans attendre ce délai
 Plutôt que d'utiliser le chat classique, j'ai utilisé notre accès partenaire pour ouvrir un ticket direct en joignant les `Formulaires fiscaux` et les logs techniques prouvant l'erreur de webhook. En expliquant clairement qu'il s'agissait d'une erreur technique interne et non d'une fraude, le conseiller a pu manuellement valider la mainlevée sur les fonds en moins de quatre heures.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Ne attendez jamais passivement l'expiration des 21 jours. Fournir des documents justificatifs valides et contacter le support avec des preuves techniques réduit le délai de déblocage à moins de 24 heures.
+<strong>[Key Point]:</strong> Ne attendez jamais passivement l'expiration des 21 jours. Fournir des documents justificatifs valides et contacter le support avec des preuves techniques réduit le délai de déblocage à moins de 24 heures.
 </div>
 
 ## 4. Check-list de prévention : pour ne plus jamais vivre ça

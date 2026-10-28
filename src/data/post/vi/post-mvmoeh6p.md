@@ -12,12 +12,10 @@ theme: "Modern Minimalist Modern"
 
 Chuyện là thế này anh em ạ, dạo này ngồi ở văn phòng ngay trung tâm Quận 1, Sài Gòn mà mồ hôi hột cứ túa ra dù máy lạnh đang bật 16 độ. Mới sáng tinh mơ, khi ly cà phê sữa đá còn chưa kịp tan đá, đập vào mắt tôi là một cú sốc điện tim: lệnh rút tiền từ tài khoản thanh toán quốc tế về tài khoản nội địa bị ngân hàng trung gian đẩy trả (bounce) ngược lại chỉ vì một lỗi ngớ ngẩn là lệch tên in hoa không khớp dấu cách giữa Stripe và tài khoản thụ hưởng. Tiền đang về thì bị kẹt cứng ngắc, đối tác nước ngoài thì cứ réo đòi hóa đơn VAT và chứng từ thanh toán xuyên biên giới, còn sếp lớn thì đứng đằng sau thở dài. Lúc đó thật sự chỉ muốn độn thổ cho xong.
 
-## 1. Hoảng Loạn Buổi Sáng Và Đống Hỗn Lộn Tên Tuổi
-
-Quay ngược lại thời điểm cái "búa tạ" ấy giáng xuống, cảm giác lúc đó đúng là đứng ngồi không yên. Hệ thống hiển thị mã lỗi `do_not_honor` trên bảng điều khiển trong khi hóa đơn xuất khẩu dịch vụ thì đã được phát hành đi từ tối hôm trước. Đội ngũ tài chính bên mình cứ cặm cụi check đi check lại xem có sai sót gì về mã `CVC` hay ngày hết hạn của thẻ không. Nhưng không, nguyên nhân sâu xa chẳng phải do thẻ giả hay tài khoản không đủ tiền, mà là do bộ lọc rủi ro của ngân hàng phát hành thẻ đã kích hoạt chế độ tự động từ chối. 
+Quay ngược lại thời điểm cái "búa tạ" ấy giáng xuống, cảm giác lúc đó đúng là đứng ngồi không yên. Hệ thống hiển thị mã lỗi `do_not_honor` trên bảng điều khiển trong khi hóa đơn xuất khẩu dịch vụ thì đã được phát hành đi từ tối hôm trước. Đội ngũ tài chính bên mình cứ cặm cụi check đi check lại xem có sai sót gì về mã `CVC` hay ngày hết hạn của thẻ không. Nhưng không, nguyên nhân sâu xa chẳng phải do thẻ giả hay tài khoản không đủ tiền, mà là do bộ lọc rủi ro của ngân hàng phát hành thẻ đã kích hoạt chế độ tự động từ chối.
 
 <div style="border-left: 4px solid #4f46e5; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Lỗi `do_not_honor` không đơn thuần là lỗi kỹ thuật từ API Stripe, mà phần lớn xuất phát từ các giao thức kiểm soát gian lận khắt khe của ngân hàng phát hành thẻ khi thấy thông tin định danh không trùng khớp hoàn toàn.
+<strong>[Key Point]:</strong> Lỗi `do_not_honor` không đơn thuần là lỗi kỹ thuật từ API Stripe, mà phần lớn xuất phát từ các giao thức kiểm soát gian lận khắt khe của ngân hàng phát hành thẻ khi thấy thông tin định danh không trùng khớp hoàn toàn.
 </div>
 
 Hồi ấy, mình cứ ngỡ là chỉ cần bấm nút `Retry payment` là xong chuyện. Kết quả là gì? Stripe nó khóa tạm thời tính năng thanh toán của vài khách hàng VIP vì tưởng đâu bên mình đang cố tình thực hiện các giao dịch bất thường. Ngồi lục tung các tài liệu hỗ trợ của Stripe, gọi qua tổng đài hỗ trợ đối tác, rồi dò hỏi khắp các anh em làm MMO hay SaaS ở Sài Gòn này mới ngộ ra được cái chân lý: càng cuống cuồng bấm nhiều lần, hệ thống càng quét mạnh hơn và dòng tiền của công ty càng bị ngâm lâu hơn.
@@ -57,7 +55,7 @@ Di chuyển đến phần `Phương thức thanh toán` (Payment Methods) trong 
 Cuối cùng, truy cập vào mục `Hóa đơn` (Invoices) và `Biểu mẫu thuế` (Tax Forms) để kiểm tra lại các chứng từ liên quan đến giao dịch gặp lỗi. Tiến hành tạo một hóa đơn điều chỉnh hoặc ghi chú tín dụng (Credit Note) nếu số tiền thực nhận có sự chênh lệch do phí chuyển đổi ngoại tệ. Gửi ngay các chứng từ đã được chỉnh sửa này cho đội ngũ hỗ trợ của Stripe thông qua kênh chat ưu tiên để họ gỡ lệnh giữ tiền.
 
 <div style="border-left: 4px solid #4f46e5; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Tuyệt đối không tự ý thực hiện quá 3 lần lệnh rút tiền hoặc thanh toán lại cho cùng một mã lỗi trong một ngày để tránh bị hệ thống tự động liệt kê vào danh sách đen (Blacklist).
+<strong>[Key Point]:</strong> Tuyệt đối không tự ý thực hiện quá 3 lần lệnh rút tiền hoặc thanh toán lại cho cùng một mã lỗi trong một ngày để tránh bị hệ thống tự động liệt kê vào danh sách đen (Blacklist).
 </div>
 
 ## 4. Danh sách kiểm tra ngăn ngừa đóng băng tài khoản và phí ẩn Vàng Phòng Ngừa Sự Cố Tái Diễn Cho Doanh Nghiệp

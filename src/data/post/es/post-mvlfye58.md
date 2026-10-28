@@ -13,12 +13,10 @@ theme: "Resolution Emerald Guide"
 Eran las nueve de la mañana en nuestras oficinas del distrito financiero de Madrid, justo cuando el café recién hecho empezaba a hacer efecto, y mi teléfono móvil comenzó a vibrar sin parar. Nuestro cliente principal en el Paseo de la Castellana intentaba cerrar una transacción B2B transfronteriza de gran volumen a través de PayPal, pero el sistema rechazaba el pago una y otra vez con un enigmático código de error. Al mismo tiempo, el panel de control nos mostraba una retención de veintiún días sobre los fondos, paralizando el flujo de caja operativo que tanto nos había costado asegurar para el cierre del trimestre.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Punto Clave]:</strong> Un fallo técnico por discrepancias de redondeo en pagos multidivisa no solo bloquea las ventas en tiempo real, sino que activa automáticamente los algoritmos de retención de riesgos de PayPal.
+<strong>[Punto Clave]:</strong> Un fallo técnico por discrepancias de redondeo en pagos multidivisa no solo bloquea las ventas en tiempo real, sino que activa automáticamente los algoritmos de retención de riesgos de PayPal.
 </div>
 
-## 1. El caos inicial y la confusión que vivimos en la oficina
-
-La situación era un auténtico dolor de cabeza porque el cliente estaba al teléfono exigiendo una factura proforma validada mientras su departamento de contabilidad amenazaba con cancelar el pedido. Al revisar el `Panel de control` de nuestra cuenta corporativa, veíamos que el pago figuraba como 'Autorización denegada' o 'Error de procesamiento', sin ofrecer una explicación clara que pudiéramos replicar ante el soporte técnico. 
+La situación era un auténtico dolor de cabeza porque el cliente estaba al teléfono exigiendo una factura proforma validada mientras su departamento de contabilidad amenazaba con cancelar el pedido. Al revisar el `Panel de control` de nuestra cuenta corporativa, veíamos que el pago figuraba como 'Autorización denegada' o 'Error de procesamiento', sin ofrecer una explicación clara que pudiéramos replicar ante el soporte técnico.
 
 Durante la primera hora probamos a regenerar las credenciales API, a vaciar las cachés del servidor de pasarelas y a cambiar manualmente las divisas predeterminadas, pero nada funcionaba. Recuerdo haber pasado por tres agentes distintos del soporte de PayPal que me repetían una y otra vez que debíamos esperar el plazo estándar de veintiún días por motivos de seguridad comercial. Esa respuesta genérica encendió todas mis alarmas y me obligó a bucear en foros de desarrolladores y en la documentación avanzada de `Configuración de cuenta`.
 
@@ -41,7 +39,7 @@ Nuestros `Formularios fiscales` incluían identificadores de IVA intracomunitari
 Cuando el volumen de la transacción superaba ciertos umbrales y se combinaba con fluctuaciones rápidas entre el euro y otras monedas extranjeras, el algoritmo de gestión de riesgos activaba el protocolo de retención preventiva. El sistema asumía que la discrepancia matemática era un ataque de denegación de servicio o un error de suplantación, aplicando el cepo financiero.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Aviso Práctico]:</strong> Nunca ignores un error de redondeo en pasarelas internacionales; si el software de cobro y el procesador no alinean sus decimales, tu tasa de conversión caerá en picado y tus fondos quedarán atrapados.
+<strong>[Aviso Práctico]:</strong> Nunca ignores un error de redondeo en pasarelas internacionales; si el software de cobro y el procesador no alinean sus decimales, tu tasa de conversión caerá en picado y tus fondos quedarán atrapados.
 </div>
 
 ## 3. Manual de pasos inmediatos para resolver la incidencia

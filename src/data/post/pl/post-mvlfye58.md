@@ -12,14 +12,12 @@ theme: "HelpDesk Clean Slate"
 
 Cześć! Jeśli pracujesz w warszawskim centrum biznesowym tak jak ja i na co dzień użerasz się z globalnymi rozliczeniami, to doskonale wiesz, że poranek potrafi zaskoczyć w najmniej oczekiwanym momencie. Siedziałem przy moim biurku na Mokotowie z kubkiem mocnej kawy, gotowy na spokojny przegląd sprintu, kiedy nagle dostépek do systemu wyświetlił mi czerwoną flagę od kluczowego klienta ze Stanów. Transakcja opiewała na sporą kwotę, ale kiedy wszedłem w szczegóły, zamarłem. Zamiast spodziewanej sumy, saldo pokazywało drastyczną ścięwkę – środki wpadły w infamous '21-Day Hold', a do tego system doliczył gigantyczne koszty za pośrednictwo banków korespondentów i skandaliczny spread walutowy. Klient wściekły, bo myślał, że nas oszukał, księgowość puka do drzwi z pytaniem, gdzie są pieniądze, a ja zostałem sam na sam z interfejsem, który przypominał labirynt bez wyjścia.
 
-## 1. Chaos i panika: Kiedy system zamraża Twoją gotówkę
-
-Początkowa reakcja to była czysta bezradność. Znasz to uczucie, kiedy odświeżasz `Pulpit` po dziesięć razy, licząc na to, że błąd magicznie zniknie? Oczywiście nie zniknął. Wchodzę w `Metody płatności`, potem sprawdzam `Faktury`, a tam status jak zaklęty: "Środki zablokowane na 21 dni w celu zapewnienia bezpieczeństwa transakcji". No świetnie, tylko że mój zespół potrzebuje tych pieniędzy na opłacenie podwykonawców jeszcze w tym tygodniu. 
+Początkowa reakcja to była czysta bezradność. Znasz to uczucie, kiedy odświeżasz `Pulpit` po dziesięć razy, licząc na to, że błąd magicznie zniknie? Oczywiście nie zniknął. Wchodzę w `Metody płatności`, potem sprawdzam `Faktury`, a tam status jak zaklęty: "Środki zablokowane na 21 dni w celu zapewnienia bezpieczeństwa transakcji". No świetnie, tylko że mój zespół potrzebuje tych pieniędzy na opłacenie podwykonawców jeszcze w tym tygodniu.
 
 Przez pierwsze dwie godziny przekopywałem się przez dokumentację pomagającą rozwiązać ten problem. Support PayPala odpowiadał szablonowymi formułkami o standardowych procedurach weryfikacji ryzyka. Czułem się, jakbym rzucał grochem o ścianę. Co gorsza, po przeliczeniu prowizji za przelew międzynarodowy i doliczeniu marży banku pośredniczącego okazało się, że z kwoty pierwotnej wyparowało niemal siedem procent! W polskim biurze zapanowała nerwowa atmosfera, bo nikt nie lubi tłumaczyć się przed zarządem z niewyjaśnionych strat na kursach walutowych i zamrożonego kapitału.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Blokada 21-dniowa oraz nagłe cięcia przez banki korespondentów to nie wyrok. Wynikają one ze specyfiki algorytmów oceny ryzyka oraz braku optymalizacji ścieżki rozliczeniowej w `Ustawienia konta`.
+<strong>[Key Point]:</strong> Blokada 21-dniowa oraz nagłe cięcia przez banki korespondentów to nie wyrok. Wynikają one ze specyfiki algorytmów oceny ryzyka oraz braku optymalizacji ścieżki rozliczeniowej w `Ustawienia konta`.
 </div>
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-16.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
@@ -48,7 +46,7 @@ Step 2: W wywołanym oknie wybierz opcję potwierdzenia realizacji usługi lub d
 Step 3: Przejdź do sekcji `Ustawienia konta` -> `Formularze podatkowe` i upewnij się, że wszystkie wymagane oświadczenia compliance są uzupełnione. Następnie skontaktuj się ze wsparciem przez dedykowany czat biznesowy, powołując się na dostarczone dowody transakcji i prosząc o manualny przegląd blokady ze względu na zweryfikowany status konta korporacyjnego.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Najszybszą drogą do odblokowania środków jest proaktywne dostarczenie dowodu realizacji usługi wewnątrz panelu transakcji oraz jednoczesny kontakt z supportem biznesowym. Algorytm potrzebuje potwierdzenia, że klient nie zgłosi reklamacji.
+<strong>[Key Point]:</strong> Najszybszą drogą do odblokowania środków jest proaktywne dostarczenie dowodu realizacji usługi wewnątrz panelu transakcji oraz jednoczesny kontakt z supportem biznesowym. Algorytm potrzebuje potwierdzenia, że klient nie zgłosi reklamacji.
 </div>
 
 ## 4. Polisa ubezpieczeniowa na przyszłość: Checklista zapobiegawcza

@@ -20,8 +20,6 @@ O cliente americano estava irredutível, achando que todo mundo no planeta Terra
 
 Foi uma verdadeira maratona mental e burocrática para contornar esse mal-entendido fiscal e, ao mesmo tempo, destravar o dinheiro retido na plataforma de pagamentos sem perder o cliente por causa de burocracia internacional.
 
-## 1. O Pânico Matinal e o Caos na Gestão de Faturamento
-
 A primeira reação foi de pura confusão e aquele frio na barriga clássico de quem lida com faturamento internacional e se depara com um bloqueio fiscal repentino.
 
 Eu pensei comigo mesmo: "Será que fiz alguma cagada na emissão da `Fatura` comercial?".
@@ -39,7 +37,7 @@ Fui correndo verificar o `Painel` do PayPal para ver se havia alguma luz no fim 
 Eu já passei por centenas de situações de câmbio e faturamento na minha carreira, mas essa combinação de exigência de formulário fiscal americano com retenção de plataforma foi uma das mais estressantes que já peguei para resolver em plena segunda-feira.
 
 <div style="border-left: 4px solid #1e3a8a; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Nunca preencha um formulário fiscal incorreto apenas para agradar o cliente corporativo estrangeiro; substitua sempre o documento pelo equivalente legal correto para não gerar passivos fiscais internacionais.
+<strong>[Key Point]:</strong> Nunca preencha um formulário fiscal incorreto apenas para agradar o cliente corporativo estrangeiro; substitua sempre o documento pelo equivalente legal correto para não gerar passivos fiscais internacionais.
 </div>
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-12.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
@@ -80,7 +78,7 @@ Enviei o documento por e-mail para o gerente de contas americano acompanhado de 
 
 ### Step 2: Navegando pelas Configurações do PayPal para Acelerar a Liberação
 
-Com o problema fiscal externo resolvido, fui focar no travamento interno do saldo. 
+Com o problema fiscal externo resolvido, fui focar no travamento interno do saldo.
 
 No menu principal do meu `Painel`, cliquei em `Formas de Pagamento` e verifiquei se todas as contas bancárias de repasse e cartões corporativos estavam devidamente verificados e sem pendências cadastrais.
 
@@ -101,7 +99,7 @@ Mandei um print rápido para o cliente americano pedindo o favor de clicar no li
 Em menos de duas horas, o cliente fez isso, o status mudou de "Retido" para "Disponível", e o saldo caiu tinindo na minha conta pronta para o câmbio.
 
 <div style="border-left: 4px solid #1e3a8a; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Acelerar a liberação de saldo no PayPal exige evidências robustas de entrega (contratos, e-mails, relatórios) e a cooperação ativa do pagador na confirmação do serviço dentro da plataforma.
+<strong>[Key Point]:</strong> Acelerar a liberação de saldo no PayPal exige evidências robustas de entrega (contratos, e-mails, relatórios) e a cooperação ativa do pagador na confirmação do serviço dentro da plataforma.
 </div>
 
 ## 4. Checklist essencial para evitar retenções de saldo e taxas abusivas Prático para Evitar Novas Dores de Cabeça

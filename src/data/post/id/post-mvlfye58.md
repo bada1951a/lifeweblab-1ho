@@ -13,14 +13,12 @@ theme: "HelpDesk Clean Slate"
 Pagi itu di kawasan SCBD Jakarta, suasana kantor mendadak panas meskipun AC sentral bekerja maksimal. Jam baru menunjukkan pukul 09.00 WIB, tapi saya sudah dikepung oleh tim keuangan yang wajahnya pucat pasi. Masalah klasik tapi mematikan baru saja meledak di depan mata kami: dana dari klien besar senilai ribuan dolar tertahan habis di sistem akibat kebijakan 'PayPal 21-Day Hold'. Lebih parahnya lagi, hal ini terjadi gara-gara kalimat tenggat waktu pembayaran atau due date di invoice yang kami kirimkan beberapa bulan lalu ternyata sangat ambigu. Klien bingung, sistem mendeteksi anomali, dan arus kas perusahaan langsung darurat merah.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Kalimat invoice yang ambigu memicu algoritma keamanan PayPal untuk menahan dana hingga 21 hari, melumpuhkan cash flow operasional kantor di SCBD secara mendadak.
+<strong>[Key Point]:</strong> Kalimat invoice yang ambigu memicu algoritma keamanan PayPal untuk menahan dana hingga 21 hari, melumpuhkan cash flow operasional kantor di SCBD secara mendadak.
 </div>
 
-## 1. Situasi Saat Ini dan Kebingungan yang Kami Hadapi
+Panik? Pasti. Sebagai orang yang memegang kendali atas urusan pembayaran global di kantor, hari itu rasanya seperti duduk di atas bara api. Bayangkan saja, tagihan yang seharusnya cair untuk membiayai operasional proyek berjalan malah nyangkut entah di mana. Awalnya, kami mengira ini hanya masalah verifikasi akun biasa seperti yang sering dialami pelaku bisnis di Indonesia.
 
-Panik? Pasti. Sebagai orang yang memegang kendali atas urusan pembayaran global di kantor, hari itu rasanya seperti duduk di atas bara api. Bayangkan saja, tagihan yang seharusnya cair untuk membiayai operasional proyek berjalan malah nyangkut entah di mana. Awalnya, kami mengira ini hanya masalah verifikasi akun biasa seperti yang sering dialami pelaku bisnis di Indonesia. 
-
-Saya langsung membuka `Pengaturan Akun` dan mengecek `Metode Pembayaran`, tapi tidak ada error merah yang mencolok. Yang ada hanyalah status 'Pending' yang menyebalkan pada bagian `Tagihan / Faktur`. Kami mencoba menghubungi dukungan pelanggan, namun jawaban yang didapat hanyalah bot otomatis yang memutar-mutar penjelasan tentang perlindungan pembeli. 
+Saya langsung membuka `Pengaturan Akun` dan mengecek `Metode Pembayaran`, tapi tidak ada error merah yang mencolok. Yang ada hanyalah status 'Pending' yang menyebalkan pada bagian `Tagihan / Faktur`. Kami mencoba menghubungi dukungan pelanggan, namun jawaban yang didapat hanyalah bot otomatis yang memutar-mutar penjelasan tentang perlindungan pembeli.
 
 Tim finansial saling lempar tanggung jawab, sementara operasional di lapangan butuh suntikan dana segera. Saya sempat bolak-balik merokok di balkon gedung pencakar SCBD sambil memikirkan bagaimana cara menjelaskan kekacauan ini kepada para petinggi perusahaan. Kegelapan administratif ini benar-benar menguji kesabaran dan mental saya sebagai seorang praktisi pembayaran internasional.
 
@@ -51,7 +49,7 @@ Langkah pertama, saya masuk ke dalam `Dasbor` utama akun bisnis dan mengarahkan 
 Langkah kedua, saya menuju ke bagian `Pengaturan Akun` untuk memperbarui informasi verifikasi bisnis, termasuk menyinkronkan ulang data rekening bank lokal di Indonesia dan memastikan status verifikasi identitas perusahaan dalam kondisi prima tanpa ada dokumen yang kedaluwarsa.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Konfirmasi pengiriman jasa secara manual di dalam dasbor dan unggah dokumen pendukung adalah kunci utama untuk memaksa sistem melepaskan dana 21 hari secara instan.
+<strong>[Key Point]:</strong> Konfirmasi pengiriman jasa secara manual di dalam dasbor dan unggah dokumen pendukung adalah kunci utama untuk memaksa sistem melepaskan dana 21 hari secara instan.
 </div>
 
 Langkah ketiga, saya menginstruksikan klien untuk melakukan konfirmasi penerimaan layanan langsung dari akun mereka. Setelah itu, saya masuk kembali ke detail transaksi di `Metode Pembayaran`, lalu mengeklik tombol 'Confirm Receipt' atau konfirmasi pengiriman pesanan, dan mengunggah dokumen berita acara serah terima proyek ke kolom bukti pelacakan. Hanya dalam hitungan jam setelah langkah ini tuntas, status 'Hold' berubah menjadi 'Completed' dan dana segar langsung mendarat di saldo aktif kami.

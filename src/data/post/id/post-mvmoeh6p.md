@@ -12,16 +12,14 @@ theme: "Emergency Alert Amber"
 
 Pagi itu di kawasan SCBD Jakarta, suasananya sudah tegang bahkan sebelum jam sembilan pagi. AC kantor dingin banget, tapi keringat dingin justru mengalir deras di pelipis gue. Sebagai orang yang pegang urusan pembayaran global di perusahaan, layar monitor di meja gue menampilkan grafik kurs Rupiah terhadap Dolar yang benar-benar amblas dalam hitungan jam. Belum sempat kami tarik napas, sistem pembayaran langganan utama kita mendadak diserang gelombang kegagalan transaksi dengan kode `do_not_honor`. HP gue gak berhenti berdering, tim finance ngamuk di grup WhatsApp karena ratusan transaksi klien korporat tertolak, dan yang paling parah, kita terancam kehilangan potensi revenue miliaran rupiah gara-gara salah timing konversi mata uang. Gila sih, hari itu bener-bener ujian jantung buat anak finance se-lantai.
 
-## 1. Kronologi Kepanikan dan Kekacauan Saat Krisis Kurs Terjadi
+Semuanya berawal dari pergerakan pasar valas global yang super liar minggu itu. Rupiah melemah tajam, dan manajemen kita kelamaan ngambil keputusan buat nge-lock kurs konversi di sistem pembayaran. Akibatnya, pas kita mau batch settlement, gap kursnya udah kejauhan banget dari estimasi awal. Pas sistem nge-trigger penarikan dana massal, bank penerbit kartu kredit di luar negeri langsung nolak mentah-mentah transaksi tersebut dengan alasan risiko keamanan.
 
-Semuanya berawal dari pergerakan pasar valas global yang super liar minggu itu. Rupiah melemah tajam, dan manajemen kita kelamaan ngambil keputusan buat nge-lock kurs konversi di sistem pembayaran. Akibatnya, pas kita mau batch settlement, gap kursnya udah kejauhan banget dari estimasi awal. Pas sistem nge-trigger penarikan dana massal, bank penerbit kartu kredit di luar negeri langsung nolak mentah-mentah transaksi tersebut dengan alasan risiko keamanan. 
-
-Gue inget banget, waktu pertama kali kode `do_not_honor` nongol beruntun di log transaksi Stripe, jantung gue kayak mau copot. Masalahnya, pesan error ini tuh sifatnya sangat umum dari bank. Artinya, bank si klien bilang "jangan kasih ACC", tapi mereka gak mau ngasih tau alasan spesifiknya lewat API response. 
+Gue inget banget, waktu pertama kali kode `do_not_honor` nongol beruntun di log transaksi Stripe, jantung gue kayak mau copot. Masalahnya, pesan error ini tuh sifatnya sangat umum dari bank. Artinya, bank si klien bilang "jangan kasih ACC", tapi mereka gak mau ngasih tau alasan spesifiknya lewat API response.
 
 Gue langsung loncat ke meja sebelah buat ngecek dokumentasi resmi sambil keringetan. Awalnya gue kira cuma isu jaringan lokal atau maintenance bank biasa. Tapi pas gue cek dashboard, volume transaksi yang gagal udah tembus angka ratusan juta Rupiah dalam kurun waktu kurang dari dua jam. Tim CS kita di lantai bawah juga udah mulai panik karena klien-klien VIP dari Singapura dan Amerika pada protes kenapa langganan software mereka gagal diproses padahal limit kartu mereka masih banyak.
 
 <div style="border-left: 4px solid #d97706; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Error `do_not_honor` saat volatilitas tinggi sering kali disalahartikan sebagai masalah kartu kadaluarsa, padahal ini adalah mekanisme perlindungan risiko dari bank penerbit akibat ketidakcocokan kurs atau indikasi fraud mendadak.
+<strong>[Key Point]:</strong> Error `do_not_honor` saat volatilitas tinggi sering kali disalahartikan sebagai masalah kartu kadaluarsa, padahal ini adalah mekanisme perlindungan risiko dari bank penerbit akibat ketidakcocokan kurs atau indikasi fraud mendadak.
 </div>
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-30.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
@@ -54,7 +52,7 @@ Setelah itu, gue masuk ke `Pengaturan Akun` (`Account Settings`) untuk menyesuai
 Terakhir, gue periksa bagian `Formulir Pajak` (`Tax Forms`) dan pengaturan mata uang penagihan untuk memastikan kepatuhan pelaporan tetap terjaga meskipun kita sedang melakukan penyesuaian kurs darurat pada hari itu.
 
 <div style="border-left: 4px solid #d97706; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Jangan pernah melakukan retry otomatis secara masif pada error `do_not_honor`. Gunakan pendekatan komunikasi langsung atau arahkan klien untuk melakukan otorisasi ulang secara manual melalui portal pembayaran yang aman.
+<strong>[Key Point]:</strong> Jangan pernah melakukan retry otomatis secara masif pada error `do_not_honor`. Gunakan pendekatan komunikasi langsung atau arahkan klien untuk melakukan otorisasi ulang secara manual melalui portal pembayaran yang aman.
 </div>
 
 ## 4. Lembar Periksa Penting Mencegah Penahanan Dana dan Biaya Berlebih Pencegahan Agar Tidak Kecolongan Lagi

@@ -10,18 +10,16 @@ theme: "Resolution Emerald Guide"
 
 ## 1. Situation d'urgence critique sur les paiements et virements
 
-C'était un mardi matin particulièrement pluvieux dans mon bureau de La Défense. Le genre de journée où le café filtre a un goût de plastique brûlé et où la météo parisienne vous donne envie de rester sous la couette. Je venais à peine d'ouvrir mon ordinateur portable qu'un message sur Slack de notre directeur commercial a fait tressauter mon écran : un client institutionnel basé à Londres venait de valider une facture monumentale de plus de quatre-vingt mille euros pour notre abonnement enterprise annuel. J'ai eu ce petit sourire satisfait du gars qui se dit que la journée commence plutôt bien. 
+C'était un mardi matin particulièrement pluvieux dans mon bureau de La Défense. Le genre de journée où le café filtre a un goût de plastique brûlé et où la météo parisienne vous donne envie de rester sous la couette. Je venais à peine d'ouvrir mon ordinateur portable qu'un message sur Slack de notre directeur commercial a fait tressauter mon écran : un client institutionnel basé à Londres venait de valider une facture monumentale de plus de quatre-vingt mille euros pour notre abonnement enterprise annuel. J'ai eu ce petit sourire satisfait du gars qui se dit que la journée commence plutôt bien.
 
-Mais la douce illusion a duré exactement quarante-cinq secondes, le temps pour moi de basculer sur notre tableau de bord Stripe. Au lieu du doux vert émeraude d'une transaction réussie, un rouge agressif illuminait l'écran avec ce satané code : `do_not_honor`. Pas de explication détaillée, pas de motif clair, juste un refus sec de la banque émettrice. Le client m'envoyait déjà un e-mail pour savoir si tout était en ordre de notre côté car sa comptabilité exigeait que la quittance tombe avant midi. Mon estomac a fait un triple salto arrière. 
-
-## 1. Contexte de la crise et moment de panique initiale
+Mais la douce illusion a duré exactement quarante-cinq secondes, le temps pour moi de basculer sur notre tableau de bord Stripe. Au lieu du doux vert émeraude d'une transaction réussie, un rouge agressif illuminait l'écran avec ce satané code : `do_not_honor`. Pas de explication détaillée, pas de motif clair, juste un refus sec de la banque émettrice. Le client m'envoyait déjà un e-mail pour savoir si tout était en ordre de notre côté car sa comptabilité exigeait que la quittance tombe avant midi. Mon estomac a fait un triple salto arrière.
 
 La panique s'est installée presque instantanément. Quatre-vingt mille euros, ce n'est pas une simple transaction B2C avec une carte bancaire égarée. C'est un contrat stratégique qui venait d'être signé après six mois de négociations acharnées. Si le paiement échouait à cause d'un blocage technique stupide, le client allait commencer à douter de notre fiabilité opérationnelle, voire pire, annuler la transaction pour aller voir la concurrence. J'ai commencé à suer à grosses gouttes en rafraîchissant la page toutes les cinq secondes, espérant naïvement un bug d'affichage.
 
 J'ai ouvert le support Stripe dans un onglet et lu la documentation officielle, mais soyons honnêtes, la définition de `do_not_honor` est d'une opacité totale. Elle se résume à : « La banque émettrice refuse la transaction sans donner de raison spécifique ». Super, merci pour l'aide. J'étais bloqué entre un client furieux, un service commercial qui me mettait la pression et un système de paiement qui jouait les sourds-muets. J'ai dû prendre une grande inspiration, fermer mes onglets inutiles et me rappeler que j'étais le spécialiste en facturation internationale censé maîtriser ce genre de tempêtes.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> L'erreur `do_not_honor` est une mesure de précaution de la banque du client, et non un dysfonctionnement de votre passerelle. Ne tentez jamais de relancer la même carte en boucle, car cela déclenchera un blocage anti-fraude permanent.
+<strong>[Key Point]:</strong> L'erreur `do_not_honor` est une mesure de précaution de la banque du client, et non un dysfonctionnement de votre passerelle. Ne tentez jamais de relancer la même carte en boucle, car cela déclenchera un blocage anti-fraude permanent.
 </div>
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-17.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
@@ -59,7 +57,7 @@ Plutôt que de laisser le client dans le flou, je l'ai appelé directement. Je l
 Pour éviter toute perte de revenus, nous avions préparé un plan B. Je suis allé dans l'onglet `Factures` pour dupliquer l'élément en modifiant le `Modes de paiement` autorisé, en basculant temporairement d'un paiement par carte classique vers un virement bancaire sécurisé SEPA / SWIFT, tout en maintenant la pression sur la banque pour qu'elle débloque la carte. Finalement, après un coup de fil du client à son banquier pour valider l'opération, nous avons relancé la carte via le `Formulaires fiscaux` et les paramètres validés, et le paiement est passé comme une lettre à la poste.
 
 <div style="border-left: 4px solid #059669; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-  <strong>[Key Point]:</strong> Avoir toujours une alternative de paiement instantanée (comme le virement bancaire direct ou un lien de paiement alternatif) permet de sauver 90% des transactions bloquées par un `do_not_honor` en moins d'une heure.
+<strong>[Key Point]:</strong> Avoir toujours une alternative de paiement instantanée (comme le virement bancaire direct ou un lien de paiement alternatif) permet de sauver 90% des transactions bloquées par un `do_not_honor` en moins d'une heure.
 </div>
 
 ## 4. Check-list opérationnelle pour éviter les récidives
