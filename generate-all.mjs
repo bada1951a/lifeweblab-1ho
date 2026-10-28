@@ -121,7 +121,7 @@ const I18N_SECTIONS = {
     s2: "2. Análise da causa raiz de recusas de pagamento",
     s3: "3. Manual prático passo a passo de resolução",
     s4: "4. Checklist essencial para evitar retenções de saldo",
-    s5: "5. Perguntas Frequentes (FAQ)",
+    s5: "5. Perguntas Frecuentes (FAQ)",
     tags: ["Pagamentos Globais", "Faturamento B2B", "Gateway de Pagamento", "Finanças"]
   },
   nl: {
@@ -159,31 +159,62 @@ const I18N_SECTIONS = {
 };
 
 // =========================================================================
-// [초경량 안전 정제기] 병목 유발 정규식을 배제하고 핵심 마크다운만 보존
+// 🛡️ [자가 검수 및 치유 엔진: Self-Healing Inspector]
 // =========================================================================
-function cleanMarkdownFast(content, langCode) {
-  let text = content.trim();
+function inspectAndHealMarkdown(body, langCode) {
+  let healed = body.trim();
   const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
+  const auditLogs = [];
 
-  // 헤딩 내부 불필요 볼드 제거
-  text = text.replace(/^(#{1,6}\s+)\*\*(.*?)\*\*/gm, '$1$2');
+  // 1. [헤딩 검수 & 치유] 볼드 제거 및 1~5번 표준 띄어쓰기 소제목 강제 안착
+  healed = healed.replace(/^(#{1,6}\s+)\*\*(.*?)\*\*/gm, '$1$2');
+  healed = healed.replace(/^#{1,6}\s*1[.\s]+([^\n]+)/m, `## ${i18n.s1}`);
+  healed = healed.replace(/^#{1,6}\s*2[.\s]+([^\n]+)/m, `## ${i18n.s2}`);
+  healed = healed.replace(/^#{1,6}\s*3[.\s]+([^\n]+)/m, `## ${i18n.s3}`);
+  healed = healed.replace(/^#{1,6}\s*4[.\s]+([^\n]+)/m, `## ${i18n.s4}`);
+  healed = healed.replace(/^#{1,6}\s*5[.\s]+([^\n]+)/m, `## ${i18n.s5}`);
 
-  // FAQ 뒤에 Q가 붙는 줄바꿈 분리
-  text = text.replace(/(FAQ\)?)\s*(Q[1-9]\.|\*\*Q[1-9]\.\*\*)/gi, '$1\n\n$2');
-
-  // 특수 기호 치환
-  text = text.replace(/\\times/g, 'x')
-             .replace(/\\circ/g, '°')
-             .replace(/\\approx/g, '≈')
-             .replace(/~/g, '-');
-
-  // 1번 헤딩 누락 시 보정
-  if (!text.startsWith('## 1.')) {
-    text = `## ${i18n.s1}\n\n` + text;
+  if (!healed.startsWith('## 1.')) {
+    healed = `## ${i18n.s1}\n\n` + healed;
+    auditLogs.push("1번 헤딩 누락 주입");
   }
 
-  // 3개 이상의 빈 줄 압축
-  return text.replace(/\n{3,}/g, '\n\n').trim();
+  // 2. [Q&A 치명적 뭉개짐 검수 & 치유]
+  // 질문(Q)과 답변(A) 사이에 줄바꿈이 없거나 1줄만 떨어진 것을 감지하여 빈 줄 2개(\n\n)로 완벽 분리
+  const rawQnACount = (healed.match(/Q[1-3]\./gi) || []).length;
+  if (rawQnACount > 0) {
+    healed = healed.replace(/\s*(\*\*Q[1-3]\.\*\*|Q[1-3]\.)\s*/gi, '\n\n**$1** ');
+    healed = healed.replace(/\s*(\*\*A[1-3]\.\*\*|A[1-3]\.)\s*/gi, '\n\n**$1** ');
+    
+    // 이중 볼드 정돈 (** **Q1.** ** -> **Q1.**)
+    healed = healed.replace(/\*\*\s*\*\*(Q[1-3]\.|A[1-3]\.)\*\*\s*\*\*/gi, '**$1**');
+    healed = healed.replace(/\*\*(Q[1-3]\.|A[1-3]\.)\*\*/gi, '**$1**');
+    auditLogs.push("Q&A 문단 강제 2열 분리 치유");
+  }
+
+  // 3. [볼드 공백 교정] ** 키워드 ** -> **키워드**
+  if (/\*\*\s+[^*]+?\s+\*\*/.test(healed)) {
+    healed = healed.replace(/\*\*\s+([^*]+?)\s+\*\*/g, '**$1**')
+                   .replace(/\*\*\s+([^*]+?)\*\*/g, '**$1**')
+                   .replace(/\*\*([^*]+?)\s+\*\*/g, '**$1**');
+    auditLogs.push("볼드 안쪽 공백 정돈");
+  }
+
+  // 4. [특수문자 및 LaTeX 치환]
+  healed = healed.replace(/\\times/g, 'x')
+                 .replace(/\\circ/g, '°')
+                 .replace(/\\approx/g, '≈')
+                 .replace(/\$([A-Za-z0-9_-]+)\$/g, '`$1`')
+                 .replace(/~/g, '-');
+
+  // 5. [연속 빈 줄 정돈]
+  healed = healed.replace(/\n{3,}/g, '\n\n').trim();
+
+  if (auditLogs.length > 0) {
+    console.log(`   🩺 [자가 치유 완료]: ${auditLogs.join(' | ')}`);
+  }
+
+  return healed;
 }
 
 // =========================================================================
@@ -259,9 +290,6 @@ const TARGET_LANGS = [
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const fileSlug = `post-${Date.now().toString(36)}`;
 
-// =========================================================================
-// [호출 함수] maxOutputTokens: 4096 (2,500자 정량 생성에 최적화)
-// =========================================================================
 async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -291,7 +319,7 @@ async function generateSinglePost(lang, index) {
   const { coverUrl, bodyUrl } = getPostImages(index);
   const pubDateIso = getKstPublishDateIso(index);
 
-  // 🎯 [애드센스 승인 최적화 프롬프트: 정확히 2,200~2,600자 생성]
+  // 🎯 [프롬프트: Q&A 빈 줄 2개 규격 명확화]
   const prompt = `
 You are a ${lang.persona}.
 Write a high-quality, practical troubleshooting guide natively in ${lang.name}.
@@ -299,9 +327,9 @@ Target Culture: "${lang.localeContext}"
 Assigned Situation: "${selectedScenario}"
 
 [ADSENSE QUALITY & LENGTH REQUIREMENT]
-- For Korean (ko): Write exactly around 2,400 - 2,600 characters (do NOT write over 3,000 characters). 
+- For Korean (ko): Write exactly around 2,400 - 2,600 characters.
 - For other languages: Write exactly 900 - 1,100 words.
-- Tone: Highly informative, professional, practical workplace advice for AdSense approval standard.
+- Tone: Highly informative, professional, practical workplace advice.
 
 [STRUCTURE - STRICT 5 H2 HEADINGS]
 Use these exact H2 headings:
@@ -313,20 +341,24 @@ Write 2 detailed paragraphs describing the sudden payment error emergency, the b
 Write 2 analytical paragraphs explaining the technical root causes (gateway risk rules, 3DS authentication, tax form issues, or intermediary bank holds).
 
 ## ${i18n.s3}
-Provide 3 concrete resolution steps matching "${lang.osUi}". Use clear numbered lists with practical action items.
+Provide 3 concrete resolution steps matching "${lang.osUi}". Use clean numbered lists with practical action items.
 
 ## ${i18n.s4}
 Write 2 paragraphs of practical precautions and operational tips to prevent recurring payment blocks and charges.
 
 ## ${i18n.s5}
-Provide exactly 3 practical Q&A items:
+Provide exactly 3 practical Q&A items. You MUST put an empty line between Question and Answer:
+
 **Q1.** Question text
+
 **A1.** Detailed answer (3-4 sentences).
 
 **Q2.** Question text
+
 **A2.** Detailed answer (3-4 sentences).
 
 **Q3.** Question text
+
 **A3.** Detailed answer (3-4 sentences).
 
 [FORMATTING RULES]
@@ -359,11 +391,11 @@ tags: ${JSON.stringify(i18n.tags)}
       let body = text.slice(fmMatch[0].length).trim();
       body = body.replace(/^#\s+[^\n]+\n+/, '');
 
-      // 기본 정제
-      body = cleanMarkdownFast(body, lang.code);
+      // 🩺 [자가 검수 및 치유 엔진 실행]
+      body = inspectAndHealMarkdown(body, lang.code);
 
       if (lang.code === 'ko') {
-        console.log(`📏 [한국어 본문 글자 수] ${body.length}자 (목표: 2,400~2,600자)`);
+        console.log(`   📏 [본문 최종 글자 수] ${body.length}자 (애드센스 표준: 2,400~2,600자)`);
       }
 
       // 본문 중간 이미지 배치 (2번 섹션 직전)
@@ -384,7 +416,7 @@ tags: ${JSON.stringify(i18n.tags)}
 
     const filePath = path.join(targetDir, `${fileSlug}.md`);
     fs.writeFileSync(filePath, text, 'utf-8');
-    console.log(`✅ [성공] 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
+    console.log(`   ✅ [성공] 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
     return true;
   } catch (error) {
     console.error(`❌ [최종 실패] ${lang.name} 생성 실패:`, error.message);
@@ -394,7 +426,7 @@ tags: ${JSON.stringify(i18n.tags)}
 
 async function run() {
   console.log("==================================================");
-  console.log("⚡ LifeWebLab 애드센스 표준 12개국 고속 포스팅 시작");
+  console.log("⚡ LifeWebLab 자가 검수·치유 탑재 12개국 고속 포스팅");
   console.log("==================================================");
 
   let successCount = 0;
