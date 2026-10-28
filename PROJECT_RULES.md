@@ -62,3 +62,9 @@ Status: Agreed operating principles; not a claim of deployment or AdSense approv
 - Group 1 / 4ho: https://prompt.storydailyview.com/ — bada1951a/astrowind-blog-4ho
 - Group 2 / 2-1ho: https://lifeweblab.com/ — bada1951a/lifeweblab-1ho
 - Immediate AdSense priorities: 1ho and 2-1ho. Do not confuse 2ho with 2-1ho.
+
+## Explicit priority order and image policy (user-confirmed 2026-10-29)
+- Strict priority: 1ho (storydailyview.com) FIRST, 2-1ho (lifeweblab.com) SECOND. Do not describe them as equal priority.
+- 1ho and 2-1ho: images are manually uploaded and managed by the user; preserve this workflow and existing assets.
+- 2ho, 3ho, 4ho: use external Pexels image links for lower-maintenance publishing; verify links and image rights when auditing.
+- Do not change image sources, upload strategy, or production workflows without explicit approval.
