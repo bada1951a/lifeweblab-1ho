@@ -17,10 +17,10 @@ Początkowa reakcja to była czysta bezradność. Znasz to uczucie, kiedy odświ
 Przez pierwsze dwie godziny przekopywałem się przez dokumentację pomagającą rozwiązać ten problem. Support PayPala odpowiadał szablonowymi formułkami o standardowych procedurach weryfikacji ryzyka. Czułem się, jakbym rzucał grochem o ścianę. Co gorsza, po przeliczeniu prowizji za przelew międzynarodowy i doliczeniu marży banku pośredniczącego okazało się, że z kwoty pierwotnej wyparowało niemal siedem procent! W polskim biurze zapanowała nerwowa atmosfera, bo nikt nie lubi tłumaczyć się przed zarządem z niewyjaśnionych strat na kursach walutowych i zamrożonego kapitału.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> Blokada 21-dniowa oraz nagłe cięcia przez banki korespondentów to nie wyrok. Wynikają one ze specyfiki algorytmów oceny ryzyka oraz braku optymalizacji ścieżki rozliczeniowej w `Ustawienia konta`.
+<strong>Kluczowa wskazówka:</strong> Blokada 21-dniowa oraz nagłe cięcia przez banki korespondentów to nie wyrok. Wynikają one ze specyfiki algorytmów oceny ryzyka oraz braku optymalizacji ścieżki rozliczeniowej w `Ustawienia konta`.
 </div>
 
-<div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-16.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
+<div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-16.jpg" alt="Poradnik rozwiązywania problemów" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
 ## 2. Gdzie leży pies pogrzebany? Analiza przyczyn źródłowych
 
@@ -46,10 +46,10 @@ Step 2: W wywołanym oknie wybierz opcję potwierdzenia realizacji usługi lub d
 Step 3: Przejdź do sekcji `Ustawienia konta` -> `Formularze podatkowe` i upewnij się, że wszystkie wymagane oświadczenia compliance są uzupełnione. Następnie skontaktuj się ze wsparciem przez dedykowany czat biznesowy, powołując się na dostarczone dowody transakcji i prosząc o manualny przegląd blokady ze względu na zweryfikowany status konta korporacyjnego.
 
 <div style="border-left: 4px solid #2563eb; background: #f8fafc; padding: 16px 20px; margin: 28px 0; border-radius: 8px; color: #111827; font-size: 0.96rem;">
-<strong>[Key Point]:</strong> Najszybszą drogą do odblokowania środków jest proaktywne dostarczenie dowodu realizacji usługi wewnątrz panelu transakcji oraz jednoczesny kontakt z supportem biznesowym. Algorytm potrzebuje potwierdzenia, że klient nie zgłosi reklamacji.
+<strong>Kluczowa wskazówka:</strong> Najszybszą drogą do odblokowania środków jest proaktywne dostarczenie dowodu realizacji usługi wewnątrz panelu transakcji oraz jednoczesny kontakt z supportem biznesowym. Algorytm potrzebuje potwierdzenia, że klient nie zgłosi reklamacji.
 </div>
 
-## 4. Polisa ubezpieczeniowa na przyszłość: Checklista zapobiegawcza
+## 4. Lista kontrolna zapobiegająca problemom w przyszłości
 
 Aby nigdy więcej nie przechodzić przez ten zawał serca w środku roboczego dnia, wdrożyłem w naszym biurze rygorystyczny zestaw zasad. Spisuj te punkty i przekaż swojemu zespołowi finansowemu:
 
@@ -58,12 +58,12 @@ Aby nigdy więcej nie przechodzić przez ten zawał serca w środku roboczego dn
 - Zawsze korzystaj z lokalnych kont rozliczeniowych i walutowych w `Metody płatności`, aby ominąć ukryte opłaty banków korespondentów i drastyczne spready.
 - Dbaj o to, aby każda wystawiona pozycja w sekcji `Faktury` miała precyzyjnie opisany przedmiot transakcji i numer śledzenia lub protokół odbioru.
 
-## 5. Najczęściej zadawane pytania : Najczęściej zadawane pytania z praktyki inżyniera płatności
+## 5. Najczęściej zadawane pytania (FAQ)
 
-Q: Czy mogę całkowicie uniknąć prowizji banków pośredniczących przy przelewach międzynarodowych?
+**Pytanie:** Czy mogę całkowicie uniknąć prowizji banków pośredniczących przy przelewach międzynarodowych?
 
-A: W klasycznym modelu SWIFT jest to niezwykle trudne, ponieważ każdy bank na trasie ma prawo pobrać opłatę za transfer. Najlepszym rozwiązaniem jest zmiana `Metody płatności` na lokalne rozliczenia kont clearingowych lub korzystanie z dedykowanych platform fintechowych oferujących lokalne rachunki wirtualne
+**Odpowiedź:** W klasycznym modelu SWIFT jest to niezwykle trudne, ponieważ każdy bank na trasie ma prawo pobrać opłatę za transfer. Najlepszym rozwiązaniem jest zmiana `Metody płatności` na lokalne rozliczenia kont clearingowych lub korzystanie z dedykowanych platform fintechowych oferujących lokalne rachunki wirtualne
 
-Q: Co zrobić, jeśli klient nie chce potwierdzić odbioru usługi w systemie PayPal?
+**Pytanie:** Co zrobić, jeśli klient nie chce potwierdzić odbioru usługi w systemie PayPal?
 
-A: W takiej sytuacji kluczowe jest dostarczenie do panelu alternatywnych dowodów: podpisanego przez klienta protokołu zdawczo-odbiorczego, logów z systemu potwierdzających dostęp do platformy lub korespondencji mailowej z wyraźnym podziękowaniem za zrealizowane prace. Support akceptuje takie dokumenty w procesie ręcznego zdejmowania blokady.
+**Odpowiedź:** W takiej sytuacji kluczowe jest dostarczenie do panelu alternatywnych dowodów: podpisanego przez klienta protokołu zdawczo-odbiorczego, logów z systemu potwierdzających dostęp do platformy lub korespondencji mailowej z wyraźnym podziękowaniem za zrealizowane prace. Support akceptuje takie dokumenty w procesie ręcznego zdejmowania blokady.
