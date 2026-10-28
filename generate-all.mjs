@@ -224,10 +224,7 @@ function inspectAndHealMarkdown(body, langCode) {
   healed = healed.replace(/^#{1,6}\s*4[.\s]+([^\n]+)/m, `## ${i18n.s4}`);
   healed = healed.replace(/^#{1,6}\s*5[.\s]+([^\n]+)/m, `## ${i18n.s5}`);
 
-  if (!healed.startsWith('## 1.')) {
-    healed = `## ${i18n.s1}\n\n` + healed;
-    auditLogs.push('1번 헤딩 누락 주입');
-  }
+  // 누락된 제목을 빈 섹션으로 채우지 않습니다. 검증 단계에서 재생성을 요구합니다.
 
   // 2. [Q&A 치명적 뭉개짐 검수 & 치유]
   // 질문(Q)과 답변(A) 사이에 줄바꿈이 없거나 1줄만 떨어진 것을 감지하여 빈 줄 2개(\n\n)로 완벽 분리
@@ -256,8 +253,7 @@ function inspectAndHealMarkdown(body, langCode) {
     .replace(/\\times/g, 'x')
     .replace(/\\circ/g, '°')
     .replace(/\\approx/g, '≈')
-    .replace(/\$([A-Za-z0-9_-]+)\$/g, '`$1`')
-    .replace(/~/g, '-');
+    .replace(/\$([A-Za-z0-9_-]+)\$/g, '`$1`');
 
   // 5. [연속 빈 줄 정돈]
   healed = healed.replace(/\n{3,}/g, '\n\n').trim();
