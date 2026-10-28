@@ -21,6 +21,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
+const RETRY_QUEUE_FILE = path.resolve('.publish-retry-queue.json');
 
 // =========================================================================
 // [2-1호기 전용] public/images/billing-photo 로컬 이미지 자동 셔플
@@ -55,14 +56,44 @@ function getPostImages(index) {
   return { coverUrl, bodyUrl };
 }
 
-function getKstPublishDateIso(index) {
-  const now = new Date();
-  const kstTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  const year = kstTime.getUTCFullYear();
-  const month = String(kstTime.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(kstTime.getUTCDate()).padStart(2, '0');
-  const minute = String((index * 5) % 60).padStart(2, '0');
-  return `${year}-${month}-${day}T03:${minute}:00.000Z`;
+function getKstPublishDateIso(index, date = new Date()) {
+  const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+  const year = kst.getUTCFullYear();
+  const month = kst.getUTCMonth() + 1;
+  const day = kst.getUTCDate();
+  const seed = year * 10000 + month * 100 + day;
+  const hour = 8 + ((seed + index * 7) % 11);
+  const minute = (seed * 3 + index * 13) % 60;
+  return new Date(Date.UTC(year, month - 1, day, hour - 9, minute, 0)).toISOString();
+}
+
+function loadRetryQueue() {
+  if (!fs.existsSync(RETRY_QUEUE_FILE)) return [];
+  const parsed = JSON.parse(fs.readFileSync(RETRY_QUEUE_FILE, 'utf-8'));
+  if (!Array.isArray(parsed)) throw new Error('.publish-retry-queue.json 형식이 배열이 아닙니다.');
+  return parsed;
+}
+
+function saveRetryQueue(queue) {
+  fs.writeFileSync(RETRY_QUEUE_FILE, JSON.stringify(queue, null, 2) + '\n', 'utf-8');
+}
+
+function validateGeneratedPost(text, langCode) {
+  const errors = [];
+  const fm = text.match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n/);
+  if (!fm) return ['frontmatter 구분자 누락'];
+  const meta = fm[1];
+  const body = text.slice(fm[0].length).trim();
+  for (const field of ['title', 'description', 'publishDate', 'image']) {
+    if (!new RegExp('^' + field + ':\\s*\\S', 'm').test(meta)) errors.push(field + ' 누락');
+  }
+  if (!/^category:\s*['"]?troubleshooting['"]?\s*$/m.test(meta)) errors.push('category 오류');
+  if (body.length < (langCode === 'ko' ? 1000 : 1800)) errors.push('본문 길이 부족 또는 잘림');
+  if ((body.match(/^##\s+/gm) || []).length < 5) errors.push('H2 섹션 5개 미만');
+  if ((body.match(/\*\*Q[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 질문 3개 미만');
+  if ((body.match(/\*\*A[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 답변 3개 미만');
+  if (langCode !== 'ko' && /[가-힣]/.test(body)) errors.push('비한국어 본문에 한글 포함');
+  return errors;
 }
 
 // =========================================================================
@@ -319,7 +350,7 @@ async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   }
 }
 
-async function generateSinglePost(lang, index) {
+async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug) {
   const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
@@ -334,7 +365,7 @@ You are a ${lang.persona}.
 Write a high-quality, practical troubleshooting guide natively in ${lang.name}.
 Target Culture: "${lang.localeContext}"
 Assigned Situation: "${selectedScenario}"
-Topic: "${currentTopic}"
+Topic: "${topic}"
 
 [ADSENSE QUALITY & LENGTH REQUIREMENT]
 - For Korean (ko): Write exactly around 2,400 - 2,600 characters (do NOT exceed 3,000 characters).
@@ -421,14 +452,19 @@ tags: ${JSON.stringify(i18n.tags)}
       }
 
       text = `${frontmatter}\n\n${body}\n`;
+    } else {
+      throw new Error('발행 전 검수 실패: frontmatter 형식이 없습니다.');
     }
+
+    const validationErrors = validateGeneratedPost(text, lang.code);
+    if (validationErrors.length) throw new Error('발행 전 검수 실패: ' + validationErrors.join(', '));
 
     const targetDir = path.join(POSTS_BASE_DIR, lang.code);
     if (!fs.existsSync(targetDir)) {
       fs.mkdirSync(targetDir, { recursive: true });
     }
 
-    const filePath = path.join(targetDir, `${fileSlug}.md`);
+    const filePath = path.join(targetDir, `${slug}.md`);
     fs.writeFileSync(filePath, text, 'utf-8');
     console.log(`   ✅ [성공] 2-1호기 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
     return true;
@@ -440,28 +476,80 @@ tags: ${JSON.stringify(i18n.tags)}
 
 async function run() {
   console.log("==================================================");
-  console.log("⚡ [2-1호기 LifeWebLab] (카테고리: troubleshooting) 12개국 고속 자동 포스팅 시작");
+  console.log("LifeWebLab: 발행 전 검수 및 실패 언어 복구 시작");
   console.log("==================================================");
 
-  let successCount = 0;
+  const queue = loadRetryQueue();
+  const knownCodes = new Set(TARGET_LANGS.map(lang => lang.code));
 
-  for (let i = 0; i < TARGET_LANGS.length; i++) {
-    const isSuccess = await generateSinglePost(TARGET_LANGS[i], i);
-    if (isSuccess) successCount++;
-    if (i < TARGET_LANGS.length - 1) {
-      await delay(2000);
+  // 이전 실행에서 실패한 언어만 재시도합니다. 성공한 언어 파일은 재생성하지 않습니다.
+  for (let q = 0; q < queue.length; q++) {
+    const job = queue[q];
+    job.failedCodes = [...new Set((job.failedCodes || []).filter(code => knownCodes.has(code)))];
+    const stillFailed = [];
+    for (const code of job.failedCodes) {
+      const idx = TARGET_LANGS.findIndex(lang => lang.code === code);
+      let ok = false;
+      for (let attempt = 1; attempt <= 3 && !ok; attempt++) {
+        console.log('이전 실패 복구 ' + code + ': 시도 ' + attempt + '/3');
+        ok = await generateSinglePost(TARGET_LANGS[idx], idx, job.topic, job.slug);
+        if (!ok && attempt < 3) await delay(2500 * attempt);
+      }
+      if (!ok) stillFailed.push(code);
+      job.failedCodes = stillFailed.concat(job.failedCodes.slice(job.failedCodes.indexOf(code) + 1));
+      saveRetryQueue(queue);
+      await delay(1000);
+    }
+    job.failedCodes = stillFailed;
+    if (!job.failedCodes.length) {
+      console.log('이전 실패 주제 복구 완료: ' + job.topic);
+      queue.splice(q, 1);
+      q--;
+      saveRetryQueue(queue);
     }
   }
 
+  if (!fs.existsSync(TOPICS_FILE)) throw new Error("topics.txt 파일이 존재하지 않습니다.");
+  const topicLines = fs.readFileSync(TOPICS_FILE, 'utf-8').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+  if (!topicLines.length) {
+    saveRetryQueue(queue);
+    console.log("새 주제가 없습니다. 실패 복구 큐만 처리했습니다.");
+    return;
+  }
+
+  const topic = topicLines[0];
+  const slug = 'post-' + Date.now().toString(36);
+  console.log('오늘의 새 주제: ' + topic);
+  let successCount = 0;
+  const failedCodes = [];
+
+  for (let i = 0; i < TARGET_LANGS.length; i++) {
+    let ok = false;
+    for (let attempt = 1; attempt <= 3 && !ok; attempt++) {
+      if (attempt > 1) console.log(TARGET_LANGS[i].code + ' 재시도 ' + (attempt - 1) + '/2');
+      ok = await generateSinglePost(TARGET_LANGS[i], i, topic, slug);
+      if (!ok && attempt < 3) await delay(2500 * attempt);
+    }
+    if (ok) successCount++;
+    else failedCodes.push(TARGET_LANGS[i].code);
+    await delay(1500);
+  }
+
   if (successCount > 0) {
-    lines.shift();
-    fs.writeFileSync(TOPICS_FILE, lines.join('\n'), 'utf-8');
-    console.log(`\n🧹 총 ${successCount}개국 포스팅 완료. topics.txt에서 주제를 제거했습니다.`);
-    console.log(`📊 남은 주제 수: ${lines.length}개`);
+    topicLines.shift();
+    fs.writeFileSync(TOPICS_FILE, topicLines.join('\n') + (topicLines.length ? '\n' : ''), 'utf-8');
+    if (failedCodes.length) {
+      queue.push({ topic: topic, slug: slug, failedCodes: failedCodes, queuedAt: new Date().toISOString() });
+      console.warn(successCount + '/12개 언어 성공. 실패 언어 ' + failedCodes.join(', ') + '는 다음 실행 때 다시 시도합니다.');
+    } else {
+      console.log("12개 언어 모두 검수 통과");
+    }
+    saveRetryQueue(queue);
+    console.log('남은 새 주제: ' + topicLines.length + '개 | 대기 중인 복구 작업: ' + queue.length + '개');
   } else {
-    console.error("\n❌ 모든 언어 생성이 실패하여 topics.txt를 보존합니다.");
-    process.exit(1);
+    saveRetryQueue(queue);
+    console.error("모든 언어가 실패했습니다. topics.txt의 주제를 보존합니다.");
+    process.exitCode = 1;
   }
 }
-
 run();
