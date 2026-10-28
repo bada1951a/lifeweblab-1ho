@@ -230,7 +230,7 @@ const I18N_SECTIONS = {
 // =========================================================================
 // 🛡️ [2-1호기 자가 검수 및 치유 엔진: Self-Healing Inspector]
 // =========================================================================
-function inspectAndHealMarkdown(body, langCode) {
+function inspectAndHealMarkdown(body) {
   let healed = body.trim();
   const auditLogs = [];
 
@@ -548,7 +548,7 @@ tags: ${JSON.stringify(i18n.tags)}
         .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
 
       // 🩺 [자가 검수 및 치유 엔진 실행]
-      body = inspectAndHealMarkdown(body, lang.code);
+      body = inspectAndHealMarkdown(body);
 
       if (lang.code === 'ko') {
         console.log(`   📏 [2-1호기 본문 생성 길이] ${body.length}자 (목표: 2,400~2,600자)`);
