@@ -71,14 +71,4 @@ Cuối cùng, truy cập vào mục `Hóa đơn` (Invoices) và `Biểu mẫu th
 
 Dưới đây là tổng hợp những thắc mắc mà các đồng nghiệp hay hỏi mình nhất mỗi khi gặp sự cố tương tự với cổng thanh toán quốc tế:
 
-**Q1.** Tại sao giao dịch của khách hàng hiển thị là thành công trên hệ thống của họ nhưng Stripe lại trả về mã lỗi `do_not_honor`?
-
-**A1.** Điều này xảy ra khi ngân hàng phát hành thẻ của khách hàng quyết định chặn giao dịch vào phút chót do các quy tắc bảo mật nội bộ hoặc nghi ngờ rủi ro gian lận địa lý, mặc dù tài khoản của họ hoàn toàn có đủ số dư.
-
-**Q2.** Tôi nên làm gì ngay lập tức khi tiền bị kẹt giữa đường do lệch tên người thụ hưởng?
-
-**A2.** Bạn cần liên hệ ngay với bộ phận hỗ trợ khách hàng của Stripe, cung cấp giấy phép kinh doanh bản dịch tiếng Anh có công chứng và giấy xác nhận tài khoản ngân hàng chính chủ để họ cập nhật lại thông tin định danh thủ công cho bạn.
-
-**Q3.** Việc thay đổi thông tin tên công ty trên Stripe có làm gián đoạn các hóa đơn đã phát hành trước đó không?
-
-**A3.** Không ảnh hưởng đến các hóa đơn cũ đã được ghi nhận trên hệ thống, nhưng nó sẽ giúp các hóa đơn và lệnh rút tiền mới được xử lý suôn sẻ mà không bị vướng lỗi đối chiếu tên tuổi nữa.
+**Q1.** Tại sao giao dịch của khách hàng hiển thị là thành công trên hệ thống của họ nhưng Stripe lại trả về mã lỗi `do_not_honor`?**A1.**Điều này xảy ra khi ngân hàng phát hành thẻ của khách hàng quyết định chặn giao dịch vào phút chót do các quy tắc bảo mật nội bộ hoặc nghi ngờ rủi ro gian lận địa lý, mặc dù tài khoản của họ hoàn toàn có đủ số dư.**Q2.**Tôi nên làm gì ngay lập tức khi tiền bị kẹt giữa đường do lệch tên người thụ hưởng?**A2.**Bạn cần liên hệ ngay với bộ phận hỗ trợ khách hàng của Stripe, cung cấp giấy phép kinh doanh bản dịch tiếng Anh có công chứng và giấy xác nhận tài khoản ngân hàng chính chủ để họ cập nhật lại thông tin định danh thủ công cho bạn.**Q3.**Việc thay đổi thông tin tên công ty trên Stripe có làm gián đoạn các hóa đơn đã phát hành trước đó không?**A3.** Không ảnh hưởng đến các hóa đơn cũ đã được ghi nhận trên hệ thống, nhưng nó sẽ giúp các hóa đơn và lệnh rút tiền mới được xử lý suôn sẻ mà không bị vướng lỗi đối chiếu tên tuổi nữa.

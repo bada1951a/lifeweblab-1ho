@@ -60,14 +60,4 @@ Aby nigdy więcej nie przechodzić przez ten zawał serca w środku roboczego dn
 
 ## 5. Najczęściej zadawane pytania (FAQ): Najczęściej zadawane pytania z praktyki inżyniera płatności
 
-**Q1.** Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od lat?
-
-**A1.** Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacji.
-
-**Q2.** Czy mogę całkowicie uniknąć prowizji banków pośredniczących przy przelewach międzynarodowych?
-
-**A2.** W klasycznym modelu SWIFT jest to niezwykle trudne, ponieważ każdy bank na trasie ma prawo pobrać opłatę za transfer. Najlepszym rozwiązaniem jest zmiana `Metody płatności` na lokalne rozliczenia kont clearingowych lub korzystanie z dedykowanych platform fintechowych oferujących lokalne rachunki wirtualne.
-
-**Q3.** Co zrobić, jeśli klient nie chce potwierdzić odbioru usługi w systemie PayPal?
-
-**A3.** W takiej sytuacji kluczowe jest dostarczenie do panelu alternatywnych dowodów: podpisanego przez klienta protokołu zdawczo-odbiorczego, logów z systemu potwierdzających dostęp do platformy lub korespondencji mailowej z wyraźnym podziękowaniem za zrealizowane prace. Support akceptuje takie dokumenty w procesie ręcznego zdejmowania blokady.
+**Q1.** Dlaczego system założył blokadę, skoro klient ma zweryfikowane konto od lat?**A1.**Algorytmy bezpieczeństwa nie patrzą na historię sentymentalnie. Jeśli nagle pojawia się transakcja o wartości przekraczającej dotychczasową średnią o kilkaset procent, system automatycznie uruchamia procedurę ochronną `21-Day Hold`, niezależnie od Twojej dotychczasowej reputacji.**Q2.**Czy mogę całkowicie uniknąć prowizji banków pośredniczących przy przelewach międzynarodowych?**A2.**W klasycznym modelu SWIFT jest to niezwykle trudne, ponieważ każdy bank na trasie ma prawo pobrać opłatę za transfer. Najlepszym rozwiązaniem jest zmiana `Metody płatności` na lokalne rozliczenia kont clearingowych lub korzystanie z dedykowanych platform fintechowych oferujących lokalne rachunki wirtualne.**Q3.**Co zrobić, jeśli klient nie chce potwierdzić odbioru usługi w systemie PayPal?**A3.** W takiej sytuacji kluczowe jest dostarczenie do panelu alternatywnych dowodów: podpisanego przez klienta protokołu zdawczo-odbiorczego, logów z systemu potwierdzających dostęp do platformy lub korespondencji mailowej z wyraźnym podziękowaniem za zrealizowane prace. Support akceptuje takie dokumenty w procesie ręcznego zdejmowania blokady.
