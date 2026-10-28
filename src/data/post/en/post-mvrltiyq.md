@@ -35,6 +35,8 @@ Additionally, maintain an active webhook monitoring service that triggers instan
 
 ## 5. Frequently Asked Questions 1. What is the fastest way to verify if my legitimate customers are being blocked by a security filter
 
+Q1. Questions
+
 A1. You should immediately check your gateway transaction logs for specific decline reasons such as `risk_score_exceeded` or `fraud_suspected`. Running a test transaction using a known corporate card will also confirm whether standard checkout pathways are actively rejecting valid payment payloads
 
 Q2. Can reverting a risk threshold setting cause an immediate surge in fraudulent transactions
@@ -42,15 +44,5 @@ Q2. Can reverting a risk threshold setting cause an immediate surge in fraudulen
 A2. Temporarily rolling back an overly aggressive risk score to its previous baseline restores normal revenue flow without exposing you to unprecedented risk. However, you should monitor real-time velocity metrics closely and apply targeted blacklists rather than blanket blocks if specific bad actors are identified
 
 Q3. How can I prevent similar configuration errors from happening during future security updates
-
-A3. Implementing a strict change management protocol that requires multi-person approval and mandatory staging environment testing is essential. Setting up automated anomaly detection alerts for sudden drops in conversion rates ensures your team catches misconfigurations within minutes rather than hours. (FAQ)
-
-Q1. Questions
-
-Q1. What is the fastest way to verify if my legitimate customers are being blocked by a security filter
-
-A1. You should immediately check your gateway transaction logs for specific decline reasons such as `risk_score_exceeded` or `fraud_suspected`. Running a test transaction using a known corporate card will also confirm whether standard checkout pathways are actively rejecting valid payment payloads
-
-A2. Temporarily rolling back an overly aggressive risk score to its previous baseline restores normal revenue flow without exposing you to unprecedented risk. However, you should monitor real-time velocity metrics closely and apply targeted blacklists rather than blanket blocks if specific bad actors are identified
 
 A3. Implementing a strict change management protocol that requires multi-person approval and mandatory staging environment testing is essential. Setting up automated anomaly detection alerts for sudden drops in conversion rates ensures your team catches misconfigurations within minutes rather than hours.

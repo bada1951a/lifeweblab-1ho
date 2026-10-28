@@ -73,11 +73,7 @@ Cette mésaventure m'a servi de leçon. Depuis ce jour-là, nous avons instauré
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Q1. questions
-
-Pour répondre aux interrogations les plus fréquentes que je reçois de la part de mes collègues de la communauté tech et finance :
-
-Q1. Est-il vraiment possible de contourner le délai de 21 jours imposé par PayPal sur les nouvelles transactions
+Q1. questions Pour répondre aux interrogations les plus fréquentes que je reçois de la part de mes collègues de la communauté tech et finance :
 
 A1. Oui, tout à fait. Ce délai n'est pas une fatalité juridique mais une mesure de précaution algorithmique. En mettant à jour le statut de la commande avec des preuves de livraison tangibles ou des documents professionnels validant la transaction, vous incitez le système (ou le support humain) à lever la retenue de manière anticipée
 

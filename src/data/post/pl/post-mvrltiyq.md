@@ -36,6 +36,8 @@ Ponadto zaleca się ścisłą współpracę z działem compliance w celu monitor
 
 ## 5. Najczęściej zadawane pytania 1. Dlaczego błąd zaokrąglenia pojawia się tylko przy wybranych walutach obcych
 
+Q1. Q1. Dlaczego błąd zaokrąglenia pojawia się tylko przy wybranych walutach obcych
+
 A1. Różne waluty posiadają odmienną specyfikację liczby miejsc po przecinku w standardzie ISO 4217, co dezorientuje algorytmy przeliczeniowe. Systemy e-commerce często stosują uniwersalny algorytm, który nie radzi sobie poprawnie z walutami o niskiej lub zerowej wartości groszowej, takimi jak JPY
 
 Q2. Czy mogę wyłączyć rygorystyczną walidację kwot w bramce płatności
@@ -43,13 +45,5 @@ Q2. Czy mogę wyłączyć rygorystyczną walidację kwot w bramce płatności
 A2. Większość nowoczesnych operatorów nie pozwala na całkowite wyłączenie tej weryfikacji ze względów bezpieczeństwa oraz compliance. Możesz jednak dostosować margines akceptowalnej tolerancji różnic kursowych w ustawieniach zaawansowanych swojego konta handlowego
 
 Q3. Jak najszybciej poinformować klientów dotkniętych tym błędem
-
-A3. Najlepszą praktyką jest automatyczne wysyłanie wiadomości e-mail z kodem rabatowym oraz linkiem do bezpiecznej płatności alternatywnej. Komunikacja powinna być jasna, profesjonalna i oferować natychmiastowe wsparcie dedykowanego konsultanta finansowego. (FAQ)
-
-Q1. Q1. Dlaczego błąd zaokrąglenia pojawia się tylko przy wybranych walutach obcych
-
-A1. Różne waluty posiadają odmienną specyfikację liczby miejsc po przecinku w standardzie ISO 4217, co dezorientuje algorytmy przeliczeniowe. Systemy e-commerce często stosują uniwersalny algorytm, który nie radzi sobie poprawnie z walutami o niskiej lub zerowej wartości groszowej, takimi jak JPY
-
-A2. Większość nowoczesnych operatorów nie pozwala na całkowite wyłączenie tej weryfikacji ze względów bezpieczeństwa oraz compliance. Możesz jednak dostosować margines akceptowalnej tolerancji różnic kursowych w ustawieniach zaawansowanych swojego konta handlowego
 
 A3. Najlepszą praktyką jest automatyczne wysyłanie wiadomości e-mail z kodem rabatowym oraz linkiem do bezpiecznej płatności alternatywnej. Komunikacja powinna być jasna, profesjonalna i oferować natychmiastowe wsparcie dedykowanego konsultanta finansowego.

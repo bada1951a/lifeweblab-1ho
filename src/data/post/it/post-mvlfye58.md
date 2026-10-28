@@ -69,8 +69,6 @@ Da quel giorno drammatico ho cambiato completamente il nostro metodo di lavoro i
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Molti responsabili amministrativi mi hanno chiesto chiarimenti dopo aver saputo della mia disavventura. Ecco le risposte alle domande più comuni che ricevo dai colleghi nei grattacieli milanesi:
-
 Q1. Il blocco dei 21 giorni si applica a qualsiasi tipo di conto aziendale verificato
 
 A1. Purtroppo sì, se l'algoritmo rileva un comportamento insolito, un aumento improvviso dei volumi o una mancanza di storico transazionale, il conto può subire restrizioni indipendentemente dal livello di verifica aziendale precedente

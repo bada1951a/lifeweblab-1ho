@@ -86,8 +86,6 @@ Trong nội dung yêu cầu, hãy giải thích rõ ràng rằng sự cố phát
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Trong quá trình chia sẻ kinh nghiệm xử lý sự cố này với các đồng nghiệp tại nhiều doanh nghiệp khác nhau ở Sài Gòn, tôi nhận thấy có rất nhiều thắc mắc tương tự xoay quanh vấn đề này. Dưới đây là ba câu hỏi quan trọng nhất kèm theo câu trả lời chi tiết để giúp các bạn làm chủ tình hình
-
 Q1. Tại sao cổng thanh toán lại tự động giữ tiền của chúng tôi trong 21 ngày dù giao dịch đã thành công
 
 A1. Việc giữ tiền trong 21 ngày là cơ chế bảo vệ tiêu chuẩn của các cổng thanh toán quốc tế nhằmphòng ngừa rủi ro tranh chấp hoặc khiếu nại từ phía người mua. Khi hệ thống phát hiện các dấu hiệu bất thường như sai lệch định dạng tiền tệ, thay đổi địa chỉ IP đột ngột hoặc thiếu thông tin xác thực doanh nghiệp, chúng sẽ tự động kích hoạt chế độ này để đảm bảo an toàn cho cả hai phía cho đến khi giao dịch được xác minh hoàn tất

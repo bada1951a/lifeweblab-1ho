@@ -113,8 +113,6 @@ Para garantir que eu nunca mais passe por esse sufoco no meio do expediente na P
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Aqui estão as três dúvidas mais comuns que recebo de colegas que enfrentam o mesmo perrengue no dia a dia do faturamento global:
-
 Q1. O que acontece se eu preencher o W-9 mesmo sendo brasileiro e morando no Brasil
 
 A1. Você estará cometendo uma falsidade ideológica fiscal perante o governo dos Estados Unidos, o que pode resultar em bloqueio permanente de contas em instituições financeiras americanas e problemas graves de compliance internacional. Sempre utilize o `W-8BEN`

@@ -69,8 +69,6 @@ Buat mastikan kejadian horor di SCBD kemarin gak terulang lagi minggu depan, gue
 
 Q1. Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor?
 
-Q1. Q1. Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor
-
 A1. Secara umum sangat tidak disarankan untuk langsung melakukan retry manual berkali-kali pada hari yang sama, terutama saat terjadi fluktuasi kurs tajam. Sebaiknya hubungi pelanggan terlebih dahulu untuk meminta mereka mengonfirmasi transaksi ke bank penerbit kartu mereka
 
 Q2. Mengapa bank penerbit kartu langsung menolak transaksi dengan do_not_honor alih-alih memberikan alasan spesifik

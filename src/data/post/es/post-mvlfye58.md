@@ -73,12 +73,4 @@ A2. Debes ir a los detalles de la transacción en tu `Panel de control`, hacer c
 
 Q3. ¿Es recomendable desactivar la opción de conversión automática de divisa en PayPal para cuentas corporativas B2B
 
-A3. Absolutamente sí. Dejar que el banco del cliente o su propia entidad gestione el tipo de cambio reduce drásticamente los conflictos de redondeo y evita que el motor de riesgos de PayPal interprete variaciones extrañas como comportamientos fraudulentos. (FAQ)
-
-Q1. Q1. ¿Por qué mi cliente ve un error de aprobación a pesar de tener fondos suficientes en su cuenta bancaria
-
-A1. El error suele producirse porque la suma de los decimales de la cesta de la compra y los impuestos difiere en una milésima de la cifra que procesa la pasarela. Al no coincidir el céntimo exacto, el banco emisor bloquea la autorización de seguridad
-
-A2. Debes ir a los detalles de la transacción en tu `Panel de control`, hacer clic en 'Confirmar estado del pedido' o 'Actualizar información de entrega' y adjuntar los comprobantes de envío o la factura comercial firmada. Esto suele reducir el plazo de retención a un máximo de setenta y dos horas
-
 A3. Absolutamente sí. Dejar que el banco del cliente o su propia entidad gestione el tipo de cambio reduce drásticamente los conflictos de redondeo y evita que el motor de riesgos de PayPal interprete variaciones extrañas como comportamientos fraudulentos.

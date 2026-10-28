@@ -69,8 +69,6 @@ Cuối cùng, truy cập vào mục `Hóa đơn` (Invoices) và `Biểu mẫu th
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Dưới đây là tổng hợp những thắc mắc mà các đồng nghiệp hay hỏi mình nhất mỗi khi gặp sự cố tương tự với cổng thanh toán quốc tế:
-
 Q1. Tại sao giao dịch của khách hàng hiển thị là thành công trên hệ thống của họ nhưng Stripe lại trả về mã lỗi `do_not_honor`
 
 A1. Điều này xảy ra khi ngân hàng phát hành thẻ của khách hàng quyết định chặn giao dịch vào phút chót do các quy tắc bảo mật nội bộ hoặc nghi ngờ rủi ro gian lận địa lý, mặc dù tài khoản của họ hoàn toàn có đủ số dư

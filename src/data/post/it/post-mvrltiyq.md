@@ -38,6 +38,8 @@ Un altro aspetto cruciale riguarda la gestione trasparente della documentazione 
 
 ## 5. Domande Frequenti 1. Perché un errore di pochi centesimi blocca un pagamento B2B di importo elevato
 
+Q1. Q1. Perché un errore di pochi centesimi blocca un pagamento B2B di importo elevato
+
 A1. I sistemi di sicurezza bancari verificano la perfetta corrispondenza tra l'importo autorizzato e quello richiesto. Anche una minima discrepanza decimale viene segnalata dal sistema antifrode come potenziale tentativo di manipolazione della transazione, provocando il rifiuto automatico
 
 Q2. Qual è il modo migliore per configurare l'arrotondamento nel carrello e-commerce
@@ -45,13 +47,5 @@ Q2. Qual è il modo migliore per configurare l'arrotondamento nel carrello e-com
 A2. È consigliabile utilizzare librerie di programmazione finanziaria che gestiscono i numeri a virgola fissa ed evitare calcoli in virgola mobile nativi. L'arrotondamento deve essere applicato sempre alla fine del calcolo complessivo di tasse e spedizione
 
 Q3. Come posso verificare se il problema dipende dalla mia piattaforma o dalla banca acquirente
-
-A3. Analizzando i codici di errore nei log del gateway e confrontandoli con i codici di risposta della banca emittente. Se l'errore è di tipo formattativo, la causa è nel software di checkout; se è di tipo autorizzativo, il blocco proviene dal circuito bancario. (FAQ)
-
-Q1. Q1. Perché un errore di pochi centesimi blocca un pagamento B2B di importo elevato
-
-A1. I sistemi di sicurezza bancari verificano la perfetta corrispondenza tra l'importo autorizzato e quello richiesto. Anche una minima discrepanza decimale viene segnalata dal sistema antifrode come potenziale tentativo di manipolazione della transazione, provocando il rifiuto automatico
-
-A2. È consigliabile utilizzare librerie di programmazione finanziaria che gestiscono i numeri a virgola fissa ed evitare calcoli in virgola mobile nativi. L'arrotondamento deve essere applicato sempre alla fine del calcolo complessivo di tasse e spedizione
 
 A3. Analizzando i codici di errore nei log del gateway e confrontandoli con i codici di risposta della banca emittente. Se l'errore è di tipo formattativo, la causa è nel software di checkout; se è di tipo autorizzativo, il blocco proviene dal circuito bancario.

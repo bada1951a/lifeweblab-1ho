@@ -90,8 +90,6 @@ Aby ta sytuacja nigdy więcej się nie powtórzyła w naszym warszawskim zespole
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Podczas i po tym kryzysie koledzy z branży oraz członkowie zespołu zadawali mi mnóstwo pytań dotyczących tego, jak radzić sobie z podobnymi problemami. Oto zestawienie trzech najważniejszych pytań i odpowiedzi, które rozwiewają najczęstsze wątpliwości
-
 Q1. Czy ponawianie transakcji zakończonej błędem do_not_honor może zablokować kartę klienta
 
 A1. Tak, jeśli będziesz ponawiać płatność w sposób zautomatyzowany i zbyt częsty bez uprzedniej zmiany danych lub kontaktu z klientem, systemy antyfraudowe banku wydającego kartę mogą uznać to za próbę kradzieży tożsamości i trwale zablokować daną kartę. Zawsze najpierw diagnozuj przyczynę (np. błąd danych podatkowych), a dopiero potem inicjuj manualną ponowną próbę w bezpiecznym odstępie czasu
