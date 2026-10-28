@@ -58,6 +58,6 @@ Sự cố khủng hoảng vừa qua để lại những bài học xương máu 
 
 ## 5. Các câu hỏi thường gặp (FAQ)
 
-**Q1.
+**Q1.** 
 
-A3. Khi tài khoản bị giữ tiền, tuyệt đối không được tạo tài khoản mới bằng thông tin cũ vì điều này sẽ bị hệ thống phát hiện và khóa vĩnh viễn toàn bộ liên kết pháp lý. Thay vào đó, hãy lập tức chuẩn bị một bộ hồ sơ giải trình bao gồm giấy phép kinh doanh dịch vụ, hợp đồng cung cấp dịch vụ có chữ ký của khách hàng, hóa đơn VAT, và bằng chứng vận chuyển hoặc bàn giao sản phẩm/dịch vụ kỹ thuật số. Gửi toàn bộ các tài liệu này thông qua bảng điều khiển hỗ trợ chính thức kèm theo lời giải thích chi tiết bằng tiếng Anh để đội ngũ tuân thủ xem xét mở khóa.
+**A3.** Khi tài khoản bị giữ tiền, tuyệt đối không được tạo tài khoản mới bằng thông tin cũ vì điều này sẽ bị hệ thống phát hiện và khóa vĩnh viễn toàn bộ liên kết pháp lý. Thay vào đó, hãy lập tức chuẩn bị một bộ hồ sơ giải trình bao gồm giấy phép kinh doanh dịch vụ, hợp đồng cung cấp dịch vụ có chữ ký của khách hàng, hóa đơn VAT, và bằng chứng vận chuyển hoặc bàn giao sản phẩm/dịch vụ kỹ thuật số. Gửi toàn bộ các tài liệu này thông qua bảng điều khiển hỗ trợ chính thức kèm theo lời giải thích chi tiết bằng tiếng Anh để đội ngũ tuân thủ xem xét mở khóa.

@@ -52,7 +52,7 @@ Menghadapi situasi darurat di hari penutupan buku memerlukan eksekusi taktis yan
 ### Metode 3: Jalur Eskalasi Kepatuhan Langsung dan Alternatif Pembayaran
 1. Hubungi tim dukungan pelanggan melalui fitur **Live Chat** di dasbor, lalu ketikkan perintah `Human Agent` untuk menghindari bot otomatis dan langsung terhubung dengan spesialis risiko senior.
 2. Siapkan **Nomor Referensi Transaksi (Transaction ID)**dan bukti pendukung berupa laporan bank internal untuk mempercepat proses investigasi manual oleh tim compliance.
-3. Jika pembekuan memakan waktu lebih lama dari estimasi, aktifkan jalur pembayaran alternatif darurat seperti **Wise Business**, transfer kawat **ACH**, atau pemanfaatan**Virtual Accounts**mitra perbankan lokal untuk melunasi kewajiban gaji tepat waktu.
+3. Jika pembekuan memakan waktu lebih lama dari estimasi, aktifkan jalur pembayaran alternatif darurat seperti **Wise Business**, transfer kawat**ACH**, atau pemanfaatan**Virtual Accounts**mitra perbankan lokal untuk melunasi kewajiban gaji tepat waktu.
 
 ## 4. Lembar Periksa Penting Mencegah Penahanan Dana dan Biaya Berlebih
 
@@ -62,6 +62,6 @@ Untuk membangun benteng pertahanan operasional yang kokoh, tim keuangan wajib me
 
 ## 5. Pertanyaan yang Sering Diajukan (FAQ)
 
-**Q1.
+**Q1.** 
 
-A3. Jika dana tertahan dalam bentuk rolling reserves, langkah pertama adalah segera menghentikan semua aktivitas penagihan bermasalah dan mengalihkan lalu lintas transaksi ke gateway cadangan. Selanjutnya, ajukan banding resmi kepada tim compliance dengan menyertakan laporan audit keuangan, kontrak kerja klien yang sah, serta bukti pemenuhan layanan secara transparan guna membuktikan bahwa bisnis Anda beroperasi secara legal dan profesional.
+**A3.** Jika dana tertahan dalam bentuk rolling reserves, langkah pertama adalah segera menghentikan semua aktivitas penagihan bermasalah dan mengalihkan lalu lintas transaksi ke gateway cadangan. Selanjutnya, ajukan banding resmi kepada tim compliance dengan menyertakan laporan audit keuangan, kontrak kerja klien yang sah, serta bukti pemenuhan layanan secara transparan guna membuktikan bahwa bisnis Anda beroperasi secara legal dan profesional.

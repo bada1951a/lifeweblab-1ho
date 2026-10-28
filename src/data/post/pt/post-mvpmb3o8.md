@@ -70,24 +70,14 @@ Para mitigar esses riscos de forma definitiva, é fundamental estabelecer rotina
 
 ## 5. Perguntas Frequentes (FAQ)
 
-**
+**Q1.** O que exatamente significa o erro `generic_decline` ao processar cartões internacionais no Stripe e por que ele ocorre sem detalhes adicionais?
 
-Q1. O que exatamente significa o erro `generic_decline` ao processar cartões internacionais no Stripe e por que ele ocorre sem detalhes adicionais?**
+**A1.** O erro `generic_decline` é um código de recusa genérico enviado diretamente pelo banco emissor do cartão do cliente, e não pelo próprio Stripe. Por motivos de segurança e privacidade bancária, os emissores optam por ocultar o motivo real da recusa, que pode variar desde fundos insuficientes e suspeita de fraude até restrições geográficas rigorosas ou bloqueio de transações online internacionais. Para diagnosticar a causa exata, é necessário orientar o cliente a ligar para o banco emissor para autorizar explicitamente a transação transfronteiriça ou testar um método de pagamento alternativo, como transferência bancária direta.
 
-**
+**Q2.** Como posso evitar que o protocolo `3DS2` bloqueie transações recorrentes de assinaturas B2B de alto valor?
 
-A1.**O erro `generic_decline` é um código de recusa genérico enviado diretamente pelo banco emissor do cartão do cliente, e não pelo próprio Stripe. Por motivos de segurança e privacidade bancária, os emissores optam por ocultar o motivo real da recusa, que pode variar desde fundos insuficientes e suspeita de fraude até restrições geográficas rigorosas ou bloqueio de transações online internacionais. Para diagnosticar a causa exata, é necessário orientar o cliente a ligar para o banco emissor para autorizar explicitamente a transação transfronteiriça ou testar um método de pagamento alternativo, como transferência bancária direta.**
+**A2.** As assinaturas recorrentes B2B podem ser protegidas configurando adequadamente o fluxo de autenticação para aproveitar as isenções regulatórias previstas para pagamentos iniciados pelo comerciante (*Merchant-Initiated Transactions - MIT*). A primeira transação de cadastro exige autenticação forte do cliente (*SCA*), mas as cobranças subsequentes devem ser marcadas corretamente na API do gateway como recorrentes para dispensar novos desafios de 3DS. Além disso, estabelecer parcerias com adquirentes locais com alta taxa de conversão ajuda a minimizar os falsos positivos gerados por motores de risco automatizados.
 
-Q2. Como posso evitar que o protocolo `3DS2` bloqueie transações recorrentes de assinaturas B2B de alto valor?**
+**Q3.** O que devo fazer se o gateway de pagamento congelar meus fundos globais devido a um pico repentino de faturamento no lançamento?
 
-**
-
-A2.** As assinaturas recorrentes B2B podem ser protegidas configurando adequadamente o fluxo de autenticação para aproveitar as isenções regulatórias previstas para pagamentos iniciados pelo comerciante (*Merchant-Initiated Transactions - MIT*). A primeira transação de cadastro exige autenticação forte do cliente (*SCA*), mas as cobranças subsequentes devem ser marcadas corretamente na API do gateway como recorrentes para dispensar novos desafios de 3DS. Além disso, estabelecer parcerias com adquirentes locais com alta taxa de conversão ajuda a minimizar os falsos positivos gerados por motores de risco automatizados.
-
-**
-
-Q3. O que devo fazer se o gateway de pagamento congelar meus fundos globais devido a um pico repentino de faturamento no lançamento?**
-
-**
-
-A3.** Quando fundos são congelados por pico atípico de faturamento, a resposta mais eficiente é a transparência documental proativa junto à equipe de compliance do processador. Envie imediatamente contratos assinados com os clientes correspondentes, faturas emitidas, comprovantes de entrega do serviço ou software e documentos de constituição da empresa para comprovar a legitimidade da operação comercial. Evite confrontos agressivos com o suporte de nível um e solicite a escalação do caso para o departamento de risco sênior, demonstrando que a empresa possui capital de giro estável e baixo índice de risco de estorno.
+**A3.** Quando fundos são congelados por pico atípico de faturamento, a resposta mais eficiente é a transparência documental proativa junto à equipe de compliance do processador. Envie imediatamente contratos assinados com os clientes correspondentes, faturas emitidas, comprovantes de entrega do serviço ou software e documentos de constituição da empresa para comprovar a legitimidade da operação comercial. Evite confrontos agressivos com o suporte de nível um e solicite a escalação do caso para o departamento de risco sênior, demonstrando que a empresa possui capital de giro estável e baixo índice de risco de estorno.

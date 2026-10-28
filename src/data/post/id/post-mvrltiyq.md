@@ -38,23 +38,14 @@ Selain itu, selalu siapkan metode pembayaran cadangan berupa kartu fisik terpisa
 
 ## 5. Pertanyaan yang Sering Diajukan (FAQ)
 
-**
+**Q1.** Mengapa kartu virtual saya diblokir padahal saldo masih mencukupi?
 
-Q1.** Mengapa kartu virtual saya diblokir padahal saldo masih mencukupi?
-**
+**A1.** Pemblokiran terjadi bukan karena masalah saldo, melainkan akibat sistem keamanan**gateway pembayaran** mendeteksi akses dari alamat IP asing yang tidak sesuai dengan profil lokasi registrasi awal Anda. Algoritma otomatis membaca aktivitas ini sebagai potensi pembobolan, sehingga kartu langsung dibekukan untuk melindungi dana perusahaan.
 
-A1.**Pemblokiran terjadi bukan karena masalah saldo, melainkan akibat sistem keamanan**gateway pembayaran** mendeteksi akses dari alamat IP asing yang tidak sesuai dengan profil lokasi registrasi awal Anda. Algoritma otomatis membaca aktivitas ini sebagai potensi pembobolan, sehingga kartu langsung dibekukan untuk melindungi dana perusahaan.
+**Q2.** Bagaimana cara tercepat memulihkan kartu yang terblokir saat berada di luar negeri?
 
-**
+**A2.** Cara tercepat adalah menghubungi layanan dukungan korporat bank penerbit melalui sambungan telepon internasional atau fitur obrolan langsung di aplikasi resmi. Sediakan dokumen verifikasi perusahaan seperti nomor rekening, NPWP badan, dan verifikasi identitas pimpinan untuk mempercepat proses pembukaan blokir secara manual.
 
-Q2.** Bagaimana cara tercepat memulihkan kartu yang terblokir saat berada di luar negeri?
-**
+**Q3.** Apakah penggunaan VPN dapat membantu menghindari pemblokiran transaksi internasional?
 
-A2.** Cara tercepat adalah menghubungi layanan dukungan korporat bank penerbit melalui sambungan telepon internasional atau fitur obrolan langsung di aplikasi resmi. Sediakan dokumen verifikasi perusahaan seperti nomor rekening, NPWP badan, dan verifikasi identitas pimpinan untuk mempercepat proses pembukaan blokir secara manual.
-
-**
-
-Q3.** Apakah penggunaan VPN dapat membantu menghindari pemblokiran transaksi internasional?
-**
-
-A3.** Penggunaan `VPN` komersial publik justru sering kali memperburuk keadaan karena alamat IP tersebut sering masuk dalam daftar hitam sistem keamanan finansial. Sebaiknya gunakan jaringan privat virtual resmi milik perusahaan yang terhubung langsung ke server kantor di Jakarta agar alamat IP tetap terdeteksi aman.
+**A3.** Penggunaan `VPN` komersial publik justru sering kali memperburuk keadaan karena alamat IP tersebut sering masuk dalam daftar hitam sistem keamanan finansial. Sebaiknya gunakan jaringan privat virtual resmi milik perusahaan yang terhubung langsung ke server kantor di Jakarta agar alamat IP tetap terdeteksi aman.

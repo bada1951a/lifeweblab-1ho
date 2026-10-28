@@ -69,11 +69,14 @@ Om te zorgen dat we nooit meer op een hectische ochtend op de Zuidas met dit bij
 
 ## 5. Veelgestelde vragen uit de praktijk (FAQ)
 
-### Q1: Wat moet ik doen als de bank van de klant blijft weigeren ondanks meerdere pogingen?
-**A1:** Vraag de klant om direct contact op te nemen met hun eigen bank om internationale online transacties goed te keuren. Vaak blokkeren banken automatische betalingen naar het buitenland uit veiligheidsoverwegingen. Als alternatief kun je een handmatige SEPA-overschrijving initiëren via je zakelijke bankrekening.
+**Q1.** Wat moet ik doen als de bank van de klant blijft weigeren ondanks meerdere pogingen?
 
-### Q2: Hoe voorkom ik dat webhooks dubbele betalingen veroorzaken tijdens netwerkstoringen?
-**A2:** Zorg ervoor dat je server een database-lock gebruikt op basis van de `event.id` die Stripe meestuurt met elke webhook. Als een event al in je database staat als 'verwerkt', moet je server direct met een HTTP 200 reageren zonder de actie nogmaals uit te voeren.
+**A1.** Vraag de klant om direct contact op te nemen met hun eigen bank om internationale online transacties goed te keuren. Vaak blokkeren banken automatische betalingen naar het buitenland uit veiligheidsoverwegingen. Als alternatief kun je een handmatige SEPA-overschrijving initiëren via je zakelijke bankrekening.
 
-### Q3: Verlies ik omzet als ik een dubbele betaling moet terugbetalen?
-**A3:** Nee, een terugbetaling (refund) is geen omzetverlies, maar een correctie van een onterechte incasso. Houd er wel rekening mee dat de oorspronkelijke transactiekosten die Stripe rekent bij sommige betaalmethoden niet altijd volledig worden geretourneerd. Dit zie je direct terug in je maandelijkse afrekening.
+**Q2.** Hoe voorkom ik dat webhooks dubbele betalingen veroorzaken tijdens netwerkstoringen?
+
+**A2.** Zorg ervoor dat je server een database-lock gebruikt op basis van de `event.id` die Stripe meestuurt met elke webhook. Als een event al in je database staat als 'verwerkt', moet je server direct met een HTTP 200 reageren zonder de actie nogmaals uit te voeren.
+
+**Q3.** Verlies ik omzet als ik een dubbele betaling moet terugbetalen?
+
+**A3.** Nee, een terugbetaling (refund) is geen omzetverlies, maar een correctie van een onterechte incasso. Houd er wel rekening mee dat de oorspronkelijke transactiekosten die Stripe rekent bij sommige betaalmethoden niet altijd volledig worden geretourneerd. Dit zie je direct terug in je maandelijkse afrekening.

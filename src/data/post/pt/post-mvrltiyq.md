@@ -38,23 +38,14 @@ Outra prática recomendada consiste em revisar periodicamente as configurações
 
 ## 5. Perguntas Frequentes (FAQ)
 
-**
+**Q1.** O que significa exatamente a exigência de VAT Reverse Charge na minha fatura B2B?
 
-Q1.** O que significa exatamente a exigência de VAT Reverse Charge na minha fatura B2B?
-**
+**A1.** O `VAT Reverse Charge` é um mecanismo fiscal da União Europeia onde a responsabilidade pelo recolhimento do imposto sobre o valor agregado é transferida do fornecedor para o comprador corporativo. A ausência dessa menção impede que o parceiro europeu processe o pagamento legalmente em seu sistema contábil interno.
 
-A1.** O `VAT Reverse Charge` é um mecanismo fiscal da União Europeia onde a responsabilidade pelo recolhimento do imposto sobre o valor agregado é transferida do fornecedor para o comprador corporativo. A ausência dessa menção impede que o parceiro europeu processe o pagamento legalmente em seu sistema contábil interno.
+**Q2.** Posso apenas editar a fatura antiga ou preciso emitir uma nota de crédito?
 
-**
+**A2.** Por motivos de auditoria fiscal internacional, o ideal é emitir uma nota de crédito para anular formalmente o documento incorreto e, em seguida, emitir uma nova fatura com a numeração sequencial correta contendo todas as observações fiscais obrigatórias.
 
-Q2.** Posso apenas editar a fatura antiga ou preciso emitir uma nota de crédito?
-**
+**Q3.** Quanto tempo demora para o pagamento ser liberado após a correção da fatura?
 
-A2.** Por motivos de auditoria fiscal internacional, o ideal é emitir uma nota de crédito para anular formalmente o documento incorreto e, em seguida, emitir uma nova fatura com a numeração sequencial correta contendo todas as observações fiscais obrigatórias.
-
-**
-
-Q3.** Quanto tempo demora para o pagamento ser liberado após a correção da fatura?
-**
-
-A3.** O prazo depende do ciclo de processamento do departamento financeiro do seu cliente e da compensação bancária internacional via `SWIFT` ou redes locais, variando normalmente entre 2 a 5 dias úteis após a aprovação do documento revisado.
+**A3.** O prazo depende do ciclo de processamento do departamento financeiro do seu cliente e da compensação bancária internacional via `SWIFT` ou redes locais, variando normalmente entre 2 a 5 dias úteis após a aprovação do documento revisado.
