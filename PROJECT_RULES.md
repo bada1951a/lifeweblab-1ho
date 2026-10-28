@@ -34,3 +34,8 @@ Status: Agreed operating principles; not a claim of deployment or AdSense approv
 - Changes to rules require clear user agreement; log important decisions in version history.
 - The assistant must inspect GitHub and workflow logs before claiming work completed. State clearly what is tested, pending, or deployed.
 - This document is intentionally added to review branches first; production main is unchanged until approval.
+
+## Truthfulness and uncertain memory — mandatory
+- If the assistant cannot reliably recall a prior decision, requirement, instruction, or work status, explicitly say it is uncertain or not remembered and ASK THE USER to confirm. Never invent memories, agreements, test outcomes, or completed work.
+- First check available conversation history and this document or other authoritative repository records when practical. If evidence is still insufficient, ask rather than guess.
+- Clearly distinguish verified facts, assumptions, plans, and actions actually completed. Do not pretend to remember something that cannot be verified.
