@@ -38,14 +38,14 @@ Daarnaast is het raadzaam om periodiek de technische integraties en API-tokens t
 
 ## 5. Veelgestelde Vragen 1. Waarom wordt er zonder voorafgaande waarschuwing een 21-daagse hold geplaatst op mijn bedrijfsrekening
 
-Q1. Q1. Waarom wordt er zonder voorafgaande waarschuwing een 21-daagse hold geplaatst op mijn bedrijfsrekening
+Q: Waarom wordt er zonder voorafgaande waarschuwing een 21-daagse hold geplaatst op mijn bedrijfsrekening?
 
-A1. Payment gateways plaatsen automatisch een hold wanneer hun algoritmes verdachte of afwijkende transactiepatronen detecteren. Dit dient als een tijdelijke veiligheidsmaatregel om het risico op terugboekingen of fraude te minimaliseren terwijl compliance-teams de achtergrond van de gelden onderzoeken
+A: Payment gateways plaatsen automatisch een hold wanneer hun algoritmes verdachte of afwijkende transactiepatronen detecteren. Dit dient als een tijdelijke veiligheidsmaatregel om het risico op terugboekingen of fraude te minimaliseren terwijl compliance-teams de achtergrond van de gelden onderzoeken
 
-Q2. Kan ik de 21-daagse wachttijd verkorten door direct documenten in te dienen
+Q: Kan ik de 21-daagse wachttijd verkorten door direct documenten in te dienen?
 
-A2. Ja, door proactief verifieerbare facturen, contracten en identiteitsbewijzen te uploaden via de officiële compliance-portal, kunt u de handmatige beoordeling aanzienlijk versnellen. Vaak wordt de hold binnen 48 uur opgeheven zodra de risico-analist de documenten heeft goedgekeurd
+A: Ja, door proactief verifieerbare facturen, contracten en identiteitsbewijzen te uploaden via de officiële compliance-portal, kunt u de handmatige beoordeling aanzienlijk versnellen. Vaak wordt de hold binnen 48 uur opgeheven zodra de risico-analist de documenten heeft goedgekeurd
 
-Q3. Welke specifieke documenten zijn meestal vereist om een zakelijke betalingsblokkade op te heffen
+Q: Welke specifieke documenten zijn meestal vereist om een zakelijke betalingsblokkade op te heffen?
 
-A3. Meestal vraagt de provider om recente Kamer van Koophandel-uittreksels, eigendomsstructuren, onderliggende commerciële facturen van de vastgelopen transacties en bewijs van levering van goederen of diensten aan de internationale klant.
+A: Meestal vraagt de provider om recente Kamer van Koophandel-uittreksels, eigendomsstructuren, onderliggende commerciële facturen van de vastgelopen transacties en bewijs van levering van goederen of diensten aan de internationale klant.

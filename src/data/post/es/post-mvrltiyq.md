@@ -39,14 +39,14 @@ Asimismo, mantener actualizados los datos de contacto y habilitar las notificaci
 
 ## 5. Preguntas Frecuentes 1. ¿Qué ocurre si la herramienta SaaS suspende mi cuenta antes de que pueda modificar el límite de la tarjeta
 
-Q1. Q1. ¿Qué ocurre si la herramienta SaaS suspende mi cuenta antes de que pueda modificar el límite de la tarjeta
+Q: ¿Qué ocurre si la herramienta SaaS suspende mi cuenta antes de que pueda modificar el límite de la tarjeta?
 
-A1. Si el servicio se suspende, la mayoría de los proveedores mantienen los datos almacenados durante un periodo de gracia que suele oscilar entre 7 y 30 días. En cuanto el pago se procese correctamente tras actualizar el límite diarioen tu banco, el acceso se restaurará de forma automática sin pérdida de información
+A: Si el servicio se suspende, la mayoría de los proveedores mantienen los datos almacenados durante un periodo de gracia que suele oscilar entre 7 y 30 días. En cuanto el pago se procese correctamente tras actualizar el límite diarioen tu banco, el acceso se restaurará de forma automática sin pérdida de información
 
-Q2. ¿Es recomendable utilizar tarjetas virtuales para el pago de suscripciones tecnológicas recurrentes
+Q: ¿Es recomendable utilizar tarjetas virtuales para el pago de suscripciones tecnológicas recurrentes?
 
-A2. Sí, el uso de tarjetas virtuales dedicadas es altamente recomendable para gestionar servicios corporativos y suscripciones internacionales. Estas herramientas permiten establecer topes de gasto específicos y bloqueos temporales, minimizando los riesgos asociados a fraudes y facilitando el control estricto del presupuesto mensual
+A: Sí, el uso de tarjetas virtuales dedicadas es altamente recomendable para gestionar servicios corporativos y suscripciones internacionales. Estas herramientas permiten establecer topes de gasto específicos y bloqueos temporales, minimizando los riesgos asociados a fraudes y facilitando el control estricto del presupuesto mensual
 
-Q3. ¿Por qué mi banco sigue rechazando el pago a pesar de haber ampliado el límite diario
+Q: ¿Por qué mi banco sigue rechazando el pago a pesar de haber ampliado el límite diario?
 
-A3. En ocasiones, las entidades financieras aplican filtros adicionales por sospecha de fraude internacional o exigen completar una validación mediante `3DS2`. Si persiste el error, se debe contactar directamente con el soporte del banco para autorizar de forma manual el comercio extranjero o utilizar una pasarela alternativa como transferencia bancaria directa.
+A: En ocasiones, las entidades financieras aplican filtros adicionales por sospecha de fraude internacional o exigen completar una validación mediante `3DS2`. Si persiste el error, se debe contactar directamente con el soporte del banco para autorizar de forma manual el comercio extranjero o utilizar una pasarela alternativa como transferencia bancaria directa.

@@ -63,14 +63,14 @@ Para evitar que este tipo de pesadillas se repitan en los cierres mensuales, est
 
 ## 5. Preguntas frecuentes sobre el bloqueo y redondeo en PayPal
 
-Q1. ¿Por qué mi cliente ve un error de aprobación a pesar de tener fondos suficientes en su cuenta bancaria
+Q: ¿Por qué mi cliente ve un error de aprobación a pesar de tener fondos suficientes en su cuenta bancaria?
 
-A1. El error suele producirse porque la suma de los decimales de la cesta de la compra y los impuestos difiere en una milésima de la cifra que procesa la pasarela. Al no coincidir el céntimo exacto, el banco emisor bloquea la autorización de seguridad
+A: El error suele producirse porque la suma de los decimales de la cesta de la compra y los impuestos difiere en una milésima de la cifra que procesa la pasarela. Al no coincidir el céntimo exacto, el banco emisor bloquea la autorización de seguridad
 
-Q2. ¿Cómo puedo liberar los fondos retenidos por veintiún días de forma anticipada tras solucionar el error técnico
+Q: ¿Cómo puedo liberar los fondos retenidos por veintiún días de forma anticipada tras solucionar el error técnico?
 
-A2. Debes ir a los detalles de la transacción en tu `Panel de control`, hacer clic en 'Confirmar estado del pedido' o 'Actualizar información de entrega' y adjuntar los comprobantes de envío o la factura comercial firmada. Esto suele reducir el plazo de retención a un máximo de setenta y dos horas
+A: Debes ir a los detalles de la transacción en tu `Panel de control`, hacer clic en 'Confirmar estado del pedido' o 'Actualizar información de entrega' y adjuntar los comprobantes de envío o la factura comercial firmada. Esto suele reducir el plazo de retención a un máximo de setenta y dos horas
 
-Q3. ¿Es recomendable desactivar la opción de conversión automática de divisa en PayPal para cuentas corporativas B2B
+Q: ¿Es recomendable desactivar la opción de conversión automática de divisa en PayPal para cuentas corporativas B2B?
 
-A3. Absolutamente sí. Dejar que el banco del cliente o su propia entidad gestione el tipo de cambio reduce drásticamente los conflictos de redondeo y evita que el motor de riesgos de PayPal interprete variaciones extrañas como comportamientos fraudulentos.
+A: Absolutamente sí. Dejar que el banco del cliente o su propia entidad gestione el tipo de cambio reduce drásticamente los conflictos de redondeo y evita que el motor de riesgos de PayPal interprete variaciones extrañas como comportamientos fraudulentos.

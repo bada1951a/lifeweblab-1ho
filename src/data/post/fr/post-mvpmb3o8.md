@@ -64,14 +64,14 @@ Les bonnes habitudes opérationnelles reposent sur la redondance des passerelles
 
 ## 5. Foire Aux Questions 1. Pourquoi une carte parfaitement approvisionnée et valide continue-t-elle de déclencher l'erreur `generic_decline` sur
 
-Q1. Questions
+Q: Questions?
 
-A1. Le code `generic_decline` est renvoyé par la banque émettrice du client et non par Stripe lui-même, ce qui signifie que l'établissement bancaire a choisi de bloquer la transaction sans divulguer la raison exacte pour des motifs de sécurité interne. Cela se produit fréquemment lorsque le profil du paiement ne correspond pas aux habitudes d'achat du porteur, ou lorsque le système de détection des fraudes de la banque juge que le niveau de risque associé au pays de l'entreprise marchande est trop élevé
+A: Le code `generic_decline` est renvoyé par la banque émettrice du client et non par Stripe lui-même, ce qui signifie que l'établissement bancaire a choisi de bloquer la transaction sans divulguer la raison exacte pour des motifs de sécurité interne. Cela se produit fréquemment lorsque le profil du paiement ne correspond pas aux habitudes d'achat du porteur, ou lorsque le système de détection des fraudes de la banque juge que le niveau de risque associé au pays de l'entreprise marchande est trop élevé
 
-Q2. Comment puis-je distinguer un refus temporaire lié à l'authentification 3DS2 d'un blocage permanent de la carte
+Q: Comment puis-je distinguer un refus temporaire lié à l'authentification 3DS2 d'un blocage permanent de la carte?
 
-A2. Pour faire la distinction, il faut analyser en détail les journaux de la API de paiement dans le tableau de bord pour y chercher les codes de statut associés au défi d'authentification, tels que `three_d_secure_redirect_failed` ou `authentication_required`. Si le client n'a pas finalisé la validation sur son application bancaire mobile, le refus est temporaire et peut être résolu en envoyant un lien de paiement direct interactif. En revanche, si le refus persiste malgré des authentifications réussies, il s'agit d'un blocage permanent au niveau de la politique interne de l'émetteur
+A: Pour faire la distinction, il faut analyser en détail les journaux de la API de paiement dans le tableau de bord pour y chercher les codes de statut associés au défi d'authentification, tels que `three_d_secure_redirect_failed` ou `authentication_required`. Si le client n'a pas finalisé la validation sur son application bancaire mobile, le refus est temporaire et peut être résolu en envoyant un lien de paiement direct interactif. En revanche, si le refus persiste malgré des authentifications réussies, il s'agit d'un blocage permanent au niveau de la politique interne de l'émetteur
 
-Q3. Quelle est la meilleure stratégie alternative à adopter immédiatement si un client stratégique ne parvient pas à régler sa facture par carte
+Q: Quelle est la meilleure stratégie alternative à adopter immédiatement si un client stratégique ne parvient pas à régler sa facture par carte?
 
-A3. En cas d'échec persistant par carte bancaire, la solution la plus rapide et la plus sûre en milieu B2B est de basculer immédiatement sur un mode de règlement par virement bancaire direct via des solutions de paiement transfrontalier optimisées comme Wise Business ou GoCardless. Ces canaux contournent totalement les barrières des réseaux de cartes de crédit, éliminent les risques de faux positifs liés aux algorithmes de fraude et garantissent un règlement sécurisé sans frais de change excessifs ni risque de rétrofacturation frauduleuse.
+A: En cas d'échec persistant par carte bancaire, la solution la plus rapide et la plus sûre en milieu B2B est de basculer immédiatement sur un mode de règlement par virement bancaire direct via des solutions de paiement transfrontalier optimisées comme Wise Business ou GoCardless. Ces canaux contournent totalement les barrières des réseaux de cartes de crédit, éliminent les risques de faux positifs liés aux algorithmes de fraude et garantissent un règlement sécurisé sans frais de change excessifs ni risque de rétrofacturation frauduleuse.

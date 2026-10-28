@@ -36,14 +36,14 @@ Bên cạnh đó, việc phân bổ dòng tiền qua nhiều cổng thanh toán 
 
 ## 5. Các câu hỏi thường gặp 1. Tại sao tài khoản của tôi bị giữ tiền 21 ngày mà không có cảnh báo trước
 
-Q1. Q1. Tại sao tài khoản của tôi bị giữ tiền 21 ngày mà không có cảnh báo trước
+Q: Tại sao tài khoản của tôi bị giữ tiền 21 ngày mà không có cảnh báo trước?
 
-A1. Các cổng thanh toán quốc tế sử dụng hệ thống tự động để rà soát rủi ro dựa trên biến động giao dịch hoặc tỷ lệ khiếu nại từ khách hàng. Khi phát hiện dấu hiệu bất thường vượt ngưỡng an toàn, hệ thống sẽ tự động phong tỏa dòng tiền để bảo vệ người tiêu dùng và tuân thủ quy định pháp luật
+A: Các cổng thanh toán quốc tế sử dụng hệ thống tự động để rà soát rủi ro dựa trên biến động giao dịch hoặc tỷ lệ khiếu nại từ khách hàng. Khi phát hiện dấu hiệu bất thường vượt ngưỡng an toàn, hệ thống sẽ tự động phong tỏa dòng tiền để bảo vệ người tiêu dùng và tuân thủ quy định pháp luật
 
-Q2. Tôi cần chuẩn bị những giấy tờ gì để rút ngắn thời gian xử lý yêu cầu giữ tiền
+Q: Tôi cần chuẩn bị những giấy tờ gì để rút ngắn thời gian xử lý yêu cầu giữ tiền?
 
-A2. Bạn cần chuẩn bị giấy phép kinh doanh, sao kê tài khoản ngân hàng doanh nghiệp, hóa đơn thương mại, bằng chứng giao hàng thành công và hợp đồng dịch vụ có chữ ký hợp lệ. Việc cung cấp đầy đủ và minh bạch các tài liệu này sẽ giúp đội ngũ hỗ trợ xét duyệt nhanh chóng hơn
+A: Bạn cần chuẩn bị giấy phép kinh doanh, sao kê tài khoản ngân hàng doanh nghiệp, hóa đơn thương mại, bằng chứng giao hàng thành công và hợp đồng dịch vụ có chữ ký hợp lệ. Việc cung cấp đầy đủ và minh bạch các tài liệu này sẽ giúp đội ngũ hỗ trợ xét duyệt nhanh chóng hơn
 
-Q3. Làm thế nào để liên hệ trực tiếp với đội ngũ hỗ trợ cấp cao của cổng thanh toán
+Q: Làm thế nào để liên hệ trực tiếp với đội ngũ hỗ trợ cấp cao của cổng thanh toán?
 
-A3. Bạn nên truy cập vào mục trợ giúp trực tuyến trong bảng điều khiển quản trị và sử dụng tính năng trò chuyện trực tiếp (`live chat`) với tài khoản doanh nghiệp đã được xác thực. Tránh gửi email qua các hộp thư chung vì thời gian phản hồi thường rất lâu và khó theo dõi tiến độ xử lý vụ việc.
+A: Bạn nên truy cập vào mục trợ giúp trực tuyến trong bảng điều khiển quản trị và sử dụng tính năng trò chuyện trực tiếp (`live chat`) với tài khoản doanh nghiệp đã được xác thực. Tránh gửi email qua các hộp thư chung vì thời gian phản hồi thường rất lâu và khó theo dõi tiến độ xử lý vụ việc.

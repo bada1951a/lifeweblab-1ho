@@ -67,14 +67,14 @@ Buat mastikan kejadian horor di SCBD kemarin gak terulang lagi minggu depan, gue
 
 ## 5. Tanya Jawab Seputar Penanganan Error Pembayaran Global
 
-Q1. Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor?
+Q: Apakah aman melakukan retry manual pada transaksi Stripe yang menampilkan error do_not_honor?
 
-A1. Secara umum sangat tidak disarankan untuk langsung melakukan retry manual berkali-kali pada hari yang sama, terutama saat terjadi fluktuasi kurs tajam. Sebaiknya hubungi pelanggan terlebih dahulu untuk meminta mereka mengonfirmasi transaksi ke bank penerbit kartu mereka
+A: Secara umum sangat tidak disarankan untuk langsung melakukan retry manual berkali-kali pada hari yang sama, terutama saat terjadi fluktuasi kurs tajam. Sebaiknya hubungi pelanggan terlebih dahulu untuk meminta mereka mengonfirmasi transaksi ke bank penerbit kartu mereka
 
-Q2. Mengapa bank penerbit kartu langsung menolak transaksi dengan do_not_honor alih-alih memberikan alasan spesifik
+Q: Mengapa bank penerbit kartu langsung menolak transaksi dengan do_not_honor alih-alih memberikan alasan spesifik?
 
-A2. Kebijakan privasi dan keamanan perbankan global memang dirancang demikian untuk melindungi data nasabah serta mencegah potensi eksploitasi celah keamanan siber oleh pihak yang tidak bertanggung jawab
+A: Kebijakan privasi dan keamanan perbankan global memang dirancang demikian untuk melindungi data nasabah serta mencegah potensi eksploitasi celah keamanan siber oleh pihak yang tidak bertanggung jawab
 
-Q3. Bagaimana cara mencegah terputusnya layanan langganan klien saat terjadi lonjakan gagal bayar massal
+Q: Bagaimana cara mencegah terputusnya layanan langganan klien saat terjadi lonjakan gagal bayar massal?
 
-A3. Anda harus mengatur grace period (masa tenggang) yang lebih panjang di pengaturan penagihan sistem Anda, serta menyiapkan email otomatis yang ramah untuk mengarahkan klien memperbarui metode pembayaran mereka secara mandiri.
+A: Anda harus mengatur grace period (masa tenggang) yang lebih panjang di pengaturan penagihan sistem Anda, serta menyiapkan email otomatis yang ramah untuk mengarahkan klien memperbarui metode pembayaran mereka secara mandiri.

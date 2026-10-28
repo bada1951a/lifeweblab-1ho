@@ -69,14 +69,14 @@ Da quel giorno drammatico ho cambiato completamente il nostro metodo di lavoro i
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Q1. Il blocco dei 21 giorni si applica a qualsiasi tipo di conto aziendale verificato
+Q: Il blocco dei 21 giorni si applica a qualsiasi tipo di conto aziendale verificato?
 
-A1. Purtroppo sì, se l'algoritmo rileva un comportamento insolito, un aumento improvviso dei volumi o una mancanza di storico transazionale, il conto può subire restrizioni indipendentemente dal livello di verifica aziendale precedente
+A: Purtroppo sì, se l'algoritmo rileva un comportamento insolito, un aumento improvviso dei volumi o una mancanza di storico transazionale, il conto può subire restrizioni indipendentemente dal livello di verifica aziendale precedente
 
-Q2. Posso accelerare lo sblocco se vendo servizi digitali anziché prodotti fisici
+Q: Posso accelerare lo sblocco se vendo servizi digitali anziché prodotti fisici?
 
-A2. Assolutamente sì. Devi aggiornare tempestivamente lo stato della transazione su `Servizio completato` e allegare documentazione di supporto come contratti firmati, report di lavoro o fatture dettagliate che dimostrino l'effettiva erogazione della prestazione
+A: Assolutamente sì. Devi aggiornare tempestivamente lo stato della transazione su `Servizio completato` e allegare documentazione di supporto come contratti firmati, report di lavoro o fatture dettagliate che dimostrino l'effettiva erogazione della prestazione
 
-Q3. Conviene mantenere grandi somme di denaro liquide su PayPal per i pagamenti B2B
+Q: Conviene mantenere grandi somme di denaro liquide su PayPal per i pagamenti B2B?
 
-A3. Per la mia esperienza diretta, la risposta è un netto no. È sempre consigliabile trasferire i fondi sui conti correnti bancari aziendali tradizionali non appena le transazioni vengono liquidate, riducendo al minimo l'esposizione a blocchi improvvisi della piattaforma.
+A: Per la mia esperienza diretta, la risposta è un netto no. È sempre consigliabile trasferire i fondi sui conti correnti bancari aziendali tradizionali non appena le transazioni vengono liquidate, riducendo al minimo l'esposizione a blocchi improvvisi della piattaforma.

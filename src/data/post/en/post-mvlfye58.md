@@ -63,14 +63,14 @@ To ensure our finance team never has to experience that heart-stopping morning p
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Q1. Questions
+Q: Questions?
 
-A1. Yes, absolutely. The 21-day hold is an automated safety net designed for unverified accounts or sudden velocity spikes. By immediately updating the transaction status to 'Completed', providing digital delivery proof or contract documentation, and having your customer confirm receipt on their end, the algorithm often releases the funds within 24 to 48 hours instead of three full weeks
+A: Yes, absolutely. The 21-day hold is an automated safety net designed for unverified accounts or sudden velocity spikes. By immediately updating the transaction status to 'Completed', providing digital delivery proof or contract documentation, and having your customer confirm receipt on their end, the algorithm often releases the funds within 24 to 48 hours instead of three full weeks
 
-Q2. How do I get a refund for duplicate cross-border fees charged on a single invoice
+Q: How do I get a refund for duplicate cross-border fees charged on a single invoice?
 
-A2. You need to act quickly through the resolution center. Submit a formal fee dispute ticket under the `Billing` menu, attaching an export of your transaction history and API logs that clearly highlight the overlapping charges. Support agents with merchant-tier access can manually issue a fee credit directly to your account balance once the duplication is verified
+A: You need to act quickly through the resolution center. Submit a formal fee dispute ticket under the `Billing` menu, attaching an export of your transaction history and API logs that clearly highlight the overlapping charges. Support agents with merchant-tier access can manually issue a fee credit directly to your account balance once the duplication is verified
 
-Q3. What should I do if my account is hit with a sudden reserve requirement alongside the hold
+Q: What should I do if my account is hit with a sudden reserve requirement alongside the hold?
 
-A3. A sudden rolling reserve usually indicates that your chargeback or refund ratio has breached PayPal's risk tolerance. To counter this, immediately submit your latest audited financial statements, customer satisfaction metrics, and proof of low dispute rates through the resolution dashboard. Engaging a dedicated PayPal account manager or partner success representative can also fast-track the review of your reserve percentage.
+A: A sudden rolling reserve usually indicates that your chargeback or refund ratio has breached PayPal's risk tolerance. To counter this, immediately submit your latest audited financial statements, customer satisfaction metrics, and proof of low dispute rates through the resolution dashboard. Engaging a dedicated PayPal account manager or partner success representative can also fast-track the review of your reserve percentage.

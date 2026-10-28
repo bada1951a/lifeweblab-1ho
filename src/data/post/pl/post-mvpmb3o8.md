@@ -61,14 +61,14 @@ Aby zabezpieczyć firmę przed nagłymi zamrożeniami kapitału, należy wdroży
 
 ## 5. Najczęściej zadawane pytania 1. Dlaczego
 
-Q1. Q1. Dlaczego Stripe zwraca błąd `generic_decline`, skoro karta zagraniczna ma wystarczające środki
+Q: Dlaczego Stripe zwraca błąd `generic_decline`, skoro karta zagraniczna ma wystarczające środki?
 
-A1. Komunikat `generic_decline` oznacza, że bank wydający kartę lub algorytm antyfraudowy bramki odrzucił transakcję bez podania konkretnej przyczyny ze względów bezpieczeństwa. Często wynika to z niedopasowania lokalizacji IP, przekroczenia dziennych limitów transakcyjnych lub restrykcyjnych ustawień autoryzacyjnych banku odbiorcy dla płatności internetowych. Aby to ominąć, należy skontaktować się z wydawcą karty w celu odblokowania płatności międzynarodowych lub skorzystać z alternatywnej metody płatności, takiej jak przelew bankowy
+A: Komunikat `generic_decline` oznacza, że bank wydający kartę lub algorytm antyfraudowy bramki odrzucił transakcję bez podania konkretnej przyczyny ze względów bezpieczeństwa. Często wynika to z niedopasowania lokalizacji IP, przekroczenia dziennych limitów transakcyjnych lub restrykcyjnych ustawień autoryzacyjnych banku odbiorcy dla płatności internetowych. Aby to ominąć, należy skontaktować się z wydawcą karty w celu odblokowania płatności międzynarodowych lub skorzystać z alternatywnej metody płatności, takiej jak przelew bankowy
 
-Q2. Jak szybko Stripe odblokowuje konto po przesłaniu wymaganych dokumentów weryfikacyjnych KYB
+Q: Jak szybko Stripe odblokowuje konto po przesłaniu wymaganych dokumentów weryfikacyjnych KYB?
 
-A2. Standardowy czas rozpatrzenia dokumentów weryfikacyjnych przez dział compliance wynosi od 24 do 72 godzin w dni robocze. W sytuacjach krytycznych, po zaznaczeniu odpowiedniego priorytetu w zgłoszeniu do supportu i dostarczeniu kompletnych, bezbłędnych danych rejestrowych firmy, proces ten udaje się skrócić nawet do kilku godzin. Kluczem jest dostarczenie czytelnych skanów w formacie PDF oraz zgodność danych firmy z rejestrami publicznymi
+A: Standardowy czas rozpatrzenia dokumentów weryfikacyjnych przez dział compliance wynosi od 24 do 72 godzin w dni robocze. W sytuacjach krytycznych, po zaznaczeniu odpowiedniego priorytetu w zgłoszeniu do supportu i dostarczeniu kompletnych, bezbłędnych danych rejestrowych firmy, proces ten udaje się skrócić nawet do kilku godzin. Kluczem jest dostarczenie czytelnych skanów w formacie PDF oraz zgodność danych firmy z rejestrami publicznymi
 
-Q3. Co zrobić, gdy zagraniczny kontrahent nie chce podać numeru NIP/VAT do międzynarodowej faktury B2B
+Q: Co zrobić, gdy zagraniczny kontrahent nie chce podać numeru NIP/VAT do międzynarodowej faktury B2B?
 
-A3. Brak numeru identyfikacji podatkowej uniemożliwia legalne zastosowanie procedury odwrotnego obciążenia VAT i drastycznie zwiększa ryzyko odrzucenia transakcji przez systemy rozliczeniowe. W takiej sytuacji należy wstrzymać realizację płatności do momentu uzupełnienia danych, ponieważ organy podatkowe mogą zakwestionować transakcję jako sprzedaż B2C, nakładając na Twoją firmę obowiązek naliczenia lokalnego podatku VAT. Zaleca się przesłanie kontrahentowi oficjalnego przypomnienia o wymogach prawnych obowiązujących w międzynarodowym obrocie gospodarczym.
+A: Brak numeru identyfikacji podatkowej uniemożliwia legalne zastosowanie procedury odwrotnego obciążenia VAT i drastycznie zwiększa ryzyko odrzucenia transakcji przez systemy rozliczeniowe. W takiej sytuacji należy wstrzymać realizację płatności do momentu uzupełnienia danych, ponieważ organy podatkowe mogą zakwestionować transakcję jako sprzedaż B2C, nakładając na Twoją firmę obowiązek naliczenia lokalnego podatku VAT. Zaleca się przesłanie kontrahentowi oficjalnego przypomnienia o wymogach prawnych obowiązujących w międzynarodowym obrocie gospodarczym.

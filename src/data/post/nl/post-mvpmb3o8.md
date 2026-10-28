@@ -68,20 +68,10 @@ Om dit soort nachtmerries structureel te voorkomen, moet elke financieel directe
 
 ## 5. Veelgestelde Vragen 1
 
-A3. Een permanente accountblokkade leidt er vrijwel altijd toe dat uw resterende kapitaal voor een periode van meerdere maanden wordt vastgehouden in een zogenaamde rolling reserve om potentiële terugboekingen te dekken. Dit veroorzaakt een directe liquiditeitscrisis binnen uw organisatie en kan u bovendien op een internationale zwarte lijst plaatsen. Het is daarom essentieel om altijd een geback-upte alternatieve betaalmethode achter de hand te hebben voor noodgevallen
+Q: Hoe stelt u uw cashflow veilig bij achterstallige facturen zonder accountrisico?
 
-Q2. Hoe stelt u uw cashflow veilig bij achterstallige facturen zonder accountrisico
+A: Een permanente accountblokkade leidt er vrijwel altijd toe dat uw resterende kapitaal voor een periode van meerdere maanden wordt vastgehouden in een zogenaamde rolling reserve om potentiële terugboekingen te dekken. Dit veroorzaakt een directe liquiditeitscrisis binnen uw organisatie en kan u bovendien op een internationale zwarte lijst plaatsen. Het is daarom essentieel om altijd een geback-upte alternatieve betaalmethode achter de hand te hebben voor noodgevallen
 
-A2. Leg betalingen in termijnen contractueel vast en beperk respijttermijnen tot maximaal 7 dagen met automatische opschorting van de dienstverlening
+Q: Wat moet u direct doen bij een chargeback-melding op Stripe?
 
-Q3. Wat moet u direct doen bij een chargeback-melding op Stripe
-
-A3. Dien binnen 48 uur bewijsmateriaal in (getekende contracten, leveringsbewijzen en IP-logs) om geschillenheffingen en accountblokkades te voorkomen. (FAQ)
-
-Q1. Q1
-
-A3. Een permanente accountblokkade leidt er vrijwel altijd toe dat uw resterende kapitaal voor een periode van meerdere maanden wordt vastgehouden in een zogenaamde rolling reserve om potentiële terugboekingen te dekken. Dit veroorzaakt een directe liquiditeitscrisis binnen uw organisatie en kan u bovendien op een internationale zwarte lijst plaatsen. Het is daarom essentieel om altijd een geback-upte alternatieve betaalmethode achter de hand te hebben voor noodgevallen
-
-A2. Leg betalingen in termijnen contractueel vast en beperk respijttermijnen tot maximaal 7 dagen met automatische opschorting van de dienstverlening
-
-A3. Dien binnen 48 uur bewijsmateriaal in (getekende contracten, leveringsbewijzen en IP-logs) om geschillenheffingen en accountblokkades te voorkomen.
+A: Leg betalingen in termijnen contractueel vast en beperk respijttermijnen tot maximaal 7 dagen met automatische opschorting van de dienstverlening

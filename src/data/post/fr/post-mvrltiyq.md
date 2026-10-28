@@ -38,14 +38,14 @@ Il est également recommandé de renouveler proactivement vos formulaires fiscau
 
 ## 5. Foire Aux Questions 1. Pourquoi le client applique-t-il 30% de retenue alors que je suis une entreprise française
 
-Q1. Questions
+Q: Questions?
 
-A1. En l'absence d'un formulaire `W-8BEN` ou `W-8BEN-E` valide et correctement rempli, la loi américaine oblige les entreprises locales à retenir 30% à la source sur tous les paiements vers l'étranger. Ce prélèvement automatique sert à couvrir l'impôt fédéral au taux maximal par défaut, en attendant de prouver votre éligibilité à la convention fiscale bilatérale
+A: En l'absence d'un formulaire `W-8BEN` ou `W-8BEN-E` valide et correctement rempli, la loi américaine oblige les entreprises locales à retenir 30% à la source sur tous les paiements vers l'étranger. Ce prélèvement automatique sert à couvrir l'impôt fédéral au taux maximal par défaut, en attendant de prouver votre éligibilité à la convention fiscale bilatérale
 
-Q2. Puis-je récupérer les 30% déjà déduits sur mon précédent virement
+Q: Puis-je récupérer les 30% déjà déduits sur mon précédent virement?
 
-A2. Oui, il est tout à fait possible de récupérer les sommes indûment prélevées, mais la méthode dépend de votre client. S'il n'a pas encore reversé l'impôt à l'`IRS`, il peut procéder à un remboursement direct et émettre un nouveau virement. Sinon, vous devrez déposer une réclamation fiscale spécifique auprès de l'administration américaine
+A: Oui, il est tout à fait possible de récupérer les sommes indûment prélevées, mais la méthode dépend de votre client. S'il n'a pas encore reversé l'impôt à l'`IRS`, il peut procéder à un remboursement direct et émettre un nouveau virement. Sinon, vous devrez déposer une réclamation fiscale spécifique auprès de l'administration américaine
 
-Q3. Quelle est la durée de validité d'un formulaire fiscal américain
+Q: Quelle est la durée de validité d'un formulaire fiscal américain?
 
-A3. De manière générale, un formulaire fiscal tel que le `W-8BEN-E` reste valide pour une période de trois années civiles complètes à compter de sa date de signature. Toutefois, en cas de modification de vos statuts, de changement de nom ou de modification de votre structure juridique, vous devez en soumettre un nouveau immédiatement.
+A: De manière générale, un formulaire fiscal tel que le `W-8BEN-E` reste valide pour une période de trois années civiles complètes à compter de sa date de signature. Toutefois, en cas de modification de vos statuts, de changement de nom ou de modification de votre structure juridique, vous devez en soumettre un nouveau immédiatement.

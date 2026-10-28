@@ -78,16 +78,14 @@ Chaque fin de mois, j'analyse les rapports de notre `Tableau de bord` pour ident
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-Q1. questions
+Q: questions?
 
-Pour clore ce retour d'expérience, voici les réponses aux questions que l'on me pose le plus souvent lors de nos ateliers internes sur la gestion des litiges de paiement
+A: Pour clore ce retour d'expérience, voici les réponses aux questions que l'on me pose le plus souvent lors de nos ateliers internes sur la gestion des litiges de paiement
 
-Q1. Dois-je immédiatement réessayer de débiter la même carte après un message do_not_honor ?Absolument pas. Relancer une carte refusée plusieurs fois d'affilée est la pire erreur à commettre. Les algorithmes de sécurité interprètent cet acharnement comme une tentative de fraude par force brute, ce qui entraîne un blocage définitif de la carte par la banque émettrice. Mieux vaut contacter le client ou proposer une autre méthode
+Q: Pourquoi une banque refuse-t-elle un paiement alors que le client a largement les fonds nécessaires?
 
-Q2. Pourquoi une banque refuse-t-elle un paiement alors que le client a largement les fonds nécessaires
+A: Le code `do_not_honor` ne signifie pas nécessairement que le compte est vide. Il indique que la banque refuse de honorer la transaction pour des raisons de sécurité interne, de suspicion de fraude, de non-conformité avec les limites de dépenses en ligne, ou d'absence de validation 3D Secure conforme
 
-A2. Le code `do_not_honor` ne signifie pas nécessairement que le compte est vide. Il indique que la banque refuse de honorer la transaction pour des raisons de sécurité interne, de suspicion de fraude, de non-conformité avec les limites de dépenses en ligne, ou d'absence de validation 3D Secure conforme
+Q: Comment rassurer un client grand compte dont le paiement a été rejeté sans paraître incompétent?
 
-Q3. Comment rassurer un client grand compte dont le paiement a été rejeté sans paraître incompétent
-
-A3. Il faut dédramatiser la situation immédiatement en expliquant que c'est une mesure de sécurité standard des banques pour les facturations internationales élevées. En lui fournissant tout de suite une solution de contournement fluide (comme un lien de paiement alternatif ou un virement), vous transformez un incident technique en une démonstration de réactivité et de professionnalisme.
+A: Il faut dédramatiser la situation immédiatement en expliquant que c'est une mesure de sécurité standard des banques pour les facturations internationales élevées. En lui fournissant tout de suite une solution de contournement fluide (comme un lien de paiement alternatif ou un virement), vous transformez un incident technique en une démonstration de réactivité et de professionnalisme.
