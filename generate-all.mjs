@@ -126,108 +126,6 @@ function validateGeneratedPost(text, langCode) {
 }
 
 // =========================================================================
-// [2-1호기 전용] 12개국 100% 현지어 섹션 제목 및 치환 딕셔너리 (영구 고정)
-// =========================================================================
-const I18N_SECTIONS = {
-  ko: {
-    s1: '1. 결제·송금 돌발 오류와 긴급 점검 상황',
-    s2: '2. 결제 거절 및 처리 실패의 핵심 원인 분석',
-    s3: '3. 1분 만에 해결하는 단계별 실무 조치 매뉴얼',
-    s4: '4. 계정 동결 및 수수료 폭탄 방지를 위한 실무 체크리스트',
-    s5: '5. 자주 묻는 질문 (FAQ)',
-    tags: ['해외결제', '인보이스', '송금오류', '비즈니스정산'],
-  },
-  en: {
-    s1: '1. Urgent Payment and Transfer Emergency',
-    s2: '2. Root Cause Analysis of Gateway Failures',
-    s3: '3. Step-by-Step Resolution Manual',
-    s4: '4. Practical Checklist to Avoid Account Holds',
-    s5: '5. Frequently Asked Questions (FAQ)',
-    tags: ['Global Payment', 'Invoicing', 'Payment Gateway', 'Fintech Fix'],
-  },
-  ja: {
-    s1: '1. 海外決済・送金エラーと緊急トラブル',
-    s2: '2. 決済拒否および処理失敗の根本原因',
-    s3: '3. 1分で完了する実践的なトラブルシューティング手順',
-    s4: '4. アカウント凍結を防ぐ実務チェックリスト',
-    s5: '5. よくある質問 (FAQ)',
-    tags: ['海外決済', '請求書トラブル', '送金エラー', '越境ビジネス'],
-  },
-  de: {
-    s1: '1. Dringender Zahlungs- und Überweisungsnotfall',
-    s2: '2. Ursachenanalyse von Transaktionsfehlern',
-    s3: '3. Schritt-für-Schritt-Anleitung zur Fehlerbehebung',
-    s4: '4. Praxis-Checkliste zur Vermeidung von Kontensperren',
-    s5: '5. Häufig gestellte Fragen (FAQ)',
-    tags: ['Zahlungsabwicklung', 'B2B-Rechnung', 'Fintech', 'Transaktionsfehler'],
-  },
-  fr: {
-    s1: "1. Situation d'urgence sur les paiements et virements",
-    s2: '2. Analyse des causes principales des rejets de paiement',
-    s3: '3. Manuel pratique de dépannage étape par étape',
-    s4: '4. Liste de contrôle pour éviter les blocages de compte',
-    s5: '5. Foire Aux Questions (FAQ)',
-    tags: ['Paiement International', 'Facturation B2B', 'Passerelle de Paiement', 'Gestion Litiges'],
-  },
-  es: {
-    s1: '1. Emergencia crítica en transferencias y cobros',
-    s2: '2. Análisis de causas raíz de rechazos de pago',
-    s3: '3. Manual paso a paso para resolver incidencias',
-    s4: '4. Lista de verificación para prevenir retenciones de fondos',
-    s5: '5. Preguntas Frecuentes (FAQ)',
-    tags: ['Pagos Internacionales', 'Facturación B2B', 'Pasarela de Pago', 'Gestión de Cobros'],
-  },
-  it: {
-    s1: '1. Emergenza improvvisa su pagamenti e bonifici',
-    s2: '2. Analisi approfondita dei rifiuti di pagamento',
-    s3: '3. Guida pratica di risoluzione passo dopo passo',
-    s4: '4. Checklist essenziale per evitare blocchi del conto',
-    s5: '5. Domande Frequenti (FAQ)',
-    tags: ['Pagamenti Globali', 'Fatturazione Elettronica', 'Gateway Pagamento', 'Risoluzione Errori'],
-  },
-  pt: {
-    s1: '1. Emergência com pagamentos e transferências globais',
-    s2: '2. Análise da causa raiz de recusas de pagamento',
-    s3: '3. Manual prático passo a passo de resolução',
-    s4: '4. Checklist essencial para evitar retenções de saldo',
-    s5: '5. Perguntas Frecuentes (FAQ)',
-    tags: ['Pagamentos Globais', 'Faturamento B2B', 'Gateway de Pagamento', 'Finanças'],
-  },
-  nl: {
-    s1: '1. Noodsituatie bij internationale betalingen',
-    s2: '2. Grondige analyse van mislukte betalingstransacties',
-    s3: '3. Stapsgewijze handleiding voor het direct oplossen',
-    s4: '4. Checklist om rekeningblokkades te voorkomen',
-    s5: '5. Veelgestelde Vragen (FAQ)',
-    tags: ['Internationale Betalingen', 'Facturatie', 'Payment Gateway', 'Financiële Tips'],
-  },
-  pl: {
-    s1: '1. Awaryjna sytuacja z płatnościami zagranicznymi',
-    s2: '2. Analiza przyczyn odrzuceń płatności i błędów',
-    s3: '3. Praktyczny przewodnik rozwiązywania problemów',
-    s4: '4. Lista kontrolna zapobiegająca blokadom konta',
-    s5: '5. Najczęściej zadawane pytania (FAQ)',
-    tags: ['Płatności Globalne', 'Fakturowanie B2B', 'Bramki Płatności', 'Rozliczenia'],
-  },
-  id: {
-    s1: '1. Situasi Darurat Transaksi Pembayaran dan Transfer',
-    s2: '2. Analisis Akar Masalah Penolakan Gateway Pembayaran',
-    s3: '3. Panduan Langkah demi Langkah Penanganan Masalah',
-    s4: '4. Lembar Periksa Mencegah Penahanan Dana Akun',
-    s5: '5. Pertanyaan yang Sering Diajukan (FAQ)',
-    tags: ['Pembayaran Global', 'Faktur Bisnis', 'Gateway Pembayaran', 'Fintech'],
-  },
-  vi: {
-    s1: '1. Sự cố khẩn cấp khi thanh toán và chuyển tiền',
-    s2: '2. Phân tích nguyên nhân lỗi từ chối thanh toán',
-    s3: '3. Quy trình thực tế từng bước xử lý lỗi cổng thanh toán',
-    s4: '4. Danh sách kiểm tra ngăn ngừa đóng băng tài khoản',
-    s5: '5. Các câu hỏi thường gặp (FAQ)',
-    tags: ['Thanh Toán Quốc Tế', 'Hóa Đơn B2B', 'Cổng Thanh Toán', 'Xử Lý Sự Cố'],
-  },
-};
-
-// =========================================================================
 // 🛡️ [2-1호기 자가 검수 및 치유 엔진: Self-Healing Inspector]
 // =========================================================================
 function inspectAndHealMarkdown(body) {
@@ -513,7 +411,7 @@ Provide exactly 3 practical Q&A items. You MUST put an empty line between Questi
 [FORMATTING RULES]
 1. Never put asterisks (**) inside H2 headings.
 2. Bold keywords with strict syntax: **keyword** (no space inside asterisks).
-3. Put error codes or settings in inline backticks (e.g. \`W-8BEN\`, \`3DS2\`).
+3. Replace frontmatter tags: [] with a SINGLE-LINE YAML array of 3-5 distinct, short, specific tags in the native language directly relevant to the topic; never leave the array empty or use template placeholders.\n4. Put error codes or settings in inline backticks (e.g. \`W-8BEN\`, \`3DS2\`).
 ${lang.code !== 'ko' ? `- Absolutely NO Korean characters in non-Korean posts.` : ''}
 
 [Strict Output Format]
@@ -524,7 +422,7 @@ description: "Native concise description in ${lang.name} under 160 characters"
 publishDate: ${pubDateIso}
 image: "${coverUrl}"
 category: "troubleshooting"
-tags: ["3 to 5 short native-language tags directly relevant to the exact topic; replace this instruction with actual individual YAML string items"]
+tags: []
 ---
 `;
 
@@ -587,12 +485,12 @@ async function run() {
   if (DRY_RUN) {
     console.log('DRY RUN: API 호출 및 글 발행 없이 기본 검수 함수를 확인합니다.');
     const sample =
-      '---\ntitle: test\ndescription: test\npublishDate: 2026-10-28\nimage: /test.jpg\ncategory: troubleshooting\n---\n\n## 1. Test\nShort';
+      '---\ntitle: test\ndescription: test\npublishDate: 2026-10-28\nimage: /test.jpg\ncategory: troubleshooting\ntags: [test-one, test-two, test-three]\n---\n\n## 1. Test\nShort';
     if (!validateGeneratedPost(sample, 'ko').some((x) => x.includes('분량')))
       throw new Error('분량 검수 자체 테스트 실패');
     console.log('PASS: 짧은 글 발행 차단 검수');
     const fullSample =
-      '---\ntitle: test\ndescription: test\npublishDate: 2026-10-28\nimage: /test.jpg\ncategory: troubleshooting\n---\n\n' +
+      '---\ntitle: test\ndescription: test\npublishDate: 2026-10-28\nimage: /test.jpg\ncategory: troubleshooting\ntags: [test-one, test-two, test-three]\n---\n\n' +
       [1, 2, 3, 4, 5].map((n) => '## ' + n + '. Test\n\n' + '설명 문장입니다. '.repeat(65)).join('\n\n') +
       '\n\n**Q1.** 질문\n\n**A1.** 답변\n\n**Q2.** 질문\n\n**A2.** 답변\n\n**Q3.** 질문\n\n**A3.** 답변';
     const validErrors = validateGeneratedPost(fullSample, 'ko');
