@@ -9,15 +9,14 @@
 
 import fs from 'fs';
 import path from 'path';
-import { GoogleGenAI } from '@google/genai';
+// OpenAI Responses API: 별도 SDK 없이 Node.js 내장 fetch 사용
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-if (!GEMINI_API_KEY) {
-  console.error("❌ GEMINI_API_KEY 환경변수가 설정되지 않았습니다.");
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const DRY_RUN = process.argv.includes('--dry-run');
+if (!DRY_RUN && !OPENAI_API_KEY) {
+  console.error("❌ OPENAI_API_KEY 환경변수가 설정되지 않았습니다.");
   process.exit(1);
 }
-
-const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
@@ -88,8 +87,13 @@ function validateGeneratedPost(text, langCode) {
     if (!new RegExp('^' + field + ':\\s*\\S', 'm').test(meta)) errors.push(field + ' 누락');
   }
   if (!/^category:\s*['"]?troubleshooting['"]?\s*$/m.test(meta)) errors.push('category 오류');
-  if (body.length < (langCode === 'ko' ? 1000 : 1800)) errors.push('본문 길이 부족 또는 잘림');
-  if ((body.match(/^##\s+/gm) || []).length < 5) errors.push('H2 섹션 5개 미만');
+  const readable = body.replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/[#*_`>]/g, '').trim();
+  const count = langCode === 'ko' ? [...readable.replace(/\s/g, '')].length : (readable.match(/\S+/g) || []).length;
+  if (count < (langCode === 'ko' ? 1900 : 750) || count > (langCode === 'ko' ? 3100 : 1350))
+    errors.push('본문 분량 범위 이탈: ' + count + (langCode === 'ko' ? '자' : '단어'));
+  if (/^#\s+/m.test(body)) errors.push('본문 H1 중복');
+  if (/\*\*\*\*|\*\*\*Q[1-3]/.test(body)) errors.push('볼드 마크다운 오류');
+  if ((body.match(/^##\s+/gm) || []).length !== 5) errors.push('H2 섹션은 정확히 5개 필요');
   if ((body.match(/\*\*Q[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 질문 3개 미만');
   if ((body.match(/\*\*A[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 답변 3개 미만');
   if (langCode !== 'ko' && /[가-힣]/.test(body)) errors.push('비한국어 본문에 한글 포함');
@@ -223,8 +227,8 @@ function inspectAndHealMarkdown(body, langCode) {
   // 질문(Q)과 답변(A) 사이에 줄바꿈이 없거나 1줄만 떨어진 것을 감지하여 빈 줄 2개(\n\n)로 완벽 분리
   const rawQnACount = (healed.match(/Q[1-3]\./gi) || []).length;
   if (rawQnACount > 0) {
-    healed = healed.replace(/\s*(\*\*Q[1-3]\.\*\*|Q[1-3]\.)\s*/gi, '\n\n**$1** ');
-    healed = healed.replace(/\s*(\*\*A[1-3]\.\*\*|A[1-3]\.)\s*/gi, '\n\n**$1** ');
+    healed = healed.replace(/\s*(?:\*\*)?(Q[1-3]\.)(?:\*\*)?\s*/gi, '\n\n**$1** ');
+    healed = healed.replace(/\s*(?:\*\*)?(A[1-3]\.)(?:\*\*)?\s*/gi, '\n\n**$1** ');
     
     // 이중 볼드 정돈 (** **Q1.** ** -> **Q1.**)
     healed = healed.replace(/\*\*\s*\*\*(Q[1-3]\.|A[1-3]\.)\*\*\s*\*\*/gi, '**$1**');
@@ -333,24 +337,31 @@ const fileSlug = `post-${Date.now().toString(36)}`;
 async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.5-flash-lite',
-        contents: prompt,
-        config: {
-          maxOutputTokens: 4096,
-          temperature: 0.7,
-        }
+      const response = await fetch('https://api.openai.com/v1/responses', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + OPENAI_API_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gpt-6-luna',
+          input: prompt,
+          max_output_tokens: 6144
+        })
       });
-      return response.text;
+      const data = await response.json();
+      if (!response.ok) throw new Error('OpenAI HTTP ' + response.status + ': ' + JSON.stringify(data.error || {}).slice(0, 400));
+      if (data.status === 'incomplete') throw new Error('AI 응답이 잘렸습니다: ' + JSON.stringify(data.incomplete_details || {}));
+      const output = (data.output || []).flatMap(item => item.content || [])
+        .filter(part => part.type === 'output_text').map(part => part.text || '').join('\n').trim();
+      if (!output) throw new Error('AI 본문이 비어 있습니다.');
+      return output;
     } catch (error) {
-      console.warn(`⚠️ [호출 재시도 ${attempt}/${maxRetries}]: ${error.message}`);
-      if (attempt === maxRetries) { throw error; }
-      await delay(delayMs);
+      console.warn('⚠️ [호출 재시도 ' + attempt + '/' + maxRetries + ']: ' + error.message);
+      if (attempt === maxRetries) throw error;
+      await delay(delayMs * attempt);
     }
   }
 }
 
-async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug, publishDateBase = new Date()) {
+async function generateSinglePost(lang, index, topic, slug, publishDateBase = new Date()) {
   const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
@@ -370,7 +381,7 @@ Topic: "${topic}"
 [ADSENSE QUALITY & LENGTH REQUIREMENT]
 - For Korean (ko): Write exactly around 2,400 - 2,600 characters (do NOT exceed 3,000 characters).
 - For other languages: Write exactly 900 - 1,100 words.
-- Tone: Highly informative, professional, practical workplace advice.
+- Tone: Highly informative, professional, practical workplace advice.\n- Never invent first-hand experience, credentials, tested results, customer stories, provider settings, financial regulations or tax rules.\n- Give concrete actionable steps; when provider policies differ, clearly state the limitation.\n- Avoid repetition and include a concise conclusion in section 4.
 
 [STRUCTURE - STRICT 5 H2 HEADINGS]
 Use these exact H2 headings:
@@ -440,7 +451,7 @@ tags: ${JSON.stringify(i18n.tags)}
       body = inspectAndHealMarkdown(body, lang.code);
 
       if (lang.code === 'ko') {
-        console.log(`   📏 [2-1호기 본문 최종 글자 수] ${body.length}자 (애드센스 표준: 2,400~2,600자)`);
+        console.log(`   📏 [2-1호기 본문 생성 길이] ${body.length}자 (목표: 2,400~2,600자)`);
       }
 
       // 본문 중간 이미지 배치 (2번 섹션 직전)
@@ -466,7 +477,7 @@ tags: ${JSON.stringify(i18n.tags)}
 
     const filePath = path.join(targetDir, `${slug}.md`);
     fs.writeFileSync(filePath, text, 'utf-8');
-    console.log(`   ✅ [성공] 2-1호기 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
+    console.log(`   ✅ [성공] 2-1호기 저장 완료: src/data/post/${lang.code}/${slug}.md`);
     return true;
   } catch (error) {
     console.error(`❌ [최종 실패] ${lang.name} 생성 실패:`, error.message);
@@ -474,7 +485,7 @@ tags: ${JSON.stringify(i18n.tags)}
   }
 }
 
-async function run() {
+async function run() {\n  if (DRY_RUN) {\n    console.log('DRY RUN: API 호출 및 글 발행 없이 기본 검수 함수를 확인합니다.');\n    const sample = '---\\ntitle: test\\ndescription: test\\npublishDate: 2026-10-28\\nimage: /test.jpg\\ncategory: troubleshooting\\n---\\n\\n## 1. Test\\nShort';\n    if (!validateGeneratedPost(sample, 'ko').some(x => x.includes('분량'))) throw new Error('분량 검수 자체 테스트 실패');\n    console.log('PASS: 짧은 글 발행 차단 검수');\n    return;\n  }
   console.log("==================================================");
   console.log("LifeWebLab: 발행 전 검수 및 실패 언어 복구 시작");
   console.log("==================================================");
