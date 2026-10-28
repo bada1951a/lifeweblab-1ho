@@ -26,7 +26,7 @@ The hardest part of that initial confusion was the sheer ambiguity of the `do_no
 
 <div style="text-align: center; margin: 36px 0;"><img src="/images/billing-photo/billing-11.jpg" alt="Troubleshooting Guide" style="max-width: 100%; max-height: 460px; width: auto; height: auto; border-radius: 14px; object-fit: cover; display: inline-block; box-shadow: 0 4px 18px rgba(0,0,0,0.08);" loading="lazy" /></div>
 
-## 2. Root Cause Breakdown of Invoicing and Gateway Failures Analysis of the Payment and Fee Discrepancy
+## 2. Root Cause Analysis of the Payment and Fee Discrepancy
 
 Once the initial adrenaline rush faded, our engineering and finance squads jumped onto a joint war-room bridge to dissect why this catastrophe happened. We broke down the technical and financial anatomy of the incident into three distinct culprits.
 
@@ -46,7 +46,7 @@ Another major factor was webhook congestion. Because our platform handles thousa
 <strong>[Key Point]:</strong> Root cause analysis proved that the duplicate fees were not actually permanent losses, but rather phantom ledger artifacts caused by webhook race conditions and out-of-order API retries during bank-level card declines.
 </div>
 
-## 3. Step-by-Step Practical Troubleshooting Manual Action Plan to Fix and Recover Revenue
+## 4. Step-by-Step Troubleshooting Plan to Fix and Recover Revenue
 
 Armed with a clear understanding of what went wrong, we executed an emergency remediation protocol. If you are facing a similar crisis with `do_not_honor` errors and messy ledger anomalies, follow this exact workflow through your administrative settings.
 
@@ -83,7 +83,7 @@ Instead of a generic decline message, set up a warm, professional template power
 
 This single operational shift recovered over 78% of our stalled pipeline within forty-eight hours.
 
-## 4. Best Practices for Long-Term Prevention
+## 5. Best Practices for Long-Term Prevention
 
 Fixing the crisis is only half the battle; ensuring it never happens again requires hardening your financial operations infrastructure. Here are the golden rules we established across both our Silicon Valley engineering squad and our New York finance office:
 
@@ -92,16 +92,16 @@ Fixing the crisis is only half the battle; ensuring it never happens again requi
 - Maintain Clear Cross-Border Documentation: Regularly audit your multi-currency payout schedules and exchange rate buffers in the Stripe `Billing` portal to ensure minor rounding discrepancies do not snowball into major financial reporting discrepancies.
 - Educate Customer Support on Decline Taxonomy: Train your frontline support reps to understand that `do_not_honor` is an issuer-side refusal. Equipping them with clear scripts helps guide international clients to resolve bank blocks smoothly without blaming your platform.
 
-## 5. 자주 묻는 질문 (FAQ)
+## 6. Frequently Asked Questions
 
-Q: Questions?
+To wrap things up, here are the answers to the most critical questions our finance and engineering teams wrestled with during and after the incident.
 
-A: To wrap things up, here are the answers to the most critical questions our finance and engineering teams wrestled with during and after the incident
 
-Q: What is the fastest way to verify if duplicate fee deductions are real losses or dashboard glitches?
+**Q: What is the fastest way to verify if duplicate fee deductions are real losses or dashboard glitches?**
 
-A: You need to bypass the front-end dashboard views and inspect the raw data. Go to the `Reports` section of your Stripe dashboard and download the comprehensive `Balance change from activity` report. Cross-reference the specific payout ID with your internal database logs and webhook event history. If the fee line item lacks a corresponding customer charge event or stems from an out-of-order webhook retry during a currency conversion lag, it is a ledger artifact rather than an actual cash loss, and you can safely reconcile it in your accounting software
+**A:** You need to bypass the front-end dashboard views and inspect the raw data. Go to the `Reports` section of your Stripe dashboard and download the comprehensive `Balance change from activity` report. Cross-reference the specific payout ID with your internal database logs and webhook event history. If the fee line item lacks a corresponding customer charge event or stems from an out-of-order webhook retry during a currency conversion lag, it is a ledger artifact rather than an actual cash loss, and you can safely reconcile it in your accounting software
 
-Q: How do I prevent international corporate clients from getting blocked by strict anti-fraud filters?
 
-A: International transactions frequently trigger conservative risk models at traditional banks. To minimize this, ensure your Stripe integration fully supports 3D Secure (3DS) authentication, which shifts liability and reassures issuing banks of the transaction's legitimacy. Additionally, encourage your enterprise clients to notify their corporate treasury or issuing bank ahead of time when processing unusually large cross-border invoices or marketplace payouts through your platform.
+**Q: How do I prevent international corporate clients from getting blocked by strict anti-fraud filters?**
+
+**A:** International transactions frequently trigger conservative risk models at traditional banks. To minimize this, ensure your Stripe integration fully supports 3D Secure (3DS) authentication, which shifts liability and reassures issuing banks of the transaction's legitimacy. Additionally, encourage your enterprise clients to notify their corporate treasury or issuing bank ahead of time when processing unusually large cross-border invoices or marketplace payouts through your platform.
