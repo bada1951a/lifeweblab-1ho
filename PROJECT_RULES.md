@@ -54,3 +54,11 @@ Status: Agreed operating principles; not a claim of deployment or AdSense approv
 - Target application date: around 2026-11-12 (approximately two weeks from 2026-10-29), not a guarantee of readiness or approval.
 - Before applying, audit site accessibility, crawl/index eligibility, navigation, policy/contact/about pages, original helpful content, language quality, duplication, broken layouts/links, and the actual published experience.
 - Prioritize fixing existing content and reliability over launching more blog units. Clearly distinguish confirmed issues, recommendations, and completed fixes. Never claim AdSense approval is guaranteed.
+
+## Verified unit-to-domain mapping (user-confirmed 2026-10-29)
+- Group 1 / 1ho: https://storydailyview.com/ — bada1951a/astrowind-blog
+- Group 1 / 2ho: https://m.storydailyview.com/ — bada1951a/astrowind-blog-2ho
+- Group 1 / 3ho: https://work.storydailyview.com/ — bada1951a/astrowind-blog-3ho
+- Group 1 / 4ho: https://prompt.storydailyview.com/ — bada1951a/astrowind-blog-4ho
+- Group 2 / 2-1ho: https://lifeweblab.com/ — bada1951a/lifeweblab-1ho
+- Immediate AdSense priorities: 1ho and 2-1ho. Do not confuse 2ho with 2-1ho.
