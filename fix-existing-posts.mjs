@@ -1,5 +1,5 @@
 // =========================================================================
-// 📌 [2-1호기 전용] 과거 글 볼드(**) 오염 및 띄어쓰기 100% 박멸 수술 스크립트
+// 📌 [2-1호기 전용] 텍스트 유실 0% + Q&A 완벽 복구 + 볼드 공백 교정 스크립트
 // =========================================================================
 
 import fs from 'fs';
@@ -55,14 +55,14 @@ const I18N_SECTIONS = {
     s2: "2. Analisi approfondita dei rifiuti di pagamento",
     s3: "3. Guida pratica di risoluzione passo dopo passo",
     s4: "4. Checklist essenziale per evitare blocchi del conto",
-    s5: "5. Domande Frequenti (FAQ)"
+    s5: "5. Domande Frecuenti (FAQ)"
   },
   pt: {
     s1: "1. Emergência com pagamentos e transferências globais",
     s2: "2. Análise da causa raiz de recusas de pagamento",
     s3: "3. Manual prático passo a passo de resolução",
     s4: "4. Checklist essencial para evitar retenções de saldo",
-    s5: "5. Perguntas Frequentes (FAQ)"
+    s5: "5. Perguntas Frecuentes (FAQ)"
   },
   nl: {
     s1: "1. Noodsituatie bij internationale betalingen",
@@ -94,83 +94,99 @@ const I18N_SECTIONS = {
   }
 };
 
-function cleanBoldAndTypography(text) {
+// 볼드 공백 및 조사 밀착 정돈 함수 (문자열 유실 방지)
+function sanitizeBoldSpacing(text) {
   let s = text;
 
-  // 1. 헤딩 라인 안의 볼드(**) 무조건 박멸
+  // 헤딩 라인 안의 볼드 제거 (## **제목** -> ## 제목)
   s = s.replace(/^(#{1,6}[^\n*]*?)\*\*(.*?)\*\*/gm, '$1$2');
 
-  // 2. 빈 볼드 및 찌꺼기 삭제
-  s = s.replace(/\*{3,}/g, '**');
+  // 빈 볼드 찌꺼기 제거
   s = s.replace(/\*\*\s*\*\*/g, '');
 
-  // 3. [핵심] 볼드 내부 공백 제거 및 한국어 조사 밀착
-  // **인보이스 **가 -> **인보이스**가
-  // **Stripe **는 -> **Stripe**는
-  // **enterprise invoice **of -> **enterprise invoice** of
-  s = s.replace(/\*\*\s*([^\n*]+?)\s*\*\*([가-힣])/g, '**$1**$2');
-  s = s.replace(/\*\*\s*([^\n*]+?)\s*\*\*([a-zA-Z0-9])/g, '**$1** $2');
-  s = s.replace(/([a-zA-Z0-9가-힣])\*\*\s*([^\n*]+?)\s*\*\*/g, '$1 **$2**');
-  s = s.replace(/\*\*\s*([^\n*]+?)\s*\*\*/g, '**$1**');
+  // **단어 **조사 -> **단어** 조사 (공백을 볼드 밖으로 이동)
+  s = s.replace(/\*\*\s*([^\n*]+?)\s+\*\*([가-힣a-zA-Z0-9])/g, '**$1** $2');
 
-  // 4. Method 1: ... **1. 처럼 리스트 번호가 붙은 경우 강제 분리
-  s = s.replace(/(\*\*[^*]+?\*\*)\s*([1-9]\.)/g, '$1\n\n$2');
+  // ** 단어 ** -> **단어**
+  s = s.replace(/\*\*\s+([^\n*]+?)\s+\*\*/g, '**$1**');
+  s = s.replace(/\*\*\s+([^\n*]+?)\*\*/g, '**$1**');
+  s = s.replace(/\*\*([^\n*]+?)\s+\*\*/g, '**$1**');
+
+  // 단어**볼드** -> 단어 **볼드** (단어 간격 띄어쓰기 확보)
+  s = s.replace(/([가-힣a-zA-Z0-9])\*\*([가-힣a-zA-Z0-9_-]+)\*\*/g, '$1 **$2**');
 
   return s;
 }
 
-function healMarkdownPost(body, langCode) {
+function healPostSafely(body, langCode) {
   const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
-  let text = body.trim();
-
-  // 1. 중복 소제목 서브헤더(### ###) 정돈
-  text = text.replace(/^#{3,6}\s*#{3,6}\s*/gm, '### ');
-
-  // 2. 소제목 1~4 정규화 (전후 빈 줄 2개 보장)
-  text = text.replace(/^#{1,6}\s*1[.\s]+[^\n]+/m, `## ${i18n.s1}\n\n`);
-  text = text.replace(/^#{1,6}\s*2[.\s]+[^\n]+/m, `\n\n## ${i18n.s2}\n\n`);
-  text = text.replace(/^#{1,6}\s*3[.\s]+[^\n]+/m, `\n\n## ${i18n.s3}\n\n`);
-  text = text.replace(/^#{1,6}\s*4[.\s]+[^\n]+/m, `\n\n## ${i18n.s4}\n\n`);
-
-  // 3. FAQ 헤딩 정규화 (FAQ 뒤에 본문이 한 줄로 붙어 H2 제목으로 커지는 문제 원천 차단)
-  text = text.replace(/^#{1,6}\s*5[.\s]+.*?(?=(?:\*\*?Q[1-3]|\bQ[1-3][:.]|\n|$))/is, `\n\n## ${i18n.s5}\n\n`);
-
-  // 4. 연속 중복 H2 헤딩 제거
-  const lines = text.split('\n');
-  const filteredLines = [];
-  let lastH2 = '';
+  let lines = body.trim().split('\n');
+  let output = [];
+  let inFAQ = false;
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const match = line.match(/^##\s*([1-5])\./);
-    if (match) {
-      if (match[1] === lastH2) continue;
-      lastH2 = match[1];
+    let line = lines[i];
+
+    // 1. 소제목 라인 정규화
+    if (/^#{1,6}\s*1[.\s]/.test(line)) {
+      output.push(`## ${i18n.s1}\n`);
+      continue;
     }
-    filteredLines.push(line);
+    if (/^#{1,6}\s*2[.\s]/.test(line)) {
+      output.push(`\n## ${i18n.s2}\n`);
+      continue;
+    }
+    if (/^#{1,6}\s*3[.\s]/.test(line)) {
+      output.push(`\n## ${i18n.s3}\n`);
+      continue;
+    }
+    if (/^#{1,6}\s*4[.\s]/.test(line)) {
+      output.push(`\n## ${i18n.s4}\n`);
+      continue;
+    }
+    if (/^#{1,6}\s*5[.\s]/.test(line)) {
+      output.push(`\n## ${i18n.s5}\n`);
+      inFAQ = true;
+      continue;
+    }
+
+    // 중복으로 찍힌 H2 라인이면 건너뜀
+    if (/^##\s*[1-5]\./.test(line)) {
+      continue;
+    }
+
+    // 2. Q&A 라인 식별 및 개행 강제 보장
+    if (inFAQ) {
+      const qMatch = line.match(/^\s*(?:\*\*)?(?:Q|Question)\s*([1-3])\s*[:.]\s*(?:\*\*)?\s*(.*)/i);
+      const aMatch = line.match(/^\s*(?:\*\*)?(?:A|Answer)\s*([1-3])\s*[:.]\s*(?:\*\*)?\s*(.*)/i);
+
+      if (qMatch) {
+        output.push(`\n**Q${qMatch[1]}.** ${qMatch[2].trim()}`);
+        continue;
+      }
+      if (aMatch) {
+        output.push(`\n**A${aMatch[1]}.** ${aMatch[2].trim()}\n`);
+        continue;
+      }
+    }
+
+    output.push(line);
   }
-  text = filteredLines.join('\n');
 
-  // 5. 볼드 및 띄어쓰기 완전 정돈
-  text = cleanBoldAndTypography(text);
+  let result = output.join('\n');
 
-  // 6. Q&A 줄바꿈 및 서식 완전 정돈
-  text = text.replace(/(?:^|[^\n])\s*(?:\*\*)?(?:Q|Question)\s*([1-3])\s*[:.]\s*(?:\*\*)?\s*/gi, '\n\n**Q$1.** ');
-  text = text.replace(/(?:^|[^\n])\s*(?:\*\*)?(?:A|Answer)\s*([1-3])\s*[:.]\s*(?:\*\*)?\s*/gi, '\n\n**A$1.** ');
+  // 3. 볼드 및 공백 안전 치유 적용
+  result = sanitizeBoldSpacing(result);
 
-  // Q&A 내부 찌꺼기 볼드 정돈
-  text = text.replace(/\*\*\s*\*\*(Q[1-3]\.|A[1-3]\.)\*\*\s*\*\*/gi, '**$1**');
-  text = text.replace(/\*\*(Q[1-3]\.|A[1-3]\.)\*\*/gi, '**$1**');
+  // 4. 연속 3개 이상의 빈 줄 압축
+  result = result.replace(/\n{3,}/g, '\n\n').trim();
 
-  // 7. 빈 줄 정리 (최대 2줄)
-  text = text.replace(/\n{3,}/g, '\n\n').trim();
-
-  return text;
+  return result;
 }
 
 async function run() {
   console.log("==================================================");
-  console.log("⚡ [2-1호기] 볼드 오염/띄어쓰기/FAQ 완전 박멸 수술 시작");
+  console.log("⚡ [2-1호기] 텍스트 보존형 서식/Q&A 정밀 복구 시작");
   console.log("==================================================");
 
   if (!fs.existsSync(POSTS_BASE_DIR)) {
@@ -201,21 +217,18 @@ async function run() {
       frontmatter = frontmatter.replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
                                .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
 
-      // 2회 교차 실행으로 찌꺼기 100% 제거
-      let healed = healMarkdownPost(body, lang);
-      healed = healMarkdownPost(healed, lang);
-
-      const result = `${frontmatter}\n\n${healed}\n`;
+      const healedBody = healPostSafely(body, lang);
+      const result = `${frontmatter}\n\n${healedBody}\n`;
 
       if (result !== original) {
         fs.writeFileSync(filePath, result, 'utf-8');
-        console.log(`✨ [수술 완료] ${lang}/${file}`);
+        console.log(`✨ [복구 완료] ${lang}/${file}`);
         updatedCount++;
       }
     }
   }
 
-  console.log(`\n🎉 총 ${updatedCount}개 파일의 볼드/띄어쓰기 수술이 완료되었습니다.`);
+  console.log(`\n🎉 총 ${updatedCount}개 파일 복구 완료 (텍스트 유실 방지 및 볼드/Q&A 정돈)`);
 }
 
 run();
