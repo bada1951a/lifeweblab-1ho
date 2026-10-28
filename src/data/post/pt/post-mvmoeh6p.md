@@ -69,14 +69,14 @@ Para garantir que aquela cena de terror na Avenida Paulista nunca mais se repita
 
 ## 5. 자주 묻는 질문 (FAQ)
 
-**Q1.**   O que exatamente significa o código de erro `do_not_honor` no meu relatório
+Q1. O que exatamente significa o código de erro `do_not_honor` no meu relatório
 
-**A1.**   É uma resposta genérica enviada pelo banco emissor do cartão do cliente indicando que eles recusaram a transação. O banco geralmente não especifica o motivo exato por questões de sigilo, mas na maioria das vezes trata-se de uma suspeita de fraude ou limite excedido
+A1. É uma resposta genérica enviada pelo banco emissor do cartão do cliente indicando que eles recusaram a transação. O banco geralmente não especifica o motivo exato por questões de sigilo, mas na maioria das vezes trata-se de uma suspeita de fraude ou limite excedido
 
-**Q2.**   Devo incentivar meus clientes a tentarem o pagamento novamente logo após receberem esse erro
+Q2. Devo incentivar meus clientes a tentarem o pagamento novamente logo após receberem esse erro
 
-**A2.**   Não imediatamente. Tentar passar o mesmo cartão várias vezes seguidas pode fazer com que o banco bloqueie o cartão permanentemente por suspeita de fraude. O ideal é orientar o cliente a entrar em contato com o banco dele para autorizar a compra internacional ou sugerir que utilizem outro meio de pagamento, como Pix ou transferência bancária
+A2. Não imediatamente. Tentar passar o mesmo cartão várias vezes seguidas pode fazer com que o banco bloqueie o cartão permanentemente por suspeita de fraude. O ideal é orientar o cliente a entrar em contato com o banco dele para autorizar a compra internacional ou sugerir que utilizem outro meio de pagamento, como Pix ou transferência bancária
 
-**Q3.**   Como posso recuperar as taxas que foram descontadas em duplicidade no meu saldo
+Q3. Como posso recuperar as taxas que foram descontadas em duplicidade no meu saldo
 
-**A3.**   Você deve abrir um ticket de contestação diretamente no suporte do seu processador de pagamentos, anexando os relatórios detalhados com os IDs das transações afetadas. Comprovando a duplicidade técnica, o estorno do valor cobrado a mais é processado e devolvido ao seu saldo operacional em poucos dias úteis.
+A3. Você deve abrir um ticket de contestação diretamente no suporte do seu processador de pagamentos, anexando os relatórios detalhados com os IDs das transações afetadas. Comprovando a duplicidade técnica, o estorno do valor cobrado a mais é processado e devolvido ao seu saldo operacional em poucos dias úteis.

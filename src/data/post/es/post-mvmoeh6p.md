@@ -68,29 +68,29 @@ Realizamos una prueba de pago simulada utilizando tarjetas de prueba en modo liv
 
 Para evitar que este tipo de pesadillas se repitan en el futuro y mantener la salud financiera de la empresa bajo control, implementé un protocolo de revisión periódica que ahora forma parte de nuestras rutinas mensuales de operaciones.
 
-- **Revisión trimestral de tipos de cambio:** Verificar que las APIs de conversión de divisas externas utilizadas en el frontend estén sincronizadas con los valores de liquidación reales de Stripe.
-- **Auditoría de decimales en carritos B2B:** Asegurar que los cálculos de precios unitarios con descuentos por volumen corporativo no generen más de dos decimales antes de pasar a la fase de pago.
-- **Monitoreo de alertas de rechazo:** Configurar notificaciones automáticas en Slack cada vez que el código `do_not_honor` supere un umbral del 2% sobre el volumen total de transacciones diarias.
-- **Pruebas de regresión en pasarelas:** Ejecutar pruebas de pago automatizadas cada vez que se despliegue una actualización importante en los módulos de checkout o pasarela.
+- Revisión trimestral de tipos de cambio: Verificar que las APIs de conversión de divisas externas utilizadas en el frontend estén sincronizadas con los valores de liquidación reales de Stripe.
+- Auditoría de decimales en carritos B2B: Asegurar que los cálculos de precios unitarios con descuentos por volumen corporativo no generen más de dos decimales antes de pasar a la fase de pago.
+- Monitoreo de alertas de rechazo: Configurar notificaciones automáticas en Slack cada vez que el código `do_not_honor` supere un umbral del 2% sobre el volumen total de transacciones diarias.
+- Pruebas de regresión en pasarelas: Ejecutar pruebas de pago automatizadas cada vez que se despliegue una actualización importante en los módulos de checkout o pasarela.
 
 ## 5. Preguntas frecuentes sobre el error do_not_honor y pasarelas de pago
 
-**Q1.**   ¿Por qué Stripe devuelve do_not_honor si el cliente tiene fondos suficientes en su tarjeta corporativa?Aunque el cliente tenga fondos, los bancos emisores utilizan sistemas de seguridad automatizados que bloquean la transacción si detectan la más mínima discrepancia en los decimales, el código postal o las conversiones de moneda extranjera, etiquetando el bloqueo bajo el código genérico `do_not_honor`
+Q1. ¿Por qué Stripe devuelve do_not_honor si el cliente tiene fondos suficientes en su tarjeta corporativa?Aunque el cliente tenga fondos, los bancos emisores utilizan sistemas de seguridad automatizados que bloquean la transacción si detectan la más mínima discrepancia en los decimales, el código postal o las conversiones de moneda extranjera, etiquetando el bloqueo bajo el código genérico `do_not_honor`
 
-**Q2.**   ¿Es recomendable reintentar automáticamente los pagos que fallan por este motivo
+Q2. ¿Es recomendable reintentar automáticamente los pagos que fallan por este motivo
 
-**A2.**   Sí, pero con precaución. Si el error fue causado por un problema temporal de redondeo o sincronización que ya has solucionado en el panel, configurar un sistema de reintentos inteligentes (`Smart Retries`) recuperará una gran parte de los ingresos perdidos sin saturar al cliente
+A2. Sí, pero con precaución. Si el error fue causado por un problema temporal de redondeo o sincronización que ya has solucionado en el panel, configurar un sistema de reintentos inteligentes (`Smart Retries`) recuperará una gran parte de los ingresos perdidos sin saturar al cliente
 
-**Q3.**   ¿Cómo puedo diferenciar si el error se debe a un fraude real o a un fallo técnico de redondeo
+Q3. ¿Cómo puedo diferenciar si el error se debe a un fraude real o a un fallo técnico de redondeo
 
-**A3.**   Debes analizar la tasa de concentración geográfica y el tipo de cliente. Si el error `do_not_honor` se concentra masivamente en cuentas corporativas que utilizan una moneda extranjera específica tras una actualización web, se trata de un fallo técnico de redondeo y no de un problema de fraude. (FAQ)
+A3. Debes analizar la tasa de concentración geográfica y el tipo de cliente. Si el error `do_not_honor` se concentra masivamente en cuentas corporativas que utilizan una moneda extranjera específica tras una actualización web, se trata de un fallo técnico de redondeo y no de un problema de fraude. (FAQ)
 
-**Q1.Q1.**   ¿Por qué Stripe devuelve do_not_honor si el cliente tiene fondos suficientes en su tarjeta corporativa?Aunque el cliente tenga fondos, los bancos emisores utilizan sistemas de seguridad automatizados que bloquean la transacción si detectan la más mínima discrepancia en los decimales, el código postal o las conversiones de moneda extranjera, etiquetando el bloqueo bajo el código genérico `do_not_honor`
+Q1. Q1. ¿Por qué Stripe devuelve do_not_honor si el cliente tiene fondos suficientes en su tarjeta corporativa?Aunque el cliente tenga fondos, los bancos emisores utilizan sistemas de seguridad automatizados que bloquean la transacción si detectan la más mínima discrepancia en los decimales, el código postal o las conversiones de moneda extranjera, etiquetando el bloqueo bajo el código genérico `do_not_honor`
 
-**Q2.**   ¿Es recomendable reintentar automáticamente los pagos que fallan por este motivo
+Q2. ¿Es recomendable reintentar automáticamente los pagos que fallan por este motivo
 
-**A2.**   Sí, pero con precaución. Si el error fue causado por un problema temporal de redondeo o sincronización que ya has solucionado en el panel, configurar un sistema de reintentos inteligentes (`Smart Retries`) recuperará una gran parte de los ingresos perdidos sin saturar al cliente
+A2. Sí, pero con precaución. Si el error fue causado por un problema temporal de redondeo o sincronización que ya has solucionado en el panel, configurar un sistema de reintentos inteligentes (`Smart Retries`) recuperará una gran parte de los ingresos perdidos sin saturar al cliente
 
-**Q3.**   ¿Cómo puedo diferenciar si el error se debe a un fraude real o a un fallo técnico de redondeo
+Q3. ¿Cómo puedo diferenciar si el error se debe a un fraude real o a un fallo técnico de redondeo
 
-**A3.**   Debes analizar la tasa de concentración geográfica y el tipo de cliente. Si el error `do_not_honor` se concentra masivamente en cuentas corporativas que utilizan una moneda extranjera específica tras una actualización web, se trata de un fallo técnico de redondeo y no de un problema de fraude.
+A3. Debes analizar la tasa de concentración geográfica y el tipo de cliente. Si el error `do_not_honor` se concentra masivamente en cuentas corporativas que utilizan una moneda extranjera específica tras una actualización web, se trata de un fallo técnico de redondeo y no de un problema de fraude.

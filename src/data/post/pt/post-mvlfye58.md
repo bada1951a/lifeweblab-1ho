@@ -106,23 +106,23 @@ Em menos de duas horas, o cliente fez isso, o status mudou de "Retido" para "Dis
 
 Para garantir que eu nunca mais passe por esse sufoco no meio do expediente na Paulista, montei um checklist interno que agora sigo religiosamente antes de emitir qualquer fatura internacional:
 
-* **Validação Prévia de Onboarding:** Sempre pergunto ao setor de contas a pagar do cliente internacional qual formulário fiscal eles exigem antes de iniciar o contrato.
-* **Kit W-8BEN Pronto:** Mantenho uma pasta no meu computador com o formulário `W-8BEN` preenchido e assinado digitalmente, pronto para ser enviado a qualquer novo cliente dos EUA em menos de cinco minutos.
-* **Histórico de Transações Claras:** Ao emitir faturas pelo PayPal ou plataformas parceiras, sempre incluo descrições detalhadas do escopo do serviço prestado para evitar gatilhos automáticos de fraude.
-* **Verificação de Contas:** Checo mensalmente se o `Painel` e as `Formas de Pagamento` estão sem nenhum alerta de segurança ou pendência documental.
+* Validação Prévia de Onboarding: Sempre pergunto ao setor de contas a pagar do cliente internacional qual formulário fiscal eles exigem antes de iniciar o contrato.
+* Kit W-8BEN Pronto: Mantenho uma pasta no meu computador com o formulário `W-8BEN` preenchido e assinado digitalmente, pronto para ser enviado a qualquer novo cliente dos EUA em menos de cinco minutos.
+* Histórico de Transações Claras: Ao emitir faturas pelo PayPal ou plataformas parceiras, sempre incluo descrições detalhadas do escopo do serviço prestado para evitar gatilhos automáticos de fraude.
+* Verificação de Contas: Checo mensalmente se o `Painel` e as `Formas de Pagamento` estão sem nenhum alerta de segurança ou pendência documental.
 
 ## 5. 자주 묻는 질문 (FAQ)
 
 Aqui estão as três dúvidas mais comuns que recebo de colegas que enfrentam o mesmo perrengue no dia a dia do faturamento global:
 
-**Q1.**   O que acontece se eu preencher o W-9 mesmo sendo brasileiro e morando no Brasil
+Q1. O que acontece se eu preencher o W-9 mesmo sendo brasileiro e morando no Brasil
 
-**A1.**   Você estará cometendo uma falsidade ideológica fiscal perante o governo dos Estados Unidos, o que pode resultar em bloqueio permanente de contas em instituições financeiras americanas e problemas graves de compliance internacional. Sempre utilize o `W-8BEN`
+A1. Você estará cometendo uma falsidade ideológica fiscal perante o governo dos Estados Unidos, o que pode resultar em bloqueio permanente de contas em instituições financeiras americanas e problemas graves de compliance internacional. Sempre utilize o `W-8BEN`
 
-**Q2.**   É possível antecipar a liberação do saldo bloqueado por 21 dias no PayPal sem a ajuda do cliente
+Q2. É possível antecipar a liberação do saldo bloqueado por 21 dias no PayPal sem a ajuda do cliente
 
-**A2.**   É difícil, mas não impossível. Adicionando comprovantes de rastreio, documentações de entrega de serviços e mantendo um histórico limpo, o algoritmo pode liberar antes. No entanto, a confirmação direta feita pelo comprador no painel dele é sempre o gatilho mais rápido
+A2. É difícil, mas não impossível. Adicionando comprovantes de rastreio, documentações de entrega de serviços e mantendo um histórico limpo, o algoritmo pode liberar antes. No entanto, a confirmação direta feita pelo comprador no painel dele é sempre o gatilho mais rápido
 
-**Q3.**   O formulário W-8BEN tem validade indeterminada
+Q3. O formulário W-8BEN tem validade indeterminada
 
-**A3.**   Não. O formulário `W-8BEN` geralmente tem validade de três anos civis completos, contados a partir da data em que foi assinado, a menos que ocorra alguma mudança significativa nas informações declaradas. É preciso renová-lo periodicamente.
+A3. Não. O formulário `W-8BEN` geralmente tem validade de três anos civis completos, contados a partir da data em que foi assinado, a menos que ocorra alguma mudança significativa nas informações declaradas. É preciso renová-lo periodicamente.
