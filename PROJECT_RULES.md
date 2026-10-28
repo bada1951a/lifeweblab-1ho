@@ -56,6 +56,7 @@ Status: Agreed operating principles; not a claim of deployment or AdSense approv
 - Prioritize fixing existing content and reliability over launching more blog units. Clearly distinguish confirmed issues, recommendations, and completed fixes. Never claim AdSense approval is guaranteed.
 
 ## Verified unit-to-domain mapping (user-confirmed 2026-10-29)
+
 - Group 1 / 1ho: https://storydailyview.com/ — bada1951a/astrowind-blog
 - Group 1 / 2ho: https://m.storydailyview.com/ — bada1951a/astrowind-blog-2ho
 - Group 1 / 3ho: https://work.storydailyview.com/ — bada1951a/astrowind-blog-3ho
@@ -64,6 +65,7 @@ Status: Agreed operating principles; not a claim of deployment or AdSense approv
 - Immediate AdSense priorities: 1ho and 2-1ho. Do not confuse 2ho with 2-1ho.
 
 ## Explicit priority order and image policy (user-confirmed 2026-10-29)
+
 - Strict priority: 1ho (storydailyview.com) FIRST, 2-1ho (lifeweblab.com) SECOND. Do not describe them as equal priority.
 - 1ho and 2-1ho: images are manually uploaded and managed by the user; preserve this workflow and existing assets.
 - 2ho, 3ho, 4ho: use external Pexels image links for lower-maintenance publishing; verify links and image rights when auditing.
