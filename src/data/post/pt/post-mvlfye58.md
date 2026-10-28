@@ -1,6 +1,6 @@
 ---
-title: "Como Resolver o Bloqueio de 21 Dias no PayPal e Lidar com o W-8BEN"
-description: "Guia prático de um especialista em pagamentos globais para liberar fundos no PayPal e resolver exigências fiscais dos EUA."
+title: "Como lidar com a retenção de 21 dias no PayPal e entender o formulário W-8BEN"
+description: "Entenda como funciona a retenção de saldo no PayPal e quais cuidados tomar ao enviar formulários fiscais dos Estados Unidos sendo residente no Brasil."
 publishDate: 2026-10-24T03:35:00.000Z
 image: '/images/billing-photo/billing-11.jpg'
 category: 'troubleshooting'
