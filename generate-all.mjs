@@ -350,14 +350,14 @@ async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   }
 }
 
-async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug) {
+async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug, publishDateBase = new Date()) {
   const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
 
   const { coverUrl, bodyUrl } = getPostImages(index);
-  const pubDateIso = getKstPublishDateIso(index);
+  const pubDateIso = getKstPublishDateIso(index, publishDateBase);
 
   // 🎯 [프롬프트: 2,400~2,600자 정량화 및 Q&A 빈 줄 2개 규격 명확화]
   const prompt = `
@@ -492,7 +492,7 @@ async function run() {
       let ok = false;
       for (let attempt = 1; attempt <= 3 && !ok; attempt++) {
         console.log('이전 실패 복구 ' + code + ': 시도 ' + attempt + '/3');
-        ok = await generateSinglePost(TARGET_LANGS[idx], idx, job.topic, job.slug);
+        ok = await generateSinglePost(TARGET_LANGS[idx], idx, job.topic, job.slug, new Date(job.queuedAt));
         if (!ok && attempt < 3) await delay(2500 * attempt);
       }
       if (!ok) stillFailed.push(code);
