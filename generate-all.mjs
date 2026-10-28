@@ -491,7 +491,7 @@ tags: ${JSON.stringify(i18n.tags)}
 async function run() {
   if (DRY_RUN) {
     console.log('DRY RUN: API 호출 및 글 발행 없이 기본 검수 함수를 확인합니다.');
-    const sample = '---\\ntitle: test\\ndescription: test\\npublishDate: 2026-10-28\\nimage: /test.jpg\\ncategory: troubleshooting\\n---\\n\\n## 1. Test\\nShort';
+    const sample = '---\ntitle: test\ndescription: test\npublishDate: 2026-10-28\nimage: /test.jpg\ncategory: troubleshooting\n---\n\n## 1. Test\nShort';
     if (!validateGeneratedPost(sample, 'ko').some(x => x.includes('분량'))) throw new Error('분량 검수 자체 테스트 실패');
     console.log('PASS: 짧은 글 발행 차단 검수');
     return;
