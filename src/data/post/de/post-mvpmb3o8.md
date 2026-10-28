@@ -1,5 +1,5 @@
 ---
-title: "Stripe Payment Declined: Der Albtraum des doppelten **Webhook**-Abzugs im harten Praxis-Check"
+title: "Stripe Payment Declined: Der Albtraum des doppelten Webhook-Abzugs im harten Praxis-Check"
 description: "Erfahrener Fintech-Praktiker zeigt, wie man den Stripe Fehler generic_decline, doppelte Webhook-Abzüge und kritische B2B-Zahlungssperren meistert."
 publishDate: 2026-10-27T03:15:00.000Z
 image: '/images/billing-photo/billing-39.jpg'
