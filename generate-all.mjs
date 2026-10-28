@@ -144,7 +144,7 @@ function inspectAndHealMarkdown(body) {
 
   // 1. 제목의 의미를 보존합니다. 모델이 작성한 구체적인 제목을 고정 문구로 덮어쓰지 않습니다.
   // 잘못된 번호나 누락은 validateGeneratedPost에서 감지하여 재생성을 요구합니다.
-  healed = healed.replace(/^(#{1,6}\\s+)\\*\\*(.*?)\\*\\*/gm, '$1$2');
+  healed = healed.replace(/^(#{1,6}\s+)\*\*(.*?)\*\*/gm, '$1$2');
 
   // 누락된 제목을 빈 섹션으로 채우지 않습니다. 검증 단계에서 재생성을 요구합니다.
 
