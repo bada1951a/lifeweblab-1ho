@@ -118,18 +118,52 @@ function validateGeneratedPost(text, langCode) {
   if (!fm) return ['frontmatter 구분자 누락'];
   const meta = fm[1];
   const body = text.slice(fm[0].length).trim();
+  const readField = (name) => {
+    const match = meta.match(new RegExp('^' + name + ':\\s*(.*)$', 'm'));
+    return match ? match[1].trim().replace(/^["']|["']$/g, '') : '';
+  };
+
   for (const field of ['title', 'description', 'publishDate', 'image']) {
-    if (!new RegExp('^' + field + ':\\s*\\S', 'm').test(meta)) errors.push(field + ' 누락');
+    if (!readField(field)) errors.push(field + ' 누락');
   }
+  if (readField('title').length > 120) errors.push('title 120자 초과');
+  if (readField('description').length > 160) errors.push('description 160자 초과');
+  if (!Number.isFinite(Date.parse(readField('publishDate')))) errors.push('publishDate 형식 오류');
+  if (!/^\/images\//.test(readField('image')) && !/^https?:\/\//i.test(readField('image'))) errors.push('image 경로 형식 오류');
   if (!/^category:\s*['"]?troubleshooting['"]?\s*$/m.test(meta)) errors.push('category 오류');
-  if (body.length < (langCode === 'ko' ? 1000 : 1800)) errors.push('본문 길이 부족 또는 잘림');
-  if ((body.match(/^##\s+/gm) || []).length < 5) errors.push('H2 섹션 5개 미만');
-  if ((body.match(/\*\*Q[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 질문 3개 미만');
-  if ((body.match(/\*\*A[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 답변 3개 미만');
+
+  if (langCode === 'ko') {
+    if (body.length < 2400) errors.push('한국어 본문 2,400자 미만');
+    if (body.length > 3000) errors.push('한국어 본문 3,000자 초과');
+  } else {
+    let wordCount = 0;
+    try {
+      const segmenter = new Intl.Segmenter(langCode, { granularity: 'word' });
+      wordCount = [...segmenter.segment(body)].filter(segment => segment.isWordLike).length;
+    } catch {
+      wordCount = (body.match(/[\p{L}\p{N}]+(?:['’.-][\p{L}\p{N}]+)*/gu) || []).length;
+    }
+    if (wordCount < 900) errors.push('본문 900단어 미만');
+    if (wordCount > 1100) errors.push('본문 1,100단어 초과');
+  }
+
+  const headings = [...body.matchAll(/^##\s+(\d+)[.)]\s+.+$/gm)].map(match => Number(match[1]));
+  const allH2 = [...body.matchAll(/^##\s+/gm)];
+  if (allH2.length !== 5 || headings.join(',') !== '1,2,3,4,5') errors.push('H2 제목이 1~5번 순서로 정확히 5개가 아님');
+
+  const questions = [...body.matchAll(/^\*\*Q([1-3])\.\*\*\s*\S.*$/gm)].map(match => Number(match[1]));
+  const answers = [...body.matchAll(/^\*\*A([1-3])\.\*\*\s*\S.*$/gm)].map(match => Number(match[1]));
+  if (questions.join(',') !== '1,2,3') errors.push('FAQ 질문이 Q1~Q3 정확히 3개가 아님');
+  if (answers.join(',') !== '1,2,3') errors.push('FAQ 답변이 A1~A3 정확히 3개가 아님');
+  for (let n = 1; n <= 3; n++) {
+    const pairPattern = new RegExp('\\*\\*Q' + n + '\\.\\*\\*[^\\n]*\\n\\n\\*\\*A' + n + '\\.\\*\\*');
+    if (!pairPattern.test(body)) errors.push('Q' + n + '/A' + n + ' 사이 빈 줄 누락');
+  }
+
+  if (!/!\[[^\]]*\]\((?:https?:\/\/|\/images\/)[^)]+\)/.test(body)) errors.push('본문 중간 이미지 누락');
   if (langCode !== 'ko' && /[가-힣]/.test(body)) errors.push('비한국어 본문에 한글 포함');
   return errors;
 }
-
 // =========================================================================
 // [2-1호기 전용] 12개국 100% 현지어 섹션 제목 및 치환 딕셔너리 (영구 고정)
 // =========================================================================
@@ -346,6 +380,12 @@ const TROUBLESHOOTING_SCENARIOS_30 = [
   "계약서 내 중도 해지 보상금(Kill Fee) 조항이 누락되어 프로젝트 중단 후 정산 분쟁에 처한 상황"
 ];
 
+function scenarioForTopic(topic) {
+  let hash = 0;
+  for (const char of topic) hash = (hash * 31 + char.codePointAt(0)) >>> 0;
+  return TROUBLESHOOTING_SCENARIOS_30[hash % TROUBLESHOOTING_SCENARIOS_30.length];
+}
+
 const TARGET_LANGS = [
   { code: 'ko', name: 'Korean', persona: '글로벌 결제 및 비즈니스 인보이스 오류를 정확하게 해결해 주는 10년 차 핀테크 실무자', osUi: '대시보드, 결제 수단, 인보이스, 계정 설정', localeContext: '서울/수도권 글로벌 스타트업 오피스' },
   { code: 'en', name: 'English', persona: 'Veteran cross-border fintech specialist and payment gateway troubleshooter', osUi: 'Dashboard, Payment Methods, Billing, Invoices', localeContext: 'Silicon Valley tech startup / New York finance office' },
@@ -405,8 +445,7 @@ async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   throw new Error('OpenAI API 호출이 최대 재시도 횟수를 초과했습니다.');
 }
 
-async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug, publishDateBase = new Date(), imageSet, resumeState = null) {
-  const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
+async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug, publishDateBase = new Date(), imageSet, selectedScenario = scenarioForTopic(topic), resumeState = null) {
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
@@ -418,6 +457,8 @@ async function generateSinglePost(lang, index, topic = currentTopic, slug = file
   const prompt = `
 You are a ${lang.persona}.
 Write a high-quality, practical troubleshooting guide natively in ${lang.name}.
+Write this locale's article as an independent original composition; do not translate or imitate another locale's draft.
+Keep the shared topic as the central subject. Use the assigned situation only as a topic-relevant illustrative frame, and adapt examples and phrasing naturally for this locale without changing factual core guidance.
 Target Culture: "${lang.localeContext}"
 Assigned Situation: "${selectedScenario}"
 Topic: "${topic}"
@@ -535,7 +576,7 @@ ${resumeState.draftText ? `이전 원고:\n${resumeState.draftText}` : '이전 �
 
     let rawText;
     try {
-      rawText = await fetchWithRetry(requestPrompt, 1, 3000);
+      rawText = await fetchWithRetry(requestPrompt, 3, 3000);
     } catch (error) {
       console.error(`❌ [API 호출 실패] ${lang.name}: ${error.message}`);
       return { ok: false, content: null, errors: [`API 호출 실패: ${error.message}`], draftText, correctionAttempts: correctionAttempt };
@@ -585,6 +626,7 @@ async function run() {
     job.imageSets = job.imageSets && typeof job.imageSets === 'object' ? job.imageSets : {};
     job.failedCodes = Array.isArray(job.failedCodes) ? job.failedCodes : [];
     job.errorsByCode = job.errorsByCode && typeof job.errorsByCode === 'object' ? job.errorsByCode : {};
+    job.scenario = job.scenario || scenarioForTopic(topic);
   } else {
     job = {
       topic,
@@ -593,7 +635,8 @@ async function run() {
       validatedPosts: {},
       failedCodes: [],
       errorsByCode: {},
-      imageSets: {}
+      imageSets: {},
+      scenario: scenarioForTopic(topic)
     };
     for (let i = 0; i < TARGET_LANGS.length; i++) job.imageSets[TARGET_LANGS[i].code] = getPostImages(i);
     queue.push(job);
@@ -625,7 +668,7 @@ async function run() {
     job.imageSets[lang.code] = imageSet;
     const result = await generateSinglePost(
       lang, i, topic, job.slug, new Date(job.queuedAt), imageSet,
-      { validationErrors: job.errorsByCode[lang.code] || [], draftText: null }
+      job.scenario, { validationErrors: job.errorsByCode[lang.code] || [], draftText: null }
     );
 
     if (result.ok) {
