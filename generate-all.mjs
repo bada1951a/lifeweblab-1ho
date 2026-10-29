@@ -512,7 +512,7 @@ Provide exactly 3 practical Q&A items. You MUST put an empty line between Questi
 [FORMATTING RULES]
 1. Never put asterisks (**) inside H2 headings.
 2. Bold keywords with strict syntax: **keyword** (no space inside asterisks).
-3. Put error codes or settings in inline backticks (e.g. `W-8BEN`, `3DS2`).
+3. Put error codes or settings in inline backticks (e.g. \`W-8BEN\`, \`3DS2\`).
 ${lang.code !== 'ko' ? `- Absolutely NO Korean characters in non-Korean posts.` : ''}
 
 [Strict Output Format]
