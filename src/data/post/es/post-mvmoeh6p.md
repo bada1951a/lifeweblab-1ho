@@ -8,6 +8,8 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "HelpDesk Clean Slate"
 ---
 
+Las escenas y los diálogos son ejemplos hipotéticos de diagnóstico, no experiencias personales con clientes ni resultados operativos medidos.
+
 ## 1. Emergencia crítica en cobros internacionales y transferencias
 
 Eran las nueve de la mañana en nuestras oficinas del distrito financiero y corporativo en Madrid, justo cuando el café recién hecho empezaba a hacer efecto, y mi teléfono móvil comenzó a vibrar de manera incontrolable. El canal de Slack de operaciones de pago echaba humo. Nuestro sistema de comercio electrónico internacional estaba rechazando de golpe las transacciones de nuestros clientes corporativos más importantes de Europa, arrojando el temido código de error `do_not_honor` en Stripe. Lo peor de todo no era solo el pitido constante de las alertas de Sentry, sino ver cómo se esfumaban miles de euros en renovaciones de suscripciones B2B en cuestión de minutos.
@@ -75,16 +77,14 @@ Para evitar que este tipo de pesadillas se repitan en el futuro y mantener la sa
 
 ## 5. Preguntas frecuentes (FAQ)
 
-**Pregunta:** ¿Es recomendable reintentar automáticamente los pagos que fallan por este motivo?
+<strong>Pregunta:</strong> ¿Es recomendable reintentar automáticamente los pagos que fallan por este motivo?
 
-**Respuesta:** Sí, pero con precaución. Si el error fue causado por un problema temporal de redondeo o sincronización que ya has solucionado en el panel, configurar un sistema de reintentos inteligentes (`Smart Retries`) recuperará una gran parte de los ingresos perdidos sin saturar al cliente
+<strong>Respuesta:</strong> Comprueba el código y las instrucciones del proveedor antes de reintentar. Una corrección de redondeo no demuestra por sí sola que la tarjeta vaya a ser autorizada. Si se requiere autenticación o intervención del titular, atiende primero ese requisito.
 
-**Pregunta:** ¿Cómo puedo diferenciar si el error se debe a un fraude real o a un fallo técnico de redondeo?
+<strong>Pregunta:</strong> ¿Cómo puedo diferenciar si el error se debe a un fraude real o a un fallo técnico de redondeo?
 
-**Respuesta:** Debes analizar la tasa de concentración geográfica y el tipo de cliente. Si el error `do_not_honor` se concentra masivamente en cuentas corporativas que utilizan una moneda extranjera específica tras una actualización web, se trata de un fallo técnico de redondeo y no de un problema de fraude.
+<strong>Respuesta:</strong> Revisa el detalle de la operación y los registros de tu integración. Una concentración de rechazos tras un cambio puede orientar la investigación, pero no prueba que la causa sea el redondeo ni permite descartar fraude. El titular puede necesitar consultar al emisor.
 
-**Pregunta:** ¿Por qué Stripe devuelve `do_not_honor` si el cliente tiene fondos suficientes en su tarjeta corporativa?
+<strong>Pregunta:</strong> ¿Por qué Stripe devuelve `do_not_honor` si el cliente tiene fondos suficientes en su tarjeta corporativa?
 
-**Respuesta:** Aunque el cliente tenga fondos, los bancos emisores pueden bloquear una transacción por motivos de seguridad, límites de gasto u otras comprobaciones internas. El código por sí solo no permite confirmar que la causa sea un problema de redondeo.
-
-**Respuesta:** Sí, pero con precaución. Si el error fue causado por un problema temporal de redondeo o sincronización que ya has solucionado en el panel, configurar un sistema de reintentos inteligentes (`Smart Retries`) recuperará una gran parte de los ingresos perdidos sin saturar al cliente
+<strong>Respuesta:</strong> Aunque el cliente tenga fondos, los bancos emisores pueden bloquear una transacción por motivos de seguridad, límites de gasto u otras comprobaciones internas. El código por sí solo no permite confirmar que la causa sea un problema de redondeo.

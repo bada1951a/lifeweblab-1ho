@@ -8,6 +8,8 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Modern Minimalist Modern"
 ---
 
+Opisane sytuacje i rozmowy to hipotetyczne przykłady diagnostyczne, a nie osobiste doświadczenia z klientami ani zmierzone wyniki operacyjne.
+
 ## 1. Awaryjna sytuacja z płatnościami i przelewami zagranicznymi
 
 To był poniedziałkowy poranek w naszym warszawskim biurze na Rondzie Daszyńskiego, kiedy na Slacku zaczął się prawdziwy cyrk. Pracowałem nad integracją nowej bramki płatniczej dla dużego klienta z branży SaaS, gdy nagle nasz system monitorowania transakcji transgranicznych zaczął świecić się na czerwono. W ciągu zaledwie dziesięciu minut wskaźnik odrzuconych transakcji poszybował w górę o trzydzieści procent, a skrzynka mailowa zespołu wsparcia zalała się wiadomościami od wściekłych partnerów biznesowych.
@@ -40,7 +42,7 @@ Głównym zapalnikiem całego kryzysu była pomyłka w kodach klasyfikacji dzia�
 
 Drugim filarem problemu była automatyka algorytmów wykrywania oszustw. Gdy dokumenty podatkowe zostały odrzucone, powiązane z nimi profile płatników w Stripe zaczęły wysyłać sprzeciwy dotyczące adresów rozliczeniowych (Billing Address Mismatch). System uznał, że nagła zmiana statusu weryfikacji podatkowej w połączeniu z transakcjami przeprowadzanymi z warszawskiego adresu IP przez zagraniczny podmiot to próba wyłudzenia. Stripe automatycznie wymusił na bankach wydających karty odrzucenie autoryzacji z uniwersalnym kodem `do_not_honor`, aby chronić obie strony przed potencjalnym fraudem.
 
-### Błędy w komunikacji protokołu **3D Secure** (3DS)
+### Błędy w komunikacji protokołu <strong>3D Secure</strong> (3DS)
 
 Trzeci element układanki dotyczył samego przepływu uwierzytelniania dwuskładnikowego. Wiele transakcji transgranicznych utknęło w martwym punkcie, ponieważ żądania uwierzytelnienia 3DS trafiały w próżnię z powodu nieaktualnych danych adresowych na fakturach. Banki klienckie, widząc rozbieżności pomiędzy krajem rezydencji podatkowej a lokalizacją serwerów transakcyjnych, decydowały się na natychmiastowe zamknięcie sesji płatniczej, zwracając naszemu systemowi ten sam nielubiany przez wszystkich błąd `do_not_honor`.
 
@@ -90,14 +92,14 @@ Aby ta sytuacja nigdy więcej się nie powtórzyła w naszym warszawskim zespole
 
 ## 5. Najczęściej zadawane pytania (FAQ)
 
-**Pytanie:** Czy ponawianie transakcji zakończonej błędem **do_not_honor** może zablokować kartę klienta?
+<strong>Pytanie:</strong> Czy ponawianie transakcji zakończonej błędem <strong>do_not_honor</strong> może zablokować kartę klienta?
 
-**Odpowiedź:** Tak, jeśli będziesz ponawiać płatność w sposób zautomatyzowany i zbyt częsty bez uprzedniej zmiany danych lub kontaktu z klientem, systemy antyfraudowe banku wydającego kartę mogą uznać to za próbę kradzieży tożsamości i trwale zablokować daną kartę. Zawsze najpierw diagnozuj przyczynę (np. błąd danych podatkowych), a dopiero potem inicjuj manualną ponowną próbę w bezpiecznym odstępie czasu
+<strong>Odpowiedź:</strong> Tak, jeśli będziesz ponawiać płatność w sposób zautomatyzowany i zbyt częsty bez uprzedniej zmiany danych lub kontaktu z klientem, systemy antyfraudowe banku wydającego kartę mogą uznać to za próbę kradzieży tożsamości i trwale zablokować daną kartę. Zawsze najpierw diagnozuj przyczynę (np. błąd danych podatkowych), a dopiero potem inicjuj manualną ponowną próbę w bezpiecznym odstępie czasu
 
-**Pytanie:** Dlaczego błąd klasyfikacji podatkowej na fakturze wpływa na odrzucenie płatności kartą w Stripe?
+<strong>Pytanie:</strong> Dlaczego błąd klasyfikacji podatkowej na fakturze wpływa na odrzucenie płatności kartą w Stripe?
 
-**Odpowiedź:** Stripe coraz ściślej integruje swoje systemy fakturowania (`Stripe Invoicing`) z modułami weryfikacji tożsamości oraz płatności (`Stripe Radar`). Jeśli dane podatkowe podmiotu transgranicznego zostaną odrzucone przez krajowy system partnera, profil płatnika zostaje oznaczony jako zweryfikowany negatywnie. Algorytmy bezpieczeństwa automatycznie traktują takie profile podwyższonego ryzyka i wymuszają na bankach odrzucanie autoryzacji kartowych za pomocą kodu `do_not_honor`
+<strong>Odpowiedź:</strong> Stripe coraz ściślej integruje swoje systemy fakturowania (`Stripe Invoicing`) z modułami weryfikacji tożsamości oraz płatności (`Stripe Radar`). Jeśli dane podatkowe podmiotu transgranicznego zostaną odrzucone przez krajowy system partnera, profil płatnika zostaje oznaczony jako zweryfikowany negatywnie. Algorytmy bezpieczeństwa automatycznie traktują takie profile podwyższonego ryzyka i wymuszają na bankach odrzucanie autoryzacji kartowych za pomocą kodu `do_not_honor`
 
-**Pytanie:** Co zrobić, gdy klient twierdzi, że jego bank nie widzi żadnego śledzenia odrzuconej transakcji?
+<strong>Pytanie:</strong> Co zrobić, gdy klient twierdzi, że jego bank nie widzi żadnego śledzenia odrzuconej transakcji?
 
-**Odpowiedź:** Jest to bardzo częsty scenariusz przy kodzie `do_not_honor`. Oznacza to, że transakcja została odrzucona na poziomie bramki Stripe lub wstępnych filtrów bezpieczeństwa sieci płatniczej (Visa/Mastercard) zanim w ogóle dotarła do systemu autoryzacyjnego banku klienta. W takiej sytuacji należy sprawdzić logi API w panelu Stripe, wyszukać dokładny znacznik czasowy i zweryfikować, czy dane rozliczeniowe oraz adresowe klienta spełniają rygorystyczne normy 3D Secure.
+<strong>Odpowiedź:</strong> Jest to bardzo częsty scenariusz przy kodzie `do_not_honor`. Oznacza to, że transakcja została odrzucona na poziomie bramki Stripe lub wstępnych filtrów bezpieczeństwa sieci płatniczej (Visa/Mastercard) zanim w ogóle dotarła do systemu autoryzacyjnego banku klienta. W takiej sytuacji należy sprawdzić logi API w panelu Stripe, wyszukać dokładny znacznik czasowy i zweryfikować, czy dane rozliczeniowe oraz adresowe klienta spełniają rygorystyczne normy 3D Secure.
