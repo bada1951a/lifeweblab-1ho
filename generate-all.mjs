@@ -118,6 +118,7 @@ function validateGeneratedPost(text, langCode) {
   if (!fm) return ['frontmatter 구분자 누락'];
   const meta = fm[1];
   const body = text.slice(fm[0].length).trim();
+  const contentBody = body.replace(/^##\s.*$/gm, '').replace(/!\[[^\]]*\]\([^)]+\)/g, '').replace(/[*`]/g, '').trim();
   const readField = (name) => {
     const match = meta.match(new RegExp('^' + name + ':\\s*(.*)$', 'm'));
     return match ? match[1].trim().replace(/^["']|["']$/g, '') : '';
@@ -133,13 +134,13 @@ function validateGeneratedPost(text, langCode) {
   if (!/^category:\s*['"]?troubleshooting['"]?\s*$/m.test(meta)) errors.push('category 오류');
 
   if (langCode === 'ko') {
-    if (body.length < 2400) errors.push('한국어 본문 2,400자 미만');
-    if (body.length > 3000) errors.push('한국어 본문 3,000자 초과');
+    if (contentBody.length < 2400) errors.push('한국어 본문 2,400자 미만');
+    if (contentBody.length > 3000) errors.push('한국어 본문 3,000자 초과');
   } else {
     let wordCount = 0;
     try {
       const segmenter = new Intl.Segmenter(langCode, { granularity: 'word' });
-      wordCount = [...segmenter.segment(body)].filter(segment => segment.isWordLike).length;
+      wordCount = [...segmenter.segment(contentBody)].filter(segment => segment.isWordLike).length;
     } catch {
       wordCount = (body.match(/[\p{L}\p{N}]+(?:['’.-][\p{L}\p{N}]+)*/gu) || []).length;
     }
@@ -287,17 +288,15 @@ function inspectAndHealMarkdown(body, langCode) {
     auditLogs.push("1번 헤딩 누락 주입");
   }
 
-  // 2. [Q&A 치명적 뭉개짐 검수 & 치유]
-  // 질문(Q)과 답변(A) 사이에 줄바꿈이 없거나 1줄만 떨어진 것을 감지하여 빈 줄 2개(\n\n)로 완벽 분리
+  // 2. Q&A 표식을 보존해 질문과 답변을 각각 분리합니다.
   const rawQnACount = (healed.match(/Q[1-3]\./gi) || []).length;
   if (rawQnACount > 0) {
-    healed = healed.replace(/\s*(\*\*Q[1-3]\.\*\*|Q[1-3]\.)\s*/gi, '\n\n**$1** ');
-    healed = healed.replace(/\s*(\*\*A[1-3]\.\*\*|A[1-3]\.)\s*/gi, '\n\n**$1** ');
-    
-    // 이중 볼드 정돈 (** **Q1.** ** -> **Q1.**)
-    healed = healed.replace(/\*\*\s*\*\*(Q[1-3]\.|A[1-3]\.)\*\*\s*\*\*/gi, '**$1**');
-    healed = healed.replace(/\*\*(Q[1-3]\.|A[1-3]\.)\*\*/gi, '**$1**');
-    auditLogs.push("Q&A 문단 강제 2열 분리 치유");
+    healed = healed.replace(/^[ \t]*\*\*Q([1-3])\.\*\*[ \t]*(.*)$/gm, '\n\n**Q$1.** $2');
+    healed = healed.replace(/^[ \t]*Q([1-3])\.[ \t]*(.*)$/gm, '\n\n**Q$1.** $2');
+    healed = healed.replace(/^[ \t]*\*\*A([1-3])\.\*\*[ \t]*(.*)$/gm, '\n\n**A$1.** $2');
+    healed = healed.replace(/^[ \t]*A([1-3])\.[ \t]*(.*)$/gm, '\n\n**A$1.** $2');
+    healed = healed.replace(/\n{3,}/g, '\n\n');
+    auditLogs.push("Q&A 질문과 답변을 빈 줄로 분리해 표식을 정돈했습니다.");
   }
 
   // 3. [볼드 공백 교정] ** 키워드 ** -> **키워드**
