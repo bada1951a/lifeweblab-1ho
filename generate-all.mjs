@@ -3,7 +3,7 @@
 // ⚠️ [혼동 방지 및 영구 고정 규칙]
 // 1. 이 파일은 '2-1호기'입니다. 본진 1호기, 2호기, 3호기, 4호기나 향후 서브호기와 절대 혼동 금지!
 // 2. 카테고리는 대표님의 지시 전까지 'troubleshooting'으로 영구 고정한다. (임의 변경 절대 금지)
-// 3. 이미지 경로는 'public/images/billing-photo'로 영구 고정한다.
+// 3. 새 글 이미지는 주제별 Pexels 검색으로 고른다.
 // 4. 대표님과의 모든 설명, 질문, 대화 및 주석은 반드시 100% 한국어로만 진행한다.
 // =========================================================================
 
@@ -12,46 +12,33 @@ import path from 'path';
 
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
+if (!PEXELS_API_KEY) {
+  console.error('❌ PEXELS_API_KEY 환경변수가 없습니다. 발행 자료와 주제 상태를 바꾸지 않고 중단합니다.');
+  process.exit(1);
+}
 if (!OPENAI_API_KEY) {
   console.error('❌ OPENAI_API_KEY 환경변수가 설정되지 않았습니다.');
   process.exit(1);
 }
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
-const PHOTO_DIR = path.resolve('public/images/billing-photo');
 const RETRY_QUEUE_FILE = path.resolve('.publish-retry-queue.json');
 
-// =========================================================================
-// [2-1호기 전용] public/images/billing-photo 로컬 이미지 자동 셔플
-// =========================================================================
-const IMAGE_EXTS = /\.(jpe?g|png|webp|gif|avif)$/i;
-
-if (!fs.existsSync(PHOTO_DIR)) {
-  fs.mkdirSync(PHOTO_DIR, { recursive: true });
-}
-
-const localFiles = fs.readdirSync(PHOTO_DIR).filter(file => IMAGE_EXTS.test(file));
-let localImages = localFiles.map(file => encodeURI(`/images/billing-photo/${file}`));
-
-if (localImages.length === 0) {
-  localImages = ['/images/default-billing.jpg'];
-}
-
-function shuffleArray(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-const shuffledPool = shuffleArray(localImages);
-
-function getPostImages(index) {
-  const coverUrl = shuffledPool[(index * 2) % shuffledPool.length];
-  const bodyUrl = shuffledPool[(index * 2 + 1) % shuffledPool.length];
-  return { coverUrl, bodyUrl };
+// Pexels Photo API에는 완전한 태그 목록이 없으므로 검색어와 alt/페이지 URL을 사용합니다.
+async function getPostImages(topic) {
+  const query = `${topic} business finance payment invoice bank card laptop`;
+  const response = await fetch(`https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=30&orientation=landscape`, {
+    headers: { Authorization: PEXELS_API_KEY }
+  });
+  if (!response.ok) throw new Error(`Pexels 검색 실패: HTTP ${response.status}`);
+  const payload = await response.json();
+  const candidates = (payload.photos || []).filter(photo =>
+    photo?.id && photo?.alt?.trim() && /^https:\/\/images\.pexels\.com\/photos\//.test(photo?.src?.landscape || '') && /^https:\/\/www\.pexels\.com\/photo\//.test(photo?.url || '')
+  );
+  if (candidates.length < 2 || candidates[0].id === candidates[1].id) throw new Error('주제와 연결할 고유 Pexels 이미지 2장을 찾지 못했습니다.');
+  const [cover, body] = candidates;
+  return { coverUrl: cover.src.landscape, bodyUrl: body.src.landscape, coverAlt: cover.alt.trim(), bodyAlt: body.alt.trim(), attribution: [cover, body].map(p => `${p.photographer} (${p.url})`).join('; ') };
 }
 
 function getKstPublishDateIso(date = new Date()) {
@@ -88,6 +75,7 @@ function validateGeneratedPost(text, langCode) {
   if ((body.match(/\*\*Q[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 질문 3개 미만');
   if ((body.match(/\*\*A[1-3]\.\*\*/gi) || []).length < 3) errors.push('FAQ 답변 3개 미만');
   if (langCode !== 'ko' && /[가-힣]/.test(body)) errors.push('비한국어 본문에 한글 포함');
+  if ((body.match(/^!\[[^\]]*\]\(https:\/\/images\.pexels\.com\/photos\//gm) || []).length !== 1) errors.push('본문 Pexels 이미지 1장 누락 또는 중복');
   return errors;
 }
 
@@ -368,13 +356,13 @@ async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   throw new Error('OpenAI API 호출이 최대 재시도 횟수를 초과했습니다.');
 }
 
-async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug, publishDateBase = new Date()) {
+async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug, publishDateBase = new Date(), imageSet) {
   const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
 
-  const { coverUrl, bodyUrl } = getPostImages(index);
+  const { coverUrl, bodyUrl, bodyAlt, attribution } = imageSet;
   const pubDateIso = getKstPublishDateIso(publishDateBase);
 
   // 🎯 [프롬프트: 2,400~2,600자 정량화 및 Q&A 빈 줄 2개 규격 명확화]
@@ -466,7 +454,7 @@ tags: ${JSON.stringify(i18n.tags)}
       }
 
       // 본문 중간 이미지 배치 (2번 섹션 직전)
-      const middleImageMarkdown = `\n\n![Troubleshooting Guide](${bodyUrl})\n\n`;
+      const middleImageMarkdown = `\n\n<!-- Pexels photo by ${attribution} -->\n![${bodyAlt.replace(/[\[\]\(\)"']/g, '').trim()}](${bodyUrl})\n\n`;
       if (body.includes('## 2.')) {
         body = body.replace(/(##\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
       } else {
@@ -511,11 +499,15 @@ async function run() {
     job.failedCodes = [...new Set((job.failedCodes || []).filter(code => knownCodes.has(code)))];
     const stillFailed = [];
     for (const code of job.failedCodes) {
+      if (!job.imageSet) {
+        job.imageSet = await getPostImages(job.topic);
+        saveRetryQueue(queue);
+      }
       const idx = TARGET_LANGS.findIndex(lang => lang.code === code);
       let ok = false;
       for (let attempt = 1; attempt <= 3 && !ok; attempt++) {
         console.log('이전 실패 복구 ' + code + ': 시도 ' + attempt + '/3');
-        ok = await generateSinglePost(TARGET_LANGS[idx], idx, job.topic, job.slug, new Date(job.queuedAt));
+        ok = await generateSinglePost(TARGET_LANGS[idx], idx, job.topic, job.slug, new Date(job.queuedAt), job.imageSet);
         if (!ok && attempt < 3) await delay(2500 * attempt);
       }
       if (!ok) stillFailed.push(code);
@@ -544,6 +536,7 @@ async function run() {
   const slug = 'post-' + Date.now().toString(36);
   console.log('오늘의 새 주제: ' + topic);
   const batchStart = generatedPostFiles.length;
+  const imageSet = await getPostImages(topic);
   let successCount = 0;
   const failedCodes = [];
 
@@ -551,7 +544,7 @@ async function run() {
     let ok = false;
     for (let attempt = 1; attempt <= 3 && !ok; attempt++) {
       if (attempt > 1) console.log(TARGET_LANGS[i].code + ' 재시도 ' + (attempt - 1) + '/2');
-      ok = await generateSinglePost(TARGET_LANGS[i], i, topic, slug);
+      ok = await generateSinglePost(TARGET_LANGS[i], i, topic, slug, new Date(), imageSet);
       if (!ok && attempt < 3) await delay(2500 * attempt);
     }
     if (ok) successCount++;
@@ -563,7 +556,7 @@ async function run() {
     topicLines.shift();
     fs.writeFileSync(TOPICS_FILE, topicLines.join('\n') + (topicLines.length ? '\n' : ''), 'utf-8');
     if (failedCodes.length) {
-      queue.push({ topic: topic, slug: slug, failedCodes: failedCodes, queuedAt: new Date().toISOString() });
+      queue.push({ topic: topic, slug: slug, failedCodes: failedCodes, queuedAt: new Date().toISOString(), imageSet: imageSet });
       console.warn(successCount + '/12개 언어 성공. 실패 언어 ' + failedCodes.join(', ') + '는 다음 실행 때 다시 시도합니다.');
     } else {
       console.log("12개 언어 모두 검수 통과");
