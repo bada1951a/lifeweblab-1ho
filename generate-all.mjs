@@ -73,6 +73,10 @@ function saveRetryQueue(queue) {
   fs.writeFileSync(RETRY_QUEUE_FILE, JSON.stringify(queue, null, 2) + '\n', 'utf-8');
 }
 
+function setWorkflowOutput(status) {
+  if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${status}\n`, 'utf-8');
+}
+
 function validateGeneratedPost(text, langCode) {
   const errors = [];
   const fm = text.match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n/);
@@ -325,8 +329,6 @@ const TARGET_LANGS = [
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const fileSlug = `post-${Date.now().toString(36)}`;
 
-const generatedPostFiles = [];
-
 async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -368,13 +370,13 @@ async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   throw new Error('OpenAI API 호출이 최대 재시도 횟수를 초과했습니다.');
 }
 
-async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug, publishDateBase = new Date()) {
+async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug, publishDateBase = new Date(), imageSet, resumeState = null) {
   const selectedScenario = TROUBLESHOOTING_SCENARIOS_30[Math.floor(Math.random() * TROUBLESHOOTING_SCENARIOS_30.length)];
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
 
-  const { coverUrl, bodyUrl } = getPostImages(index);
+  const { coverUrl, bodyUrl } = imageSet || getPostImages(index);
   const pubDateIso = getKstPublishDateIso(publishDateBase);
 
   // 🎯 [프롬프트: 2,400~2,600자 정량화 및 Q&A 빈 줄 2개 규격 명확화]
@@ -442,141 +444,247 @@ tags: ${JSON.stringify(i18n.tags)}
 ---
 `;
 
-  try {
-    let rawText = await fetchWithRetry(prompt, 1, 3000);
+  const renderAndValidate = (rawText) => {
     let text = rawText.trim();
-    if (text.startsWith('```markdown')) text = text.replace(/^```markdown\n/, '').replace(/\n```$/, '');
-    if (text.startsWith('```')) text = text.replace(/^```\n/, '').replace(/\n```$/, '');
+    if (text.startsWith('```markdown')) text = text.replace(/^\```markdown\n/, '').replace(/\n\```$/, '');
+    if (text.startsWith('```')) text = text.replace(/^\```\n/, '').replace(/\n\```$/, '');
 
     const fmMatch = text.match(/^---[\s\S]*?---\n*/);
-    if (fmMatch) {
-      let frontmatter = fmMatch[0].trim();
-      let body = text.slice(fmMatch[0].length).trim();
-      body = body.replace(/^#\s+[^\n]+\n+/, '');
+    if (!fmMatch) return { content: null, errors: ['frontmatter 구분자 누락'] };
 
-      // ⚠️ 2-1호기 카테고리 'troubleshooting' 영구 보존 강제 검증
-      frontmatter = frontmatter.replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
-                               .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
+    let frontmatter = fmMatch[0].trim();
+    let body = text.slice(fmMatch[0].length).trim();
+    body = body.replace(/^#\s+[^\n]+\n+/, '');
+    frontmatter = frontmatter.replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
+                             .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
+    body = inspectAndHealMarkdown(body, lang.code);
 
-      // 🩺 [자가 검수 및 치유 엔진 실행]
-      body = inspectAndHealMarkdown(body, lang.code);
-
-      if (lang.code === 'ko') {
-        console.log(`   📏 [2-1호기 본문 최종 글자 수] ${body.length}자 (애드센스 표준: 2,400~2,600자)`);
-      }
-
-      // 본문 중간 이미지 배치 (2번 섹션 직전)
-      const middleImageMarkdown = `\n\n![Troubleshooting Guide](${bodyUrl})\n\n`;
-      if (body.includes('## 2.')) {
-        body = body.replace(/(##\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
-      } else {
-        body = `${middleImageMarkdown}${body}`;
-      }
-
-      text = `${frontmatter}\n\n${body}\n`;
-    } else {
-      throw new Error('발행 전 검수 실패: frontmatter 형식이 없습니다.');
+    if (lang.code === 'ko') {
+      console.log(`   📏 [2-1호기 본문 최종 글자 수] ${body.length}자 (애드센스 표준: 2,400~2,600자)`);
     }
 
-    const validationErrors = validateGeneratedPost(text, lang.code);
-    if (validationErrors.length) throw new Error('발행 전 검수 실패: ' + validationErrors.join(', '));
+    const middleImageMarkdown = `\n\n![Troubleshooting Guide](${bodyUrl})\n\n`;
+    if (body.includes('## 2.')) body = body.replace(/(##\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
+    else body = `${middleImageMarkdown}${body}`;
 
-    const targetDir = path.join(POSTS_BASE_DIR, lang.code);
-    if (!fs.existsSync(targetDir)) {
-      fs.mkdirSync(targetDir, { recursive: true });
+    text = `${frontmatter}\n\n${body}\n`;
+    return { content: text, errors: validateGeneratedPost(text, lang.code) };
+  };
+
+  let draftText = resumeState?.draftText || null;
+  let validationErrors = resumeState?.validationErrors || [];
+  for (let correctionAttempt = 0; correctionAttempt <= 2; correctionAttempt++) {
+    let requestPrompt = prompt;
+    if (correctionAttempt > 0) {
+      requestPrompt = `${prompt}
+
+[필수 교정 요청: ${correctionAttempt}/2]
+바로 이전 원고를 아래 정확한 검증 오류 목록에 따라 수정하세요.
+오류를 모두 해결하고 frontmatter부터 본문 끝까지 완성된 원고 전체를 다시 출력하세요.
+기존 글의 의미를 불필요하게 바꾸지 말고, 제목·설명·카테고리·태그·주제·발행일·이미지 필드는 그대로 유지하세요.
+검증 오류 목록(JSON):
+${JSON.stringify(validationErrors)}
+이전 원고:
+${draftText}
+`;
+    } else if (resumeState?.validationErrors?.length) {
+      requestPrompt = `${prompt}
+
+[이전 실행의 검증 오류를 고려한 재작성]
+이전 실행에서 발견한 정확한 문제 목록:
+${JSON.stringify(resumeState.validationErrors)}
+${resumeState.draftText ? `이전 원고:\n${resumeState.draftText}` : '이전 실행 원고는 저장하지 않았으므로, 새로 작성하면서 모든 검증 오류를 해결하세요.'}
+처음부터 완전한 원고를 작성하고 오류 목록의 모든 항목을 해결하세요.
+`;
     }
 
-    const filePath = path.join(targetDir, `${slug}.md`);
-    fs.writeFileSync(filePath, text, 'utf-8');
-    generatedPostFiles.push(filePath);
-    console.log(`   ✅ [성공] 2-1호기 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
-    return true;
-  } catch (error) {
-    console.error(`❌ [최종 실패] ${lang.name} 생성 실패:`, error.message);
-    return false;
+    let rawText;
+    try {
+      rawText = await fetchWithRetry(requestPrompt, 1, 3000);
+    } catch (error) {
+      console.error(`❌ [API 호출 실패] ${lang.name}: ${error.message}`);
+      return { ok: false, content: null, errors: [`API 호출 실패: ${error.message}`], draftText, correctionAttempts: correctionAttempt };
+    }
+
+    const result = renderAndValidate(rawText);
+    if (!result.errors.length) {
+      console.log(`   ✅ [검증 통과] ${lang.code} 원고를 임시 체크포인트에 보존했습니다.`);
+      return { ok: true, content: result.content, errors: [], draftText: null, correctionAttempts: correctionAttempt };
+    }
+
+    draftText = rawText;
+    validationErrors = result.errors;
+    console.warn(`⚠️ [검증 실패] ${lang.code} 교정 ${correctionAttempt}/2: ${validationErrors.join(', ')}`);
   }
+
+  return { ok: false, content: null, errors: validationErrors, draftText, correctionAttempts: 2 };
 }
 
 async function run() {
   console.log("==================================================");
-  console.log("LifeWebLab: 발행 전 검수 및 실패 언어 복구 시작");
+  console.log("LifeWebLab: 언어별 교정 재시도 및 원자적 12개국 발행");
   console.log("==================================================");
 
   const queue = loadRetryQueue();
-  const knownCodes = new Set(TARGET_LANGS.map(lang => lang.code));
-
-  // 이전 실행에서 실패한 언어만 재시도합니다. 성공한 언어 파일은 재생성하지 않습니다.
-  for (let q = 0; q < queue.length; q++) {
-    const job = queue[q];
-    job.failedCodes = [...new Set((job.failedCodes || []).filter(code => knownCodes.has(code)))];
-    const stillFailed = [];
-    for (const code of job.failedCodes) {
-      const idx = TARGET_LANGS.findIndex(lang => lang.code === code);
-      let ok = false;
-      for (let attempt = 1; attempt <= 3 && !ok; attempt++) {
-        console.log('이전 실패 복구 ' + code + ': 시도 ' + attempt + '/3');
-        ok = await generateSinglePost(TARGET_LANGS[idx], idx, job.topic, job.slug, new Date(job.queuedAt));
-        if (!ok && attempt < 3) await delay(2500 * attempt);
-      }
-      if (!ok) stillFailed.push(code);
-      job.failedCodes = stillFailed.concat(job.failedCodes.slice(job.failedCodes.indexOf(code) + 1));
-      saveRetryQueue(queue);
-      await delay(1000);
-    }
-    job.failedCodes = stillFailed;
-    if (!job.failedCodes.length) {
-      console.log('이전 실패 주제 복구 완료: ' + job.topic);
-      queue.splice(q, 1);
-      q--;
-      saveRetryQueue(queue);
-    }
-  }
-
   if (!fs.existsSync(TOPICS_FILE)) throw new Error("topics.txt 파일이 존재하지 않습니다.");
   const topicLines = fs.readFileSync(TOPICS_FILE, 'utf-8').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
   if (!topicLines.length) {
-    saveRetryQueue(queue);
-    console.log("새 주제가 없습니다. 실패 복구 큐만 처리했습니다.");
+    if (queue.length) throw new Error("주제 파일은 비어 있지만 복구 체크포인트가 남아 있습니다. 자동으로 버리지 않습니다.");
+    console.log("새 주제가 없습니다. 생성하지 않습니다.");
+    setWorkflowOutput("idle");
     return;
   }
 
   const topic = topicLines[0];
-  const slug = 'post-' + Date.now().toString(36);
-  console.log('오늘의 새 주제: ' + topic);
-  const batchStart = generatedPostFiles.length;
-  let successCount = 0;
-  const failedCodes = [];
+  const activeJobIndex = queue.findIndex(job => job.topic === topic);
+  if (activeJobIndex < 0 && queue.length) {
+    throw new Error("복구 큐의 주제가 topics.txt 첫 주제와 다릅니다. 잘못된 주제 건너뛰기를 막기 위해 중단합니다.");
+  }
+
+  let job;
+  if (activeJobIndex >= 0) {
+    job = queue[activeJobIndex];
+    job.slug = job.slug || ('post-' + Date.now().toString(36));
+    job.queuedAt = job.queuedAt || new Date().toISOString();
+    job.validatedPosts = job.validatedPosts && typeof job.validatedPosts === 'object' ? job.validatedPosts : {};
+    job.imageSets = job.imageSets && typeof job.imageSets === 'object' ? job.imageSets : {};
+    job.failedCodes = Array.isArray(job.failedCodes) ? job.failedCodes : [];
+    job.errorsByCode = job.errorsByCode && typeof job.errorsByCode === 'object' ? job.errorsByCode : {};
+  } else {
+    job = {
+      topic,
+      slug: 'post-' + Date.now().toString(36),
+      queuedAt: new Date().toISOString(),
+      validatedPosts: {},
+      failedCodes: [],
+      errorsByCode: {},
+      imageSets: {}
+    };
+    for (let i = 0; i < TARGET_LANGS.length; i++) job.imageSets[TARGET_LANGS[i].code] = getPostImages(i);
+    queue.push(job);
+    saveRetryQueue(queue);
+  }
+
+  // 체크포인트의 기존 성공 원고도 다시 검사하고, 실패 언어만 호출합니다.
+  for (let i = 0; i < TARGET_LANGS.length; i++) {
+    const lang = TARGET_LANGS[i];
+    const saved = job.validatedPosts[lang.code];
+    if (!saved) continue;
+    const savedErrors = validateGeneratedPost(saved, lang.code);
+    if (savedErrors.length) {
+      console.warn(`⚠️ 체크포인트 ${lang.code} 재검사 실패. 해당 언어만 다시 작성합니다: ${savedErrors.join(', ')}`);
+      delete job.validatedPosts[lang.code];
+      job.errorsByCode[lang.code] = savedErrors;
+      saveRetryQueue(queue);
+    }
+  }
 
   for (let i = 0; i < TARGET_LANGS.length; i++) {
-    let ok = false;
-    for (let attempt = 1; attempt <= 3 && !ok; attempt++) {
-      if (attempt > 1) console.log(TARGET_LANGS[i].code + ' 재시도 ' + (attempt - 1) + '/2');
-      ok = await generateSinglePost(TARGET_LANGS[i], i, topic, slug);
-      if (!ok && attempt < 3) await delay(2500 * attempt);
+    const lang = TARGET_LANGS[i];
+    if (job.validatedPosts[lang.code]) {
+      console.log(`⏭️ ${lang.code}: 이전 실행에서 검증된 원고를 보존하고 재생성하지 않습니다.`);
+      continue;
     }
-    if (ok) successCount++;
-    else failedCodes.push(TARGET_LANGS[i].code);
-    await delay(1500);
+
+    const imageSet = job.imageSets[lang.code] || getPostImages(i);
+    job.imageSets[lang.code] = imageSet;
+    const result = await generateSinglePost(
+      lang, i, topic, job.slug, new Date(job.queuedAt), imageSet,
+      { validationErrors: job.errorsByCode[lang.code] || [], draftText: null }
+    );
+
+    if (result.ok) {
+      job.validatedPosts[lang.code] = result.content;
+      delete job.errorsByCode[lang.code];
+      job.failedCodes = job.failedCodes.filter(code => code !== lang.code);
+      console.log(`✅ ${lang.code}: 검증된 원고를 체크포인트에 저장했습니다.`);
+    } else {
+      job.errorsByCode[lang.code] = result.errors;
+      if (!job.failedCodes.includes(lang.code)) job.failedCodes.push(lang.code);
+      console.error(`❌ ${lang.code}: 초기 생성과 최대 2회의 validator-guided 교정 후에도 통과하지 못했습니다. (교정 시도 ${result.correctionAttempts}회)`);
+    }
+
+    // 워크플로가 정상 종료하면 이 JSON 체크포인트가 커밋되어 다음 실행에 이어집니다.
+    saveRetryQueue(queue);
+    await delay(1000);
   }
 
-  if (successCount === TARGET_LANGS.length) {
-    topicLines.shift();
-    fs.writeFileSync(TOPICS_FILE, topicLines.join('\n') + (topicLines.length ? '\n' : ''), 'utf-8');
-    if (failedCodes.length) {
-      queue.push({ topic: topic, slug: slug, failedCodes: failedCodes, queuedAt: new Date().toISOString() });
-      console.warn(successCount + '/12개 언어 성공. 실패 언어 ' + failedCodes.join(', ') + '는 다음 실행 때 다시 시도합니다.');
-    } else {
-      console.log("12개 언어 모두 검수 통과");
-    }
+  const complete = TARGET_LANGS.every(lang => Boolean(job.validatedPosts[lang.code]));
+  if (!complete) {
+    job.failedCodes = TARGET_LANGS.filter(lang => !job.validatedPosts[lang.code]).map(lang => lang.code);
     saveRetryQueue(queue);
-    console.log('남은 새 주제: ' + topicLines.length + '개 | 대기 중인 복구 작업: ' + queue.length + '개');
-  } else {
-    for (const filePath of generatedPostFiles.slice(batchStart)) {
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    }
-    saveRetryQueue(queue);
-    console.error(`12개 언어 세트 검수 실패 (${successCount}/${TARGET_LANGS.length}). 생성된 이번 세트 파일을 되돌리고 topics.txt의 주제를 보존합니다.`);
-    process.exitCode = 1;
+    console.warn(`🧷 체크포인트 보존: ${TARGET_LANGS.length - job.failedCodes.length}/12개 언어 통과, 실패 언어 [${job.failedCodes.join(', ')}]. 글 파일과 주제 포인터는 바꾸지 않았습니다. 다음 실행은 실패 언어만 이어갑니다.`);
+    setWorkflowOutput("checkpoint");
+    return;
   }
+
+  // 모든 checkpointed 원고를 최종 한 번 더 검사한 뒤에만 포스트 파일을 만듭니다.
+  for (const lang of TARGET_LANGS) {
+    const errors = validateGeneratedPost(job.validatedPosts[lang.code], lang.code);
+    if (errors.length) {
+      delete job.validatedPosts[lang.code];
+      job.errorsByCode[lang.code] = errors;
+      job.failedCodes = [lang.code];
+      saveRetryQueue(queue);
+      console.error(`❌ 최종 세트 검증 실패(${lang.code}): ${errors.join(', ')}. 발행 파일과 주제 포인터는 그대로 둡니다.`);
+      setWorkflowOutput('checkpoint');
+      return;
+    }
+  }
+
+  job.failedCodes = [];
+  job.status = 'ready';
+  job.readyAt = new Date().toISOString();
+  saveRetryQueue(queue);
+  console.log("✅ 12개 언어 검증 통과. 발행 준비 체크포인트를 저장했고, 게시 파일과 주제 포인터는 아직 변경하지 않았습니다.");
+  setWorkflowOutput("ready");
 }
-run();
+
+async function materializeCheckpoint() {
+  const queue = loadRetryQueue();
+  if (!fs.existsSync(TOPICS_FILE)) throw new Error("topics.txt 파일이 존재하지 않습니다.");
+  const topicLines = fs.readFileSync(TOPICS_FILE, 'utf-8').split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+  if (!topicLines.length) throw new Error("topics.txt가 비어 있어 체크포인트를 게시할 수 없습니다.");
+
+  const topic = topicLines[0];
+  const jobIndex = queue.findIndex(item => item.topic === topic);
+  if (jobIndex < 0) throw new Error("현재 주제와 일치하는 발행 준비 체크포인트가 없습니다.");
+  const job = queue[jobIndex];
+  if (job.status !== 'ready') throw new Error('체크포인트가 12개 언어 발행 준비 상태가 아닙니다.');
+  if (!job.validatedPosts || !TARGET_LANGS.every(lang => typeof job.validatedPosts[lang.code] === 'string')) {
+    throw new Error("12개 검증 원고가 모두 체크포인트에 없습니다. 게시 파일을 만들지 않습니다.");
+  }
+
+  for (const lang of TARGET_LANGS) {
+    const errors = validateGeneratedPost(job.validatedPosts[lang.code], lang.code);
+    if (errors.length) throw new Error(`최종 체크포인트 검증 실패(${lang.code}): ${errors.join(', ')}`);
+  }
+
+  const createdFiles = [];
+  try {
+    for (const lang of TARGET_LANGS) {
+      const targetDir = path.join(POSTS_BASE_DIR, lang.code);
+      fs.mkdirSync(targetDir, { recursive: true });
+      const filePath = path.join(targetDir, `${job.slug}.md`);
+      fs.writeFileSync(filePath, job.validatedPosts[lang.code], 'utf-8');
+      createdFiles.push(filePath);
+    }
+  } catch (error) {
+    for (const filePath of createdFiles) {
+      try { fs.unlinkSync(filePath); } catch {}
+    }
+    throw error;
+  }
+
+  topicLines.shift();
+  fs.writeFileSync(TOPICS_FILE, topicLines.join('\n') + (topicLines.length ? '\n' : ''), 'utf-8');
+  queue.splice(jobIndex, 1);
+  saveRetryQueue(queue);
+  console.log(`✅ 원자적 발행 파일 생성 완료: ${job.slug}의 12개 언어와 주제 포인터를 함께 준비했습니다.`);
+}
+
+const task = process.argv.includes('--materialize') ? materializeCheckpoint() : run();
+task.catch(error => {
+  console.error('❌ 자동 발행 준비 실패:', error.message);
+  process.exitCode = 1;
+});
