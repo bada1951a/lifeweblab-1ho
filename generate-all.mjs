@@ -137,7 +137,7 @@ function validateGeneratedPost(text, langCode) {
     if (contentBody.length < 2400) errors.push('한국어 본문 2,400자 미만');
     if (contentBody.length > 3000) errors.push('한국어 본문 3,000자 초과');
   } else {
-    let wordCount = 0;
+    let wordCount;
     try {
       const segmenter = new Intl.Segmenter(langCode, { granularity: 'word' });
       wordCount = [...segmenter.segment(contentBody)].filter(segment => segment.isWordLike).length;
@@ -410,7 +410,6 @@ const TARGET_LANGS = [
 ];
 
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-const fileSlug = `post-${Date.now().toString(36)}`;
 
 async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -453,7 +452,7 @@ async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   throw new Error('OpenAI API 호출이 최대 재시도 횟수를 초과했습니다.');
 }
 
-async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug, publishDateBase = new Date(), imageSet, selectedScenario = scenarioForTopic(topic), resumeState = null) {
+async function generateSinglePost(lang, index, topic, publishDateBase = new Date(), imageSet, selectedScenario = scenarioForTopic(topic), resumeState = null) {
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
@@ -513,7 +512,7 @@ Provide exactly 3 practical Q&A items. You MUST put an empty line between Questi
 [FORMATTING RULES]
 1. Never put asterisks (**) inside H2 headings.
 2. Bold keywords with strict syntax: **keyword** (no space inside asterisks).
-3. Put error codes or settings in inline backticks (e.g. \`W-8BEN\`, \`3DS2\`).
+3. Put error codes or settings in inline backticks (e.g. `W-8BEN`, `3DS2`).
 ${lang.code !== 'ko' ? `- Absolutely NO Korean characters in non-Korean posts.` : ''}
 
 [Strict Output Format]
@@ -530,8 +529,8 @@ tags: ${JSON.stringify(i18n.tags)}
 
   const renderAndValidate = (rawText) => {
     let text = rawText.trim();
-    if (text.startsWith('```markdown')) text = text.replace(/^\```markdown\n/, '').replace(/\n\```$/, '');
-    if (text.startsWith('```')) text = text.replace(/^\```\n/, '').replace(/\n\```$/, '');
+    if (text.startsWith('```markdown')) text = text.replace(/^```markdown\n/, '').replace(/\n```$/, '');
+    if (text.startsWith('```')) text = text.replace(/^```\n/, '').replace(/\n```$/, '');
 
     const fmMatch = text.match(/^---[\s\S]*?---\n*/);
     if (!fmMatch) return { content: null, errors: ['frontmatter 구분자 누락'] };
@@ -675,7 +674,7 @@ async function run() {
     const imageSet = job.imageSets[lang.code] || getPostImages(i);
     job.imageSets[lang.code] = imageSet;
     const result = await generateSinglePost(
-      lang, i, topic, job.slug, new Date(job.queuedAt), imageSet,
+      lang, i, topic, new Date(job.queuedAt), imageSet,
       job.scenario, { validationErrors: job.errorsByCode[lang.code] || [], draftText: null }
     );
 
@@ -756,7 +755,11 @@ async function materializeCheckpoint() {
     }
   } catch (error) {
     for (const filePath of createdFiles) {
-      try { fs.unlinkSync(filePath); } catch {}
+      try {
+        fs.unlinkSync(filePath);
+      } catch (cleanupError) {
+        console.error(`Failed to remove partial output ${filePath}: ${cleanupError.message}`);
+      }
     }
     throw error;
   }
