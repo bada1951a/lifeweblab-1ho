@@ -202,12 +202,11 @@ const lines = fileContent
   .filter((l) => l.length > 0);
 
 if (lines.length === 0) {
-  console.log('⚠️ topics.txt에 남은 주제가 없습니다. 생성을 건너뜁니다.');
-  process.exit(0);
+  // 새 주제가 없어도 이전에 실패한 언어의 복구 큐는 run()에서 처리해야 합니다.
+  console.log('⚠️ topics.txt에 새 주제가 없습니다. 실패 언어 복구 큐를 확인합니다.');
+} else {
+  console.log(`📌 오늘 처리할 주제 [2-1호기 LifeWebLab]: "${lines[0]}"`);
 }
-
-const currentTopic = lines[0];
-console.log(`📌 오늘 처리할 주제 [2-1호기 LifeWebLab]: "${currentTopic}"`);
 
 const TROUBLESHOOTING_SCENARIOS_30 = [
   '해외 바이어로부터 거액의 인보이스 결제 완료 알림 직후 결제 게이트웨이 대시보드에 결제 거절(Declined) 경고가 뜬 순간',
