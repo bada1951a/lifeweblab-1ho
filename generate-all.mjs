@@ -9,6 +9,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import crypto from 'node:crypto';
 
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -62,15 +63,49 @@ function getKstPublishDateIso(date = new Date()) {
   return new Date(Date.UTC(year, month, day, 10, 40, 0)).toISOString();
 }
 
+function checkpointKey(salt) {
+  return crypto.scryptSync(OPENAI_API_KEY, salt, 32);
+}
+
 function loadRetryQueue() {
   if (!fs.existsSync(RETRY_QUEUE_FILE)) return [];
-  const parsed = JSON.parse(fs.readFileSync(RETRY_QUEUE_FILE, 'utf-8'));
-  if (!Array.isArray(parsed)) throw new Error('.publish-retry-queue.json 형식이 배열이 아닙니다.');
-  return parsed;
+  const envelope = JSON.parse(fs.readFileSync(RETRY_QUEUE_FILE, 'utf-8'));
+  if (Array.isArray(envelope)) {
+    if (envelope.length) throw new Error('암호화되지 않은 기존 체크포인트가 있습니다. 공개 저장소에 원고를 쓰지 않도록 수동 확인이 필요합니다.');
+    return [];
+  }
+  if (envelope.version !== 1 || envelope.algorithm !== 'aes-256-gcm') {
+    throw new Error('.publish-retry-queue.json 암호화 형식이 올바르지 않습니다.');
+  }
+  try {
+    const decipher = crypto.createDecipheriv('aes-256-gcm', checkpointKey(Buffer.from(envelope.salt, 'base64')), Buffer.from(envelope.iv, 'base64'));
+    decipher.setAuthTag(Buffer.from(envelope.tag, 'base64'));
+    const plaintext = Buffer.concat([
+      decipher.update(Buffer.from(envelope.ciphertext, 'base64')),
+      decipher.final()
+    ]).toString('utf-8');
+    const queue = JSON.parse(plaintext);
+    if (!Array.isArray(queue)) throw new Error('payload is not an array');
+    return queue;
+  } catch {
+    throw new Error('암호화 체크포인트를 복호화할 수 없습니다. OPENAI_API_KEY가 변경되었거나 데이터가 손상되었습니다.');
+  }
 }
 
 function saveRetryQueue(queue) {
-  fs.writeFileSync(RETRY_QUEUE_FILE, JSON.stringify(queue, null, 2) + '\n', 'utf-8');
+  const salt = crypto.randomBytes(16);
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', checkpointKey(salt), iv);
+  const ciphertext = Buffer.concat([cipher.update(JSON.stringify(queue), 'utf-8'), cipher.final()]);
+  const envelope = {
+    version: 1,
+    algorithm: 'aes-256-gcm',
+    salt: salt.toString('base64'),
+    iv: iv.toString('base64'),
+    tag: cipher.getAuthTag().toString('base64'),
+    ciphertext: ciphertext.toString('base64')
+  };
+  fs.writeFileSync(RETRY_QUEUE_FILE, JSON.stringify(envelope, null, 2) + '\n', 'utf-8');
 }
 
 function setWorkflowOutput(status) {
@@ -609,34 +644,30 @@ async function run() {
     await delay(1000);
   }
 
-  const complete = TARGET_LANGS.every(lang => Boolean(job.validatedPosts[lang.code]));
-  if (!complete) {
-    job.failedCodes = TARGET_LANGS.filter(lang => !job.validatedPosts[lang.code]).map(lang => lang.code);
-    saveRetryQueue(queue);
-    console.warn(`🧷 체크포인트 보존: ${TARGET_LANGS.length - job.failedCodes.length}/12개 언어 통과, 실패 언어 [${job.failedCodes.join(', ')}]. 글 파일과 주제 포인터는 바꾸지 않았습니다. 다음 실행은 실패 언어만 이어갑니다.`);
-    setWorkflowOutput("checkpoint");
-    return;
-  }
-
-  // 모든 checkpointed 원고를 최종 한 번 더 검사한 뒤에만 포스트 파일을 만듭니다.
+  // 최종 검사에서 문제가 된 언어만 체크포인트에서 제외해 다시 생성합니다.
   for (const lang of TARGET_LANGS) {
+    if (!job.validatedPosts[lang.code]) continue;
     const errors = validateGeneratedPost(job.validatedPosts[lang.code], lang.code);
     if (errors.length) {
       delete job.validatedPosts[lang.code];
       job.errorsByCode[lang.code] = errors;
-      job.failedCodes = [lang.code];
-      saveRetryQueue(queue);
-      console.error(`❌ 최종 세트 검증 실패(${lang.code}): ${errors.join(', ')}. 발행 파일과 주제 포인터는 그대로 둡니다.`);
-      setWorkflowOutput('checkpoint');
-      return;
     }
   }
 
-  job.failedCodes = [];
+  const validCodes = TARGET_LANGS.filter(lang => Boolean(job.validatedPosts[lang.code])).map(lang => lang.code);
+  job.failedCodes = TARGET_LANGS.filter(lang => !job.validatedPosts[lang.code]).map(lang => lang.code);
+  if (validCodes.length < 10) {
+    job.status = 'checkpoint';
+    saveRetryQueue(queue);
+    console.warn(`🧷 ${validCodes.length}/12개 언어만 통과했습니다. 기준(10개)에 못 미쳐 이번 주제는 게시하지 않습니다. 실패 언어 [${job.failedCodes.join(', ')}]는 다음 실행에서 이어갑니다.`);
+    setWorkflowOutput('checkpoint');
+    return;
+  }
+
   job.status = 'ready';
   job.readyAt = new Date().toISOString();
   saveRetryQueue(queue);
-  console.log("✅ 12개 언어 검증 통과. 발행 준비 체크포인트를 저장했고, 게시 파일과 주제 포인터는 아직 변경하지 않았습니다.");
+  console.log(`✅ ${validCodes.length}/12개 언어 검증 통과. 게시 대상: [${validCodes.join(', ')}], 제외 언어: [${job.failedCodes.join(', ')}]. 암호화된 준비 체크포인트를 저장했습니다.`);
   setWorkflowOutput("ready");
 }
 
@@ -651,18 +682,21 @@ async function materializeCheckpoint() {
   if (jobIndex < 0) throw new Error("현재 주제와 일치하는 발행 준비 체크포인트가 없습니다.");
   const job = queue[jobIndex];
   if (job.status !== 'ready') throw new Error('체크포인트가 12개 언어 발행 준비 상태가 아닙니다.');
-  if (!job.validatedPosts || !TARGET_LANGS.every(lang => typeof job.validatedPosts[lang.code] === 'string')) {
-    throw new Error("12개 검증 원고가 모두 체크포인트에 없습니다. 게시 파일을 만들지 않습니다.");
+  const validLangs = TARGET_LANGS.filter(lang => typeof job.validatedPosts?.[lang.code] === 'string');
+  if (validLangs.length < 10) {
+    throw new Error(`유효 원고가 ${validLangs.length}/12개뿐입니다. 최소 10개 기준 미달로 게시하지 않습니다.`);
   }
 
-  for (const lang of TARGET_LANGS) {
+  for (const lang of validLangs) {
     const errors = validateGeneratedPost(job.validatedPosts[lang.code], lang.code);
     if (errors.length) throw new Error(`최종 체크포인트 검증 실패(${lang.code}): ${errors.join(', ')}`);
   }
+  const skipped = TARGET_LANGS.filter(lang => !job.validatedPosts[lang.code]).map(lang => lang.code);
+  console.log(`게시 제외 언어: [${skipped.join(', ')}]`);
 
   const createdFiles = [];
   try {
-    for (const lang of TARGET_LANGS) {
+    for (const lang of validLangs) {
       const targetDir = path.join(POSTS_BASE_DIR, lang.code);
       fs.mkdirSync(targetDir, { recursive: true });
       const filePath = path.join(targetDir, `${job.slug}.md`);
@@ -680,7 +714,7 @@ async function materializeCheckpoint() {
   fs.writeFileSync(TOPICS_FILE, topicLines.join('\n') + (topicLines.length ? '\n' : ''), 'utf-8');
   queue.splice(jobIndex, 1);
   saveRetryQueue(queue);
-  console.log(`✅ 원자적 발행 파일 생성 완료: ${job.slug}의 12개 언어와 주제 포인터를 함께 준비했습니다.`);
+  console.log(`✅ 원자적 게시 파일 생성 완료: ${job.slug}의 ${validLangs.length}/12개 통과 언어와 주제 포인터를 함께 준비했습니다.`);
 }
 
 const task = process.argv.includes('--materialize') ? materializeCheckpoint() : run();
