@@ -1,16 +1,9 @@
-import type { PaginateFunction } from "astro";
-import { getCollection, render } from "astro:content";
-import type { CollectionEntry } from "astro:content";
-import type { Post, Taxonomy } from "~/types";
-import { APP_BLOG } from "astrowind:config";
-import {
-  cleanSlug,
-  trimSlash,
-  BLOG_BASE,
-  POST_PERMALINK_PATTERN,
-  CATEGORY_BASE,
-  TAG_BASE,
-} from "./permalinks";
+import type { PaginateFunction } from 'astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import type { Post, Taxonomy } from '~/types';
+import { APP_BLOG } from 'astrowind:config';
+import { cleanSlug, trimSlash, BLOG_BASE, POST_PERMALINK_PATTERN, CATEGORY_BASE, TAG_BASE } from './permalinks';
 
 const generatePermalink = async ({
   id,
@@ -23,33 +16,31 @@ const generatePermalink = async ({
   publishDate: Date;
   category: string | undefined;
 }) => {
-  const year = String(publishDate.getFullYear()).padStart(4, "0");
-  const month = String(publishDate.getMonth() + 1).padStart(2, "0");
-  const day = String(publishDate.getDate()).padStart(2, "0");
-  const hour = String(publishDate.getHours()).padStart(2, "0");
-  const minute = String(publishDate.getMinutes()).padStart(2, "0");
-  const second = String(publishDate.getSeconds()).padStart(2, "0");
+  const year = String(publishDate.getFullYear()).padStart(4, '0');
+  const month = String(publishDate.getMonth() + 1).padStart(2, '0');
+  const day = String(publishDate.getDate()).padStart(2, '0');
+  const hour = String(publishDate.getHours()).padStart(2, '0');
+  const minute = String(publishDate.getMinutes()).padStart(2, '0');
+  const second = String(publishDate.getSeconds()).padStart(2, '0');
 
-  const permalink = POST_PERMALINK_PATTERN.replace("%slug%", slug)
-    .replace("%id%", id)
-    .replace("%category%", category || "")
-    .replace("%year%", year)
-    .replace("%month%", month)
-    .replace("%day%", day)
-    .replace("%hour%", hour)
-    .replace("%minute%", minute)
-    .replace("%second%", second);
+  const permalink = POST_PERMALINK_PATTERN.replace('%slug%', slug)
+    .replace('%id%', id)
+    .replace('%category%', category || '')
+    .replace('%year%', year)
+    .replace('%month%', month)
+    .replace('%day%', day)
+    .replace('%hour%', hour)
+    .replace('%minute%', minute)
+    .replace('%second%', second);
 
   return permalink
-    .split("/")
+    .split('/')
     .map((el) => trimSlash(el))
     .filter((el) => !!el)
-    .join("/");
+    .join('/');
 };
 
-const getNormalizedPost = async (
-  post: CollectionEntry<"post">,
-): Promise<Post> => {
+const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> => {
   const { id, data } = post;
   const { Content, remarkPluginFrontmatter } = await render(post);
 
@@ -116,10 +107,8 @@ const getNormalizedPost = async (
 };
 
 const load = async function (): Promise<Array<Post>> {
-  const posts = await getCollection("post");
-  const normalizedPosts = posts.map(
-    async (post) => await getNormalizedPost(post),
-  );
+  const posts = await getCollection('post');
+  const normalizedPosts = posts.map(async (post) => await getNormalizedPost(post));
 
   const results = (await Promise.all(normalizedPosts))
     .sort((a, b) => b.publishDate.valueOf() - a.publishDate.valueOf())
@@ -155,9 +144,7 @@ export const fetchPosts = async (): Promise<Array<Post>> => {
 };
 
 /** */
-export const findPostsBySlugs = async (
-  slugs: Array<string>,
-): Promise<Array<Post>> => {
+export const findPostsBySlugs = async (slugs: Array<string>): Promise<Array<Post>> => {
   if (!Array.isArray(slugs)) return [];
 
   const posts = await fetchPosts();
@@ -171,9 +158,7 @@ export const findPostsBySlugs = async (
 };
 
 /** */
-export const findPostsByIds = async (
-  ids: Array<string>,
-): Promise<Array<Post>> => {
+export const findPostsByIds = async (ids: Array<string>): Promise<Array<Post>> => {
   if (!Array.isArray(ids)) return [];
 
   const posts = await fetchPosts();
@@ -187,36 +172,24 @@ export const findPostsByIds = async (
 };
 
 /** 최신 글 (한국어 우선 노출) */
-export const findLatestPosts = async ({
-  count,
-}: {
-  count?: number;
-}): Promise<Array<Post>> => {
+export const findLatestPosts = async ({ count }: { count?: number }): Promise<Array<Post>> => {
   const _count = count || 4;
   const posts = await fetchPosts();
 
   // 한국어(ko 또는 kr) 폴더 글 우선 필터링
-  const koreanPosts = posts.filter(
-    (p) => p.id.startsWith("ko/") || p.id.startsWith("kr/"),
-  );
+  const koreanPosts = posts.filter((p) => p.id.startsWith('ko/') || p.id.startsWith('kr/'));
   const targetPosts = koreanPosts.length > 0 ? koreanPosts : posts;
 
   return targetPosts ? targetPosts.slice(0, _count) : [];
 };
 
 /** 블로그 메인 목록 (한국어 글만 필터링하여 노출) */
-export const getStaticPathsBlogList = async ({
-  paginate,
-}: {
-  paginate: PaginateFunction;
-}) => {
+export const getStaticPathsBlogList = async ({ paginate }: { paginate: PaginateFunction }) => {
   if (!isBlogEnabled || !isBlogListRouteEnabled) return [];
 
   const posts = await fetchPosts();
   // 한국어(ko 또는 kr) 폴더 글만 메인 목록에 표시
-  const koreanPosts = posts.filter(
-    (p) => p.id.startsWith("ko/") || p.id.startsWith("kr/"),
-  );
+  const koreanPosts = posts.filter((p) => p.id.startsWith('ko/') || p.id.startsWith('kr/'));
   const displayPosts = koreanPosts.length > 0 ? koreanPosts : posts;
 
   return paginate(displayPosts, {
@@ -237,11 +210,7 @@ export const getStaticPathsBlogPost = async () => {
 };
 
 /** 카테고리별 목록 생성 */
-export const getStaticPathsBlogCategory = async ({
-  paginate,
-}: {
-  paginate: PaginateFunction;
-}) => {
+export const getStaticPathsBlogCategory = async ({ paginate }: { paginate: PaginateFunction }) => {
   if (!isBlogEnabled || !isBlogCategoryRouteEnabled) return [];
 
   const posts = await fetchPosts();
@@ -254,24 +223,18 @@ export const getStaticPathsBlogCategory = async ({
 
   return Array.from(Object.keys(categories)).flatMap((categorySlug) =>
     paginate(
-      posts.filter(
-        (post) => post.category?.slug && categorySlug === post.category?.slug,
-      ),
+      posts.filter((post) => post.category?.slug && categorySlug === post.category?.slug),
       {
         params: { category: categorySlug, blog: CATEGORY_BASE || undefined },
         pageSize: blogPostsPerPage,
         props: { category: categories[categorySlug] },
-      },
-    ),
+      }
+    )
   );
 };
 
 /** 태그별 목록 생성 */
-export const getStaticPathsBlogTag = async ({
-  paginate,
-}: {
-  paginate: PaginateFunction;
-}) => {
+export const getStaticPathsBlogTag = async ({ paginate }: { paginate: PaginateFunction }) => {
   if (!isBlogEnabled || !isBlogTagRouteEnabled) return [];
 
   const posts = await fetchPosts();
@@ -286,67 +249,49 @@ export const getStaticPathsBlogTag = async ({
 
   return Array.from(Object.keys(tags)).flatMap((tagSlug) =>
     paginate(
-      posts.filter(
-        (post) =>
-          Array.isArray(post.tags) &&
-          post.tags.find((elem) => elem.slug === tagSlug),
-      ),
+      posts.filter((post) => Array.isArray(post.tags) && post.tags.find((elem) => elem.slug === tagSlug)),
       {
         params: { tag: tagSlug, blog: TAG_BASE || undefined },
         pageSize: blogPostsPerPage,
         props: { tag: tags[tagSlug] },
-      },
-    ),
+      }
+    )
   );
 };
 
 /** 관련 글 추천 (동일한 언어 폴더 내에서만 매칭) */
-export async function getRelatedPosts(
-  originalPost: Post,
-  maxResults: number = 4,
-): Promise<Post[]> {
+export async function getRelatedPosts(originalPost: Post, maxResults: number = 4): Promise<Post[]> {
   const allPosts = await fetchPosts();
 
   // 현재 글의 언어 코드 추출 (예: 'ko/...' -> 'ko')
-  const currentLang = originalPost.id.includes("/")
-    ? originalPost.id.split("/")[0]
-    : "";
-  const originalTagsSet = new Set(
-    originalPost.tags ? originalPost.tags.map((tag) => tag.slug) : [],
-  );
+  const currentLang = originalPost.id.includes('/') ? originalPost.id.split('/')[0] : '';
+  const originalTagsSet = new Set(originalPost.tags ? originalPost.tags.map((tag) => tag.slug) : []);
 
   // 1. 같은 언어 폴더 글만 필터링
   const sameLangPosts = allPosts.filter((post) => {
     if (post.slug === originalPost.slug) return false;
-    const postLang = post.id.includes("/") ? post.id.split("/")[0] : "";
+    const postLang = post.id.includes('/') ? post.id.split('/')[0] : '';
     return currentLang ? postLang === currentLang : true;
   });
 
   // 2. 태그 및 카테고리 매칭 점수 계산
-  const postsWithScores = sameLangPosts.reduce(
-    (acc: { post: Post; score: number }[], iteratedPost: Post) => {
-      let score = 0;
-      if (
-        iteratedPost.category &&
-        originalPost.category &&
-        iteratedPost.category.slug === originalPost.category.slug
-      ) {
-        score += 5;
-      }
+  const postsWithScores = sameLangPosts.reduce((acc: { post: Post; score: number }[], iteratedPost: Post) => {
+    let score = 0;
+    if (iteratedPost.category && originalPost.category && iteratedPost.category.slug === originalPost.category.slug) {
+      score += 5;
+    }
 
-      if (iteratedPost.tags) {
-        iteratedPost.tags.forEach((tag) => {
-          if (originalTagsSet.has(tag.slug)) {
-            score += 1;
-          }
-        });
-      }
+    if (iteratedPost.tags) {
+      iteratedPost.tags.forEach((tag) => {
+        if (originalTagsSet.has(tag.slug)) {
+          score += 1;
+        }
+      });
+    }
 
-      acc.push({ post: iteratedPost, score });
-      return acc;
-    },
-    [],
-  );
+    acc.push({ post: iteratedPost, score });
+    return acc;
+  }, []);
 
   postsWithScores.sort((a, b) => b.score - a.score);
 
