@@ -9,15 +9,13 @@
 
 import fs from 'fs';
 import path from 'path';
-import { GoogleGenAI } from '@google/genai';
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-if (!GEMINI_API_KEY) {
-  console.error("❌ GEMINI_API_KEY 환경변수가 설정되지 않았습니다.");
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+if (!OPENAI_API_KEY) {
+  console.error('❌ OPENAI_API_KEY 환경변수가 설정되지 않았습니다.');
   process.exit(1);
 }
-
-const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
@@ -56,15 +54,12 @@ function getPostImages(index) {
   return { coverUrl, bodyUrl };
 }
 
-function getKstPublishDateIso(index, date = new Date()) {
+function getKstPublishDateIso(date = new Date()) {
   const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000);
   const year = kst.getUTCFullYear();
-  const month = kst.getUTCMonth() + 1;
+  const month = kst.getUTCMonth();
   const day = kst.getUTCDate();
-  const seed = year * 10000 + month * 100 + day;
-  const hour = 8 + ((seed + index * 7) % 11);
-  const minute = (seed * 3 + index * 13) % 60;
-  return new Date(Date.UTC(year, month - 1, day, hour - 9, minute, 0)).toISOString();
+  return new Date(Date.UTC(year, month, day, 10, 40, 0)).toISOString();
 }
 
 function loadRetryQueue() {
@@ -330,24 +325,47 @@ const TARGET_LANGS = [
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const fileSlug = `post-${Date.now().toString(36)}`;
 
+const generatedPostFiles = [];
+
 async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.5-flash-lite',
-        contents: prompt,
-        config: {
-          maxOutputTokens: 8192,
-          temperature: 0.7,
-        }
+      const response = await fetch('https://api.openai.com/v1/responses', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-6-luna',
+          reasoning: { effort: 'none' },
+          max_output_tokens: 8192,
+          input: prompt,
+        }),
       });
-      return response.text;
+
+      const payload = await response.json();
+      if (!response.ok) {
+        const message = payload?.error?.message || `HTTP ${response.status}`;
+        throw new Error(`OpenAI API 오류: ${message}`);
+      }
+
+      const generatedText = (payload.output || [])
+        .flatMap((item) => item.content || [])
+        .filter((item) => item.type === 'output_text')
+        .map((item) => item.text || '')
+        .join('\n')
+        .trim();
+
+      if (!generatedText) throw new Error('OpenAI 응답에 글 본문이 없습니다.');
+      return generatedText;
     } catch (error) {
       console.warn(`⚠️ [호출 재시도 ${attempt}/${maxRetries}]: ${error.message}`);
-      if (attempt === maxRetries) { throw error; }
-      await delay(delayMs);
+      if (attempt === maxRetries) throw error;
+      await delay(delayMs * attempt);
     }
   }
+  throw new Error('OpenAI API 호출이 최대 재시도 횟수를 초과했습니다.');
 }
 
 async function generateSinglePost(lang, index, topic = currentTopic, slug = fileSlug, publishDateBase = new Date()) {
@@ -357,7 +375,7 @@ async function generateSinglePost(lang, index, topic = currentTopic, slug = file
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
 
   const { coverUrl, bodyUrl } = getPostImages(index);
-  const pubDateIso = getKstPublishDateIso(index, publishDateBase);
+  const pubDateIso = getKstPublishDateIso(publishDateBase);
 
   // 🎯 [프롬프트: 2,400~2,600자 정량화 및 Q&A 빈 줄 2개 규격 명확화]
   const prompt = `
@@ -470,6 +488,7 @@ tags: ${JSON.stringify(i18n.tags)}
 
     const filePath = path.join(targetDir, `${slug}.md`);
     fs.writeFileSync(filePath, text, 'utf-8');
+    generatedPostFiles.push(filePath);
     console.log(`   ✅ [성공] 2-1호기 저장 완료: src/data/post/${lang.code}/${fileSlug}.md`);
     return true;
   } catch (error) {
@@ -524,6 +543,7 @@ async function run() {
   const topic = topicLines[0];
   const slug = 'post-' + Date.now().toString(36);
   console.log('오늘의 새 주제: ' + topic);
+  const batchStart = generatedPostFiles.length;
   let successCount = 0;
   const failedCodes = [];
 
@@ -539,7 +559,7 @@ async function run() {
     await delay(1500);
   }
 
-  if (successCount > 0) {
+  if (successCount === TARGET_LANGS.length) {
     topicLines.shift();
     fs.writeFileSync(TOPICS_FILE, topicLines.join('\n') + (topicLines.length ? '\n' : ''), 'utf-8');
     if (failedCodes.length) {
@@ -551,8 +571,11 @@ async function run() {
     saveRetryQueue(queue);
     console.log('남은 새 주제: ' + topicLines.length + '개 | 대기 중인 복구 작업: ' + queue.length + '개');
   } else {
+    for (const filePath of generatedPostFiles.slice(batchStart)) {
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    }
     saveRetryQueue(queue);
-    console.error("모든 언어가 실패했습니다. topics.txt의 주제를 보존합니다.");
+    console.error(`12개 언어 세트 검수 실패 (${successCount}/${TARGET_LANGS.length}). 생성된 이번 세트 파일을 되돌리고 topics.txt의 주제를 보존합니다.`);
     process.exitCode = 1;
   }
 }
