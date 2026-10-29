@@ -142,7 +142,7 @@ function validateGeneratedPost(text, langCode) {
       const segmenter = new Intl.Segmenter(langCode, { granularity: 'word' });
       wordCount = [...segmenter.segment(contentBody)].filter(segment => segment.isWordLike).length;
     } catch {
-      wordCount = (body.match(/[\p{L}\p{N}]+(?:['’.-][\p{L}\p{N}]+)*/gu) || []).length;
+      wordCount = (contentBody.match(/[\p{L}\p{N}]+(?:['’.-][\p{L}\p{N}]+)*/gu) || []).length;
     }
     if (wordCount < 900) errors.push('본문 900단어 미만');
     if (wordCount > 1100) errors.push('본문 1,100단어 초과');
