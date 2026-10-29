@@ -1,0 +1,32 @@
+name: Format code only (review branch)
+on:
+  push:
+    branches:
+      - review/gpt6-luna-2-1-no-publish
+    paths:
+      - '.github/workflows/format-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  format-code:
+    if: github.ref == 'refs/heads/review/gpt6-luna-2-1-no-publish'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: review/gpt6-luna-2-1-no-publish
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Format non-editorial files only
+        run: npx prettier --write astro.config.ts fix-existing-posts.mjs generate-all.mjs package.json scripts/gpt-luna-single-sample.mjs src/components/blog/SinglePost.astro src/components/widgets/Footer.astro src/layouts/Layout.astro src/layouts/PageLayout.astro 'src/pages/[lang]/index.astro' src/pages/about.astro src/pages/contact.astro src/pages/index.astro src/pages/privacy.astro src/pages/terms.astro src/utils/blog.ts
+      - name: Commit code formatting only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- astro.config.ts fix-existing-posts.mjs generate-all.mjs package.json scripts/gpt-luna-single-sample.mjs src/components/blog/SinglePost.astro src/components/widgets/Footer.astro src/layouts/Layout.astro src/layouts/PageLayout.astro 'src/pages/[lang]/index.astro' src/pages/about.astro src/pages/contact.astro src/pages/index.astro src/pages/privacy.astro src/pages/terms.astro src/utils/blog.ts
+          git diff --cached --quiet || (git commit -m "Format code files without changing published articles" && git push)

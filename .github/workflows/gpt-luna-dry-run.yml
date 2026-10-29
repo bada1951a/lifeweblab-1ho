@@ -1,0 +1,27 @@
+name: GPT Luna Safe Dry Run (2-1)
+on:
+  push:
+    branches:
+      - review/gpt6-luna-2-1-no-publish
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax check
+        run: node --check generate-all.mjs
+      - name: No API, no publishing smoke test
+        run: node generate-all.mjs --dry-run
+
+      - name: Install dependencies for full QA
+        run: npm ci
+      - name: Full static and formatting checks
+        run: npm run check
+      - name: Build preview without publishing
+        run: npm run build

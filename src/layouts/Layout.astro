@@ -34,10 +34,12 @@ const { language, textDirection } = I18N;
     <meta name="naver-site-verification" content="92e14b131176256ed6837f590263fa84ba847ed0" />
 
     {/* Google tag (gtag.js) - 2-1호기 LifeWebLab 전용 GA4 */}
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9L4TLNMJCT"></script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-9L4TLNMJCT"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag(...args) {
+        window.dataLayer.push(args);
+      }
       gtag('js', new Date());
 
       gtag('config', 'G-9L4TLNMJCT');

@@ -101,7 +101,9 @@ const adminLanguages = [
       }
     </div>
 
-    <div class="md:flex md:items-center md:justify-between py-6 md:py-8 border-t border-gray-100 dark:border-slate-800/80">
+    <div
+      class="md:flex md:items-center md:justify-between py-6 md:py-8 border-t border-gray-100 dark:border-slate-800/80"
+    >
       {
         socialLinks?.length > 0 && (
           <ul class="flex mb-4 md:order-1 -ml-2 md:ml-4 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4">
@@ -133,11 +135,11 @@ const adminLanguages = [
     class="fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm hidden"
     style="display: none;"
   >
-    <div class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl relative">
+    <div
+      class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl relative"
+    >
       <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-100 dark:border-slate-800">
-        <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          🌐 Global Edition Hub
-        </h3>
+        <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">🌐 Global Edition Hub</h3>
         <button
           id="admin-modal-close"
           type="button"
@@ -147,7 +149,7 @@ const adminLanguages = [
         </button>
       </div>
       <p class="text-xs text-muted mb-4">Select an edition to review localized posts.</p>
-      
+
       <div class="grid grid-cols-2 gap-2">
         {
           adminLanguages.map(({ code, name }) => (

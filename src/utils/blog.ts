@@ -170,7 +170,7 @@ export const findPostsByIds = async (ids: Array<string>): Promise<Array<Post>> =
 export const findLatestPosts = async ({ count }: { count?: number }): Promise<Array<Post>> => {
   const _count = count || 4;
   const posts = await fetchPosts();
-  
+
   // 한국어(ko 또는 kr) 폴더 글 우선 필터링
   const koreanPosts = posts.filter((p) => p.id.startsWith('ko/') || p.id.startsWith('kr/'));
   const targetPosts = koreanPosts.length > 0 ? koreanPosts : posts;
@@ -181,7 +181,7 @@ export const findLatestPosts = async ({ count }: { count?: number }): Promise<Ar
 /** 블로그 메인 목록 (한국어 글만 필터링하여 노출) */
 export const getStaticPathsBlogList = async ({ paginate }: { paginate: PaginateFunction }) => {
   if (!isBlogEnabled || !isBlogListRouteEnabled) return [];
-  
+
   const posts = await fetchPosts();
   // 한국어(ko 또는 kr) 폴더 글만 메인 목록에 표시
   const koreanPosts = posts.filter((p) => p.id.startsWith('ko/') || p.id.startsWith('kr/'));
@@ -257,7 +257,7 @@ export const getStaticPathsBlogTag = async ({ paginate }: { paginate: PaginateFu
 /** 관련 글 추천 (동일한 언어 폴더 내에서만 매칭) */
 export async function getRelatedPosts(originalPost: Post, maxResults: number = 4): Promise<Post[]> {
   const allPosts = await fetchPosts();
-  
+
   // 현재 글의 언어 코드 추출 (예: 'ko/...' -> 'ko')
   const currentLang = originalPost.id.includes('/') ? originalPost.id.split('/')[0] : '';
   const originalTagsSet = new Set(originalPost.tags ? originalPost.tags.map((tag) => tag.slug) : []);

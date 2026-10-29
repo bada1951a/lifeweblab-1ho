@@ -2,3 +2,5 @@ dist
 node_modules
 .github
 .changeset
+# Published multilingual articles: do not auto-reformat editorial content
+src/data/post/

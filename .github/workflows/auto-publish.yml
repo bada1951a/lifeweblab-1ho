@@ -20,9 +20,10 @@ jobs:
 
       - name: Run Auto Publishing Script
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           npm install --legacy-peer-deps
+          node --check generate-all.mjs
           node generate-all.mjs
 
       - name: Commit and Push New Posts

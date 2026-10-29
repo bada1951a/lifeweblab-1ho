@@ -17,11 +17,7 @@ const { metadata } = Astro.props;
 <Layout metadata={metadata}>
   <slot name="head" slot="head" />
 
-  {Astro.slots.has('header') ? (
-    <slot name="header" />
-  ) : (
-    <Header {...headerData} isSticky showToggleTheme />
-  )}
+  {Astro.slots.has('header') ? <slot name="header" /> : <Header {...headerData} isSticky showToggleTheme />}
   <main class="flex-1">
     <slot />
   </main>
