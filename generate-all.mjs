@@ -77,6 +77,13 @@ function saveRetryQueue(queue) {
   fs.writeFileSync(RETRY_QUEUE_FILE, JSON.stringify(queue, null, 2) + '\n', 'utf-8');
 }
 
+// 모델이 임의로 바꾼 게시일과 이미지 경로가 실제 게시물에 반영되지 않도록 고정합니다.
+function enforceTrustedFrontmatter(frontmatter, pubDateIso, coverUrl) {
+  return frontmatter
+    .replace(/^publishDate:[^\r\n]*$/m, `publishDate: ${pubDateIso}`)
+    .replace(/^image:[^\r\n]*$/m, `image: "${coverUrl}"`);
+}
+
 function validateGeneratedPost(text, langCode) {
   const errors = [];
   const fm = text.match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n/);
@@ -453,6 +460,9 @@ tags: []
         .replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
         .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
 
+      // 게시일과 이미지 경로는 생성 모델이 아닌 검증된 내부 값으로 확정합니다.
+      frontmatter = enforceTrustedFrontmatter(frontmatter, pubDateIso, coverUrl);
+
       // 🩺 [자가 검수 및 치유 엔진 실행]
       body = inspectAndHealMarkdown(body);
 
@@ -499,6 +509,18 @@ async function run() {
     if (!validateGeneratedPost(sample, 'ko').some((x) => x.includes('분량')))
       throw new Error('분량 검수 자체 테스트 실패');
     console.log('PASS: 짧은 글 발행 차단 검수');
+    const trustedMeta = enforceTrustedFrontmatter(
+      '---\npublishDate: 1999-01-01\nimage: "https://example.invalid/wrong.jpg"\n---',
+      '2026-10-29T01:00:00.000Z',
+      '/images/billing-photo/test.jpg'
+    );
+    if (
+      !trustedMeta.includes('publishDate: 2026-10-29T01:00:00.000Z') ||
+      !trustedMeta.includes('image: "/images/billing-photo/test.jpg"') ||
+      trustedMeta.includes('example.invalid')
+    )
+      throw new Error('게시일·로컬 이미지 경로 고정 검수 실패');
+    console.log('PASS: 게시일 및 로컬 이미지 경로 고정 검수');
     const normalizedHeading = inspectAndHealMarkdown('## **1. 제목 예시**\n\n설명');
     if (!normalizedHeading.startsWith('## 1. 제목 예시')) throw new Error('H2 볼드 마크다운 정돈 자체 테스트 실패');
     console.log('PASS: H2 볼드 마크다운 정돈 검수');
