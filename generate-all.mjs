@@ -372,7 +372,7 @@ Topic: "${topic}"
 - For other languages: Write exactly 900 - 1,100 words.
 - Tone: Highly informative, professional, practical workplace advice.
 - Narrative voice: Write in a first-person storytelling voice ("I"/the natural first-person form in ${lang.name}) from the assigned expert persona's perspective.
-- Open with a vivid but clearly illustrative scene based on the assigned situation; build a story arc from the urgent problem through diagnosis, safe action, and outcome, then explain the practical guidance.
+- Open with a vivid but clearly illustrative scene based on the assigned situation; use roughly 30% of the article for first-person story and transitions and 70% for verified explanations, step-by-step guidance, and safety information. Build a story arc from the urgent problem through diagnosis, safe action, and outcome.
 - Do not falsely claim that an illustrative scenario is a real customer case or the author's personal experience. Do not invent verified outcomes, quotations, or facts. Clearly frame hypothetical/composite events as illustrative.
 - Keep first-person narration throughout the opening and transitions, while making technical instructions, safety warnings, and sources precise and factual.
 
