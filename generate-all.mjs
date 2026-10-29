@@ -17,75 +17,42 @@ if (!OPENAI_API_KEY) {
   console.error('❌ OPENAI_API_KEY 환경변수가 설정되지 않았습니다.');
   process.exit(1);
 }
-const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
-if (!PEXELS_API_KEY) {
-  console.error('❌ PEXELS_API_KEY가 없습니다. Pexels 주제 매칭 없이 발행하지 않습니다.');
-  process.exit(1);
-}
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
+const PHOTO_DIR = path.resolve('public/images/billing-photo');
 const RETRY_QUEUE_FILE = path.resolve('.publish-retry-queue.json');
 
-function cleanMarkdownLabel(value) {
-  return String(value || '').replace(/[\r\n\[\]]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 240);
+// =========================================================================
+// [2-1호기 전용] public/images/billing-photo 로컬 이미지 자동 셔플
+// =========================================================================
+const IMAGE_EXTS = /\.(jpe?g|png|webp|gif|avif)$/i;
+
+if (!fs.existsSync(PHOTO_DIR)) {
+  fs.mkdirSync(PHOTO_DIR, { recursive: true });
 }
 
-function scorePhotoAlt(topicTerms, alt) {
-  const normalizedAlt = String(alt || '').normalize('NFKC').toLocaleLowerCase();
-  return topicTerms.reduce((score, term) => normalizedAlt.includes(term) ? score + Math.min(term.length, 8) : score, 0);
+const localFiles = fs.readdirSync(PHOTO_DIR).filter(file => IMAGE_EXTS.test(file));
+let localImages = localFiles.map(file => encodeURI(`/images/billing-photo/${file}`));
+
+if (localImages.length === 0) {
+  localImages = ['/images/default-billing.jpg'];
 }
 
-async function searchPexelsImagePair(topic) {
-  const topicTerms = [...new Set((String(topic).normalize('NFKC').toLocaleLowerCase().match(/[\p{L}\p{N}]{2,}/gu) || []))];
-  const url = new URL('https://api.pexels.com/v1/search');
-  url.searchParams.set('query', topic);
-  url.searchParams.set('per_page', '80');
-  const response = await fetch(url, {
-    headers: { Authorization: PEXELS_API_KEY },
-    signal: AbortSignal.timeout(30000)
-  });
-  const payload = await response.json();
-  if (!response.ok) throw new Error('Pexels 검색 실패: HTTP ' + response.status);
-  const candidates = (Array.isArray(payload.photos) ? payload.photos : [])
-    .filter(photo => photo && Number.isFinite(photo.id) && photo.alt && photo.url && photo.photographer && photo.src)
-    .map((photo, position) => ({
-      id: photo.id,
-      alt: cleanMarkdownLabel(photo.alt),
-      photoPageUrl: photo.url,
-      photographer: cleanMarkdownLabel(photo.photographer),
-      photographerUrl: photo.photographer_url,
-      imageUrl: photo.src.large2x || photo.src.large || photo.src.original,
-      score: scorePhotoAlt(topicTerms, photo.alt),
-      position
-    }))
-    .filter(photo => /^https:\/\/images\.pexels\.com\//i.test(photo.imageUrl) && /^https:\/\/www\.pexels\.com\//i.test(photo.photoPageUrl))
-    .sort((a, b) => b.score - a.score || a.position - b.position);
-  const distinct = [];
-  const seenIds = new Set();
-  for (const photo of candidates) {
-    if (seenIds.has(photo.id)) continue;
-    seenIds.add(photo.id);
-    distinct.push(photo);
-    if (distinct.length === 2) break;
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  if (distinct.length !== 2) {
-    throw new Error('Pexels 검색에서 alt 텍스트가 있는 서로 다른 사진 2장을 찾지 못했습니다. 이번 주제 생성을 중단합니다.');
-  }
-  console.log(\`🖼️ Pexels alt 매칭 점수: 사진 \${distinct[0].id}=\${distinct[0].score}, 사진 \${distinct[1].id}=\${distinct[1].score}\`);
-  return {
-    coverUrl: distinct[0].imageUrl,
-    bodyUrl: distinct[1].imageUrl,
-    coverAlt: distinct[0].alt,
-    bodyAlt: distinct[1].alt,
-    coverPhotoId: distinct[0].id,
-    bodyPhotoId: distinct[1].id,
-    coverPhotoPageUrl: distinct[0].photoPageUrl,
-    bodyPhotoPageUrl: distinct[1].photoPageUrl,
-    coverPhotographer: distinct[0].photographer,
-    bodyPhotographer: distinct[1].photographer,
-    coverPhotographerUrl: distinct[0].photographerUrl,
-    bodyPhotographerUrl: distinct[1].photographerUrl
-  };
+  return arr;
+}
+
+const shuffledPool = shuffleArray(localImages);
+
+function getPostImages(index) {
+  const coverUrl = shuffledPool[(index * 2) % shuffledPool.length];
+  const bodyUrl = shuffledPool[(index * 2 + 1) % shuffledPool.length];
+  return { coverUrl, bodyUrl };
 }
 
 function getKstPublishDateIso(date = new Date()) {
@@ -165,8 +132,6 @@ function validateGeneratedPost(text, langCode) {
   if (!Number.isFinite(Date.parse(readField('publishDate')))) errors.push('publishDate 형식 오류');
   if (!/^\/images\//.test(readField('image')) && !/^https?:\/\//i.test(readField('image'))) errors.push('image 경로 형식 오류');
   if (!/^category:\s*['"]?troubleshooting['"]?\s*$/m.test(meta)) errors.push('category 오류');
-  if (!/\[Photos provided by Pexels\]\(https:\/\/www\.pexels\.com\/?\)/.test(body)) errors.push('Pexels 링크 누락');
-  if ((body.match(/\[Photo by [^\]]+\]\(https:\/\/www\.pexels\.com\/photo\//g) || []).length < 2) errors.push('사진 촬영자 링크 2개 미만');
 
   if (langCode === 'ko') {
     if (contentBody.length < 2400) errors.push('한국어 본문 2,400자 미만');
@@ -493,8 +458,7 @@ async function generateSinglePost(lang, index, topic = currentTopic, slug = file
 
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
 
-  if (!imageSet || imageSet.coverPhotoId === imageSet.bodyPhotoId) throw new Error('Pexels 사진 2장 체크포인트가 없거나 사진 ID가 중복되었습니다.');
-  const { coverUrl, bodyUrl, coverAlt, bodyAlt, coverPhotoPageUrl, bodyPhotoPageUrl, coverPhotographer, bodyPhotographer } = imageSet;
+  const { coverUrl, bodyUrl } = imageSet || getPostImages(index);
   const pubDateIso = getKstPublishDateIso(publishDateBase);
 
   // 🎯 [프롬프트: 2,400~2,600자 정량화 및 Q&A 빈 줄 2개 규격 명확화]
@@ -583,8 +547,7 @@ tags: ${JSON.stringify(i18n.tags)}
       console.log(`   📏 [2-1호기 본문 최종 글자 수] ${body.length}자 (애드센스 표준: 2,400~2,600자)`);
     }
 
-    const credits = `Photo by [${coverPhotographer}](${coverPhotoPageUrl}) on Pexels · Photo by [${bodyPhotographer}](${bodyPhotoPageUrl}) on Pexels · [Photos provided by Pexels](https://www.pexels.com)`;
-    const middleImageMarkdown = `\n\n![${bodyAlt}](${bodyUrl})\n\n${credits}\n\n`;
+    const middleImageMarkdown = `\n\n![Troubleshooting Guide](${bodyUrl})\n\n`;
     if (body.includes('## 2.')) body = body.replace(/(##\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
     else body = `${middleImageMarkdown}${body}`;
 
@@ -669,7 +632,6 @@ async function run() {
     job.queuedAt = job.queuedAt || new Date().toISOString();
     job.validatedPosts = job.validatedPosts && typeof job.validatedPosts === 'object' ? job.validatedPosts : {};
     job.imageSets = job.imageSets && typeof job.imageSets === 'object' ? job.imageSets : {};
-    job.photoPair = job.photoPair || await searchPexelsImagePair(topic);
     job.failedCodes = Array.isArray(job.failedCodes) ? job.failedCodes : [];
     job.errorsByCode = job.errorsByCode && typeof job.errorsByCode === 'object' ? job.errorsByCode : {};
     job.scenario = job.scenario || scenarioForTopic(topic);
@@ -681,9 +643,10 @@ async function run() {
       validatedPosts: {},
       failedCodes: [],
       errorsByCode: {},
-      scenario: scenarioForTopic(topic),
-      photoPair: await searchPexelsImagePair(topic)
+      imageSets: {},
+      scenario: scenarioForTopic(topic)
     };
+    for (let i = 0; i < TARGET_LANGS.length; i++) job.imageSets[TARGET_LANGS[i].code] = getPostImages(i);
     queue.push(job);
     saveRetryQueue(queue);
   }
@@ -709,7 +672,8 @@ async function run() {
       continue;
     }
 
-    const imageSet = job.photoPair;
+    const imageSet = job.imageSets[lang.code] || getPostImages(i);
+    job.imageSets[lang.code] = imageSet;
     const result = await generateSinglePost(
       lang, i, topic, job.slug, new Date(job.queuedAt), imageSet,
       job.scenario, { validationErrors: job.errorsByCode[lang.code] || [], draftText: null }
@@ -769,7 +733,6 @@ async function materializeCheckpoint() {
   if (jobIndex < 0) throw new Error("현재 주제와 일치하는 발행 준비 체크포인트가 없습니다.");
   const job = queue[jobIndex];
   if (job.status !== 'ready') throw new Error('체크포인트가 12개 언어 발행 준비 상태가 아닙니다.');
-  if (!job.photoPair || job.photoPair.coverPhotoId === job.photoPair.bodyPhotoId) throw new Error('게시용 Pexels 사진 쌍이 없거나 서로 다른 사진이 아닙니다.');
   const validLangs = TARGET_LANGS.filter(lang => typeof job.validatedPosts?.[lang.code] === 'string');
   if (validLangs.length < 10) {
     throw new Error(`유효 원고가 ${validLangs.length}/12개뿐입니다. 최소 10개 기준 미달로 게시하지 않습니다.`);
