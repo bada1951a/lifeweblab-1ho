@@ -1,13 +1,13 @@
 ---
-import Layout from '~/layouts/PageLayout.astro';
-import Hero from '~/components/widgets/Hero.astro';
-import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
+import Layout from "~/layouts/PageLayout.astro";
+import Hero from "~/components/widgets/Hero.astro";
+import BlogLatestPosts from "~/components/widgets/BlogLatestPosts.astro";
 
 // 4호기 대문 이미지 불러오기 (src/assets/images/galaxy.png)
-import galaxyImg from '~/assets/images/galaxy.png';
+import galaxyImg from "~/assets/images/galaxy.png";
 
 const metadata = {
-  title: 'LifeWebLab — Global Web & Tech Troubleshooting Solutions',
+  title: "LifeWebLab — Global Web & Tech Troubleshooting Solutions",
   ignoreTitleTemplate: true,
 };
 ---
@@ -17,15 +17,15 @@ const metadata = {
   <Hero
     actions={[
       {
-        variant: 'primary',
-        text: 'Explore Solutions',
-        href: '/blog',
-        icon: 'tabler:chevron-right',
+        variant: "primary",
+        text: "Explore Solutions",
+        href: "/blog",
+        icon: "tabler:chevron-right",
       },
     ]}
     image={{
       src: galaxyImg.src,
-      alt: 'LifeWebLab - Global Web & Tech Solutions',
+      alt: "LifeWebLab - Global Web & Tech Solutions",
     }}
   >
     <Fragment slot="title">
@@ -34,7 +34,8 @@ const metadata = {
     </Fragment>
 
     <Fragment slot="subtitle">
-      Practical troubleshooting guides, payment gateway fixes, and actionable digital workflow blueprints for modern creators and entrepreneurs.
+      Practical troubleshooting guides, payment gateway fixes, and actionable
+      digital workflow blueprints for modern creators and entrepreneurs.
     </Fragment>
   </Hero>
 
