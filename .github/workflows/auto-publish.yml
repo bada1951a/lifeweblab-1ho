@@ -28,6 +28,7 @@ jobs:
         id: generate
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
         run: node generate-all.mjs
 
       # 부분 세트는 글 파일과 주제 포인터를 건드리지 않고 JSON 체크포인트만 먼저 저장합니다.
