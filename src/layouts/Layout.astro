@@ -37,7 +37,7 @@ const { language, textDirection } = I18N;
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9L4TLNMJCT"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag(...args){dataLayer.push(...args);}
       gtag('js', new Date());
 
       gtag('config', 'G-9L4TLNMJCT');
