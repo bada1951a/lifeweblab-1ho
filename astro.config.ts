@@ -92,7 +92,7 @@ export default defineConfig({
   image: {
     // 빌드 시 외부 URL 이미지 파싱 실패 방지 (noop 서비스 지정)
     service: { entrypoint: 'astro/assets/services/noop' },
-    domains: ['cdn.pixabay.com', 'images.unsplash.com', 'picsum.photos'],
+    domains: ['cdn.pixabay.com', 'images.unsplash.com', 'picsum.photos', 'images.pexels.com'],
     remotePatterns: [{ protocol: 'https' }],
     responsiveStyles: true,
   },
