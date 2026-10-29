@@ -288,14 +288,23 @@ function inspectAndHealMarkdown(body, langCode) {
     auditLogs.push("1번 헤딩 누락 주입");
   }
 
-  // 2. Q&A 표식을 보존해 질문과 답변을 각각 분리합니다.
+  // 2. Q&A 표식을 정돈하고 질문-답변 사이에 정확히 빈 줄 하나 둡니다.
   const rawQnACount = (healed.match(/Q[1-3]\./gi) || []).length;
   if (rawQnACount > 0) {
-    healed = healed.replace(/^[ \t]*\*\*Q([1-3])\.\*\*[ \t]*(.*)$/gm, '\n\n**Q$1.** $2');
-    healed = healed.replace(/^[ \t]*Q([1-3])\.[ \t]*(.*)$/gm, '\n\n**Q$1.** $2');
-    healed = healed.replace(/^[ \t]*\*\*A([1-3])\.\*\*[ \t]*(.*)$/gm, '\n\n**A$1.** $2');
-    healed = healed.replace(/^[ \t]*A([1-3])\.[ \t]*(.*)$/gm, '\n\n**A$1.** $2');
-    healed = healed.replace(/\n{3,}/g, '\n\n');
+    const faqLines = healed.split(/\r?\n/).map(line => line
+      .replace(/^[ \t]*\*\*Q([1-3])\.\*\*[ \t]*/, '**Q$1.** ')
+      .replace(/^[ \t]*Q([1-3])\.[ \t]*/, '**Q$1.** ')
+      .replace(/^[ \t]*\*\*A([1-3])\.\*\*[ \t]*/, '**A$1.** ')
+      .replace(/^[ \t]*A([1-3])\.[ \t]*/, '**A$1.** '));
+    const normalizedFaq = [];
+    for (const line of faqLines) {
+      if (/^\*\*A[1-3]\.\*\*/.test(line)) {
+        while (normalizedFaq.length && normalizedFaq[normalizedFaq.length - 1] === '') normalizedFaq.pop();
+        if (/^\*\*Q[1-3]\.\*\*/.test(normalizedFaq[normalizedFaq.length - 1] || '')) normalizedFaq.push('');
+      }
+      normalizedFaq.push(line);
+    }
+    healed = normalizedFaq.join('\n').replace(/\n{3,}/g, '\n\n');
     auditLogs.push("Q&A 질문과 답변을 빈 줄로 분리해 표식을 정돈했습니다.");
   }
 
