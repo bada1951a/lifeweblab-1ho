@@ -309,10 +309,10 @@ function inspectAndHealMarkdown(body, langCode) {
   }
 
   // 3. [볼드 공백 교정] ** 키워드 ** -> **키워드**
-  if (/\*\*\s+[^*]+?\s+\*\*/.test(healed)) {
-    healed = healed.replace(/\*\*\s+([^*]+?)\s+\*\*/g, '**$1**')
-                   .replace(/\*\*\s+([^*]+?)\*\*/g, '**$1**')
-                   .replace(/\*\*([^*]+?)\s+\*\*/g, '**$1**');
+  if (/\*\*[ \\t]+[^*\\n]+[ \\t]+\*\*/.test(healed) || /\*\*[ \\t]+[^*\\n]+\*\*/.test(healed) || /\*\*[^*\\n]+[ \\t]+\*\*/.test(healed)) {
+    healed = healed.replace(/\*\*[ \\t]+([^*\\n]+?)[ \\t]+\*\*/g, '**$1**')
+                   .replace(/\*\*[ \\t]+([^*\\n]+?)\*\*/g, '**$1**')
+                   .replace(/\*\*([^*\\n]+?)[ \\t]+\*\*/g, '**$1**');
     auditLogs.push("볼드 안쪽 공백 정돈");
   }
 
