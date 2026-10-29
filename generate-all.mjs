@@ -17,42 +17,75 @@ if (!OPENAI_API_KEY) {
   console.error('❌ OPENAI_API_KEY 환경변수가 설정되지 않았습니다.');
   process.exit(1);
 }
+const PEXELS_API_KEY = process.env.PEXELS_API_KEY;
+if (!PEXELS_API_KEY) {
+  console.error('❌ PEXELS_API_KEY가 없습니다. Pexels 주제 매칭 없이 발행하지 않습니다.');
+  process.exit(1);
+}
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
-const PHOTO_DIR = path.resolve('public/images/billing-photo');
 const RETRY_QUEUE_FILE = path.resolve('.publish-retry-queue.json');
 
-// =========================================================================
-// [2-1호기 전용] public/images/billing-photo 로컬 이미지 자동 셔플
-// =========================================================================
-const IMAGE_EXTS = /\.(jpe?g|png|webp|gif|avif)$/i;
-
-if (!fs.existsSync(PHOTO_DIR)) {
-  fs.mkdirSync(PHOTO_DIR, { recursive: true });
+function cleanMarkdownLabel(value) {
+  return String(value || '').replace(/[\r\n\[\]]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 240);
 }
 
-const localFiles = fs.readdirSync(PHOTO_DIR).filter(file => IMAGE_EXTS.test(file));
-let localImages = localFiles.map(file => encodeURI(`/images/billing-photo/${file}`));
-
-if (localImages.length === 0) {
-  localImages = ['/images/default-billing.jpg'];
+function scorePhotoAlt(topicTerms, alt) {
+  const normalizedAlt = String(alt || '').normalize('NFKC').toLocaleLowerCase();
+  return topicTerms.reduce((score, term) => normalizedAlt.includes(term) ? score + Math.min(term.length, 8) : score, 0);
 }
 
-function shuffleArray(array) {
-  const arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+async function searchPexelsImagePair(topic) {
+  const topicTerms = [...new Set((String(topic).normalize('NFKC').toLocaleLowerCase().match(/[\p{L}\p{N}]{2,}/gu) || []))];
+  const url = new URL('https://api.pexels.com/v1/search');
+  url.searchParams.set('query', topic);
+  url.searchParams.set('per_page', '80');
+  const response = await fetch(url, {
+    headers: { Authorization: PEXELS_API_KEY },
+    signal: AbortSignal.timeout(30000)
+  });
+  const payload = await response.json();
+  if (!response.ok) throw new Error('Pexels 검색 실패: HTTP ' + response.status);
+  const candidates = (Array.isArray(payload.photos) ? payload.photos : [])
+    .filter(photo => photo && Number.isFinite(photo.id) && photo.alt && photo.url && photo.photographer && photo.src)
+    .map((photo, position) => ({
+      id: photo.id,
+      alt: cleanMarkdownLabel(photo.alt),
+      photoPageUrl: photo.url,
+      photographer: cleanMarkdownLabel(photo.photographer),
+      photographerUrl: photo.photographer_url,
+      imageUrl: photo.src.large2x || photo.src.large || photo.src.original,
+      score: scorePhotoAlt(topicTerms, photo.alt),
+      position
+    }))
+    .filter(photo => /^https:\/\/images\.pexels\.com\//i.test(photo.imageUrl) && /^https:\/\/www\.pexels\.com\//i.test(photo.photoPageUrl))
+    .sort((a, b) => b.score - a.score || a.position - b.position);
+  const distinct = [];
+  const seenIds = new Set();
+  for (const photo of candidates) {
+    if (seenIds.has(photo.id)) continue;
+    seenIds.add(photo.id);
+    distinct.push(photo);
+    if (distinct.length === 2) break;
   }
-  return arr;
-}
-
-const shuffledPool = shuffleArray(localImages);
-
-function getPostImages(index) {
-  const coverUrl = shuffledPool[(index * 2) % shuffledPool.length];
-  const bodyUrl = shuffledPool[(index * 2 + 1) % shuffledPool.length];
-  return { coverUrl, bodyUrl };
+  if (distinct.length !== 2) {
+    throw new Error('Pexels 검색에서 alt 텍스트가 있는 서로 다른 사진 2장을 찾지 못했습니다. 이번 주제 생성을 중단합니다.');
+  }
+  console.log(\`🖼️ Pexels alt 매칭 점수: 사진 \${distinct[0].id}=\${distinct[0].score}, 사진 \${distinct[1].id}=\${distinct[1].score}\`);
+  return {
+    coverUrl: distinct[0].imageUrl,
+    bodyUrl: distinct[1].imageUrl,
+    coverAlt: distinct[0].alt,
+    bodyAlt: distinct[1].alt,
+    coverPhotoId: distinct[0].id,
+    bodyPhotoId: distinct[1].id,
+    coverPhotoPageUrl: distinct[0].photoPageUrl,
+    bodyPhotoPageUrl: distinct[1].photoPageUrl,
+    coverPhotographer: distinct[0].photographer,
+    bodyPhotographer: distinct[1].photographer,
+    coverPhotographerUrl: distinct[0].photographerUrl,
+    bodyPhotographerUrl: distinct[1].photographerUrl
+  };
 }
 
 function getKstPublishDateIso(date = new Date()) {
