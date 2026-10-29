@@ -1,7 +1,7 @@
 ---
-import { Icon } from 'astro-icon/components';
-import { SITE } from 'astrowind:config';
-import { getHomePermalink } from '~/utils/permalinks';
+import { Icon } from "astro-icon/components";
+import { SITE } from "astrowind:config";
+import { getHomePermalink } from "~/utils/permalinks";
 
 interface Link {
   text?: string;
@@ -23,34 +23,54 @@ export interface Props {
   theme?: string;
 }
 
-const { socialLinks = [], secondaryLinks = [], links = [], footNote = '', theme = 'light' } = Astro.props;
+const {
+  socialLinks = [],
+  secondaryLinks = [],
+  links = [],
+  footNote = "",
+  theme = "light",
+} = Astro.props;
 
 const adminLanguages = [
-  { code: 'ko', name: '🇰🇷 한국어 (KO)' },
-  { code: 'en', name: '🇺🇸 English (EN)' },
-  { code: 'ja', name: '🇯🇵 日本語 (JA)' },
-  { code: 'vi', name: '🇻🇳 Tiếng Việt (VI)' },
-  { code: 'pt', name: '🇧🇷 Português (PT)' },
-  { code: 'de', name: '🇩🇪 Deutsch (DE)' },
-  { code: 'fr', name: '🇫🇷 Français (FR)' },
-  { code: 'es', name: '🇪🇸 Español (ES)' },
-  { code: 'id', name: '🇮🇩 Indonesia (ID)' },
-  { code: 'it', name: '🇮🇹 Italiano (IT)' },
-  { code: 'nl', name: '🇳🇱 Nederlands (NL)' },
-  { code: 'pl', name: '🇵🇱 Polski (PL)' },
+  { code: "ko", name: "🇰🇷 한국어 (KO)" },
+  { code: "en", name: "🇺🇸 English (EN)" },
+  { code: "ja", name: "🇯🇵 日本語 (JA)" },
+  { code: "vi", name: "🇻🇳 Tiếng Việt (VI)" },
+  { code: "pt", name: "🇧🇷 Português (PT)" },
+  { code: "de", name: "🇩🇪 Deutsch (DE)" },
+  { code: "fr", name: "🇫🇷 Français (FR)" },
+  { code: "es", name: "🇪🇸 Español (ES)" },
+  { code: "id", name: "🇮🇩 Indonesia (ID)" },
+  { code: "it", name: "🇮🇹 Italiano (IT)" },
+  { code: "nl", name: "🇳🇱 Nederlands (NL)" },
+  { code: "pl", name: "🇵🇱 Polski (PL)" },
 ];
 ---
 
-<footer class:list={[{ dark: theme === 'dark' }, 'relative border-t border-gray-200 dark:border-slate-800 not-prose']}>
-  <div class="dark:bg-dark absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+<footer
+  class:list={[
+    { dark: theme === "dark" },
+    "relative border-t border-gray-200 dark:border-slate-800 not-prose",
+  ]}
+>
+  <div
+    class="dark:bg-dark absolute inset-0 pointer-events-none"
+    aria-hidden="true"
+  >
+  </div>
   <div class="relative max-w-7xl mx-auto px-4 sm:px-6 dark:text-slate-300">
     <div class="grid grid-cols-12 gap-6 sm:gap-8 py-8 md:py-12">
       <!-- 왼쪽 영역: 너비를 6칸으로 넉넉하게 확장하여 약관이 가로 한 줄로 배치되도록 수정 -->
       <div class="col-span-12 lg:col-span-6">
         <div class="mb-3">
-          <a class="inline-block font-bold text-xl tracking-tight" href={getHomePermalink()}>{SITE?.name}</a>
+          <a
+            class="inline-block font-bold text-xl tracking-tight"
+            href={getHomePermalink()}>{SITE?.name}</a
+          >
         </div>
-        <div class="text-sm text-muted flex flex-wrap items-center gap-x-2 gap-y-1">
+        <div
+          class="text-sm text-muted flex flex-wrap items-center gap-x-2 gap-y-1"
+        >
           {
             secondaryLinks.map(({ text, href }, index) => (
               <>
@@ -101,7 +121,9 @@ const adminLanguages = [
       }
     </div>
 
-    <div class="md:flex md:items-center md:justify-between py-6 md:py-8 border-t border-gray-100 dark:border-slate-800/80">
+    <div
+      class="md:flex md:items-center md:justify-between py-6 md:py-8 border-t border-gray-100 dark:border-slate-800/80"
+    >
       {
         socialLinks?.length > 0 && (
           <ul class="flex mb-4 md:order-1 -ml-2 md:ml-4 md:mb-0 rtl:ml-0 rtl:-mr-2 rtl:md:ml-0 rtl:md:mr-4">
@@ -133,9 +155,15 @@ const adminLanguages = [
     class="fixed inset-0 z-50 items-center justify-center bg-black/60 backdrop-blur-sm hidden"
     style="display: none;"
   >
-    <div class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl relative">
-      <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-100 dark:border-slate-800">
-        <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+    <div
+      class="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl relative"
+    >
+      <div
+        class="flex justify-between items-center mb-4 pb-2 border-b border-gray-100 dark:border-slate-800"
+      >
+        <h3
+          class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2"
+        >
           🌐 Global Edition Hub
         </h3>
         <button
@@ -146,8 +174,10 @@ const adminLanguages = [
           ✕
         </button>
       </div>
-      <p class="text-xs text-muted mb-4">Select an edition to review localized posts.</p>
-      
+      <p class="text-xs text-muted mb-4">
+        Select an edition to review localized posts.
+      </p>
+
       <div class="grid grid-cols-2 gap-2">
         {
           adminLanguages.map(({ code, name }) => (
@@ -161,8 +191,12 @@ const adminLanguages = [
         }
       </div>
 
-      <div class="mt-4 pt-3 border-t border-gray-100 dark:border-slate-800 flex justify-between text-xs text-muted">
-        <a href="/sitemap-0.xml" target="_blank" class="hover:underline">📑 Full Sitemap XML</a>
+      <div
+        class="mt-4 pt-3 border-t border-gray-100 dark:border-slate-800 flex justify-between text-xs text-muted"
+      >
+        <a href="/sitemap-0.xml" target="_blank" class="hover:underline"
+          >📑 Full Sitemap XML</a
+        >
         <span>Admin Only</span>
       </div>
     </div>
@@ -171,33 +205,33 @@ const adminLanguages = [
 
 <script is:inline>
   function setupAdminLangModal() {
-    const btn = document.getElementById('admin-lang-btn');
-    const modal = document.getElementById('admin-lang-modal');
-    const closeBtn = document.getElementById('admin-modal-close');
+    const btn = document.getElementById("admin-lang-btn");
+    const modal = document.getElementById("admin-lang-modal");
+    const closeBtn = document.getElementById("admin-modal-close");
 
     if (!btn || !modal) return;
 
     btn.onclick = function (e) {
       e.preventDefault();
-      modal.style.display = 'flex';
-      modal.classList.remove('hidden');
+      modal.style.display = "flex";
+      modal.classList.remove("hidden");
     };
 
     if (closeBtn) {
       closeBtn.onclick = function () {
-        modal.style.display = 'none';
-        modal.classList.add('hidden');
+        modal.style.display = "none";
+        modal.classList.add("hidden");
       };
     }
 
     modal.onclick = function (e) {
       if (e.target === modal) {
-        modal.style.display = 'none';
-        modal.classList.add('hidden');
+        modal.style.display = "none";
+        modal.classList.add("hidden");
       }
     };
   }
 
   setupAdminLangModal();
-  document.addEventListener('astro:page-load', setupAdminLangModal);
+  document.addEventListener("astro:page-load", setupAdminLangModal);
 </script>
