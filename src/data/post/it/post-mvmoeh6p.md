@@ -1,12 +1,14 @@
 ---
-title: "Come risolvere l'errore Stripe do_not_honor senza perdere fatturato: La mia esperienza a Milano"
-description: "Guida pratica in prima persona per risolvere il codice di errore Stripe do_not_honor e i blocchi di prelievo transfrontalieri tra disallineamenti anagrafici e flussi di cassa bloccati."
+title: "Verificare il rifiuto Stripe do_not_honor e i pagamenti B2B"
+description: "Esempi per verificare errori di pagamento, registrazioni e fatture usando lo stato del conto e i documenti della singola operazione."
 publishDate: 2026-10-24T17:27:01.228Z
 image: '/images/billing-photo/billing-20.jpg'
 category: 'troubleshooting'
 tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Resolution Emerald Guide"
 ---
+
+Le scene e i dialoghi descritti sono esempi ipotetici di verifica, non esperienze personali con clienti né risultati operativi misurati.
 
 ## 1. Emergenza improvvisa su pagamenti e bonifici internazionali
 
@@ -73,14 +75,14 @@ Per evitare di vivere un'altra mattinata di terrore nei nostri uffici di Milano,
 
 ## Domande frequenti (FAQ)
 
-**Domanda 1:** Cosa significa esattamente il codice di errore **do_not_honor** e perché appare durante i trasferimenti transfrontalieri
+<strong>Domanda 1:</strong> Cosa significa esattamente il codice di errore <strong>do_not_honor</strong> e perché appare durante i trasferimenti transfrontalieri
 
-**Risposta 1:** Il codice `do_not_honor` è un rifiuto generico emesso dalla banca emittente o dai sistemi di controllo del circuito di pagamento. Significa che la banca ha deciso di non autorizzare la transazione per motivi di sicurezza, che possono includere discrepanze anagrafiche, sospetti di frode o problemi di conformità normativa internazionale sui fondi in transito
+<strong>Risposta 1:</strong> Il codice `do_not_honor` è un rifiuto generico emesso dalla banca emittente o dai sistemi di controllo del circuito di pagamento. Significa che la banca ha deciso di non autorizzare la transazione per motivi di sicurezza, che possono includere discrepanze anagrafiche, sospetti di frode o problemi di conformità normativa internazionale sui fondi in transito
 
-**Domanda 2:** Come posso evitare che una discrepanza nei nomi blocchi i miei prelievi aziendali
+<strong>Domanda 2:</strong> Come posso evitare che una discrepanza nei nomi blocchi i miei prelievi aziendali
 
-**Risposta 2:** La chiave è la perfetta sincronizzazione. Assicurati che il nome del beneficiario registrato sulla tua piattaforma di pagamento corrisponda esattamente, carattere per carattere, all'intestazione ufficiale del conto bancario aziendale depositato presso la tua banca
+<strong>Risposta 2:</strong> La chiave è la perfetta sincronizzazione. Assicurati che il nome del beneficiario registrato sulla tua piattaforma di pagamento corrisponda esattamente, carattere per carattere, all'intestazione ufficiale del conto bancario aziendale depositato presso la tua banca
 
-**Domanda 3:** Quali sezioni della Dashboard devo controllare per prima cosa in caso di emergenza sui pagamenti
+<strong>Domanda 3:</strong> Quali sezioni della Dashboard devo controllare per prima cosa in caso di emergenza sui pagamenti
 
-**Risposta 3:** Devi accedere immediatamente alle sezioni `Impostazioni account`, `Moduli fiscali` e `Metodi di pagamento`. Lì troverai i campi relativi all'identità legale e alle coordinate bancarie che causano la maggior parte dei blocchi amministrativi e dei rifiuti di trasferimento.
+<strong>Risposta 3:</strong> Devi accedere immediatamente alle sezioni `Impostazioni account`, `Moduli fiscali` e `Metodi di pagamento`. Lì troverai i campi relativi all'identità legale e alle coordinate bancarie che causano la maggior parte dei blocchi amministrativi e dei rifiuti di trasferimento.

@@ -1,5 +1,5 @@
 ---
-title: "Hoe je Stripe Error Code do_not_honor oplost zonder omzet te verliezen: Mijn ervaring op de Zuidas"
+title: "Stripe do_not_honor en B2B-betalingen controleren"
 description: "Een praktijkverhaal over het oplossen van de Stripe 'do_not_honor' foutmelding en een dubbele afschrijving door een webhook-bug op de Amsterdamse Zuidas."
 publishDate: 2026-10-24T17:25:23.387Z
 image: '/images/billing-photo/billing-25.jpg'
@@ -8,9 +8,11 @@ tags: ["Troubleshooting", "Payment Issues", "Invoicing", "Business Guide"]
 theme: "Resolution Emerald Guide"
 ---
 
+De beschreven situaties en gesprekken zijn hypothetische controlevoorbeelden, geen persoonlijke klantervaringen of gemeten bedrijfsresultaten.
+
 ## 1. Noodsituatie bij internationale betalingen en overboekingen
 
-Het was een typische regenachtige dinsdagochtend op de Zuidas in Amsterdam. Ik zat achter mijn bureau op de twintigste verdieping met een dampende kop zwarte koffie, klaar om een flinke batch uitstaande facturen van onze internationale freelanceontwikkelaars weg te werken. Alles leek op rolletjes te lopen totdat mijn telefoon ontplofte met paniekerige Slack-berichten van onze hoofdinkoper. Een van onze grootste externe contractanten had zojuist een betaling geprobeerd te voldoen, maar werd geconfronteerd met de gevreesde '**do_not_honor**' foutmelding van Stripe. Nog erger: door een rare webhook-bug in ons systeem was diezelfde mislukte transactie ergens op de achtergrond wél dubbel geregistreerd en afgeschreven. Twee keer hetzelfde hoge bedrag afgeschreven van een woedende partner, terwijl de status in ons dashboard bleef hangen op geweigerd. Mijn maag keerde zich om; we moesten dit direct oplossen voordat het onze reputatie zou schaden en we omzet zouden mislopen door afgehaakte partners.
+Het was een typische regenachtige dinsdagochtend op de Zuidas in Amsterdam. Ik zat achter mijn bureau op de twintigste verdieping met een dampende kop zwarte koffie, klaar om een flinke batch uitstaande facturen van onze internationale freelanceontwikkelaars weg te werken. Alles leek op rolletjes te lopen totdat mijn telefoon ontplofte met paniekerige Slack-berichten van onze hoofdinkoper. Een van onze grootste externe contractanten had zojuist een betaling geprobeerd te voldoen, maar werd geconfronteerd met de gevreesde '<strong>do_not_honor</strong>' foutmelding van Stripe. Nog erger: door een rare webhook-bug in ons systeem was diezelfde mislukte transactie ergens op de achtergrond wél dubbel geregistreerd en afgeschreven. Twee keer hetzelfde hoge bedrag afgeschreven van een woedende partner, terwijl de status in ons dashboard bleef hangen op geweigerd. Mijn maag keerde zich om; we moesten dit direct oplossen voordat het onze reputatie zou schaden en we omzet zouden mislopen door afgehaakte partners.
 
 De rillingen liepen over mijn rug toen ik het Dashboard opende en de rode foutmeldingen ons tegemoet blonken. In eerste instantie dacht ik dat het aan de bank van de freelancer lag, zoals zo vaak het geval is bij internationale overboekingen in de financiële sector hier in Amsterdam. Maar toen ik dieper groef in de logs, zag ik de ware nachtmerrie: de webhook-server had een time-out gekregen precies op het moment dat de 'do_not_honor' respons binnenkwam, waardoor de retry-logica van Stripe ten onrechte twee keer een poging had gedaan om de kaarten te belasten.
 
@@ -34,7 +36,7 @@ De 'do_not_honor' code is de meest frustrerende melding in het hele Stripe-ecosy
 
 Onze tweede fout zat in de architectuur. Toen de 'do_not_honor' melding binnenkwam, stuurde onze server automatisch een hertest-trigger uit via een webhook. Omdat de netwerkverbinding op dat moment haperde, dacht Stripe dat het eerste verzoek verloren was gegaan en vuurde het exact dezelfde betalingsintentie nogmaals af. Het resultaat? Twee identieke afschrijvingen binnen een milliseconde van elkaar.
 
-### Ontbrekende **idempotentie**-sleutels
+### Ontbrekende <strong>idempotentie</strong>-sleutels
 
 Dit was de grootste technische omissie. We hadden geen `Idempotency-Key` headers meegeleverd in onze API-aanroepen. Zonder deze unieke sleutels kan Stripe een betalingsverzoek bij een netwerkstoring niet effectief dedupliceren, wat direct leidde tot deze dubbele financiële nachtmerrie.
 
@@ -69,14 +71,14 @@ Om te zorgen dat we nooit meer op een hectische ochtend op de Zuidas met dit bij
 
 ## 5. Veelgestelde vragen (FAQ)
 
-**Vraag:** Wat moet ik doen als de bank van de klant blijft weigeren ondanks meerdere pogingen?
+<strong>Vraag:</strong> Wat moet ik doen als de bank van de klant blijft weigeren ondanks meerdere pogingen?
 
-**Antwoord:** Vraag de klant om direct contact op te nemen met hun eigen bank om internationale online transacties goed te keuren. Vaak blokkeren banken automatische betalingen naar het buitenland uit veiligheidsoverwegingen. Als alternatief kun je een handmatige SEPA-overschrijving initiëren via je zakelijke bankrekening
+<strong>Antwoord:</strong> Vraag de klant om direct contact op te nemen met hun eigen bank om internationale online transacties goed te keuren. Vaak blokkeren banken automatische betalingen naar het buitenland uit veiligheidsoverwegingen. Als alternatief kun je een handmatige SEPA-overschrijving initiëren via je zakelijke bankrekening
 
-**Vraag:** Hoe voorkom ik dat webhooks dubbele betalingen veroorzaken tijdens netwerkstoringen?
+<strong>Vraag:</strong> Hoe voorkom ik dat webhooks dubbele betalingen veroorzaken tijdens netwerkstoringen?
 
-**Antwoord:** Zorg ervoor dat je server een database-lock gebruikt op basis van de `event.id` die Stripe meestuurt met elke webhook. Als een event al in je database staat als 'verwerkt', moet je server direct met een HTTP 200 reageren zonder de actie nogmaals uit te voeren
+<strong>Antwoord:</strong> Zorg ervoor dat je server een database-lock gebruikt op basis van de `event.id` die Stripe meestuurt met elke webhook. Als een event al in je database staat als 'verwerkt', moet je server direct met een HTTP 200 reageren zonder de actie nogmaals uit te voeren
 
-**Vraag:** Verlies ik omzet als ik een dubbele betaling moet terugbetalen?
+<strong>Vraag:</strong> Verlies ik omzet als ik een dubbele betaling moet terugbetalen?
 
-**Antwoord:** Nee, een terugbetaling (refund) is geen omzetverlies, maar een correctie van een onterechte incasso. Houd er wel rekening mee dat de oorspronkelijke transactiekosten die Stripe rekent bij sommige betaalmethoden niet altijd volledig worden geretourneerd. Dit zie je direct terug in je maandelijkse afrekening.
+<strong>Antwoord:</strong> Nee, een terugbetaling (refund) is geen omzetverlies, maar een correctie van een onterechte incasso. Houd er wel rekening mee dat de oorspronkelijke transactiekosten die Stripe rekent bij sommige betaalmethoden niet altijd volledig worden geretourneerd. Dit zie je direct terug in je maandelijkse afrekening.
