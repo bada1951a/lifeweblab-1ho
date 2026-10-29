@@ -165,6 +165,8 @@ function validateGeneratedPost(text, langCode) {
   if (!Number.isFinite(Date.parse(readField('publishDate')))) errors.push('publishDate 형식 오류');
   if (!/^\/images\//.test(readField('image')) && !/^https?:\/\//i.test(readField('image'))) errors.push('image 경로 형식 오류');
   if (!/^category:\s*['"]?troubleshooting['"]?\s*$/m.test(meta)) errors.push('category 오류');
+  if (!/\[Photos provided by Pexels\]\(https:\/\/www\.pexels\.com\/?\)/.test(body)) errors.push('Pexels 링크 누락');
+  if ((body.match(/\[Photo by [^\]]+\]\(https:\/\/www\.pexels\.com\/photo\//g) || []).length < 2) errors.push('사진 촬영자 링크 2개 미만');
 
   if (langCode === 'ko') {
     if (contentBody.length < 2400) errors.push('한국어 본문 2,400자 미만');
@@ -491,7 +493,8 @@ async function generateSinglePost(lang, index, topic = currentTopic, slug = file
 
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
 
-  const { coverUrl, bodyUrl } = imageSet || getPostImages(index);
+  if (!imageSet || imageSet.coverPhotoId === imageSet.bodyPhotoId) throw new Error('Pexels 사진 2장 체크포인트가 없거나 사진 ID가 중복되었습니다.');
+  const { coverUrl, bodyUrl, coverAlt, bodyAlt, coverPhotoPageUrl, bodyPhotoPageUrl, coverPhotographer, bodyPhotographer } = imageSet;
   const pubDateIso = getKstPublishDateIso(publishDateBase);
 
   // 🎯 [프롬프트: 2,400~2,600자 정량화 및 Q&A 빈 줄 2개 규격 명확화]
@@ -580,7 +583,8 @@ tags: ${JSON.stringify(i18n.tags)}
       console.log(`   📏 [2-1호기 본문 최종 글자 수] ${body.length}자 (애드센스 표준: 2,400~2,600자)`);
     }
 
-    const middleImageMarkdown = `\n\n![Troubleshooting Guide](${bodyUrl})\n\n`;
+    const credits = `Photo by [${coverPhotographer}](${coverPhotoPageUrl}) on Pexels · Photo by [${bodyPhotographer}](${bodyPhotoPageUrl}) on Pexels · [Photos provided by Pexels](https://www.pexels.com)`;
+    const middleImageMarkdown = `\n\n![${bodyAlt}](${bodyUrl})\n\n${credits}\n\n`;
     if (body.includes('## 2.')) body = body.replace(/(##\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
     else body = `${middleImageMarkdown}${body}`;
 
