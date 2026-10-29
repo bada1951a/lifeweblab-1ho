@@ -669,6 +669,7 @@ async function run() {
     job.queuedAt = job.queuedAt || new Date().toISOString();
     job.validatedPosts = job.validatedPosts && typeof job.validatedPosts === 'object' ? job.validatedPosts : {};
     job.imageSets = job.imageSets && typeof job.imageSets === 'object' ? job.imageSets : {};
+    job.photoPair = job.photoPair || await searchPexelsImagePair(topic);
     job.failedCodes = Array.isArray(job.failedCodes) ? job.failedCodes : [];
     job.errorsByCode = job.errorsByCode && typeof job.errorsByCode === 'object' ? job.errorsByCode : {};
     job.scenario = job.scenario || scenarioForTopic(topic);
@@ -680,10 +681,9 @@ async function run() {
       validatedPosts: {},
       failedCodes: [],
       errorsByCode: {},
-      imageSets: {},
-      scenario: scenarioForTopic(topic)
+      scenario: scenarioForTopic(topic),
+      photoPair: await searchPexelsImagePair(topic)
     };
-    for (let i = 0; i < TARGET_LANGS.length; i++) job.imageSets[TARGET_LANGS[i].code] = getPostImages(i);
     queue.push(job);
     saveRetryQueue(queue);
   }
@@ -709,8 +709,7 @@ async function run() {
       continue;
     }
 
-    const imageSet = job.imageSets[lang.code] || getPostImages(i);
-    job.imageSets[lang.code] = imageSet;
+    const imageSet = job.photoPair;
     const result = await generateSinglePost(
       lang, i, topic, job.slug, new Date(job.queuedAt), imageSet,
       job.scenario, { validationErrors: job.errorsByCode[lang.code] || [], draftText: null }
@@ -770,6 +769,7 @@ async function materializeCheckpoint() {
   if (jobIndex < 0) throw new Error("현재 주제와 일치하는 발행 준비 체크포인트가 없습니다.");
   const job = queue[jobIndex];
   if (job.status !== 'ready') throw new Error('체크포인트가 12개 언어 발행 준비 상태가 아닙니다.');
+  if (!job.photoPair || job.photoPair.coverPhotoId === job.photoPair.bodyPhotoId) throw new Error('게시용 Pexels 사진 쌍이 없거나 서로 다른 사진이 아닙니다.');
   const validLangs = TARGET_LANGS.filter(lang => typeof job.validatedPosts?.[lang.code] === 'string');
   if (validLangs.length < 10) {
     throw new Error(`유효 원고가 ${validLangs.length}/12개뿐입니다. 최소 10개 기준 미달로 게시하지 않습니다.`);
