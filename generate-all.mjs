@@ -564,7 +564,7 @@ async function generateSinglePost(
 You are a ${lang.persona}.
 Write a high-quality, practical troubleshooting guide natively in ${lang.name}.
 Write this locale's article as an independent original composition; do not translate or imitate another locale's draft.
-Keep the shared topic as the central subject. Use the assigned situation only as a topic-relevant illustrative frame, and adapt examples and phrasing naturally for this locale without changing factual core guidance.
+Keep the shared topic as the central subject. Use the assigned situation only when it directly fits the topic; skip unrelated details. Adapt examples and phrasing naturally for this locale without changing factual core guidance.
 Target Culture: "${lang.localeContext}"
 Assigned Situation: "${selectedScenario}"
 Topic: "${topic}"
@@ -574,18 +574,18 @@ Topic: "${topic}"
 - For other languages: Write exactly 900 - 1,100 words.
 - Tone: Highly informative, professional, practical workplace advice.
 - Narrative voice: Write in a first-person storytelling voice ("I"/the natural first-person form in ${lang.name}) from the assigned expert persona's perspective.
-- Open with a vivid but clearly illustrative scene based on the assigned situation; use roughly 30% of the article for first-person story and transitions and 70% for verified explanations, step-by-step guidance, and safety information. Build a story arc from the urgent problem through diagnosis, safe action, and outcome.
-- Do not falsely claim that an illustrative scenario is a real customer case or the author's personal experience. Do not invent verified outcomes, quotations, or facts. Clearly frame hypothetical/composite events as illustrative.
-- Keep first-person narration throughout the opening and transitions, while making technical instructions, safety warnings, and sources precise and factual.
+- Start directly with a concrete moment readers recognize from the topic. Use roughly 30% of the article for first-person reasoning and transitions and 70% for verified explanations, step-by-step guidance, and safety information. Let the reader follow the narrator from the first check through diagnosis and safe next steps, explaining why each step matters.
+- Use first person for the guide's reasoning and recommended actions (for example, what I would check first), not to claim that the author actually experienced the event, served a customer, or observed a result. Do not invent outcomes, quotations, or facts.
+- Do not add an opening preface, caveat, or statement about the story's authenticity. Keep technical instructions, safety warnings, and sources precise and factual.
 
 [STRUCTURE - STRICT 5 H2 HEADINGS]
 Use these exact H2 headings:
 
 ## ${i18n.s1}
-Write 2 detailed paragraphs describing the sudden payment error emergency, the business risk, and initial panic based on: "${selectedScenario}".
+Write 2 detailed paragraphs that begin directly in a topic-specific problem readers recognize. Show the first-person guide's initial reasoning and the practical risk, then begin diagnosing it. Use the assigned situation only if it directly fits the topic; do not force unrelated details or add a preface.
 
 ## ${i18n.s2}
-Write 2 analytical paragraphs explaining the technical root causes (gateway risk rules, 3DS authentication, tax form issues, or intermediary bank holds).
+Write 2 analytical paragraphs explaining only the technical causes that fit the topic (such as gateway risk rules, 3DS authentication, tax form issues, or intermediary bank holds). Do not force unrelated causes.
 
 ## ${i18n.s3}
 Provide 3 concrete resolution steps matching "${lang.osUi}". Use clean numbered lists with practical action items.
