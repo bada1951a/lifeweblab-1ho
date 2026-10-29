@@ -45,8 +45,10 @@ jobs:
             git push
           fi
 
-      - name: Materialize complete 12-locale set
+      - name: Materialize valid locale set (minimum 10)
         if: steps.generate.outputs.status == 'ready'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node generate-all.mjs --materialize
 
       - name: Build site
