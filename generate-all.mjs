@@ -10,6 +10,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'node:crypto';
+import { PROMPT_RECIPE_VERSION, reconcilePromptCheckpoint } from './src/utils/generation-recipe.js';
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 if (!OPENAI_API_KEY) {
@@ -767,9 +768,15 @@ async function run() {
       errorsByCode: {},
       imageSets: {},
       scenario: scenarioForTopic(topic),
+      promptRecipeVersion: PROMPT_RECIPE_VERSION,
     };
     for (let i = 0; i < TARGET_LANGS.length; i++) job.imageSets[TARGET_LANGS[i].code] = getPostImages(i);
     queue.push(job);
+    saveRetryQueue(queue);
+  }
+
+  if (reconcilePromptCheckpoint(job)) {
+    console.warn('⚠️ 프롬프트 버전이 변경되어 이전 체크포인트 원고를 무효화하고 새 지침으로 다시 작성합니다.');
     saveRetryQueue(queue);
   }
 
@@ -864,6 +871,9 @@ async function materializeCheckpoint() {
   const jobIndex = queue.findIndex((item) => item.topic === topic);
   if (jobIndex < 0) throw new Error('현재 주제와 일치하는 발행 준비 체크포인트가 없습니다.');
   const job = queue[jobIndex];
+  if (job.promptRecipeVersion !== PROMPT_RECIPE_VERSION) {
+    throw new Error('체크포인트의 프롬프트 버전이 현재 생성기와 다릅니다. 먼저 생성 단계에서 다시 작성해야 합니다.');
+  }
   if (job.status !== 'ready') throw new Error('체크포인트가 12개 언어 발행 준비 상태가 아닙니다.');
   const validLangs = TARGET_LANGS.filter((lang) => typeof job.validatedPosts?.[lang.code] === 'string');
   if (validLangs.length < 10) {
