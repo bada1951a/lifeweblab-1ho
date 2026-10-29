@@ -54,15 +54,12 @@ function getPostImages(index) {
   return { coverUrl, bodyUrl };
 }
 
-function getKstPublishDateIso(index, date = new Date()) {
+function getKstPublishDateIso(date = new Date()) {
   const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000);
   const year = kst.getUTCFullYear();
-  const month = kst.getUTCMonth() + 1;
+  const month = kst.getUTCMonth();
   const day = kst.getUTCDate();
-  const seed = year * 10000 + month * 100 + day;
-  const hour = 8 + ((seed + index * 7) % 11);
-  const minute = (seed * 3 + index * 13) % 60;
-  return new Date(Date.UTC(year, month - 1, day, hour - 9, minute, 0)).toISOString();
+  return new Date(Date.UTC(year, month, day, 10, 40, 0)).toISOString();
 }
 
 function loadRetryQueue() {
@@ -378,7 +375,7 @@ async function generateSinglePost(lang, index, topic = currentTopic, slug = file
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
 
   const { coverUrl, bodyUrl } = getPostImages(index);
-  const pubDateIso = getKstPublishDateIso(index, publishDateBase);
+  const pubDateIso = getKstPublishDateIso(publishDateBase);
 
   // 🎯 [프롬프트: 2,400~2,600자 정량화 및 Q&A 빈 줄 2개 규격 명확화]
   const prompt = `
