@@ -25,9 +25,7 @@ try {
   fs.writeFileSync(temporaryFile, raw, { encoding: 'utf8', flag: 'wx' });
   fs.renameSync(temporaryFile, targetFile);
 } catch (error) {
-  try {
-    fs.rmSync(temporaryFile, { force: true });
-  } catch {}
+  fs.rmSync(temporaryFile, { force: true });
   throw error;
 }
 console.log('Restored encrypted locale checkpoint artifact for generator validation.');
