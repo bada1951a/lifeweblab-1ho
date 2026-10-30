@@ -10,7 +10,7 @@ export function createTopicFileSlug(topic) {
 }
 
 // Bump this value whenever prompt wording, structure, or generation rules change.
-export const PROMPT_RECIPE_VERSION = '2026-10-30-topic-specific-headings-v1';
+export const PROMPT_RECIPE_VERSION = '2026-10-30-topic-specific-headings-v2';
 
 export function reconcilePromptCheckpoint(job, currentVersion = PROMPT_RECIPE_VERSION) {
   if (!job || typeof job !== 'object') {
@@ -67,4 +67,26 @@ export function decidePublishLocales(targetLanguages, successfulLocaleCodes, min
     failedCodes,
     canPublish: passingCodes.length >= minimum,
   };
+}
+
+export function buildWordCountCorrectionGuidance(validationErrors) {
+  if (!Array.isArray(validationErrors)) {
+    throw new TypeError('validationErrors must be an array.');
+  }
+
+  const underMinimum = validationErrors.includes('본문 900단어 미만');
+  const overMaximum = validationErrors.includes('본문 1,100단어 초과');
+  if (!underMinimum && !overMaximum) return '';
+
+  const direction = underMinimum
+    ? 'Expand only relevant topic-specific explanations, safe steps, or examples; do not add filler.'
+    : 'Trim repetition and incidental detail while preserving useful steps and safety information.';
+
+  return [
+    '[WORD COUNT CORRECTION]',
+    `The previous ${underMinimum ? 'draft was below 900' : 'draft exceeded 1,100'} words according to the locale-aware validator.`,
+    'Keep the same 900–1,100-word acceptance range and aim for approximately 950–1,050 words, near the middle of the range, to leave a margin for locale-specific word segmentation.',
+    direction,
+    'Preserve the article’s factual meaning and locale-specific phrasing; do not estimate by sentence count alone.',
+  ].join('\n');
 }
