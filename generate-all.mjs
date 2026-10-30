@@ -12,6 +12,7 @@ import path from 'path';
 import crypto from 'node:crypto';
 import {
   PROMPT_RECIPE_VERSION,
+  assertNoExistingPostLocales,
   createTopicFileSlug,
   decidePublishLocales,
   reconcilePromptCheckpoint,
@@ -899,6 +900,10 @@ async function materializeCheckpoint() {
   }
   const skipped = TARGET_LANGS.filter((lang) => !job.validatedPosts[lang.code]).map((lang) => lang.code);
   console.log(`게시 제외 언어: [${skipped.join(', ')}]`);
+
+  assertNoExistingPostLocales(TARGET_LANGS, job.slug, (localeCode, filename) =>
+    fs.existsSync(path.join(POSTS_BASE_DIR, localeCode, filename))
+  );
 
   const createdFiles = [];
   try {
