@@ -13,6 +13,7 @@ import crypto from 'node:crypto';
 import {
   PROMPT_RECIPE_VERSION,
   createTopicFileSlug,
+  decidePublishLocales,
   reconcilePromptCheckpoint,
 } from './src/utils/generation-recipe.js';
 
@@ -840,9 +841,14 @@ async function run() {
     }
   }
 
-  const validCodes = TARGET_LANGS.filter((lang) => Boolean(job.validatedPosts[lang.code])).map((lang) => lang.code);
-  job.failedCodes = TARGET_LANGS.filter((lang) => !job.validatedPosts[lang.code]).map((lang) => lang.code);
-  if (validCodes.length < 10) {
+  const publication = decidePublishLocales(
+    TARGET_LANGS,
+    Object.keys(job.validatedPosts).filter((code) => typeof job.validatedPosts[code] === 'string'),
+    10
+  );
+  const validCodes = publication.passingCodes;
+  job.failedCodes = publication.failedCodes;
+  if (!publication.canPublish) {
     job.status = 'checkpoint';
     saveRetryQueue(queue);
     console.warn(
@@ -879,8 +885,13 @@ async function materializeCheckpoint() {
     throw new Error('체크포인트의 프롬프트 버전이 현재 생성기와 다릅니다. 먼저 생성 단계에서 다시 작성해야 합니다.');
   }
   if (job.status !== 'ready') throw new Error('체크포인트가 12개 언어 발행 준비 상태가 아닙니다.');
-  const validLangs = TARGET_LANGS.filter((lang) => typeof job.validatedPosts?.[lang.code] === 'string');
-  if (validLangs.length < 10) {
+  const publication = decidePublishLocales(
+    TARGET_LANGS,
+    Object.keys(job.validatedPosts || {}).filter((code) => typeof job.validatedPosts[code] === 'string'),
+    10
+  );
+  const validLangs = publication.passingLocales;
+  if (!publication.canPublish) {
     throw new Error(`유효 원고가 ${validLangs.length}/12개뿐입니다. 최소 10개 기준 미달로 게시하지 않습니다.`);
   }
 
