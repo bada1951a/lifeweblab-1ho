@@ -52,8 +52,14 @@ test('narrative prompt guides first-person storytelling without invented authori
 
   assert.match(instructions, /practical, approachable guide narrator for Korean readers/);
   assert.match(instructions, /natural first-person reasoning and recommendations/);
-  assert.match(instructions, /A brief illustrative scene is allowed when it is clearly introduced as an example or imagined situation/);
-  assert.match(instructions, /Claim a test, repair, customer interaction, measurement, or outcome as real only when supported by supplied evidence/);
+  assert.match(
+    instructions,
+    /A brief illustrative scene is allowed when it is clearly introduced as an example or imagined situation/
+  );
+  assert.match(
+    instructions,
+    /Claim a test, repair, customer interaction, measurement, or outcome as real only when supported by supplied evidence/
+  );
   assert.match(instructions, /30% engaging first-person reasoning and transitions and 70% practical/);
   assert.match(instructions, /Never fabricate personal or customer experiences/);
   assert.match(
