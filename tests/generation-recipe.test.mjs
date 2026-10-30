@@ -19,9 +19,10 @@ test('generation recipe invalidates drafts when topic-specific headings change',
   assert.ok(source.includes('Avoid generic boilerplate, guaranteed time/results'));
   assert.ok(source.includes('never copy their brackets or placeholder text'));
   assert.ok(source.includes('Each heading must make the specific topic or decision visible'));
-  assert.ok(source.includes('Do not use headings that could be reused unchanged for an unrelated article'));
+  assert.ok(
+    source.includes('Do not use headings that could be reused unchanged for an unrelated article')
+  );
   assert.ok(source.includes('Do not state a time-to-solve or guaranteed financial outcome'));
-
 });
 
 test('word-count corrections aim inside the existing range without lowering validation standards', () => {
