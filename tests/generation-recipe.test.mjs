@@ -20,7 +20,12 @@ test('narrative prompt guides first-person storytelling without invented authori
   assert.match(instructions, /30% engaging first-person reasoning and transitions and 70% practical/);
   assert.match(instructions, /Never fabricate personal or customer experiences/);
   assert.match(instructions, /not a claim about real identity, profession, employment, credentials, or firsthand experience/);
-  assert.match(source, /buildNarrativeVoiceInstructions\\(lang\\.name\\)/);
+  assert.ok(source.includes('buildNarrativeVoiceInstructions(lang.name)'));
+  assert.ok(
+    source.includes(
+      "Write this locale's article as an independent original composition; do not translate or imitate another locale's draft."
+    )
+  );
   assert.doesNotMatch(source, /from the assigned expert persona's perspective/);
 });
 
