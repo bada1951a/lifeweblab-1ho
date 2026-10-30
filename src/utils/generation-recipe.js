@@ -69,7 +69,6 @@ export function decidePublishLocales(targetLanguages, successfulLocaleCodes, min
   };
 }
 
-
 export function assertNoExistingPostLocales(targetLanguages, slug, fileExists) {
   if (!Array.isArray(targetLanguages) || typeof slug !== 'string' || !slug.trim()) {
     throw new TypeError('targetLanguages and slug are required.');
