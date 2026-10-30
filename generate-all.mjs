@@ -578,7 +578,7 @@ ${buildNarrativeVoiceInstructions(lang.name)}
 - Keep technical instructions, safety warnings, and sources precise and factual.
 
 [STRUCTURE - STRICT 5 H2 HEADINGS]
-Write exactly five numbered H2 headings in ${lang.name}, numbered 1 through 5. Write concise headings in the target language that fit ${topic} and each section's content. Avoid generic boilerplate, guaranteed time/results, fear-based wording, and unverified professional credentials.
+Write exactly five numbered H2 headings in ${lang.name}, numbered 1 through 5. Write concise headings in the target language that fit ${topic} and each section's content. Avoid generic boilerplate, guaranteed time/results, fear-based wording, and unverified professional credentials. The bracketed descriptions below are instructions; never copy their brackets or placeholder text into the article.
 
 ## 1. [topic-specific opening heading]
 Write 2 detailed paragraphs that begin directly in a topic-specific problem readers recognize. Show the first-person guide's initial reasoning and the practical risk, then begin diagnosing it. Use the assigned situation only if it directly fits the topic; do not force unrelated details or add a preface.
