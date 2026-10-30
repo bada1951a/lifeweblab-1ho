@@ -6,6 +6,7 @@ import { buildNarrativeVoiceInstructions } from '../src/utils/narrative-prompt.j
 import {
   PROMPT_RECIPE_VERSION,
   buildWordCountCorrectionGuidance,
+  findReusablePostLocales,
   createTopicFileSlug,
   decidePublishLocales,
   reconcilePromptCheckpoint,
@@ -55,7 +56,8 @@ test('narrative prompt guides first-person storytelling without invented authori
   assert.ok(source.includes('buildNarrativeVoiceInstructions(lang.name)'));
   assert.ok(
     source.includes(
-      "Write this locale's article as an independent original composition; do not translate or imitate another locale's draft."
+      "Write this locale's article as an independent original composition; " +
+        "do not translate or imitate another locale's draft."
     )
   );
   assert.doesNotMatch(source, /from the assigned expert persona's perspective/);
@@ -118,6 +120,32 @@ test('topic slugs are deterministic, normalized, and different for different top
   assert.notEqual(slug, createTopicFileSlug('Invoice payment troubleshooting'));
 });
 
+test('materialization reuses exact checkpoint files and rejects conflicting content', () => {
+  const expectedPosts = { ko: 'Korean article', en: 'English article' };
+  const existingPosts = new Map([['ko/post-topic.md', 'Korean article']]);
+
+  assert.deepEqual(
+    findReusablePostLocales(
+      ['ko', 'en'],
+      'post-topic',
+      expectedPosts,
+      (locale, filename) => existingPosts.get(`${locale}/${filename}`) ?? null
+    ),
+    ['ko']
+  );
+  assert.throws(
+    () =>
+      findReusablePostLocales(['ko', 'en'], 'post-topic', expectedPosts, (locale, filename) =>
+        locale === 'ko' && filename === 'post-topic.md' ? 'Conflicting article' : null
+      ),
+    /Existing post for post-topic in ko conflicts with the retry checkpoint/
+  );
+  assert.throws(
+    () => findReusablePostLocales(['ko'], 'post-topic', {}, () => 'Already published article'),
+    /Existing post for post-topic in ko conflicts with the retry checkpoint/
+  );
+});
+
 const publicationTargets = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'].map((code) => ({
   code,
 }));
@@ -162,4 +190,5 @@ test('generator uses the tested publication plan in generation and materializati
   assert.equal((source.match(/decidePublishLocales\(/g) || []).length, 2);
   assert.equal((source.match(/if \(!publication\.canPublish\)/g) || []).length, 2);
   assert.match(source, /const validLangs = publication\.passingLocales;/);
+  assert.ok(source.includes('findReusablePostLocales(TARGET_LANGS, job.slug'));
 });
