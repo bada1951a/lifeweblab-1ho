@@ -68,3 +68,20 @@ export function decidePublishLocales(targetLanguages, successfulLocaleCodes, min
     canPublish: passingCodes.length >= minimum,
   };
 }
+
+
+export function assertNoExistingPostLocales(targetLanguages, slug, fileExists) {
+  if (!Array.isArray(targetLanguages) || typeof slug !== 'string' || !slug.trim()) {
+    throw new TypeError('targetLanguages and slug are required.');
+  }
+  if (typeof fileExists !== 'function') {
+    throw new TypeError('fileExists must be a function.');
+  }
+
+  const existingLocales = targetLanguages
+    .map((locale) => (typeof locale === 'string' ? locale : locale?.code))
+    .filter((code) => typeof code === 'string' && fileExists(code, `${slug}.md`));
+  if (existingLocales.length) {
+    throw new Error(`Post files already exist for ${slug} in locales: ${existingLocales.join(', ')}`);
+  }
+}
