@@ -5,17 +5,39 @@ import { readFileSync } from 'node:fs';
 import { buildNarrativeVoiceInstructions } from '../src/utils/narrative-prompt.js';
 import {
   PROMPT_RECIPE_VERSION,
+  buildWordCountCorrectionGuidance,
   createTopicFileSlug,
   decidePublishLocales,
   reconcilePromptCheckpoint,
 } from '../src/utils/generation-recipe.js';
 
 test('generation recipe invalidates drafts when topic-specific headings change', () => {
-  assert.equal(PROMPT_RECIPE_VERSION, '2026-10-30-topic-specific-headings-v1');
+  assert.equal(PROMPT_RECIPE_VERSION, '2026-10-30-topic-specific-headings-v2');
   const source = readFileSync(new URL('../generate-all.mjs', import.meta.url), 'utf8');
   assert.ok(source.includes('Write concise headings in the target language that fit ${topic}'));
   assert.ok(source.includes('Avoid generic boilerplate, guaranteed time/results'));
   assert.ok(source.includes('never copy their brackets or placeholder text'));
+});
+
+test('word-count corrections aim inside the existing range without lowering validation standards', () => {
+  const under = buildWordCountCorrectionGuidance(['본문 900단어 미만']);
+  const over = buildWordCountCorrectionGuidance(['본문 1,100단어 초과']);
+
+  assert.match(under, /900–1,100-word acceptance range/);
+  assert.match(under, /approximately 950–1,050 words/);
+  assert.match(under, /Expand only relevant topic-specific/);
+  assert.match(over, /approximately 950–1,050 words/);
+  assert.match(over, /Trim repetition and incidental detail/);
+  assert.equal(buildWordCountCorrectionGuidance(['Q1/A1 사이 빈 줄 누락']), '');
+  assert.throws(() => buildWordCountCorrectionGuidance('not-an-array'), TypeError);
+});
+
+test('word-count correction guidance is injected only from validator failures', () => {
+  const source = readFileSync(new URL('../generate-all.mjs', import.meta.url), 'utf8');
+  assert.equal((source.match(/buildWordCountCorrectionGuidance\(/g) || []).length, 2);
+  assert.match(source, /const validLangs = publication\.passingLocales;/);
+  assert.match(source, /if \(wordCount < 900\)/);
+  assert.match(source, /if \(wordCount > 1100\)/);
 });
 
 test('narrative prompt guides first-person storytelling without invented authority', () => {
@@ -141,3 +163,4 @@ test('generator uses the tested publication plan in generation and materializati
   assert.equal((source.match(/if \(!publication\.canPublish\)/g) || []).length, 2);
   assert.match(source, /const validLangs = publication\.passingLocales;/);
 });
+
