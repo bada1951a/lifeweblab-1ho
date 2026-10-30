@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 import { buildNarrativeVoiceInstructions } from '../src/utils/narrative-prompt.js';
 import {
   PROMPT_RECIPE_VERSION,
+  assertNoExistingPostLocales,
   createTopicFileSlug,
   decidePublishLocales,
   reconcilePromptCheckpoint,
@@ -86,6 +87,14 @@ test('topic slugs are deterministic, normalized, and different for different top
   assert.equal(slug, createTopicFileSlug(topic.replace(/\s+/gu, '   ')));
   assert.match(slug, /^post-[a-f0-9]{16}$/);
   assert.notEqual(slug, createTopicFileSlug('Invoice payment troubleshooting'));
+});
+
+test('materialization refuses to overwrite already published topic files', () => {
+  assert.doesNotThrow(() => assertNoExistingPostLocales(['ko', 'en'], 'post-new-topic', () => false));
+  assert.throws(
+    () => assertNoExistingPostLocales(['ko', 'en'], 'post-existing-topic', (locale) => locale === 'ko'),
+    /Post files already exist for post-existing-topic in locales: ko/
+  );
 });
 
 const publicationTargets = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'].map((code) => ({
