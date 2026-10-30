@@ -69,18 +69,26 @@ export function decidePublishLocales(targetLanguages, successfulLocaleCodes, min
   };
 }
 
-export function assertNoExistingPostLocales(targetLanguages, slug, fileExists) {
+export function findReusablePostLocales(targetLanguages, slug, expectedPosts, readPost) {
   if (!Array.isArray(targetLanguages) || typeof slug !== 'string' || !slug.trim()) {
     throw new TypeError('targetLanguages and slug are required.');
   }
-  if (typeof fileExists !== 'function') {
-    throw new TypeError('fileExists must be a function.');
+  if (!expectedPosts || typeof expectedPosts !== 'object' || typeof readPost !== 'function') {
+    throw new TypeError('expectedPosts and readPost are required.');
   }
 
-  const existingLocales = targetLanguages
-    .map((locale) => (typeof locale === 'string' ? locale : locale?.code))
-    .filter((code) => typeof code === 'string' && fileExists(code, `${slug}.md`));
-  if (existingLocales.length) {
-    throw new Error(`Post files already exist for ${slug} in locales: ${existingLocales.join(', ')}`);
+  const existingLocales = [];
+  for (const locale of targetLanguages) {
+    const code = typeof locale === 'string' ? locale : locale?.code;
+    if (typeof code !== 'string' || !code.trim()) {
+      throw new TypeError('Every target locale must have a non-empty code.');
+    }
+    const existingContent = readPost(code, `${slug}.md`);
+    if (existingContent === null) continue;
+    if (typeof expectedPosts[code] !== 'string' || existingContent !== expectedPosts[code]) {
+      throw new Error(`Existing post for ${slug} in ${code} conflicts with the retry checkpoint.`);
+    }
+    existingLocales.push(code);
   }
+  return existingLocales;
 }
