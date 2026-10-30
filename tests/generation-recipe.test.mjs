@@ -9,7 +9,7 @@ import {
   findReusablePostLocales,
   createTopicFileSlug,
   decidePublishLocales,
-  reconcilePromptCheckpoint
+  reconcilePromptCheckpoint,
 } from '../src/utils/generation-recipe.js';
 
 test('generation recipe invalidates drafts when topic-specific headings change', () => {
@@ -78,7 +78,7 @@ function makeJob(promptRecipeVersion) {
     failedCodes: ['ko'],
     errorsByCode: { ko: ['previous validation error'] },
     status: 'ready',
-    readyAt: '2026-10-30T11:00:00.000Z'
+    readyAt: '2026-10-30T11:00:00.000Z',
   };
 }
 
@@ -150,7 +150,7 @@ test('materialization reuses exact checkpoint files and rejects conflicting cont
 });
 
 const publicationTargets = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'].map((code) => ({
-  code
+  code,
 }));
 
 test('publication gate allows exactly passing locales at 9/12, 10/12, and 12/12', () => {
