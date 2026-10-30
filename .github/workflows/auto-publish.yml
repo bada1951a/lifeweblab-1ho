@@ -11,6 +11,7 @@ concurrency:
   cancel-in-progress: false
   queue: max
 permissions:
+  actions: read # 이전 실행의 체크포인트 아티팩트 복구
   contents: write # 체크포인트와 게시물 커밋 권한
 
 jobs:
@@ -28,11 +29,76 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
+      - name: Locate previous retry checkpoint artifact
+        id: locate-checkpoint
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('node:fs');
+            const crypto = require('node:crypto');
+            const topics = fs.readFileSync('topics.txt', 'utf8').split(/\\r?\\n/).map((line) => line.trim()).filter(Boolean);
+            if (!topics.length) return;
+            const normalizedTopic = topics[0].normalize('NFKC').trim().replace(/\\s+/gu, ' ');
+            const slug = 'post-' + crypto.createHash('sha256').update(normalizedTopic, 'utf8').digest('hex').slice(0, 16);
+            const artifactName = `locale-checkpoint-${context.sha}-${slug}`;
+            core.setOutput('topic-slug', slug);
+            const branch = context.ref.replace(/^refs\\/heads\\//, '');
+            const { data } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'auto-publish.yml',
+              branch,
+              per_page: 100,
+            });
+            for (const priorRun of data.workflow_runs) {
+              if (priorRun.id >= context.runId || priorRun.head_sha !== context.sha) continue;
+              const { data: artifacts } = await github.rest.actions.listWorkflowRunArtifacts({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: priorRun.id,
+                per_page: 100,
+              });
+              const match = artifacts.artifacts.find((artifact) => artifact.name === artifactName && !artifact.expired);
+              if (match) {
+                core.setOutput('prior-run-id', String(priorRun.id));
+                core.setOutput('artifact-name', match.name);
+                break;
+              }
+            }
+
+      - name: Download previous retry checkpoint artifact
+        id: download-checkpoint
+        if: steps.locate-checkpoint.outputs.prior-run-id != ''
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.locate-checkpoint.outputs.artifact-name }}
+          run-id: ${{ steps.locate-checkpoint.outputs.prior-run-id }}
+          repository: ${{ github.repository }}
+          github-token: ${{ github.token }}
+          path: .retry-checkpoint-artifact
+
+      - name: Restore encrypted retry checkpoint artifact
+        if: steps.download-checkpoint.outcome == 'success'
+        run: node scripts/restore-retry-checkpoint.mjs .retry-checkpoint-artifact
+
       - name: Generate or resume locale checkpoint
         id: generate
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: node generate-all.mjs
+
+      # If the first checkpoint push fails, preserve encrypted drafts for a later run at the same source SHA.
+      - name: Archive retry checkpoint for recovery
+        if: steps.generate.outputs.status == 'checkpoint' || steps.generate.outputs.status == 'ready'
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: locale-checkpoint-${{ github.sha }}-${{ steps.locate-checkpoint.outputs.topic-slug }}
+          path: .publish-retry-queue.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
 
       # 부분 세트는 글 파일과 주제 포인터를 건드리지 않고 JSON 체크포인트만 먼저 저장합니다.
       # 준비된 12개 전체 세트도 빌드 전에 체크포인트를 보존해, 빌드 실패 시 재생성을 피합니다.
