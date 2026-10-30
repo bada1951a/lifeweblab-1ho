@@ -1,4 +1,3 @@
-[error] Cannot find package 'prettier-plugin-astro' imported from C:\Users\bada2\Documents\ChatGPT\다국어 블로그 장기 운영\noop.js
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
