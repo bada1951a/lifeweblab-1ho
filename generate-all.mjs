@@ -568,7 +568,6 @@ async function generateSinglePost(
 
   // 🎯 [프롬프트: 2,400~2,600자 정량화 및 Q&A 빈 줄 2개 규격 명확화]
   const prompt = `
-${buildNarrativeVoiceInstructions(lang.name)}
 Write a high-quality, practical troubleshooting guide natively in ${lang.name}.
 Write this locale's article as an independent original composition; do not translate or imitate another locale's draft.
 Keep the shared topic as the central subject. Use the assigned situation only when it directly fits the topic; skip unrelated details. Adapt examples and phrasing naturally for this locale without changing factual core guidance.
