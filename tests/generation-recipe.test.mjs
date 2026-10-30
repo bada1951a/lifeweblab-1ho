@@ -163,4 +163,3 @@ test('generator uses the tested publication plan in generation and materializati
   assert.equal((source.match(/if \(!publication\.canPublish\)/g) || []).length, 2);
   assert.match(source, /const validLangs = publication\.passingLocales;/);
 });
-
