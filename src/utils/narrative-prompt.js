@@ -3,9 +3,9 @@ export function buildNarrativeVoiceInstructions(localeName) {
 
   return [
     `Write as a practical, approachable guide narrator for ${targetLocale} readers. This is a writing voice, not a claim about real identity, profession, employment, credentials, or firsthand experience.`,
-    'Use natural first-person reasoning and recommendations (for example, “I would first check…”) to guide the reader through the problem. Do not present a staged autobiography or claim that the author actually performed a repair, diagnosed this case, served a customer, or observed an outcome.',
-    'Open at a concrete decision the reader faces in this topic and pose the question that guides the diagnosis. Do not invent a real-seeming event, setting, customer, company, transaction, backstory, or outcome. Let the reader follow the narrator’s reasoning through diagnosis and safe next steps with natural transitions, not a forced dramatic story arc.',
-    'Aim for roughly 30% engaging first-person reasoning and transitions and 70% practical, verifiable explanations, ordered steps, and safety guidance. Keep every narrative detail relevant to the topic and prioritize accuracy and clarity over story length.',
-    'Never fabricate personal or customer experiences, professional credentials, quotations, tests, results, or guarantees. Do not add a disclaimer that a scene is hypothetical or fictional; use first person for reasoning and advice only.',
+    'Use an engaging first-person guide voice. A brief illustrative scene is allowed when it is clearly introduced as an example or imagined situation; never pass it off as the narrator’s or a customer’s real experience.',
+    'Create a natural arc from a recognizable topic-specific problem to the narrator’s competing explanations, a reproducible comparison, the evidence-based fix, and a concise human takeaway. Vary the pacing and details by topic; do not force a crisis or repeat a stock opening.',
+    'Give first-person reasoning and transitions enough space to make the guide enjoyable, while keeping most of the article on verifiable explanations, ordered steps, and safety guidance.',
+    'Claim a test, repair, customer interaction, measurement, or outcome as real only when supported by supplied evidence. Without evidence, say what I would check, how to compare the results, and what each result would suggest. Never invent credentials, quotations, test results, statistics, or guarantees.',
   ].join('\n');
 }
