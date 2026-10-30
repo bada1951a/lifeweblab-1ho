@@ -12,6 +12,7 @@ import path from 'path';
 import crypto from 'node:crypto';
 import {
   PROMPT_RECIPE_VERSION,
+  buildWordCountCorrectionGuidance,
   createTopicFileSlug,
   decidePublishLocales,
   reconcilePromptCheckpoint,
@@ -658,6 +659,7 @@ tags: ${JSON.stringify(i18n.tags)}
   for (let correctionAttempt = 0; correctionAttempt <= 2; correctionAttempt++) {
     let requestPrompt = prompt;
     if (correctionAttempt > 0) {
+      const wordCountGuidance = buildWordCountCorrectionGuidance(validationErrors);
       requestPrompt = `${prompt}
 
 [필수 교정 요청: ${correctionAttempt}/2]
@@ -666,15 +668,18 @@ tags: ${JSON.stringify(i18n.tags)}
 기존 글의 의미를 불필요하게 바꾸지 말고, 제목·설명·카테고리·태그·주제·발행일·이미지 필드는 그대로 유지하세요.
 검증 오류 목록(JSON):
 ${JSON.stringify(validationErrors)}
+${wordCountGuidance ? `\n${wordCountGuidance}\n` : ''}
 이전 원고:
 ${draftText}
 `;
     } else if (resumeState?.validationErrors?.length) {
+      const wordCountGuidance = buildWordCountCorrectionGuidance(resumeState.validationErrors);
       requestPrompt = `${prompt}
 
 [이전 실행의 검증 오류를 고려한 재작성]
 이전 실행에서 발견한 정확한 문제 목록:
 ${JSON.stringify(resumeState.validationErrors)}
+${wordCountGuidance ? `\n${wordCountGuidance}\n` : ''}
 ${resumeState.draftText ? `이전 원고:\n${resumeState.draftText}` : '이전 실행 원고는 저장하지 않았으므로, 새로 작성하면서 모든 검증 오류를 해결하세요.'}
 처음부터 완전한 원고를 작성하고 오류 목록의 모든 항목을 해결하세요.
 `;
@@ -929,3 +934,4 @@ task.catch((error) => {
   console.error('❌ 자동 발행 준비 실패:', error.message);
   process.exitCode = 1;
 });
+
