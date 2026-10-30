@@ -378,129 +378,78 @@ if (lines.length === 0) {
 const currentTopic = lines[0];
 console.log(`📌 오늘 처리할 주제 [2-1호기 LifeWebLab]: "${currentTopic}"`);
 
-const TROUBLESHOOTING_SCENARIOS_30 = [
-  '해외 바이어로부터 거액의 인보이스 결제 완료 알림 직후 결제 게이트웨이 대시보드에 결제 거절(Declined) 경고가 뜬 순간',
-  '월말 정산일 당일, 사내 외주 인력 대량 송금을 실행하려다 계정 일시 점검 및 동결 알림을 마주한 아침',
-  '미국 클라이언트와의 계약서 작성 중 W-8BEN 양식 작성 오류로 불필요한 원천징수 30%가 차감 적용된다는 통보를 받은 순간',
-  '수개월간 준비한 글로벌 비즈니스 런칭 당일, 첫 유료 고객들의 해외 카드 결제가 3D Secure 인증 에러로 튕겨나가는 시점',
-  '비즈니스 계정에 보관 중이던 운영 자금이 예고 없는 21일 보류(Hold)로 묶여버린 긴박한 오후',
-  '해외에서 송금을 받았으나 중계은행 수수료와 환율 마진으로 수수료만 과도하게 차감된 내역을 확인한 순간',
-  '유럽 파트너사에 발행한 B2B 인보이스가 부가세(VAT Reverse Charge) 표기 누락으로 회계팀에서 반려된 타이밍',
-  '온라인 결제창에서 고객 결제 시도 중 일부가 사기 의심으로 오탐 차단되어 매출 손실이 실시간으로 발생하는 상황',
-  '해외 결제 계좌에서 국내 계좌로 인출 신청을 넣었으나 영문 명의 불일치로 반송되어 자금 흐름이 막힌 새벽',
-  '해외 비즈니스 툴 정기 결제를 위해 등록해 둔 카드가 일일 한도 초과로 결제 실패 메일이 연속 수신된 순간',
-  '플랫폼 규정 변경으로 납세자 번호(Foreign TIN) 재검증을 요구하며 일시적으로 정산 출금이 정지된 상황',
-  '글로벌 마켓플레이스 판매 대금이 입금되었으나 비정상적인 수수료가 중복 차감된 내역을 확인한 날',
-  '프로젝트 납품 후 대금 지급일이 지났음에도 바이어 측에서 인보이스 재발행을 요청하며 결제를 미루는 상황',
-  '환율 급변동 시기에 환전 타이밍을 놓쳐 대규모 환차손을 보게 된 긴박한 시점',
-  '전자상거래 결제 시 다통화 반올림(Rounding) 오류로 고객 결제 승인이 실패하는 기술적 에러 발생 시',
-  '외국인 계약자로서 파트너사에 제출한 세무 서류가 분류 코드 오류로 반려되어 계약 진행이 막힌 순간',
-  '해외 비즈니스 계좌에서 진행한 송금이 중계은행에서 추적(MT103) 불가 상태로 수일째 지연되는 상황',
-  '보안 위험 점수 필터링 설정 실수로 정상 고객의 결제가 무더기로 차단된 상황',
-  '해외 직거래 클라이언트가 사전 협의 없이 차지백(Chargeback)을 걸어 대금 환수 위기에 처한 시점',
-  '외주 대금을 지급하려다 이중 결제 웹훅 버그가 발생해 동일 금액이 두 번 인출된 아찔한 순간',
-  '신고 기간 직전, 해외 다통화 계좌(달러, 유로, 엔화) 입출금 내역의 원화 환산 정리가 꼬여버린 상황',
-  '해외 결제사로부터 갑작스러운 신원 확인(KYC) 추가 서류 제출 요청을 받고 기한 내 미제출 시 계정 중단 위기에 놓인 순간',
-  '공동 프로젝트 수익을 분배하는 과정에서 해외 송금 수수료로 인해 실수령액 불일치 문제가 생긴 날',
-  '미국 클라이언트가 W-9 양식을 요구해 비거주자로서 합법적으로 W-8BEN 제출 절차를 안내해야 하는 상황',
-  '구독 고객의 카드 유효기간 만료로 인한 연체율이 급증해 스마트 결제 재시도 설정이 시급한 시점',
-  '바이어에게 보낸 인보이스의 결제 기한 문구가 모호하여 수개월째 미수금으로 묶여 현금 흐름에 비상이 걸린 순간',
-  '출장지에서 긴급한 업무 비용을 결제하려다 비즈니스 가상 카드가 해외 IP 부정 사용 의심으로 차단된 상황',
-  '글로벌 상업용 카드로 현지 결제를 시도했으나 칩 리딩 오류 및 통화 변환 수수료 폭탄을 맞은 직후',
-  '가상 터미널을 통한 수기 결제 시도 중 보안 코드 오류로 클라이언트와 통화 도중 거래가 중단된 타이밍',
-  '계약서 내 중도 해지 보상금(Kill Fee) 조항이 누락되어 프로젝트 중단 후 정산 분쟁에 처한 상황',
-];
-
-function scenarioForTopic(topic) {
-  let hash = 0;
-  for (const char of topic) hash = (hash * 31 + char.codePointAt(0)) >>> 0;
-  return TROUBLESHOOTING_SCENARIOS_30[hash % TROUBLESHOOTING_SCENARIOS_30.length];
-}
-
 const TARGET_LANGS = [
   {
     code: 'ko',
     name: 'Korean',
-    persona: '글로벌 결제 및 비즈니스 인보이스 오류를 정확하게 해결해 주는 10년 차 핀테크 실무자',
     osUi: '대시보드, 결제 수단, 인보이스, 계정 설정',
-    localeContext: '서울/수도권 글로벌 스타트업 오피스',
+    localeContext: 'Korean-language readers in South Korea',
   },
   {
     code: 'en',
     name: 'English',
-    persona: 'Veteran cross-border fintech specialist and payment gateway troubleshooter',
     osUi: 'Dashboard, Payment Methods, Billing, Invoices',
-    localeContext: 'Silicon Valley tech startup / New York finance office',
+    localeContext: 'English-language readers in the United States',
   },
   {
     code: 'ja',
     name: 'Japanese',
-    persona: '海外決済・送金トラブルを現場目線で解決するベテラン実務担当者',
     osUi: 'ダッシュボード, 支払い方法, 請求書, アカウント設定',
-    localeContext: '東京・丸の内の越境ビジネスオフィス',
+    localeContext: 'Japanese-language readers in Japan',
   },
   {
     code: 'de',
     name: 'German',
-    persona: 'Erfahrener Fintech-Praktiker für grenzüberschreitende Zahlungen',
     osUi: 'Dashboard, Zahlungsmethoden, Rechnungen, Kontoeinstellungen',
-    localeContext: 'Frankfurter Finanzdistrikt',
+    localeContext: 'German-language readers in Germany',
   },
   {
     code: 'fr',
     name: 'French',
-    persona: 'Expert en résolution de litiges de paiement international et facturation B2B',
     osUi: 'Tableau de bord, Modes de paiement, Factures, Paramètres',
-    localeContext: "Centres d'affaires à Paris",
+    localeContext: 'French-language readers in France',
   },
   {
     code: 'es',
     name: 'Spanish',
-    persona: 'Especialista en cobros internacionales, pasarelas de pago y facturación',
     osUi: 'Panel de control, Métodos de pago, Facturación, Configuración',
-    localeContext: 'Distrito corporativo en Madrid',
+    localeContext: 'Spanish-language readers in Spain',
   },
   {
     code: 'it',
     name: 'Italian',
-    persona: 'Consulente senior per pagamenti internazionali e fatturazione B2B',
     osUi: 'Dashboard, Metodi di pagamento, Fatture, Impostazioni',
-    localeContext: 'Centri direzionali di Milano',
+    localeContext: 'Italian-language readers in Italy',
   },
   {
     code: 'pt',
     name: 'Portuguese',
-    persona: 'Especialista prático em pagamentos globais e desbloqueio de contas',
     osUi: 'Painel, Formas de Pagamento, Faturas, Configurações',
-    localeContext: 'Avenida Paulista em São Paulo',
+    localeContext: 'Portuguese-language readers in Brazil',
   },
   {
     code: 'nl',
     name: 'Dutch',
-    persona: 'Ervaren fintech troubleshooter voor internationale betalingsproblemen',
     osUi: 'Dashboard, Betaalmethoden, Facturen, Accountinstellingen',
-    localeContext: 'Zuidas zakendistrict in Amsterdam',
+    localeContext: 'Dutch-language readers in the Netherlands',
   },
   {
     code: 'pl',
     name: 'Polish',
-    persona: 'Doświadczony praktyk fintech i systemów rozliczeń B2B',
     osUi: 'Pulpit, Metody płatności, Faktury, Ustawienia konta',
-    localeContext: 'Warszawskie centrum biznesowe',
+    localeContext: 'Polish-language readers in Poland',
   },
   {
     code: 'id',
     name: 'Indonesian',
-    persona: 'Praktisi penanganan masalah pembayaran gateway dan transfer dana',
     osUi: 'Dasbor, Metode Pembayaran, Tagihan / Faktur, Pengaturan',
-    localeContext: 'Kawasan SCBD Jakarta',
+    localeContext: 'Indonesian-language readers in Indonesia',
   },
   {
     code: 'vi',
     name: 'Vietnamese',
-    persona: 'Chuyên gia xử lý sự cố cổng thanh toán quốc tế và dòng tiền',
     osUi: 'Bảng điều khiển, Phương thức thanh toán, Hóa đơn, Cài đặt',
-    localeContext: 'Quận 1, TP. Hồ Chí Minh',
+    localeContext: 'Vietnamese-language readers in Vietnam',
   },
 ];
 
@@ -553,7 +502,6 @@ async function generateSinglePost(
   topic,
   publishDateBase = new Date(),
   imageSet,
-  selectedScenario = scenarioForTopic(topic),
   resumeState = null
 ) {
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
@@ -567,9 +515,8 @@ async function generateSinglePost(
   const prompt = `
 Write a high-quality, practical troubleshooting guide natively in ${lang.name}.
 Write this locale's article as an independent original composition; do not translate or imitate another locale's draft.
-Keep the shared topic as the central subject. Use the assigned situation only when it directly fits the topic; skip unrelated details. Adapt examples and phrasing naturally for this locale without changing factual core guidance.
+Keep the shared topic as the central subject. Adapt phrasing and documented local details to this locale without changing the factual core. Do not invent a customer, company, transaction, personal encounter, setting, backstory, or outcome.
 Target Culture: "${lang.localeContext}"
-Assigned Situation: "${selectedScenario}"
 Topic: "${topic}"
 
 [ADSENSE QUALITY & LENGTH REQUIREMENT]
@@ -583,7 +530,7 @@ ${buildNarrativeVoiceInstructions(lang.name)}
 Write exactly five numbered H2 headings in ${lang.name}, numbered 1 through 5. Write concise headings in the target language that fit ${topic} and each section's content. Each heading must make the specific topic or decision visible and describe what that section helps the reader do or understand. Prefer concrete topic terms and actions over editorial labels. Do not use headings that could be reused unchanged for an unrelated article or only name a section format or vague urgency. Avoid generic boilerplate, guaranteed time/results, fear-based wording, and unverified professional credentials. Do not state a time-to-solve or guaranteed financial outcome unless trusted topic-specific documentation supports that exact claim. The bracketed descriptions below are instructions; never copy their brackets or placeholder text into the article.
 
 ## 1. [topic-specific opening heading]
-Write 2 detailed paragraphs that begin directly in a topic-specific problem readers recognize. Show the first-person guide's initial reasoning and the practical risk, then begin diagnosing it. Use the assigned situation only if it directly fits the topic; do not force unrelated details or add a preface.
+Write 2 detailed paragraphs that begin at the reader's topic-specific decision point. Show the guide's first-person reasoning and practical risk, then begin diagnosing it. Do not invent a real-seeming scene or personal/customer event.
 
 ## 2. [topic-specific heading in ${lang.name}]
 Write 2 analytical paragraphs explaining only the technical causes that fit the topic (such as gateway risk rules, 3DS authentication, tax form issues, or intermediary bank holds). Do not force unrelated causes.
@@ -761,7 +708,6 @@ async function run() {
     job.imageSets = job.imageSets && typeof job.imageSets === 'object' ? job.imageSets : {};
     job.failedCodes = Array.isArray(job.failedCodes) ? job.failedCodes : [];
     job.errorsByCode = job.errorsByCode && typeof job.errorsByCode === 'object' ? job.errorsByCode : {};
-    job.scenario = job.scenario || scenarioForTopic(topic);
   } else {
     job = {
       topic,
@@ -771,7 +717,6 @@ async function run() {
       failedCodes: [],
       errorsByCode: {},
       imageSets: {},
-      scenario: scenarioForTopic(topic),
       promptRecipeVersion: PROMPT_RECIPE_VERSION,
     };
     for (let i = 0; i < TARGET_LANGS.length; i++) job.imageSets[TARGET_LANGS[i].code] = getPostImages(i);
@@ -807,7 +752,7 @@ async function run() {
 
     const imageSet = job.imageSets[lang.code] || getPostImages(i);
     job.imageSets[lang.code] = imageSet;
-    const result = await generateSinglePost(lang, i, topic, new Date(job.queuedAt), imageSet, job.scenario, {
+    const result = await generateSinglePost(lang, i, topic, new Date(job.queuedAt), imageSet, {
       validationErrors: job.errorsByCode[lang.code] || [],
       draftText: null,
     });

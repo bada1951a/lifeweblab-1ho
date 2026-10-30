@@ -13,7 +13,7 @@ import {
 } from '../src/utils/generation-recipe.js';
 
 test('generation recipe invalidates drafts when topic-specific headings change', () => {
-  assert.equal(PROMPT_RECIPE_VERSION, '2026-10-31-topic-specific-headings-v3');
+  assert.equal(PROMPT_RECIPE_VERSION, '2026-10-31-topic-grounded-narration-v4');
   const source = readFileSync(new URL('../generate-all.mjs', import.meta.url), 'utf8');
   assert.ok(source.includes('Write concise headings in the target language that fit ${topic}'));
   assert.ok(source.includes('Avoid generic boilerplate, guaranteed time/results'));
@@ -21,6 +21,8 @@ test('generation recipe invalidates drafts when topic-specific headings change',
   assert.ok(source.includes('Each heading must make the specific topic or decision visible'));
   assert.ok(source.includes('Do not use headings that could be reused unchanged for an unrelated article'));
   assert.ok(source.includes('Do not state a time-to-solve or guaranteed financial outcome'));
+  assert.doesNotMatch(source, /TROUBLESHOOTING_SCENARIOS_30|scenarioForTopic|Assigned Situation|persona:/);
+  assert.ok(source.includes("localeContext: 'Korean-language readers in South Korea'"));
 });
 
 test('word-count corrections aim inside the existing range without lowering validation standards', () => {
@@ -73,7 +75,6 @@ function makeJob(promptRecipeVersion) {
     slug: 'post-stable-slug',
     queuedAt: '2026-10-30T10:40:00.000Z',
     imageSets: { en: { coverUrl: '/images/cover.jpg' } },
-    scenario: 'A payment is declined at checkout.',
     validatedPosts: { en: 'previous validated article' },
     failedCodes: ['ko'],
     errorsByCode: { ko: ['previous validation error'] },
@@ -109,7 +110,6 @@ test('new prompt recipe invalidates old drafts but preserves stable topic assets
   assert.equal(job.slug, 'post-stable-slug');
   assert.equal(job.queuedAt, '2026-10-30T10:40:00.000Z');
   assert.deepEqual(job.imageSets, { en: { coverUrl: '/images/cover.jpg' } });
-  assert.equal(job.scenario, 'A payment is declined at checkout.');
 });
 
 test('topic slugs are deterministic, normalized, and different for different topics', () => {
