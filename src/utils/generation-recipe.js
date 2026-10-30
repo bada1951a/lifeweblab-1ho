@@ -29,7 +29,6 @@ export function reconcilePromptCheckpoint(job, currentVersion = PROMPT_RECIPE_VE
   return true;
 }
 
-
 export function decidePublishLocales(targetLanguages, successfulLocaleCodes, minimum = 10) {
   if (!Array.isArray(targetLanguages) || targetLanguages.length === 0) {
     throw new TypeError('targetLanguages must be a non-empty array.');
