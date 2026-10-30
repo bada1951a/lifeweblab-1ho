@@ -10,7 +10,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'node:crypto';
-import { PROMPT_RECIPE_VERSION, reconcilePromptCheckpoint } from './src/utils/generation-recipe.js';
+import { PROMPT_RECIPE_VERSION, createTopicFileSlug, reconcilePromptCheckpoint } from './src/utils/generation-recipe.js';
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 if (!OPENAI_API_KEY) {
@@ -751,7 +751,7 @@ async function run() {
   let job;
   if (activeJobIndex >= 0) {
     job = queue[activeJobIndex];
-    job.slug = job.slug || 'post-' + Date.now().toString(36);
+    job.slug = job.slug || createTopicFileSlug(topic);
     job.queuedAt = job.queuedAt || new Date().toISOString();
     job.validatedPosts = job.validatedPosts && typeof job.validatedPosts === 'object' ? job.validatedPosts : {};
     job.imageSets = job.imageSets && typeof job.imageSets === 'object' ? job.imageSets : {};
@@ -761,7 +761,7 @@ async function run() {
   } else {
     job = {
       topic,
-      slug: 'post-' + Date.now().toString(36),
+      slug: createTopicFileSlug(topic),
       queuedAt: new Date().toISOString(),
       validatedPosts: {},
       failedCodes: [],

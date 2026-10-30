@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { PROMPT_RECIPE_VERSION, reconcilePromptCheckpoint } from '../src/utils/generation-recipe.js';
+import { PROMPT_RECIPE_VERSION, createTopicFileSlug, reconcilePromptCheckpoint } from '../src/utils/generation-recipe.js';
 
 function makeJob(promptRecipeVersion) {
   return {
@@ -48,3 +48,14 @@ test('new prompt recipe invalidates old drafts but preserves stable topic assets
   assert.deepEqual(job.imageSets, { en: { coverUrl: '/images/cover.jpg' } });
   assert.equal(job.scenario, 'A payment is declined at checkout.');
 });
+
+test('topic slugs are deterministic, normalized, and different for different topics', () => {
+  const topic = 'Card payment troubleshooting';
+  const slug = createTopicFileSlug(topic);
+
+  assert.equal(slug, createTopicFileSlug(topic));
+  assert.equal(slug, createTopicFileSlug(`  ${topic}  `));
+  assert.match(slug, /^post-[a-f0-9]{16}$/);
+  assert.notEqual(slug, createTopicFileSlug('Invoice payment troubleshooting'));
+});
+
