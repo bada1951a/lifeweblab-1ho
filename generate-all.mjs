@@ -290,6 +290,7 @@ const I18N_SECTIONS = {
 // =========================================================================
 function inspectAndHealMarkdown(body, langCode) {
   let healed = body.trim();
+  void langCode;
   const auditLogs = [];
 
   // 1. [헤딩 검수] 볼드를 정리하고 번호만 표준화해 원고별 제목을 보존
