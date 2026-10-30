@@ -16,6 +16,7 @@ import {
   decidePublishLocales,
   reconcilePromptCheckpoint,
 } from './src/utils/generation-recipe.js';
+import { buildNarrativeVoiceInstructions } from './src/utils/narrative-prompt.js';
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 if (!OPENAI_API_KEY) {
@@ -567,7 +568,6 @@ async function generateSinglePost(
 
   // 🎯 [프롬프트: 2,400~2,600자 정량화 및 Q&A 빈 줄 2개 규격 명확화]
   const prompt = `
-You are a ${lang.persona}.
 Write a high-quality, practical troubleshooting guide natively in ${lang.name}.
 Write this locale's article as an independent original composition; do not translate or imitate another locale's draft.
 Keep the shared topic as the central subject. Use the assigned situation only when it directly fits the topic; skip unrelated details. Adapt examples and phrasing naturally for this locale without changing factual core guidance.
@@ -578,11 +578,9 @@ Topic: "${topic}"
 [ADSENSE QUALITY & LENGTH REQUIREMENT]
 - For Korean (ko): Write exactly around 2,400 - 2,600 characters (do NOT exceed 3,000 characters).
 - For other languages: Write exactly 900 - 1,100 words.
-- Tone: Highly informative, professional, practical workplace advice.
-- Narrative voice: Write in a first-person storytelling voice ("I"/the natural first-person form in ${lang.name}) from the assigned expert persona's perspective.
-- Start directly with a concrete moment readers recognize from the topic. Use roughly 30% of the article for first-person reasoning and transitions and 70% for verified explanations, step-by-step guidance, and safety information. Let the reader follow the narrator from the first check through diagnosis and safe next steps, explaining why each step matters.
-- Use first person for the guide's reasoning and recommended actions (for example, what I would check first), not to claim that the author actually experienced the event, served a customer, or observed a result. Do not invent outcomes, quotations, or facts.
-- Do not add an opening preface, caveat, or statement about the story's authenticity. Keep technical instructions, safety warnings, and sources precise and factual.
+- Tone: Clear, trustworthy, and practical, without implying the author holds a real professional role.
+${buildNarrativeVoiceInstructions(lang.name)}
+- Keep technical instructions, safety warnings, and sources precise and factual.
 
 [STRUCTURE - STRICT 5 H2 HEADINGS]
 Use these exact H2 headings:

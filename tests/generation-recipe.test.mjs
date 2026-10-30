@@ -2,12 +2,34 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
 
+import { buildNarrativeVoiceInstructions } from '../src/utils/narrative-prompt.js';
 import {
   PROMPT_RECIPE_VERSION,
   createTopicFileSlug,
   decidePublishLocales,
   reconcilePromptCheckpoint,
 } from '../src/utils/generation-recipe.js';
+
+test('narrative prompt guides first-person storytelling without invented authority', () => {
+  const instructions = buildNarrativeVoiceInstructions('Korean');
+  const source = readFileSync(new URL('../generate-all.mjs', import.meta.url), 'utf8');
+
+  assert.match(instructions, /practical, approachable guide narrator for Korean readers/);
+  assert.match(instructions, /natural first-person reasoning and recommendations/);
+  assert.match(instructions, /30% engaging first-person reasoning and transitions and 70% practical/);
+  assert.match(instructions, /Never fabricate personal or customer experiences/);
+  assert.match(
+    instructions,
+    /not a claim about real identity, profession, employment, credentials, or firsthand experience/
+  );
+  assert.ok(source.includes('buildNarrativeVoiceInstructions(lang.name)'));
+  assert.ok(
+    source.includes(
+      "Write this locale's article as an independent original composition; do not translate or imitate another locale's draft."
+    )
+  );
+  assert.doesNotMatch(source, /from the assigned expert persona's perspective/);
+});
 
 function makeJob(promptRecipeVersion) {
   return {
