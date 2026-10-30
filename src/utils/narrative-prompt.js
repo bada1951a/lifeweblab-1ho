@@ -1,4 +1,3 @@
-../pr13-prompt-20261031/narrative-prompt.js 33ms (unchanged)
 export function buildNarrativeVoiceInstructions(localeName) {
   const targetLocale = typeof localeName === 'string' && localeName.trim() ? localeName.trim() : 'the target locale';
 
