@@ -69,7 +69,6 @@ export function decidePublishLocales(targetLanguages, successfulLocaleCodes, min
   };
 }
 
-
 export function buildWordCountCorrectionGuidance(validationErrors) {
   if (!Array.isArray(validationErrors)) {
     throw new TypeError('validationErrors must be an array.');
@@ -85,7 +84,7 @@ export function buildWordCountCorrectionGuidance(validationErrors) {
 
   return [
     '[WORD COUNT CORRECTION]',
-    `The previous draft ${underMinimum ? 'was below 900' : 'exceeded 1,100'} words according to the locale-aware validator.`,
+    `The previous ${underMinimum ? 'draft was below 900' : 'draft exceeded 1,100'} words according to the locale-aware validator.`,
     'Keep the same 900–1,100-word acceptance range and aim for approximately 950–1,050 words, near the middle of the range, to leave a margin for locale-specific word segmentation.',
     direction,
     'Preserve the article’s factual meaning and locale-specific phrasing; do not estimate by sentence count alone.',
