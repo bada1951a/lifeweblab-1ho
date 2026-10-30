@@ -1,1 +1,8 @@
-[]
+{
+  "version": 1,
+  "algorithm": "aes-256-gcm",
+  "salt": "ciOqVwBXjv91yt/x4E5cEg==",
+  "iv": "Jh/JpRxy/kmvIGMN",
+  "tag": "3SbpCa0ZYL2sVGVbV8GwIQ==",
+  "ciphertext": "zK4="
+}

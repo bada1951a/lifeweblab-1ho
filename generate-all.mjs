@@ -12,6 +12,7 @@ import path from 'path';
 import crypto from 'node:crypto';
 import {
   PROMPT_RECIPE_VERSION,
+  buildWordCountCorrectionGuidance,
   findReusablePostLocales,
   createTopicFileSlug,
   decidePublishLocales,
@@ -291,21 +292,16 @@ const I18N_SECTIONS = {
 // =========================================================================
 function inspectAndHealMarkdown(body, langCode) {
   let healed = body.trim();
-  const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
+  void langCode;
   const auditLogs = [];
 
-  // 1. [헤딩 검수 & 치유] 볼드 제거 및 2-1호기 표준 띄어쓰기 소제목 강제 안착
+  // 1. [헤딩 검수] 볼드를 정리하고 번호만 표준화해 원고별 제목을 보존
   healed = healed.replace(/^(#{1,6}\s+)\*\*(.*?)\*\*/gm, '$1$2');
-  healed = healed.replace(/^#{1,6}\s*1[.\s]+([^\n]+)/m, `## ${i18n.s1}`);
-  healed = healed.replace(/^#{1,6}\s*2[.\s]+([^\n]+)/m, `## ${i18n.s2}`);
-  healed = healed.replace(/^#{1,6}\s*3[.\s]+([^\n]+)/m, `## ${i18n.s3}`);
-  healed = healed.replace(/^#{1,6}\s*4[.\s]+([^\n]+)/m, `## ${i18n.s4}`);
-  healed = healed.replace(/^#{1,6}\s*5[.\s]+([^\n]+)/m, `## ${i18n.s5}`);
-
-  if (!healed.startsWith('## 1.')) {
-    healed = `## ${i18n.s1}\n\n` + healed;
-    auditLogs.push('1번 헤딩 누락 주입');
-  }
+  healed = healed.replace(/^#{1,6}\s*1[.\s]+([^\n]+)/m, (_match, title) => `## 1. ${title.trim()}`);
+  healed = healed.replace(/^#{1,6}\s*2[.\s]+([^\n]+)/m, (_match, title) => `## 2. ${title.trim()}`);
+  healed = healed.replace(/^#{1,6}\s*3[.\s]+([^\n]+)/m, (_match, title) => `## 3. ${title.trim()}`);
+  healed = healed.replace(/^#{1,6}\s*4[.\s]+([^\n]+)/m, (_match, title) => `## 4. ${title.trim()}`);
+  healed = healed.replace(/^#{1,6}\s*5[.\s]+([^\n]+)/m, (_match, title) => `## 5. ${title.trim()}`);
 
   // 2. Q&A 표식을 정돈하고 질문-답변 사이에 정확히 빈 줄 하나 둡니다.
   const rawQnACount = (healed.match(/Q[1-3]\./gi) || []).length;
@@ -584,21 +580,21 @@ ${buildNarrativeVoiceInstructions(lang.name)}
 - Keep technical instructions, safety warnings, and sources precise and factual.
 
 [STRUCTURE - STRICT 5 H2 HEADINGS]
-Use these exact H2 headings:
+Write exactly five numbered H2 headings in ${lang.name}, numbered 1 through 5. Write concise headings in the target language that fit ${topic} and each section's content. Avoid generic boilerplate, guaranteed time/results, fear-based wording, and unverified professional credentials. The bracketed descriptions below are instructions; never copy their brackets or placeholder text into the article.
 
-## ${i18n.s1}
+## 1. [topic-specific opening heading]
 Write 2 detailed paragraphs that begin directly in a topic-specific problem readers recognize. Show the first-person guide's initial reasoning and the practical risk, then begin diagnosing it. Use the assigned situation only if it directly fits the topic; do not force unrelated details or add a preface.
 
-## ${i18n.s2}
+## 2. [topic-specific heading in ${lang.name}]
 Write 2 analytical paragraphs explaining only the technical causes that fit the topic (such as gateway risk rules, 3DS authentication, tax form issues, or intermediary bank holds). Do not force unrelated causes.
 
-## ${i18n.s3}
+## 3. [topic-specific heading in ${lang.name}]
 Provide 3 concrete resolution steps matching "${lang.osUi}". Use clean numbered lists with practical action items.
 
-## ${i18n.s4}
+## 4. [topic-specific heading in ${lang.name}]
 Write 2 paragraphs of practical precautions and operational tips to prevent recurring payment blocks and charges.
 
-## ${i18n.s5}
+## 5. [topic-specific heading in ${lang.name}]
 Provide exactly 3 practical Q&A items. You MUST put an empty line between Question and Answer:
 
 **Q1.** Question text
@@ -664,6 +660,7 @@ tags: ${JSON.stringify(i18n.tags)}
   for (let correctionAttempt = 0; correctionAttempt <= 2; correctionAttempt++) {
     let requestPrompt = prompt;
     if (correctionAttempt > 0) {
+      const wordCountGuidance = buildWordCountCorrectionGuidance(validationErrors);
       requestPrompt = `${prompt}
 
 [필수 교정 요청: ${correctionAttempt}/2]
@@ -672,15 +669,18 @@ tags: ${JSON.stringify(i18n.tags)}
 기존 글의 의미를 불필요하게 바꾸지 말고, 제목·설명·카테고리·태그·주제·발행일·이미지 필드는 그대로 유지하세요.
 검증 오류 목록(JSON):
 ${JSON.stringify(validationErrors)}
+${wordCountGuidance ? `\n${wordCountGuidance}\n` : ''}
 이전 원고:
 ${draftText}
 `;
     } else if (resumeState?.validationErrors?.length) {
+      const wordCountGuidance = buildWordCountCorrectionGuidance(resumeState.validationErrors);
       requestPrompt = `${prompt}
 
 [이전 실행의 검증 오류를 고려한 재작성]
 이전 실행에서 발견한 정확한 문제 목록:
 ${JSON.stringify(resumeState.validationErrors)}
+${wordCountGuidance ? `\n${wordCountGuidance}\n` : ''}
 ${resumeState.draftText ? `이전 원고:\n${resumeState.draftText}` : '이전 실행 원고는 저장하지 않았으므로, 새로 작성하면서 모든 검증 오류를 해결하세요.'}
 처음부터 완전한 원고를 작성하고 오류 목록의 모든 항목을 해결하세요.
 `;
