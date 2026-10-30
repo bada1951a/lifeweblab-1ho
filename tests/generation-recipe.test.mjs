@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { buildNarrativeVoiceInstructions } from '../src/utils/narrative-prompt.js';
 import {
   PROMPT_RECIPE_VERSION,
-  assertNoExistingPostLocales,
+  findReusablePostLocales,
   createTopicFileSlug,
   decidePublishLocales,
   reconcilePromptCheckpoint,
@@ -89,11 +89,34 @@ test('topic slugs are deterministic, normalized, and different for different top
   assert.notEqual(slug, createTopicFileSlug('Invoice payment troubleshooting'));
 });
 
-test('materialization refuses to overwrite already published topic files', () => {
-  assert.doesNotThrow(() => assertNoExistingPostLocales(['ko', 'en'], 'post-new-topic', () => false));
+test('materialization reuses exact checkpoint files and rejects conflicting content', () => {
+  const expectedPosts = { ko: 'Korean article', en: 'English article' };
+  const existingPosts = new Map([['ko/post-topic.md', 'Korean article']]);
+
+  assert.deepEqual(
+    findReusablePostLocales(
+      ['ko', 'en'],
+      'post-topic',
+      expectedPosts,
+      (locale, filename) => existingPosts.get(`${locale}/${filename}`) ?? null
+    ),
+    ['ko']
+  );
   assert.throws(
-    () => assertNoExistingPostLocales(['ko', 'en'], 'post-existing-topic', (locale) => locale === 'ko'),
-    /Post files already exist for post-existing-topic in locales: ko/
+    () =>
+      findReusablePostLocales(
+        ['ko', 'en'],
+        'post-topic',
+        expectedPosts,
+        (locale, filename) =>
+          locale === 'ko' && filename === 'post-topic.md' ? 'Conflicting article' : null
+      ),
+    /Existing post for post-topic in ko conflicts with the retry checkpoint/
+  );
+  assert.throws(
+    () =>
+      findReusablePostLocales(['ko'], 'post-topic', {}, () => 'Already published article'),
+    /Existing post for post-topic in ko conflicts with the retry checkpoint/
   );
 });
 
