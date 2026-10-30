@@ -1,4 +1,4 @@
-PayPal Account Limited: Fast Track Appeal Guide
+PayPal Account Limited: Documents to Gather and How to Submit an Appeal
 Fixing Stripe Webhook 500 Internal Server Error
 Square Terminal Payment Failed: Network Timeout Fix
 How to Solve Stripe card_velocity_exceeded Error
