@@ -201,4 +201,3 @@ test('generator uses the tested publication plan in generation and materializati
   assert.match(source, /const validLangs = publication\.passingLocales;/);
   assert.ok(source.includes('findReusablePostLocales(TARGET_LANGS, job.slug'));
 });
-
