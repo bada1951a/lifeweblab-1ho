@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { PROMPT_RECIPE_VERSION, createTopicFileSlug, reconcilePromptCheckpoint } from '../src/utils/generation-recipe.js';
+import {
+  PROMPT_RECIPE_VERSION,
+  createTopicFileSlug,
+  reconcilePromptCheckpoint,
+} from '../src/utils/generation-recipe.js';
 
 function makeJob(promptRecipeVersion) {
   return {
