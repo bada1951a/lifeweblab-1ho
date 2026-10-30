@@ -3,7 +3,6 @@ import test from 'node:test';
 import { readFileSync } from 'node:fs';
 
 import { buildNarrativeVoiceInstructions } from '../src/utils/narrative-prompt.js';
-
 import {
   PROMPT_RECIPE_VERSION,
   createTopicFileSlug,
@@ -19,7 +18,10 @@ test('narrative prompt guides first-person storytelling without invented authori
   assert.match(instructions, /natural first-person reasoning and recommendations/);
   assert.match(instructions, /30% engaging first-person reasoning and transitions and 70% practical/);
   assert.match(instructions, /Never fabricate personal or customer experiences/);
-  assert.match(instructions, /not a claim about real identity, profession, employment, credentials, or firsthand experience/);
+  assert.match(
+    instructions,
+    /not a claim about real identity, profession, employment, credentials, or firsthand experience/
+  );
   assert.ok(source.includes('buildNarrativeVoiceInstructions(lang.name)'));
   assert.ok(
     source.includes(
