@@ -10,7 +10,11 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'node:crypto';
-import { PROMPT_RECIPE_VERSION, createTopicFileSlug, reconcilePromptCheckpoint } from './src/utils/generation-recipe.js';
+import {
+  PROMPT_RECIPE_VERSION,
+  createTopicFileSlug,
+  reconcilePromptCheckpoint,
+} from './src/utils/generation-recipe.js';
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 if (!OPENAI_API_KEY) {

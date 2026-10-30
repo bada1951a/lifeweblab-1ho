@@ -58,4 +58,3 @@ test('topic slugs are deterministic, normalized, and different for different top
   assert.match(slug, /^post-[a-f0-9]{16}$/);
   assert.notEqual(slug, createTopicFileSlug('Invoice payment troubleshooting'));
 });
-
