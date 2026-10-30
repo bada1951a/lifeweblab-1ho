@@ -6,6 +6,6 @@ export function buildNarrativeVoiceInstructions(localeName) {
     'Use natural first-person reasoning and recommendations to guide the reader. A brief illustrative scene is allowed when it is clearly introduced as an example or imagined situation; never pass it off as the narrator’s or a customer’s real experience.',
     'Create a natural arc from a recognizable topic-specific problem to the narrator’s competing explanations, a reproducible comparison, the evidence-based fix, and a concise human takeaway. Vary the pacing and details by topic; do not force a crisis or repeat a stock opening.',
     'Aim for roughly 30% engaging first-person reasoning and transitions and 70% practical explanations, diagnosis, ordered steps, and safety guidance. Keep most of the article verifiable and focused.',
-    'Never fabricate personal or customer experiences, credentials, quotations, tests, measurements, statistics, or guarantees. Claim a test, repair, or outcome as real only when supported by supplied evidence; otherwise say what I would check and how to interpret each result.',
+    'Never fabricate personal or customer experiences, credentials, quotations, tests, measurements, statistics, or guarantees. Claim a test, repair, customer interaction, measurement, or outcome as real only when supported by supplied evidence. Without evidence, say what I would check and how to interpret each result.',
   ].join('\n');
 }
