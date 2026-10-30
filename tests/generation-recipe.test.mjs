@@ -13,7 +13,7 @@ import {
 } from '../src/utils/generation-recipe.js';
 
 test('generation recipe invalidates drafts when topic-specific headings change', () => {
-  assert.equal(PROMPT_RECIPE_VERSION, '2026-10-31-topic-grounded-narration-v4');
+  assert.equal(PROMPT_RECIPE_VERSION, '2026-10-31-storytelling-evidence-v5');
   const source = readFileSync(new URL('../generate-all.mjs', import.meta.url), 'utf8');
   assert.ok(source.includes('Write concise headings in the target language that fit ${topic}'));
   assert.ok(source.includes('Avoid generic boilerplate, guaranteed time/results'));
@@ -52,7 +52,8 @@ test('narrative prompt guides first-person storytelling without invented authori
 
   assert.match(instructions, /practical, approachable guide narrator for Korean readers/);
   assert.match(instructions, /natural first-person reasoning and recommendations/);
-  assert.match(instructions, /Open at a concrete decision the reader faces in this topic/);
+  assert.match(instructions, /A brief illustrative scene is allowed when it is clearly introduced as an example or imagined situation/);
+  assert.match(instructions, /Claim a test, repair, customer interaction, measurement, or outcome as real only when supported by supplied evidence/);
   assert.match(instructions, /30% engaging first-person reasoning and transitions and 70% practical/);
   assert.match(instructions, /Never fabricate personal or customer experiences/);
   assert.match(
@@ -62,7 +63,7 @@ test('narrative prompt guides first-person storytelling without invented authori
   assert.ok(source.includes('buildNarrativeVoiceInstructions(lang.name)'));
   assert.ok(
     source.includes(
-      'Do not invent a customer, company, transaction, personal encounter, setting, backstory, or outcome.'
+      'Keep the shared topic as the central subject. Adapt phrasing and documented local details to this locale without changing the factual core.'
     )
   );
   assert.ok(
