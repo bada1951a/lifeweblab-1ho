@@ -26,7 +26,8 @@ test('narrative prompt guides first-person storytelling without invented authori
   assert.ok(source.includes('buildNarrativeVoiceInstructions(lang.name)'));
   assert.ok(
     source.includes(
-      "Write this locale's article as an independent original composition; do not translate or imitate another locale's draft."
+      "Write this locale's article as an independent original composition; " +
+      'do not translate or imitate another locale\'s draft.'
     )
   );
   assert.doesNotMatch(source, /from the assigned expert persona's perspective/);
