@@ -290,21 +290,16 @@ const I18N_SECTIONS = {
 // =========================================================================
 function inspectAndHealMarkdown(body, langCode) {
   let healed = body.trim();
-  const i18n = I18N_SECTIONS[langCode] || I18N_SECTIONS.ko;
+  void langCode;
   const auditLogs = [];
 
-  // 1. [헤딩 검수 & 치유] 볼드 제거 및 2-1호기 표준 띄어쓰기 소제목 강제 안착
+  // 1. [헤딩 검수] 볼드를 정리하고 번호만 표준화해 원고별 제목을 보존
   healed = healed.replace(/^(#{1,6}\s+)\*\*(.*?)\*\*/gm, '$1$2');
-  healed = healed.replace(/^#{1,6}\s*1[.\s]+([^\n]+)/m, `## ${i18n.s1}`);
-  healed = healed.replace(/^#{1,6}\s*2[.\s]+([^\n]+)/m, `## ${i18n.s2}`);
-  healed = healed.replace(/^#{1,6}\s*3[.\s]+([^\n]+)/m, `## ${i18n.s3}`);
-  healed = healed.replace(/^#{1,6}\s*4[.\s]+([^\n]+)/m, `## ${i18n.s4}`);
-  healed = healed.replace(/^#{1,6}\s*5[.\s]+([^\n]+)/m, `## ${i18n.s5}`);
-
-  if (!healed.startsWith('## 1.')) {
-    healed = `## ${i18n.s1}\n\n` + healed;
-    auditLogs.push('1번 헤딩 누락 주입');
-  }
+  healed = healed.replace(/^#{1,6}\s*1[.\s]+([^\n]+)/m, (_match, title) => `## 1. ${title.trim()}`);
+  healed = healed.replace(/^#{1,6}\s*2[.\s]+([^\n]+)/m, (_match, title) => `## 2. ${title.trim()}`);
+  healed = healed.replace(/^#{1,6}\s*3[.\s]+([^\n]+)/m, (_match, title) => `## 3. ${title.trim()}`);
+  healed = healed.replace(/^#{1,6}\s*4[.\s]+([^\n]+)/m, (_match, title) => `## 4. ${title.trim()}`);
+  healed = healed.replace(/^#{1,6}\s*5[.\s]+([^\n]+)/m, (_match, title) => `## 5. ${title.trim()}`);
 
   // 2. Q&A 표식을 정돈하고 질문-답변 사이에 정확히 빈 줄 하나 둡니다.
   const rawQnACount = (healed.match(/Q[1-3]\./gi) || []).length;
@@ -583,21 +578,21 @@ ${buildNarrativeVoiceInstructions(lang.name)}
 - Keep technical instructions, safety warnings, and sources precise and factual.
 
 [STRUCTURE - STRICT 5 H2 HEADINGS]
-Use these exact H2 headings:
+Write exactly five numbered H2 headings in ${lang.name}, numbered 1 through 5. Write concise headings in the target language that fit ${topic} and each section's content. Avoid generic boilerplate, guaranteed time/results, fear-based wording, and unverified professional credentials. The bracketed descriptions below are instructions; never copy their brackets or placeholder text into the article.
 
-## ${i18n.s1}
+## 1. [topic-specific opening heading]
 Write 2 detailed paragraphs that begin directly in a topic-specific problem readers recognize. Show the first-person guide's initial reasoning and the practical risk, then begin diagnosing it. Use the assigned situation only if it directly fits the topic; do not force unrelated details or add a preface.
 
-## ${i18n.s2}
+## 2. [topic-specific heading in ${lang.name}]
 Write 2 analytical paragraphs explaining only the technical causes that fit the topic (such as gateway risk rules, 3DS authentication, tax form issues, or intermediary bank holds). Do not force unrelated causes.
 
-## ${i18n.s3}
+## 3. [topic-specific heading in ${lang.name}]
 Provide 3 concrete resolution steps matching "${lang.osUi}". Use clean numbered lists with practical action items.
 
-## ${i18n.s4}
+## 4. [topic-specific heading in ${lang.name}]
 Write 2 paragraphs of practical precautions and operational tips to prevent recurring payment blocks and charges.
 
-## ${i18n.s5}
+## 5. [topic-specific heading in ${lang.name}]
 Provide exactly 3 practical Q&A items. You MUST put an empty line between Question and Answer:
 
 **Q1.** Question text
