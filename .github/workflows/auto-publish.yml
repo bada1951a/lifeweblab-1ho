@@ -31,6 +31,7 @@ jobs:
 
       - name: Locate previous retry checkpoint artifact
         id: locate-checkpoint
+        continue-on-error: true
         uses: actions/github-script@v7
         with:
           script: |
@@ -80,6 +81,7 @@ jobs:
 
       - name: Restore encrypted retry checkpoint artifact
         if: steps.download-checkpoint.outcome == 'success'
+        continue-on-error: true
         run: node scripts/restore-retry-checkpoint.mjs .retry-checkpoint-artifact
 
       - name: Generate or resume locale checkpoint
