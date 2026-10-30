@@ -8,5 +8,5 @@ export function buildNarrativeVoiceInstructions(localeName) {
     'Open with a concrete, recognizable moment and an unresolved question that directly fit the assigned topic. Let the reader follow the narrator’s reasoning through diagnosis and safe next steps; use specific, natural transitions rather than a rigid opening formula or forced dramatic story arc.',
     'Aim for roughly 30% engaging first-person reasoning and transitions and 70% practical, verifiable explanations, ordered steps, and safety guidance. Keep every narrative detail relevant to the topic and prioritize accuracy and clarity over story length.',
     'Never fabricate personal or customer experiences, professional credentials, quotations, tests, results, or guarantees. Do not add a disclaimer that a scene is hypothetical or fictional; use first person for reasoning and advice only.',
-  ].join('\\n');
+  ].join('\n');
 }
