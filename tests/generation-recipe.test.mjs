@@ -15,6 +15,7 @@ test('generation recipe invalidates drafts when topic-specific headings change',
   const source = readFileSync(new URL('../generate-all.mjs', import.meta.url), 'utf8');
   assert.ok(source.includes('Write concise headings in the target language that fit ${topic}'));
   assert.ok(source.includes('Avoid generic boilerplate, guaranteed time/results'));
+  assert.ok(source.includes('The bracketed descriptions below are instructions; never copy their brackets or placeholder text into the article.'));
 });
 
 test('narrative prompt guides first-person storytelling without invented authority', () => {
