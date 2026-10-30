@@ -36,13 +36,13 @@ jobs:
           script: |
             const fs = require('node:fs');
             const crypto = require('node:crypto');
-            const topics = fs.readFileSync('topics.txt', 'utf8').split(/\\r?\\n/).map((line) => line.trim()).filter(Boolean);
+            const topics = fs.readFileSync('topics.txt', 'utf8').split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
             if (!topics.length) return;
-            const normalizedTopic = topics[0].normalize('NFKC').trim().replace(/\\s+/gu, ' ');
+            const normalizedTopic = topics[0].normalize('NFKC').trim().replace(/\s+/gu, ' ');
             const slug = 'post-' + crypto.createHash('sha256').update(normalizedTopic, 'utf8').digest('hex').slice(0, 16);
             const artifactName = `locale-checkpoint-${context.sha}-${slug}`;
             core.setOutput('topic-slug', slug);
-            const branch = context.ref.replace(/^refs\\/heads\\//, '');
+            const branch = context.ref.replace(/^refs\/heads\//, '');
             const { data } = await github.rest.actions.listWorkflowRuns({
               owner: context.repo.owner,
               repo: context.repo.repo,
