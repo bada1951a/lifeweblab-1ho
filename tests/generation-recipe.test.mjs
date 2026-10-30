@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { readFileSync } from 'node:fs';
 
 import {
   PROMPT_RECIPE_VERSION,
   createTopicFileSlug,
+  decidePublishLocales,
   reconcilePromptCheckpoint,
 } from '../src/utils/generation-recipe.js';
 
@@ -62,4 +64,31 @@ test('topic slugs are deterministic, normalized, and different for different top
   assert.equal(slug, createTopicFileSlug(topic.replace(/\s+/gu, '   ')));
   assert.match(slug, /^post-[a-f0-9]{16}$/);
   assert.notEqual(slug, createTopicFileSlug('Invoice payment troubleshooting'));
+});
+
+
+const publicationTargets = ['ko', 'en', 'ja', 'de', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'id', 'vi'].map((code) => ({ code }));
+
+test('publication gate allows exactly passing locales at 9/12, 10/12, and 12/12', () => {
+  const nine = decidePublishLocales(publicationTargets, publicationTargets.slice(0, 9).map(({ code }) => code));
+  assert.equal(nine.canPublish, false);
+  assert.deepEqual(nine.passingCodes, publicationTargets.slice(0, 9).map(({ code }) => code));
+  assert.deepEqual(nine.failedCodes, publicationTargets.slice(9).map(({ code }) => code));
+
+  const ten = decidePublishLocales(publicationTargets, publicationTargets.slice(0, 10).map(({ code }) => code));
+  assert.equal(ten.canPublish, true);
+  assert.deepEqual(ten.passingLocales, publicationTargets.slice(0, 10));
+  assert.deepEqual(ten.failedCodes, publicationTargets.slice(10).map(({ code }) => code));
+
+  const twelve = decidePublishLocales(publicationTargets, publicationTargets.map(({ code }) => code));
+  assert.equal(twelve.canPublish, true);
+  assert.deepEqual(twelve.passingLocales, publicationTargets);
+  assert.deepEqual(twelve.failedCodes, []);
+});
+
+test('generator uses the tested publication plan in generation and materialization gates', () => {
+  const source = readFileSync(new URL('../generate-all.mjs', import.meta.url), 'utf8');
+  assert.equal((source.match(/decidePublishLocales\(/g) || []).length, 2);
+  assert.equal((source.match(/if \(!publication\.canPublish\)/g) || []).length, 2);
+  assert.match(source, /const validLangs = publication\.passingLocales;/);
 });
