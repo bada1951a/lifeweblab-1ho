@@ -6,8 +6,12 @@ on:
       timezone: 'Asia/Seoul'
   workflow_dispatch: # 수동 즉시 실행 지원
 
+concurrency:
+  group: blog-publish-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: false
+  queue: max
 permissions:
-  contents: write # 생성된 마크다운 글 커밋 및 푸시 권한
+  contents: write # 체크포인트와 게시물 커밋 권한
 
 jobs:
   publish:
@@ -21,22 +25,49 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Run Auto Publishing Script
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Generate or resume locale checkpoint
+        id: generate
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          npm install --legacy-peer-deps
-          node generate-all.mjs
-          npm run build
+        run: node generate-all.mjs
 
-      - name: Commit and Push New Posts
+      # 부분 세트는 글 파일과 주제 포인터를 건드리지 않고 JSON 체크포인트만 먼저 저장합니다.
+      # 준비된 12개 전체 세트도 빌드 전에 체크포인트를 보존해, 빌드 실패 시 재생성을 피합니다.
+      - name: Persist locale checkpoint
+        if: steps.generate.outputs.status == 'checkpoint' || steps.generate.outputs.status == 'ready'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .publish-retry-queue.json
+          if git diff --staged --quiet; then
+            echo "Locale checkpoint is already committed"
+          else
+            git commit -m "Checkpoint validated locale drafts"
+            git push
+          fi
+
+      - name: Materialize valid locale set (minimum 10)
+        if: steps.generate.outputs.status == 'ready'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node generate-all.mjs --materialize
+
+      - name: Build site
+        if: steps.generate.outputs.status == 'ready'
+        run: npm run build
+
+      - name: Commit and Push Complete Post Set
+        if: steps.generate.outputs.status == 'ready'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data/post/ topics.txt .publish-retry-queue.json
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No complete set changes to commit"
           else
-            git commit -m "Auto published new multi-language posts"
+            git commit -m "Auto publish complete 12-locale post set"
             git push
           fi

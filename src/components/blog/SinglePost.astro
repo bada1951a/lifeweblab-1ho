@@ -120,19 +120,26 @@ const { post, url } = Astro.props;
       const text1 = p1.textContent.trim();
 
       if (text1.startsWith('![') && (text1.endsWith(']') || text1.endsWith(')'))) {
-        let altText = text1.replace(/^!\[/, '').replace(/[\]\)]$/, '').trim();
-        
+        const altText = text1
+          .replace(/^!\[/, '')
+          .replace(/[)\]]$/, '')
+          .trim();
+
         if (i + 1 < pElements.length) {
           const p2 = pElements[i + 1];
           const text2 = p2.textContent.trim();
-          
-          if (text2.startsWith('(') && text2.endsWith(')') && (text2.includes('picsum.photos') || text2.includes('/images/'))) {
+
+          if (
+            text2.startsWith('(') &&
+            text2.endsWith(')') &&
+            (text2.includes('picsum.photos') || text2.includes('/images/'))
+          ) {
             const rawSrc = text2.slice(1, -1).trim();
             const imgP = document.createElement('p');
             imgP.className = 'my-6 text-center';
             imgP.innerHTML = `<img src="${rawSrc}" alt="${altText}" class="mx-auto rounded-md shadow-lg max-w-full h-auto inline-block" />`;
-            
-            p1.parentNode.insertBefore(imgP, p1);
+
+            p1.parentNode?.insertBefore(imgP, p1);
             p1.remove();
             p2.remove();
             i++;
@@ -141,7 +148,11 @@ const { post, url } = Astro.props;
         }
       }
 
-      if (text1.startsWith('![') && (text1.includes('picsum.photos') || text1.includes('/images/')) && text1.endsWith(')')) {
+      if (
+        text1.startsWith('![') &&
+        (text1.includes('picsum.photos') || text1.includes('/images/')) &&
+        text1.endsWith(')')
+      ) {
         const match = text1.match(/^!\[(.*?)\]\s*\((.*?)\)$/);
         if (match) {
           const altText = match[1].trim();

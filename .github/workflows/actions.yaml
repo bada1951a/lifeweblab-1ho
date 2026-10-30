@@ -33,6 +33,9 @@ jobs:
       - name: Check auto-publisher JavaScript syntax
         run: node --check generate-all.mjs
 
+      - name: Test prompt checkpoint recovery
+        run: node --test tests/generation-recipe.test.mjs
+
       - name: Run checks
         run: npm run check
 
