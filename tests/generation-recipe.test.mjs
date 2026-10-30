@@ -12,11 +12,14 @@ import {
 } from '../src/utils/generation-recipe.js';
 
 test('generation recipe invalidates drafts when topic-specific headings change', () => {
-  assert.equal(PROMPT_RECIPE_VERSION, '2026-10-30-topic-specific-headings-v2');
+  assert.equal(PROMPT_RECIPE_VERSION, '2026-10-31-topic-specific-headings-v3');
   const source = readFileSync(new URL('../generate-all.mjs', import.meta.url), 'utf8');
   assert.ok(source.includes('Write concise headings in the target language that fit ${topic}'));
   assert.ok(source.includes('Avoid generic boilerplate, guaranteed time/results'));
   assert.ok(source.includes('never copy their brackets or placeholder text'));
+  assert.ok(source.includes('Each heading must make the specific topic or decision visible'));
+  assert.ok(source.includes('Do not use headings that could be reused unchanged for an unrelated article'));
+  assert.ok(source.includes('Do not state a time-to-solve or guaranteed financial outcome'));
 });
 
 test('word-count corrections aim inside the existing range without lowering validation standards', () => {
