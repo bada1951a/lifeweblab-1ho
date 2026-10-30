@@ -6,6 +6,10 @@ on:
       timezone: 'Asia/Seoul'
   workflow_dispatch: # 수동 즉시 실행 지원
 
+concurrency:
+  group: blog-publish-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: false
+  queue: max
 permissions:
   contents: write # 체크포인트와 게시물 커밋 권한
 
