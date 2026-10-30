@@ -496,14 +496,7 @@ async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   throw new Error('OpenAI API 호출이 최대 재시도 횟수를 초과했습니다.');
 }
 
-async function generateSinglePost(
-  lang,
-  index,
-  topic,
-  publishDateBase = new Date(),
-  imageSet,
-  resumeState = null
-) {
+async function generateSinglePost(lang, index, topic, publishDateBase = new Date(), imageSet, resumeState = null) {
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
   console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
@@ -888,3 +881,4 @@ task.catch((error) => {
   console.error('❌ 자동 발행 준비 실패:', error.message);
   process.exitCode = 1;
 });
+
