@@ -27,7 +27,7 @@ test('narrative prompt guides first-person storytelling without invented authori
   assert.ok(
     source.includes(
       "Write this locale's article as an independent original composition; " +
-        'do not translate or imitate another locale\'s draft.'
+        "do not translate or imitate another locale's draft."
     )
   );
   assert.doesNotMatch(source, /from the assigned expert persona's perspective/);
@@ -105,18 +105,13 @@ test('materialization reuses exact checkpoint files and rejects conflicting cont
   );
   assert.throws(
     () =>
-      findReusablePostLocales(
-        ['ko', 'en'],
-        'post-topic',
-        expectedPosts,
-        (locale, filename) =>
-          locale === 'ko' && filename === 'post-topic.md' ? 'Conflicting article' : null
+      findReusablePostLocales(['ko', 'en'], 'post-topic', expectedPosts, (locale, filename) =>
+        locale === 'ko' && filename === 'post-topic.md' ? 'Conflicting article' : null
       ),
     /Existing post for post-topic in ko conflicts with the retry checkpoint/
   );
   assert.throws(
-    () =>
-      findReusablePostLocales(['ko'], 'post-topic', {}, () => 'Already published article'),
+    () => findReusablePostLocales(['ko'], 'post-topic', {}, () => 'Already published article'),
     /Existing post for post-topic in ko conflicts with the retry checkpoint/
   );
 });
