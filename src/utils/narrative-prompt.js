@@ -1,6 +1,5 @@
 export function buildNarrativeVoiceInstructions(localeName) {
-  const targetLocale =
-    typeof localeName === 'string' && localeName.trim() ? localeName.trim() : 'the target locale';
+  const targetLocale = typeof localeName === 'string' && localeName.trim() ? localeName.trim() : 'the target locale';
 
   return [
     `Write as a practical, approachable guide narrator for ${targetLocale} readers. This is a writing voice, not a claim about real identity, profession, employment, credentials, or firsthand experience.`,
