@@ -301,7 +301,6 @@ function inspectAndHealMarkdown(body, langCode) {
   healed = healed.replace(/^#{1,6}\s*4[.\s]+([^\n]+)/m, (_match, title) => `## 4. ${title.trim()}`);
   healed = healed.replace(/^#{1,6}\s*5[.\s]+([^\n]+)/m, (_match, title) => `## 5. ${title.trim()}`);
 
-
   // 2. Q&A 표식을 정돈하고 질문-답변 사이에 정확히 빈 줄 하나 둡니다.
   const rawQnACount = (healed.match(/Q[1-3]\./gi) || []).length;
   if (rawQnACount > 0) {
