@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: blog-publish-\${{ github.repository }}-\${{ github.ref }}
+  group: blog-publish-${{ github.repository }}-${{ github.ref }}
   cancel-in-progress: false
   queue: max
 
@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
@@ -33,8 +33,8 @@ jobs:
         with:
           artifact-ids: 13040812403
           run-id: 41195722419
-          repository: \${{ github.repository }}
-          github-token: \${{ github.token }}
+          repository: ${{ github.repository }}
+          github-token: ${{ github.token }}
           path: .repair-artifact
 
       - name: Restore checkpoint to an isolated path
@@ -42,7 +42,7 @@ jobs:
 
       - name: Generate and validate only JA and VI
         env:
-          OPENAI_API_KEY: \${{ secrets.OPENAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           LOCALE_REPAIR_CHECKPOINT_FILE: .repair-21ho-checkpoint.json
         run: node generate-all.mjs --repair-ja-vi-20261031
 
@@ -73,3 +73,4 @@ jobs:
           git diff --cached --check
           git commit -m "Repair missing Japanese and Vietnamese locales"
           git push
+
