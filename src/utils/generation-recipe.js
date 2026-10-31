@@ -10,7 +10,7 @@ export function createTopicFileSlug(topic) {
 }
 
 // Bump this value whenever prompt wording, structure, or generation rules change.
-export const PROMPT_RECIPE_VERSION = '2026-10-31-topic-grounded-narration-v4';
+export const PROMPT_RECIPE_VERSION = '2026-10-31-storytelling-evidence-v5';
 
 export function reconcilePromptCheckpoint(job, currentVersion = PROMPT_RECIPE_VERSION) {
   if (!job || typeof job !== 'object') {
