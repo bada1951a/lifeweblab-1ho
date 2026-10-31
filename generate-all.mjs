@@ -7,9 +7,9 @@
 // 4. 대표님과의 모든 설명, 질문, 대화 및 주석은 반드시 100% 한국어로만 진행한다.
 // =========================================================================
 
-import fs from 'fs';
-import path from 'path';
-import crypto from 'node:crypto';
+import fs from "fs";
+import path from "path";
+import crypto from "node:crypto";
 import {
   PROMPT_RECIPE_VERSION,
   buildWordCountCorrectionGuidance,
@@ -17,26 +17,29 @@ import {
   createTopicFileSlug,
   decidePublishLocales,
   reconcilePromptCheckpoint,
-} from './src/utils/generation-recipe.js';
-import { buildNarrativeVoiceInstructions } from './src/utils/narrative-prompt.js';
+} from "./src/utils/generation-recipe.js";
+import { buildNarrativeVoiceInstructions } from "./src/utils/narrative-prompt.js";
 import {
   assertLocaleRepairArtifact,
   assertLocaleRepairExistingPosts,
   assertLocaleRepairDraft,
-} from './scripts/locale-repair-guard.mjs';
+} from "./scripts/locale-repair-guard.mjs";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 if (!OPENAI_API_KEY) {
-  console.error('❌ OPENAI_API_KEY 환경변수가 설정되지 않았습니다.');
+  console.error("❌ OPENAI_API_KEY 환경변수가 설정되지 않았습니다.");
   process.exit(1);
 }
-const POSTS_BASE_DIR = path.resolve('src/data/post');
-const TOPICS_FILE = path.resolve('topics.txt');
-const PHOTO_DIR = path.resolve('public/images/billing-photo');
-const LOCALE_REPAIR_ARG = '--repair-ja-vi-20261031';
+const POSTS_BASE_DIR = path.resolve("src/data/post");
+const TOPICS_FILE = path.resolve("topics.txt");
+const PHOTO_DIR = path.resolve("public/images/billing-photo");
+const LOCALE_REPAIR_ARG = "--repair-ja-vi-20261031";
 const isLocaleRepair = process.argv.includes(LOCALE_REPAIR_ARG);
 const RETRY_QUEUE_FILE = path.resolve(
-  isLocaleRepair ? process.env.LOCALE_REPAIR_CHECKPOINT_FILE || '.repair-21ho-checkpoint.json' : '.publish-retry-queue.json'
+  isLocaleRepair
+    ? process.env.LOCALE_REPAIR_CHECKPOINT_FILE ||
+        ".repair-21ho-checkpoint.json"
+    : ".publish-retry-queue.json",
 );
 
 // =========================================================================
@@ -48,11 +51,15 @@ if (!fs.existsSync(PHOTO_DIR)) {
   fs.mkdirSync(PHOTO_DIR, { recursive: true });
 }
 
-const localFiles = fs.readdirSync(PHOTO_DIR).filter((file) => IMAGE_EXTS.test(file));
-let localImages = localFiles.map((file) => encodeURI(`/images/billing-photo/${file}`));
+const localFiles = fs
+  .readdirSync(PHOTO_DIR)
+  .filter((file) => IMAGE_EXTS.test(file));
+let localImages = localFiles.map((file) =>
+  encodeURI(`/images/billing-photo/${file}`),
+);
 
 if (localImages.length === 0) {
-  localImages = ['/images/default-billing.jpg'];
+  localImages = ["/images/default-billing.jpg"];
 }
 
 function shuffleArray(array) {
@@ -86,112 +93,148 @@ function checkpointKey(salt) {
 
 function loadRetryQueue() {
   if (!fs.existsSync(RETRY_QUEUE_FILE)) return [];
-  const envelope = JSON.parse(fs.readFileSync(RETRY_QUEUE_FILE, 'utf-8'));
+  const envelope = JSON.parse(fs.readFileSync(RETRY_QUEUE_FILE, "utf-8"));
   if (Array.isArray(envelope)) {
     if (envelope.length)
       throw new Error(
-        '암호화되지 않은 기존 체크포인트가 있습니다. 공개 저장소에 원고를 쓰지 않도록 수동 확인이 필요합니다.'
+        "암호화되지 않은 기존 체크포인트가 있습니다. 공개 저장소에 원고를 쓰지 않도록 수동 확인이 필요합니다.",
       );
     return [];
   }
-  if (envelope.version !== 1 || envelope.algorithm !== 'aes-256-gcm') {
-    throw new Error('.publish-retry-queue.json 암호화 형식이 올바르지 않습니다.');
+  if (envelope.version !== 1 || envelope.algorithm !== "aes-256-gcm") {
+    throw new Error(
+      ".publish-retry-queue.json 암호화 형식이 올바르지 않습니다.",
+    );
   }
   try {
     const decipher = crypto.createDecipheriv(
-      'aes-256-gcm',
-      checkpointKey(Buffer.from(envelope.salt, 'base64')),
-      Buffer.from(envelope.iv, 'base64')
+      "aes-256-gcm",
+      checkpointKey(Buffer.from(envelope.salt, "base64")),
+      Buffer.from(envelope.iv, "base64"),
     );
-    decipher.setAuthTag(Buffer.from(envelope.tag, 'base64'));
+    decipher.setAuthTag(Buffer.from(envelope.tag, "base64"));
     const plaintext = Buffer.concat([
-      decipher.update(Buffer.from(envelope.ciphertext, 'base64')),
+      decipher.update(Buffer.from(envelope.ciphertext, "base64")),
       decipher.final(),
-    ]).toString('utf-8');
+    ]).toString("utf-8");
     const queue = JSON.parse(plaintext);
-    if (!Array.isArray(queue)) throw new Error('payload is not an array');
+    if (!Array.isArray(queue)) throw new Error("payload is not an array");
     return queue;
   } catch {
-    throw new Error('암호화 체크포인트를 복호화할 수 없습니다. OPENAI_API_KEY가 변경되었거나 데이터가 손상되었습니다.');
+    throw new Error(
+      "암호화 체크포인트를 복호화할 수 없습니다. OPENAI_API_KEY가 변경되었거나 데이터가 손상되었습니다.",
+    );
   }
 }
 
 function saveRetryQueue(queue) {
   const salt = crypto.randomBytes(16);
   const iv = crypto.randomBytes(12);
-  const cipher = crypto.createCipheriv('aes-256-gcm', checkpointKey(salt), iv);
-  const ciphertext = Buffer.concat([cipher.update(JSON.stringify(queue), 'utf-8'), cipher.final()]);
+  const cipher = crypto.createCipheriv("aes-256-gcm", checkpointKey(salt), iv);
+  const ciphertext = Buffer.concat([
+    cipher.update(JSON.stringify(queue), "utf-8"),
+    cipher.final(),
+  ]);
   const envelope = {
     version: 1,
-    algorithm: 'aes-256-gcm',
-    salt: salt.toString('base64'),
-    iv: iv.toString('base64'),
-    tag: cipher.getAuthTag().toString('base64'),
-    ciphertext: ciphertext.toString('base64'),
+    algorithm: "aes-256-gcm",
+    salt: salt.toString("base64"),
+    iv: iv.toString("base64"),
+    tag: cipher.getAuthTag().toString("base64"),
+    ciphertext: ciphertext.toString("base64"),
   };
-  fs.writeFileSync(RETRY_QUEUE_FILE, JSON.stringify(envelope, null, 2) + '\n', 'utf-8');
+  fs.writeFileSync(
+    RETRY_QUEUE_FILE,
+    JSON.stringify(envelope, null, 2) + "\n",
+    "utf-8",
+  );
 }
 
 function setWorkflowOutput(status) {
-  if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${status}\n`, 'utf-8');
+  if (process.env.GITHUB_OUTPUT)
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${status}\n`, "utf-8");
 }
 
 function validateGeneratedPost(text, langCode) {
   const errors = [];
   const fm = text.match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n/);
-  if (!fm) return ['frontmatter 구분자 누락'];
+  if (!fm) return ["frontmatter 구분자 누락"];
   const meta = fm[1];
   const body = text.slice(fm[0].length).trim();
   const contentBody = body
-    .replace(/^##\s.*$/gm, '')
-    .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
-    .replace(/[*`]/g, '')
+    .replace(/^##\s.*$/gm, "")
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, "")
+    .replace(/[*`]/g, "")
     .trim();
   const readField = (name) => {
-    const match = meta.match(new RegExp('^' + name + ':\\s*(.*)$', 'm'));
-    return match ? match[1].trim().replace(/^["']|["']$/g, '') : '';
+    const match = meta.match(new RegExp("^" + name + ":\\s*(.*)$", "m"));
+    return match ? match[1].trim().replace(/^["']|["']$/g, "") : "";
   };
 
-  for (const field of ['title', 'description', 'publishDate', 'image']) {
-    if (!readField(field)) errors.push(field + ' 누락');
+  for (const field of ["title", "description", "publishDate", "image"]) {
+    if (!readField(field)) errors.push(field + " 누락");
   }
-  if (readField('title').length > 120) errors.push('title 120자 초과');
-  if (readField('description').length > 160) errors.push('description 160자 초과');
-  if (!Number.isFinite(Date.parse(readField('publishDate')))) errors.push('publishDate 형식 오류');
-  if (!/^\/images\//.test(readField('image')) && !/^https?:\/\//i.test(readField('image')))
-    errors.push('image 경로 형식 오류');
-  if (!/^category:\s*['"]?troubleshooting['"]?\s*$/m.test(meta)) errors.push('category 오류');
+  if (readField("title").length > 120) errors.push("title 120자 초과");
+  if (readField("description").length > 160)
+    errors.push("description 160자 초과");
+  if (!Number.isFinite(Date.parse(readField("publishDate"))))
+    errors.push("publishDate 형식 오류");
+  if (
+    !/^\/images\//.test(readField("image")) &&
+    !/^https?:\/\//i.test(readField("image"))
+  )
+    errors.push("image 경로 형식 오류");
+  if (!/^category:\s*['"]?troubleshooting['"]?\s*$/m.test(meta))
+    errors.push("category 오류");
 
-  if (langCode === 'ko') {
-    if (contentBody.length < 2400) errors.push('한국어 본문 2,400자 미만');
-    if (contentBody.length > 3000) errors.push('한국어 본문 3,000자 초과');
+  if (langCode === "ko") {
+    if (contentBody.length < 2400) errors.push("한국어 본문 2,400자 미만");
+    if (contentBody.length > 3000) errors.push("한국어 본문 3,000자 초과");
   } else {
     let wordCount;
     try {
-      const segmenter = new Intl.Segmenter(langCode, { granularity: 'word' });
-      wordCount = [...segmenter.segment(contentBody)].filter((segment) => segment.isWordLike).length;
+      const segmenter = new Intl.Segmenter(langCode, { granularity: "word" });
+      wordCount = [...segmenter.segment(contentBody)].filter(
+        (segment) => segment.isWordLike,
+      ).length;
     } catch {
-      wordCount = (contentBody.match(/[\p{L}\p{N}]+(?:['’.-][\p{L}\p{N}]+)*/gu) || []).length;
+      wordCount = (
+        contentBody.match(/[\p{L}\p{N}]+(?:['’.-][\p{L}\p{N}]+)*/gu) || []
+      ).length;
     }
-    if (wordCount < 900) errors.push('본문 900단어 미만');
-    if (wordCount > 1100) errors.push('본문 1,100단어 초과');
+    if (wordCount < 900) errors.push("본문 900단어 미만");
+    if (wordCount > 1100) errors.push("본문 1,100단어 초과");
   }
 
-  const headings = [...body.matchAll(/^##\s+(\d+)[.)]\s+.+$/gm)].map((match) => Number(match[1]));
+  const headings = [...body.matchAll(/^##\s+(\d+)[.)]\s+.+$/gm)].map((match) =>
+    Number(match[1]),
+  );
   const allH2 = [...body.matchAll(/^##\s+/gm)];
-  if (allH2.length !== 5 || headings.join(',') !== '1,2,3,4,5') errors.push('H2 제목이 1~5번 순서로 정확히 5개가 아님');
+  if (allH2.length !== 5 || headings.join(",") !== "1,2,3,4,5")
+    errors.push("H2 제목이 1~5번 순서로 정확히 5개가 아님");
 
-  const questions = [...body.matchAll(/^\*\*Q([1-3])\.\*\*\s*\S.*$/gm)].map((match) => Number(match[1]));
-  const answers = [...body.matchAll(/^\*\*A([1-3])\.\*\*\s*\S.*$/gm)].map((match) => Number(match[1]));
-  if (questions.join(',') !== '1,2,3') errors.push('FAQ 질문이 Q1~Q3 정확히 3개가 아님');
-  if (answers.join(',') !== '1,2,3') errors.push('FAQ 답변이 A1~A3 정확히 3개가 아님');
+  const questions = [...body.matchAll(/^\*\*Q([1-3])\.\*\*\s*\S.*$/gm)].map(
+    (match) => Number(match[1]),
+  );
+  const answers = [...body.matchAll(/^\*\*A([1-3])\.\*\*\s*\S.*$/gm)].map(
+    (match) => Number(match[1]),
+  );
+  if (questions.join(",") !== "1,2,3")
+    errors.push("FAQ 질문이 Q1~Q3 정확히 3개가 아님");
+  if (answers.join(",") !== "1,2,3")
+    errors.push("FAQ 답변이 A1~A3 정확히 3개가 아님");
   for (let n = 1; n <= 3; n++) {
-    const pairPattern = new RegExp('\\*\\*Q' + n + '\\.\\*\\*[^\\n]*\\n\\n\\*\\*A' + n + '\\.\\*\\*');
-    if (!pairPattern.test(body)) errors.push('Q' + n + '/A' + n + ' 사이 빈 줄 누락');
+    const pairPattern = new RegExp(
+      "\\*\\*Q" + n + "\\.\\*\\*[^\\n]*\\n\\n\\*\\*A" + n + "\\.\\*\\*",
+    );
+    if (!pairPattern.test(body))
+      errors.push("Q" + n + "/A" + n + " 사이 빈 줄 누락");
   }
 
-  if (!/!\[[^\]]*\]\((?:https?:\/\/|\/images\/)[^)]+\)/.test(body)) errors.push('본문 중간 이미지 누락');
-  if (langCode !== 'ko' && /[가-힣]/.test(body)) errors.push('비한국어 본문에 한글 포함');
+  if (!/!\[[^\]]*\]\((?:https?:\/\/|\/images\/)[^)]+\)/.test(body))
+    errors.push("본문 중간 이미지 누락");
+  if (langCode !== "ko" && /[가-힣]/.test(body))
+    errors.push("비한국어 본문에 한글 포함");
   return errors;
 }
 // =========================================================================
@@ -199,100 +242,145 @@ function validateGeneratedPost(text, langCode) {
 // =========================================================================
 const I18N_SECTIONS = {
   ko: {
-    s1: '1. 결제·송금 돌발 오류와 긴급 점검 상황',
-    s2: '2. 결제 거절 및 처리 실패의 핵심 원인 분석',
-    s3: '3. 1분 만에 해결하는 단계별 실무 조치 매뉴얼',
-    s4: '4. 계정 동결 및 수수료 폭탄 방지를 위한 실무 체크리스트',
-    s5: '5. 자주 묻는 질문 (FAQ)',
-    tags: ['해외결제', '인보이스', '송금오류', '비즈니스정산'],
+    s1: "1. 결제·송금 돌발 오류와 긴급 점검 상황",
+    s2: "2. 결제 거절 및 처리 실패의 핵심 원인 분석",
+    s3: "3. 1분 만에 해결하는 단계별 실무 조치 매뉴얼",
+    s4: "4. 계정 동결 및 수수료 폭탄 방지를 위한 실무 체크리스트",
+    s5: "5. 자주 묻는 질문 (FAQ)",
+    tags: ["해외결제", "인보이스", "송금오류", "비즈니스정산"],
   },
   en: {
-    s1: '1. Urgent Payment and Transfer Emergency',
-    s2: '2. Root Cause Analysis of Gateway Failures',
-    s3: '3. Step-by-Step Resolution Manual',
-    s4: '4. Practical Checklist to Avoid Account Holds',
-    s5: '5. Frequently Asked Questions (FAQ)',
-    tags: ['Global Payment', 'Invoicing', 'Payment Gateway', 'Fintech Fix'],
+    s1: "1. Urgent Payment and Transfer Emergency",
+    s2: "2. Root Cause Analysis of Gateway Failures",
+    s3: "3. Step-by-Step Resolution Manual",
+    s4: "4. Practical Checklist to Avoid Account Holds",
+    s5: "5. Frequently Asked Questions (FAQ)",
+    tags: ["Global Payment", "Invoicing", "Payment Gateway", "Fintech Fix"],
   },
   ja: {
-    s1: '1. 海外決済・送金エラーと緊急トラブル',
-    s2: '2. 決済拒否および処理失敗の根本原因',
-    s3: '3. 1分で完了する実践的なトラブルシューティング手順',
-    s4: '4. アカウント凍結を防ぐ実務チェックリスト',
-    s5: '5. よくある質問 (FAQ)',
-    tags: ['海外決済', '請求書トラブル', '送金エラー', '越境ビジネス'],
+    s1: "1. 海外決済・送金エラーと緊急トラブル",
+    s2: "2. 決済拒否および処理失敗の根本原因",
+    s3: "3. 1分で完了する実践的なトラブルシューティング手順",
+    s4: "4. アカウント凍結を防ぐ実務チェックリスト",
+    s5: "5. よくある質問 (FAQ)",
+    tags: ["海外決済", "請求書トラブル", "送金エラー", "越境ビジネス"],
   },
   de: {
-    s1: '1. Dringender Zahlungs- und Überweisungsnotfall',
-    s2: '2. Ursachenanalyse von Transaktionsfehlern',
-    s3: '3. Schritt-für-Schritt-Anleitung zur Fehlerbehebung',
-    s4: '4. Praxis-Checkliste zur Vermeidung von Kontensperren',
-    s5: '5. Häufig gestellte Fragen (FAQ)',
-    tags: ['Zahlungsabwicklung', 'B2B-Rechnung', 'Fintech', 'Transaktionsfehler'],
+    s1: "1. Dringender Zahlungs- und Überweisungsnotfall",
+    s2: "2. Ursachenanalyse von Transaktionsfehlern",
+    s3: "3. Schritt-für-Schritt-Anleitung zur Fehlerbehebung",
+    s4: "4. Praxis-Checkliste zur Vermeidung von Kontensperren",
+    s5: "5. Häufig gestellte Fragen (FAQ)",
+    tags: [
+      "Zahlungsabwicklung",
+      "B2B-Rechnung",
+      "Fintech",
+      "Transaktionsfehler",
+    ],
   },
   fr: {
     s1: "1. Situation d'urgence sur les paiements et virements",
-    s2: '2. Analyse des causes principales des rejets de paiement',
-    s3: '3. Manuel pratique de dépannage étape par étape',
-    s4: '4. Liste de contrôle pour éviter les blocages de compte',
-    s5: '5. Foire Aux Questions (FAQ)',
-    tags: ['Paiement International', 'Facturation B2B', 'Passerelle de Paiement', 'Gestion Litiges'],
+    s2: "2. Analyse des causes principales des rejets de paiement",
+    s3: "3. Manuel pratique de dépannage étape par étape",
+    s4: "4. Liste de contrôle pour éviter les blocages de compte",
+    s5: "5. Foire Aux Questions (FAQ)",
+    tags: [
+      "Paiement International",
+      "Facturation B2B",
+      "Passerelle de Paiement",
+      "Gestion Litiges",
+    ],
   },
   es: {
-    s1: '1. Emergencia crítica en transferencias y cobros',
-    s2: '2. Análisis de causas raíz de rechazos de pago',
-    s3: '3. Manual paso a paso para resolver incidencias',
-    s4: '4. Lista de verificación para prevenir retenciones de fondos',
-    s5: '5. Preguntas Frecuentes (FAQ)',
-    tags: ['Pagos Internacionales', 'Facturación B2B', 'Pasarela de Pago', 'Gestión de Cobros'],
+    s1: "1. Emergencia crítica en transferencias y cobros",
+    s2: "2. Análisis de causas raíz de rechazos de pago",
+    s3: "3. Manual paso a paso para resolver incidencias",
+    s4: "4. Lista de verificación para prevenir retenciones de fondos",
+    s5: "5. Preguntas Frecuentes (FAQ)",
+    tags: [
+      "Pagos Internacionales",
+      "Facturación B2B",
+      "Pasarela de Pago",
+      "Gestión de Cobros",
+    ],
   },
   it: {
-    s1: '1. Emergenza improvvisa su pagamenti e bonifici',
-    s2: '2. Analisi approfondita dei rifiuti di pagamento',
-    s3: '3. Guida pratica di risoluzione passo dopo passo',
-    s4: '4. Checklist essenziale per evitare blocchi del conto',
-    s5: '5. Domande Frequenti (FAQ)',
-    tags: ['Pagamenti Globali', 'Fatturazione Elettronica', 'Gateway Pagamento', 'Risoluzione Errori'],
+    s1: "1. Emergenza improvvisa su pagamenti e bonifici",
+    s2: "2. Analisi approfondita dei rifiuti di pagamento",
+    s3: "3. Guida pratica di risoluzione passo dopo passo",
+    s4: "4. Checklist essenziale per evitare blocchi del conto",
+    s5: "5. Domande Frequenti (FAQ)",
+    tags: [
+      "Pagamenti Globali",
+      "Fatturazione Elettronica",
+      "Gateway Pagamento",
+      "Risoluzione Errori",
+    ],
   },
   pt: {
-    s1: '1. Emergência com pagamentos e transferências globais',
-    s2: '2. Análise da causa raiz de recusas de pagamento',
-    s3: '3. Manual prático passo a passo de resolução',
-    s4: '4. Checklist essencial para evitar retenções de saldo',
-    s5: '5. Perguntas Frecuentes (FAQ)',
-    tags: ['Pagamentos Globais', 'Faturamento B2B', 'Gateway de Pagamento', 'Finanças'],
+    s1: "1. Emergência com pagamentos e transferências globais",
+    s2: "2. Análise da causa raiz de recusas de pagamento",
+    s3: "3. Manual prático passo a passo de resolução",
+    s4: "4. Checklist essencial para evitar retenções de saldo",
+    s5: "5. Perguntas Frecuentes (FAQ)",
+    tags: [
+      "Pagamentos Globais",
+      "Faturamento B2B",
+      "Gateway de Pagamento",
+      "Finanças",
+    ],
   },
   nl: {
-    s1: '1. Noodsituatie bij internationale betalingen',
-    s2: '2. Grondige analyse van mislukte betalingstransacties',
-    s3: '3. Stapsgewijze handleiding voor het direct oplossen',
-    s4: '4. Checklist om rekeningblokkades te voorkomen',
-    s5: '5. Veelgestelde Vragen (FAQ)',
-    tags: ['Internationale Betalingen', 'Facturatie', 'Payment Gateway', 'Financiële Tips'],
+    s1: "1. Noodsituatie bij internationale betalingen",
+    s2: "2. Grondige analyse van mislukte betalingstransacties",
+    s3: "3. Stapsgewijze handleiding voor het direct oplossen",
+    s4: "4. Checklist om rekeningblokkades te voorkomen",
+    s5: "5. Veelgestelde Vragen (FAQ)",
+    tags: [
+      "Internationale Betalingen",
+      "Facturatie",
+      "Payment Gateway",
+      "Financiële Tips",
+    ],
   },
   pl: {
-    s1: '1. Awaryjna sytuacja z płatnościami zagranicznymi',
-    s2: '2. Analiza przyczyn odrzuceń płatności i błędów',
-    s3: '3. Praktyczny przewodnik rozwiązywania problemów',
-    s4: '4. Lista kontrolna zapobiegająca blokadom konta',
-    s5: '5. Najczęściej zadawane pytania (FAQ)',
-    tags: ['Płatności Globalne', 'Fakturowanie B2B', 'Bramki Płatności', 'Rozliczenia'],
+    s1: "1. Awaryjna sytuacja z płatnościami zagranicznymi",
+    s2: "2. Analiza przyczyn odrzuceń płatności i błędów",
+    s3: "3. Praktyczny przewodnik rozwiązywania problemów",
+    s4: "4. Lista kontrolna zapobiegająca blokadom konta",
+    s5: "5. Najczęściej zadawane pytania (FAQ)",
+    tags: [
+      "Płatności Globalne",
+      "Fakturowanie B2B",
+      "Bramki Płatności",
+      "Rozliczenia",
+    ],
   },
   id: {
-    s1: '1. Situasi Darurat Transaksi Pembayaran dan Transfer',
-    s2: '2. Analisis Akar Masalah Penolakan Gateway Pembayaran',
-    s3: '3. Panduan Langkah demi Langkah Penanganan Masalah',
-    s4: '4. Lembar Periksa Mencegah Penahanan Dana Akun',
-    s5: '5. Pertanyaan yang Sering Diajukan (FAQ)',
-    tags: ['Pembayaran Global', 'Faktur Bisnis', 'Gateway Pembayaran', 'Fintech'],
+    s1: "1. Situasi Darurat Transaksi Pembayaran dan Transfer",
+    s2: "2. Analisis Akar Masalah Penolakan Gateway Pembayaran",
+    s3: "3. Panduan Langkah demi Langkah Penanganan Masalah",
+    s4: "4. Lembar Periksa Mencegah Penahanan Dana Akun",
+    s5: "5. Pertanyaan yang Sering Diajukan (FAQ)",
+    tags: [
+      "Pembayaran Global",
+      "Faktur Bisnis",
+      "Gateway Pembayaran",
+      "Fintech",
+    ],
   },
   vi: {
-    s1: '1. Sự cố khẩn cấp khi thanh toán và chuyển tiền',
-    s2: '2. Phân tích nguyên nhân lỗi từ chối thanh toán',
-    s3: '3. Quy trình thực tế từng bước xử lý lỗi cổng thanh toán',
-    s4: '4. Danh sách kiểm tra ngăn ngừa đóng băng tài khoản',
-    s5: '5. Các câu hỏi thường gặp (FAQ)',
-    tags: ['Thanh Toán Quốc Tế', 'Hóa Đơn B2B', 'Cổng Thanh Toán', 'Xử Lý Sự Cố'],
+    s1: "1. Sự cố khẩn cấp khi thanh toán và chuyển tiền",
+    s2: "2. Phân tích nguyên nhân lỗi từ chối thanh toán",
+    s3: "3. Quy trình thực tế từng bước xử lý lỗi cổng thanh toán",
+    s4: "4. Danh sách kiểm tra ngăn ngừa đóng băng tài khoản",
+    s5: "5. Các câu hỏi thường gặp (FAQ)",
+    tags: [
+      "Thanh Toán Quốc Tế",
+      "Hóa Đơn B2B",
+      "Cổng Thanh Toán",
+      "Xử Lý Sự Cố",
+    ],
   },
 };
 
@@ -305,33 +393,57 @@ function inspectAndHealMarkdown(body, langCode) {
   const auditLogs = [];
 
   // 1. [헤딩 검수] 볼드를 정리하고 번호만 표준화해 원고별 제목을 보존
-  healed = healed.replace(/^(#{1,6}\s+)\*\*(.*?)\*\*/gm, '$1$2');
-  healed = healed.replace(/^#{1,6}\s*1[.\s]+([^\n]+)/m, (_match, title) => `## 1. ${title.trim()}`);
-  healed = healed.replace(/^#{1,6}\s*2[.\s]+([^\n]+)/m, (_match, title) => `## 2. ${title.trim()}`);
-  healed = healed.replace(/^#{1,6}\s*3[.\s]+([^\n]+)/m, (_match, title) => `## 3. ${title.trim()}`);
-  healed = healed.replace(/^#{1,6}\s*4[.\s]+([^\n]+)/m, (_match, title) => `## 4. ${title.trim()}`);
-  healed = healed.replace(/^#{1,6}\s*5[.\s]+([^\n]+)/m, (_match, title) => `## 5. ${title.trim()}`);
+  healed = healed.replace(/^(#{1,6}\s+)\*\*(.*?)\*\*/gm, "$1$2");
+  healed = healed.replace(
+    /^#{1,6}\s*1[.\s]+([^\n]+)/m,
+    (_match, title) => `## 1. ${title.trim()}`,
+  );
+  healed = healed.replace(
+    /^#{1,6}\s*2[.\s]+([^\n]+)/m,
+    (_match, title) => `## 2. ${title.trim()}`,
+  );
+  healed = healed.replace(
+    /^#{1,6}\s*3[.\s]+([^\n]+)/m,
+    (_match, title) => `## 3. ${title.trim()}`,
+  );
+  healed = healed.replace(
+    /^#{1,6}\s*4[.\s]+([^\n]+)/m,
+    (_match, title) => `## 4. ${title.trim()}`,
+  );
+  healed = healed.replace(
+    /^#{1,6}\s*5[.\s]+([^\n]+)/m,
+    (_match, title) => `## 5. ${title.trim()}`,
+  );
 
   // 2. Q&A 표식을 정돈하고 질문-답변 사이에 정확히 빈 줄 하나 둡니다.
   const rawQnACount = (healed.match(/Q[1-3]\./gi) || []).length;
   if (rawQnACount > 0) {
     const faqLines = healed.split(/\r?\n/).map((line) =>
       line
-        .replace(/^[ \t]*\*\*Q([1-3])\.\*\*[ \t]*/, '**Q$1.** ')
-        .replace(/^[ \t]*Q([1-3])\.[ \t]*/, '**Q$1.** ')
-        .replace(/^[ \t]*\*\*A([1-3])\.\*\*[ \t]*/, '**A$1.** ')
-        .replace(/^[ \t]*A([1-3])\.[ \t]*/, '**A$1.** ')
+        .replace(/^[ \t]*\*\*Q([1-3])\.\*\*[ \t]*/, "**Q$1.** ")
+        .replace(/^[ \t]*Q([1-3])\.[ \t]*/, "**Q$1.** ")
+        .replace(/^[ \t]*\*\*A([1-3])\.\*\*[ \t]*/, "**A$1.** ")
+        .replace(/^[ \t]*A([1-3])\.[ \t]*/, "**A$1.** "),
     );
     const normalizedFaq = [];
     for (const line of faqLines) {
       if (/^\*\*A[1-3]\.\*\*/.test(line)) {
-        while (normalizedFaq.length && normalizedFaq[normalizedFaq.length - 1] === '') normalizedFaq.pop();
-        if (/^\*\*Q[1-3]\.\*\*/.test(normalizedFaq[normalizedFaq.length - 1] || '')) normalizedFaq.push('');
+        while (
+          normalizedFaq.length &&
+          normalizedFaq[normalizedFaq.length - 1] === ""
+        )
+          normalizedFaq.pop();
+        if (
+          /^\*\*Q[1-3]\.\*\*/.test(
+            normalizedFaq[normalizedFaq.length - 1] || "",
+          )
+        )
+          normalizedFaq.push("");
       }
       normalizedFaq.push(line);
     }
-    healed = normalizedFaq.join('\n').replace(/\n{3,}/g, '\n\n');
-    auditLogs.push('Q&A 질문과 답변을 빈 줄로 분리해 표식을 정돈했습니다.');
+    healed = normalizedFaq.join("\n").replace(/\n{3,}/g, "\n\n");
+    auditLogs.push("Q&A 질문과 답변을 빈 줄로 분리해 표식을 정돈했습니다.");
   }
 
   // 3. [볼드 공백 교정] ** 키워드 ** -> **키워드**
@@ -341,25 +453,25 @@ function inspectAndHealMarkdown(body, langCode) {
     /\*\*[^*\\n]+[ \\t]+\*\*/.test(healed)
   ) {
     healed = healed
-      .replace(/\*\*[ \\t]+([^*\\n]+?)[ \\t]+\*\*/g, '**$1**')
-      .replace(/\*\*[ \\t]+([^*\\n]+?)\*\*/g, '**$1**')
-      .replace(/\*\*([^*\\n]+?)[ \\t]+\*\*/g, '**$1**');
-    auditLogs.push('볼드 안쪽 공백 정돈');
+      .replace(/\*\*[ \\t]+([^*\\n]+?)[ \\t]+\*\*/g, "**$1**")
+      .replace(/\*\*[ \\t]+([^*\\n]+?)\*\*/g, "**$1**")
+      .replace(/\*\*([^*\\n]+?)[ \\t]+\*\*/g, "**$1**");
+    auditLogs.push("볼드 안쪽 공백 정돈");
   }
 
   // 4. [특수문자 및 LaTeX 치환]
   healed = healed
-    .replace(/\\times/g, 'x')
-    .replace(/\\circ/g, '°')
-    .replace(/\\approx/g, '≈')
-    .replace(/\$([A-Za-z0-9_-]+)\$/g, '`$1`')
-    .replace(/~/g, '-');
+    .replace(/\\times/g, "x")
+    .replace(/\\circ/g, "°")
+    .replace(/\\approx/g, "≈")
+    .replace(/\$([A-Za-z0-9_-]+)\$/g, "`$1`")
+    .replace(/~/g, "-");
 
   // 5. [연속 빈 줄 정돈]
-  healed = healed.replace(/\n{3,}/g, '\n\n').trim();
+  healed = healed.replace(/\n{3,}/g, "\n\n").trim();
 
   if (auditLogs.length > 0) {
-    console.log(`   🩺 [자가 치유 완료]: ${auditLogs.join(' | ')}`);
+    console.log(`   🩺 [자가 치유 완료]: ${auditLogs.join(" | ")}`);
   }
 
   return healed;
@@ -370,18 +482,18 @@ function inspectAndHealMarkdown(body, langCode) {
 // =========================================================================
 if (!isLocaleRepair) {
   if (!fs.existsSync(TOPICS_FILE)) {
-    console.error('❌ topics.txt 파일이 존재하지 않습니다.');
+    console.error("❌ topics.txt 파일이 존재하지 않습니다.");
     process.exit(1);
   }
 
-  const fileContent = fs.readFileSync(TOPICS_FILE, 'utf-8');
+  const fileContent = fs.readFileSync(TOPICS_FILE, "utf-8");
   const lines = fileContent
     .split(/\r?\n/)
     .map((l) => l.trim())
     .filter((l) => l.length > 0);
 
   if (lines.length === 0) {
-    console.log('⚠️ topics.txt에 남은 주제가 없습니다. 생성을 건너뜁니다.');
+    console.log("⚠️ topics.txt에 남은 주제가 없습니다. 생성을 건너뜁니다.");
     process.exit(0);
   }
 
@@ -390,76 +502,76 @@ if (!isLocaleRepair) {
 
 const TARGET_LANGS = [
   {
-    code: 'ko',
-    name: 'Korean',
-    osUi: '대시보드, 결제 수단, 인보이스, 계정 설정',
-    localeContext: 'Korean-language readers in South Korea',
+    code: "ko",
+    name: "Korean",
+    osUi: "대시보드, 결제 수단, 인보이스, 계정 설정",
+    localeContext: "Korean-language readers in South Korea",
   },
   {
-    code: 'en',
-    name: 'English',
-    osUi: 'Dashboard, Payment Methods, Billing, Invoices',
-    localeContext: 'English-language readers in the United States',
+    code: "en",
+    name: "English",
+    osUi: "Dashboard, Payment Methods, Billing, Invoices",
+    localeContext: "English-language readers in the United States",
   },
   {
-    code: 'ja',
-    name: 'Japanese',
-    osUi: 'ダッシュボード, 支払い方法, 請求書, アカウント設定',
-    localeContext: 'Japanese-language readers in Japan',
+    code: "ja",
+    name: "Japanese",
+    osUi: "ダッシュボード, 支払い方法, 請求書, アカウント設定",
+    localeContext: "Japanese-language readers in Japan",
   },
   {
-    code: 'de',
-    name: 'German',
-    osUi: 'Dashboard, Zahlungsmethoden, Rechnungen, Kontoeinstellungen',
-    localeContext: 'German-language readers in Germany',
+    code: "de",
+    name: "German",
+    osUi: "Dashboard, Zahlungsmethoden, Rechnungen, Kontoeinstellungen",
+    localeContext: "German-language readers in Germany",
   },
   {
-    code: 'fr',
-    name: 'French',
-    osUi: 'Tableau de bord, Modes de paiement, Factures, Paramètres',
-    localeContext: 'French-language readers in France',
+    code: "fr",
+    name: "French",
+    osUi: "Tableau de bord, Modes de paiement, Factures, Paramètres",
+    localeContext: "French-language readers in France",
   },
   {
-    code: 'es',
-    name: 'Spanish',
-    osUi: 'Panel de control, Métodos de pago, Facturación, Configuración',
-    localeContext: 'Spanish-language readers in Spain',
+    code: "es",
+    name: "Spanish",
+    osUi: "Panel de control, Métodos de pago, Facturación, Configuración",
+    localeContext: "Spanish-language readers in Spain",
   },
   {
-    code: 'it',
-    name: 'Italian',
-    osUi: 'Dashboard, Metodi di pagamento, Fatture, Impostazioni',
-    localeContext: 'Italian-language readers in Italy',
+    code: "it",
+    name: "Italian",
+    osUi: "Dashboard, Metodi di pagamento, Fatture, Impostazioni",
+    localeContext: "Italian-language readers in Italy",
   },
   {
-    code: 'pt',
-    name: 'Portuguese',
-    osUi: 'Painel, Formas de Pagamento, Faturas, Configurações',
-    localeContext: 'Portuguese-language readers in Brazil',
+    code: "pt",
+    name: "Portuguese",
+    osUi: "Painel, Formas de Pagamento, Faturas, Configurações",
+    localeContext: "Portuguese-language readers in Brazil",
   },
   {
-    code: 'nl',
-    name: 'Dutch',
-    osUi: 'Dashboard, Betaalmethoden, Facturen, Accountinstellingen',
-    localeContext: 'Dutch-language readers in the Netherlands',
+    code: "nl",
+    name: "Dutch",
+    osUi: "Dashboard, Betaalmethoden, Facturen, Accountinstellingen",
+    localeContext: "Dutch-language readers in the Netherlands",
   },
   {
-    code: 'pl',
-    name: 'Polish',
-    osUi: 'Pulpit, Metody płatności, Faktury, Ustawienia konta',
-    localeContext: 'Polish-language readers in Poland',
+    code: "pl",
+    name: "Polish",
+    osUi: "Pulpit, Metody płatności, Faktury, Ustawienia konta",
+    localeContext: "Polish-language readers in Poland",
   },
   {
-    code: 'id',
-    name: 'Indonesian',
-    osUi: 'Dasbor, Metode Pembayaran, Tagihan / Faktur, Pengaturan',
-    localeContext: 'Indonesian-language readers in Indonesia',
+    code: "id",
+    name: "Indonesian",
+    osUi: "Dasbor, Metode Pembayaran, Tagihan / Faktur, Pengaturan",
+    localeContext: "Indonesian-language readers in Indonesia",
   },
   {
-    code: 'vi',
-    name: 'Vietnamese',
-    osUi: 'Bảng điều khiển, Phương thức thanh toán, Hóa đơn, Cài đặt',
-    localeContext: 'Vietnamese-language readers in Vietnam',
+    code: "vi",
+    name: "Vietnamese",
+    osUi: "Bảng điều khiển, Phương thức thanh toán, Hóa đơn, Cài đặt",
+    localeContext: "Vietnamese-language readers in Vietnam",
   },
 ];
 
@@ -468,15 +580,15 @@ const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const response = await fetch('https://api.openai.com/v1/responses', {
-        method: 'POST',
+      const response = await fetch("https://api.openai.com/v1/responses", {
+        method: "POST",
         headers: {
           Authorization: `Bearer ${OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: 'gpt-6-luna',
-          reasoning: { effort: 'none' },
+          model: "gpt-6-luna",
+          reasoning: { effort: "none" },
           max_output_tokens: 8192,
           input: prompt,
         }),
@@ -490,26 +602,37 @@ async function fetchWithRetry(prompt, maxRetries = 3, delayMs = 3000) {
 
       const generatedText = (payload.output || [])
         .flatMap((item) => item.content || [])
-        .filter((item) => item.type === 'output_text')
-        .map((item) => item.text || '')
-        .join('\n')
+        .filter((item) => item.type === "output_text")
+        .map((item) => item.text || "")
+        .join("\n")
         .trim();
 
-      if (!generatedText) throw new Error('OpenAI 응답에 글 본문이 없습니다.');
+      if (!generatedText) throw new Error("OpenAI 응답에 글 본문이 없습니다.");
       return generatedText;
     } catch (error) {
-      console.warn(`⚠️ [호출 재시도 ${attempt}/${maxRetries}]: ${error.message}`);
+      console.warn(
+        `⚠️ [호출 재시도 ${attempt}/${maxRetries}]: ${error.message}`,
+      );
       if (attempt === maxRetries) throw error;
       await delay(delayMs * attempt);
     }
   }
-  throw new Error('OpenAI API 호출이 최대 재시도 횟수를 초과했습니다.');
+  throw new Error("OpenAI API 호출이 최대 재시도 횟수를 초과했습니다.");
 }
 
-async function generateSinglePost(lang, index, topic, publishDateBase = new Date(), imageSet, resumeState = null) {
+async function generateSinglePost(
+  lang,
+  index,
+  topic,
+  publishDateBase = new Date(),
+  imageSet,
+  resumeState = null,
+) {
   const i18n = I18N_SECTIONS[lang.code] || I18N_SECTIONS.ko;
 
-  console.log(`\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`);
+  console.log(
+    `\n🚀 [${index + 1}/12] ${lang.name} (${lang.code}) 2-1호기 애드센스 표준 포스팅 생성 중...`,
+  );
 
   const { coverUrl, bodyUrl } = imageSet || getPostImages(index);
   const pubDateIso = getKstPublishDateIso(publishDateBase);
@@ -563,7 +686,7 @@ Provide exactly 3 practical Q&A items. You MUST put an empty line between Questi
 1. Never put asterisks (**) inside H2 headings.
 2. Bold keywords with strict syntax: **keyword** (no space inside asterisks).
 3. Put error codes or settings in inline backticks (e.g. \`W-8BEN\`, \`3DS2\`).
-${lang.code !== 'ko' ? `- Absolutely NO Korean characters in non-Korean posts.` : ''}
+${lang.code !== "ko" ? `- Absolutely NO Korean characters in non-Korean posts.` : ""}
 
 [Strict Output Format]
 Return ONLY raw Markdown starting directly with frontmatter:
@@ -579,26 +702,31 @@ tags: ${JSON.stringify(i18n.tags)}
 
   const renderAndValidate = (rawText) => {
     let text = rawText.trim();
-    if (text.startsWith('```markdown')) text = text.replace(/^```markdown\n/, '').replace(/\n```$/, '');
-    if (text.startsWith('```')) text = text.replace(/^```\n/, '').replace(/\n```$/, '');
+    if (text.startsWith("```markdown"))
+      text = text.replace(/^```markdown\n/, "").replace(/\n```$/, "");
+    if (text.startsWith("```"))
+      text = text.replace(/^```\n/, "").replace(/\n```$/, "");
 
     const fmMatch = text.match(/^---[\s\S]*?---\n*/);
-    if (!fmMatch) return { content: null, errors: ['frontmatter 구분자 누락'] };
+    if (!fmMatch) return { content: null, errors: ["frontmatter 구분자 누락"] };
 
     let frontmatter = fmMatch[0].trim();
     let body = text.slice(fmMatch[0].length).trim();
-    body = body.replace(/^#\s+[^\n]+\n+/, '');
+    body = body.replace(/^#\s+[^\n]+\n+/, "");
     frontmatter = frontmatter
       .replace(/category:\s*["'][^"']*["']/i, "category: 'troubleshooting'")
       .replace(/category:\s*[^\n\r]+/i, "category: 'troubleshooting'");
     body = inspectAndHealMarkdown(body, lang.code);
 
-    if (lang.code === 'ko') {
-      console.log(`   📏 [2-1호기 본문 최종 글자 수] ${body.length}자 (애드센스 표준: 2,400~2,600자)`);
+    if (lang.code === "ko") {
+      console.log(
+        `   📏 [2-1호기 본문 최종 글자 수] ${body.length}자 (애드센스 표준: 2,400~2,600자)`,
+      );
     }
 
     const middleImageMarkdown = `\n\n![Troubleshooting Guide](${bodyUrl})\n\n`;
-    if (body.includes('## 2.')) body = body.replace(/(##\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
+    if (body.includes("## 2."))
+      body = body.replace(/(##\s*2\.[^\n]+)/, `${middleImageMarkdown}$1`);
     else body = `${middleImageMarkdown}${body}`;
 
     text = `${frontmatter}\n\n${body}\n`;
@@ -610,7 +738,8 @@ tags: ${JSON.stringify(i18n.tags)}
   for (let correctionAttempt = 0; correctionAttempt <= 2; correctionAttempt++) {
     let requestPrompt = prompt;
     if (correctionAttempt > 0) {
-      const wordCountGuidance = buildWordCountCorrectionGuidance(validationErrors);
+      const wordCountGuidance =
+        buildWordCountCorrectionGuidance(validationErrors);
       requestPrompt = `${prompt}
 
 [필수 교정 요청: ${correctionAttempt}/2]
@@ -619,19 +748,21 @@ tags: ${JSON.stringify(i18n.tags)}
 기존 글의 의미를 불필요하게 바꾸지 말고, 제목·설명·카테고리·태그·주제·발행일·이미지 필드는 그대로 유지하세요.
 검증 오류 목록(JSON):
 ${JSON.stringify(validationErrors)}
-${wordCountGuidance ? `\n${wordCountGuidance}\n` : ''}
+${wordCountGuidance ? `\n${wordCountGuidance}\n` : ""}
 이전 원고:
 ${draftText}
 `;
     } else if (resumeState?.validationErrors?.length) {
-      const wordCountGuidance = buildWordCountCorrectionGuidance(resumeState.validationErrors);
+      const wordCountGuidance = buildWordCountCorrectionGuidance(
+        resumeState.validationErrors,
+      );
       requestPrompt = `${prompt}
 
 [이전 실행의 검증 오류를 고려한 재작성]
 이전 실행에서 발견한 정확한 문제 목록:
 ${JSON.stringify(resumeState.validationErrors)}
-${wordCountGuidance ? `\n${wordCountGuidance}\n` : ''}
-${resumeState.draftText ? `이전 원고:\n${resumeState.draftText}` : '이전 실행 원고는 저장하지 않았으므로, 새로 작성하면서 모든 검증 오류를 해결하세요.'}
+${wordCountGuidance ? `\n${wordCountGuidance}\n` : ""}
+${resumeState.draftText ? `이전 원고:\n${resumeState.draftText}` : "이전 실행 원고는 저장하지 않았으므로, 새로 작성하면서 모든 검증 오류를 해결하세요."}
 처음부터 완전한 원고를 작성하고 오류 목록의 모든 항목을 해결하세요.
 `;
     }
@@ -652,7 +783,9 @@ ${resumeState.draftText ? `이전 원고:\n${resumeState.draftText}` : '이전 �
 
     const result = renderAndValidate(rawText);
     if (!result.errors.length) {
-      console.log(`   ✅ [검증 통과] ${lang.code} 원고를 임시 체크포인트에 보존했습니다.`);
+      console.log(
+        `   ✅ [검증 통과] ${lang.code} 원고를 임시 체크포인트에 보존했습니다.`,
+      );
       return {
         ok: true,
         content: result.content,
@@ -664,7 +797,9 @@ ${resumeState.draftText ? `이전 원고:\n${resumeState.draftText}` : '이전 �
 
     draftText = rawText;
     validationErrors = result.errors;
-    console.warn(`⚠️ [검증 실패] ${lang.code} 교정 ${correctionAttempt}/2: ${validationErrors.join(', ')}`);
+    console.warn(
+      `⚠️ [검증 실패] ${lang.code} 교정 ${correctionAttempt}/2: ${validationErrors.join(", ")}`,
+    );
   }
 
   return {
@@ -677,55 +812,74 @@ ${resumeState.draftText ? `이전 원고:\n${resumeState.draftText}` : '이전 �
 }
 
 async function recoverMissingJapaneseVietnameseLocales() {
-  const expectedCheckpointPath = '.repair-21ho-checkpoint.json';
-  if (!isLocaleRepair || process.env.LOCALE_REPAIR_CHECKPOINT_FILE !== expectedCheckpointPath) {
-    throw new Error('JA/VI 복구 전용 체크포인트 설정이 올바르지 않습니다.');
+  const expectedCheckpointPath = ".repair-21ho-checkpoint.json";
+  if (
+    !isLocaleRepair ||
+    process.env.LOCALE_REPAIR_CHECKPOINT_FILE !== expectedCheckpointPath
+  ) {
+    throw new Error("JA/VI 복구 전용 체크포인트 설정이 올바르지 않습니다.");
   }
 
   const queue = loadRetryQueue();
   const job = assertLocaleRepairArtifact(queue);
   const existingPosts = {};
-  const existingCodes = TARGET_LANGS.map((lang) => lang.code).filter((code) => !['ja', 'vi'].includes(code));
+  const existingCodes = TARGET_LANGS.map((lang) => lang.code).filter(
+    (code) => !["ja", "vi"].includes(code),
+  );
 
   for (const code of existingCodes) {
     const filePath = path.join(POSTS_BASE_DIR, code, `${job.slug}.md`);
-    if (!fs.existsSync(filePath)) throw new Error(`기존 게시 locale ${code} 파일이 없습니다. 복구를 중단합니다.`);
-    existingPosts[code] = fs.readFileSync(filePath, 'utf-8');
+    if (!fs.existsSync(filePath))
+      throw new Error(
+        `기존 게시 locale ${code} 파일이 없습니다. 복구를 중단합니다.`,
+      );
+    existingPosts[code] = fs.readFileSync(filePath, "utf-8");
   }
   assertLocaleRepairExistingPosts(existingPosts);
 
   const generated = [];
-  for (const code of ['ja', 'vi']) {
+  for (const code of ["ja", "vi"]) {
     const langIndex = TARGET_LANGS.findIndex((lang) => lang.code === code);
     const lang = TARGET_LANGS[langIndex];
     const targetFile = path.join(POSTS_BASE_DIR, code, `${job.slug}.md`);
-    if (fs.existsSync(targetFile)) throw new Error(`${code} 대상 글이 이미 존재합니다. 덮어쓰지 않습니다.`);
+    if (fs.existsSync(targetFile))
+      throw new Error(`${code} 대상 글이 이미 존재합니다. 덮어쓰지 않습니다.`);
 
     const imageSet = job.imageSets[code];
     const result = await generateSinglePost(
       lang,
       langIndex,
       job.topic,
-      new Date('2026-10-31T10:40:00.000Z'),
-      imageSet
+      new Date("2026-10-31T10:40:00.000Z"),
+      imageSet,
     );
-    if (!result.ok) throw new Error(`${code} 원고가 통과하지 못해 두 locale 모두 게시하지 않습니다: ${result.errors.join(', ')}`);
+    if (!result.ok)
+      throw new Error(
+        `${code} 원고가 통과하지 못해 두 locale 모두 게시하지 않습니다: ${result.errors.join(", ")}`,
+      );
     assertLocaleRepairDraft(code, result.content, imageSet);
     generated.push({ code, filePath: targetFile, content: result.content });
   }
 
-  if (generated.length !== 2 || generated.map(({ code }) => code).sort().join(',') !== 'ja,vi') {
-    throw new Error('복구 결과가 정확히 JA/VI 두 locale이 아닙니다.');
+  if (
+    generated.length !== 2 ||
+    generated
+      .map(({ code }) => code)
+      .sort()
+      .join(",") !== "ja,vi"
+  ) {
+    throw new Error("복구 결과가 정확히 JA/VI 두 locale이 아닙니다.");
   }
   for (const { filePath } of generated) {
-    if (fs.existsSync(filePath)) throw new Error('복구 중 대상 파일이 생겼습니다. 덮어쓰지 않습니다.');
+    if (fs.existsSync(filePath))
+      throw new Error("복구 중 대상 파일이 생겼습니다. 덮어쓰지 않습니다.");
   }
 
   const createdFiles = [];
   try {
     for (const { filePath, content } of generated) {
       fs.mkdirSync(path.dirname(filePath), { recursive: true });
-      fs.writeFileSync(filePath, content, { encoding: 'utf-8', flag: 'wx' });
+      fs.writeFileSync(filePath, content, { encoding: "utf-8", flag: "wx" });
       createdFiles.push(filePath);
     }
   } catch (error) {
@@ -733,40 +887,49 @@ async function recoverMissingJapaneseVietnameseLocales() {
       try {
         fs.unlinkSync(filePath);
       } catch (cleanupError) {
-        console.error(`복구 원고 임시 정리 실패(${filePath}): ${cleanupError.message}`);
+        console.error(
+          `복구 원고 임시 정리 실패(${filePath}): ${cleanupError.message}`,
+        );
       }
     }
     throw error;
   }
 
-  setWorkflowOutput('locale-repair-ready');
-  console.log('✅ JA/VI 두 locale만 생성했습니다. topics.txt, 기존 10개 게시물, retry queue는 변경하지 않았습니다.');
+  setWorkflowOutput("locale-repair-ready");
+  console.log(
+    "✅ JA/VI 두 locale만 생성했습니다. topics.txt, 기존 10개 게시물, retry queue는 변경하지 않았습니다.",
+  );
 }
 
 async function run() {
-  console.log('==================================================');
-  console.log('LifeWebLab: 언어별 교정 재시도 및 원자적 12개국 발행');
-  console.log('==================================================');
+  console.log("==================================================");
+  console.log("LifeWebLab: 언어별 교정 재시도 및 원자적 12개국 발행");
+  console.log("==================================================");
 
   const queue = loadRetryQueue();
-  if (!fs.existsSync(TOPICS_FILE)) throw new Error('topics.txt 파일이 존재하지 않습니다.');
+  if (!fs.existsSync(TOPICS_FILE))
+    throw new Error("topics.txt 파일이 존재하지 않습니다.");
   const topicLines = fs
-    .readFileSync(TOPICS_FILE, 'utf-8')
+    .readFileSync(TOPICS_FILE, "utf-8")
     .split(/\r?\n/)
     .map((x) => x.trim())
     .filter(Boolean);
   if (!topicLines.length) {
     if (queue.length)
-      throw new Error('주제 파일은 비어 있지만 복구 체크포인트가 남아 있습니다. 자동으로 버리지 않습니다.');
-    console.log('새 주제가 없습니다. 생성하지 않습니다.');
-    setWorkflowOutput('idle');
+      throw new Error(
+        "주제 파일은 비어 있지만 복구 체크포인트가 남아 있습니다. 자동으로 버리지 않습니다.",
+      );
+    console.log("새 주제가 없습니다. 생성하지 않습니다.");
+    setWorkflowOutput("idle");
     return;
   }
 
   const topic = topicLines[0];
   const activeJobIndex = queue.findIndex((job) => job.topic === topic);
   if (activeJobIndex < 0 && queue.length) {
-    throw new Error('복구 큐의 주제가 topics.txt 첫 주제와 다릅니다. 잘못된 주제 건너뛰기를 막기 위해 중단합니다.');
+    throw new Error(
+      "복구 큐의 주제가 topics.txt 첫 주제와 다릅니다. 잘못된 주제 건너뛰기를 막기 위해 중단합니다.",
+    );
   }
 
   let job;
@@ -774,10 +937,17 @@ async function run() {
     job = queue[activeJobIndex];
     job.slug = job.slug || createTopicFileSlug(topic);
     job.queuedAt = job.queuedAt || new Date().toISOString();
-    job.validatedPosts = job.validatedPosts && typeof job.validatedPosts === 'object' ? job.validatedPosts : {};
-    job.imageSets = job.imageSets && typeof job.imageSets === 'object' ? job.imageSets : {};
+    job.validatedPosts =
+      job.validatedPosts && typeof job.validatedPosts === "object"
+        ? job.validatedPosts
+        : {};
+    job.imageSets =
+      job.imageSets && typeof job.imageSets === "object" ? job.imageSets : {};
     job.failedCodes = Array.isArray(job.failedCodes) ? job.failedCodes : [];
-    job.errorsByCode = job.errorsByCode && typeof job.errorsByCode === 'object' ? job.errorsByCode : {};
+    job.errorsByCode =
+      job.errorsByCode && typeof job.errorsByCode === "object"
+        ? job.errorsByCode
+        : {};
   } else {
     job = {
       topic,
@@ -789,13 +959,16 @@ async function run() {
       imageSets: {},
       promptRecipeVersion: PROMPT_RECIPE_VERSION,
     };
-    for (let i = 0; i < TARGET_LANGS.length; i++) job.imageSets[TARGET_LANGS[i].code] = getPostImages(i);
+    for (let i = 0; i < TARGET_LANGS.length; i++)
+      job.imageSets[TARGET_LANGS[i].code] = getPostImages(i);
     queue.push(job);
     saveRetryQueue(queue);
   }
 
   if (reconcilePromptCheckpoint(job)) {
-    console.warn('⚠️ 프롬프트 버전이 변경되어 이전 체크포인트 원고를 무효화하고 새 지침으로 다시 작성합니다.');
+    console.warn(
+      "⚠️ 프롬프트 버전이 변경되어 이전 체크포인트 원고를 무효화하고 새 지침으로 다시 작성합니다.",
+    );
     saveRetryQueue(queue);
   }
 
@@ -806,7 +979,9 @@ async function run() {
     if (!saved) continue;
     const savedErrors = validateGeneratedPost(saved, lang.code);
     if (savedErrors.length) {
-      console.warn(`⚠️ 체크포인트 ${lang.code} 재검사 실패. 해당 언어만 다시 작성합니다: ${savedErrors.join(', ')}`);
+      console.warn(
+        `⚠️ 체크포인트 ${lang.code} 재검사 실패. 해당 언어만 다시 작성합니다: ${savedErrors.join(", ")}`,
+      );
       delete job.validatedPosts[lang.code];
       job.errorsByCode[lang.code] = savedErrors;
       saveRetryQueue(queue);
@@ -816,16 +991,25 @@ async function run() {
   for (let i = 0; i < TARGET_LANGS.length; i++) {
     const lang = TARGET_LANGS[i];
     if (job.validatedPosts[lang.code]) {
-      console.log(`⏭️ ${lang.code}: 이전 실행에서 검증된 원고를 보존하고 재생성하지 않습니다.`);
+      console.log(
+        `⏭️ ${lang.code}: 이전 실행에서 검증된 원고를 보존하고 재생성하지 않습니다.`,
+      );
       continue;
     }
 
     const imageSet = job.imageSets[lang.code] || getPostImages(i);
     job.imageSets[lang.code] = imageSet;
-    const result = await generateSinglePost(lang, i, topic, new Date(job.queuedAt), imageSet, {
-      validationErrors: job.errorsByCode[lang.code] || [],
-      draftText: null,
-    });
+    const result = await generateSinglePost(
+      lang,
+      i,
+      topic,
+      new Date(job.queuedAt),
+      imageSet,
+      {
+        validationErrors: job.errorsByCode[lang.code] || [],
+        draftText: null,
+      },
+    );
 
     if (result.ok) {
       job.validatedPosts[lang.code] = result.content;
@@ -836,7 +1020,7 @@ async function run() {
       job.errorsByCode[lang.code] = result.errors;
       if (!job.failedCodes.includes(lang.code)) job.failedCodes.push(lang.code);
       console.error(
-        `❌ ${lang.code}: 초기 생성과 최대 2회의 validator-guided 교정 후에도 통과하지 못했습니다. (교정 시도 ${result.correctionAttempts}회)`
+        `❌ ${lang.code}: 초기 생성과 최대 2회의 validator-guided 교정 후에도 통과하지 못했습니다. (교정 시도 ${result.correctionAttempts}회)`,
       );
     }
 
@@ -848,7 +1032,10 @@ async function run() {
   // 최종 검사에서 문제가 된 언어만 체크포인트에서 제외해 다시 생성합니다.
   for (const lang of TARGET_LANGS) {
     if (!job.validatedPosts[lang.code]) continue;
-    const errors = validateGeneratedPost(job.validatedPosts[lang.code], lang.code);
+    const errors = validateGeneratedPost(
+      job.validatedPosts[lang.code],
+      lang.code,
+    );
     if (errors.length) {
       delete job.validatedPosts[lang.code];
       job.errorsByCode[lang.code] = errors;
@@ -857,70 +1044,97 @@ async function run() {
 
   const publication = decidePublishLocales(
     TARGET_LANGS,
-    Object.keys(job.validatedPosts).filter((code) => typeof job.validatedPosts[code] === 'string'),
-    10
+    Object.keys(job.validatedPosts).filter(
+      (code) => typeof job.validatedPosts[code] === "string",
+    ),
+    10,
   );
   const validCodes = publication.passingCodes;
   job.failedCodes = publication.failedCodes;
   if (!publication.canPublish) {
-    job.status = 'checkpoint';
+    job.status = "checkpoint";
     saveRetryQueue(queue);
     console.warn(
-      `🧷 ${validCodes.length}/12개 언어만 통과했습니다. 기준(10개)에 못 미쳐 이번 주제는 게시하지 않습니다. 실패 언어 [${job.failedCodes.join(', ')}]는 다음 실행에서 이어갑니다.`
+      `🧷 ${validCodes.length}/12개 언어만 통과했습니다. 기준(10개)에 못 미쳐 이번 주제는 게시하지 않습니다. 실패 언어 [${job.failedCodes.join(", ")}]는 다음 실행에서 이어갑니다.`,
     );
-    setWorkflowOutput('checkpoint');
+    setWorkflowOutput("checkpoint");
     return;
   }
 
-  job.status = 'ready';
+  job.status = "ready";
   job.readyAt = new Date().toISOString();
   saveRetryQueue(queue);
   console.log(
-    `✅ ${validCodes.length}/12개 언어 검증 통과. 게시 대상: [${validCodes.join(', ')}], 제외 언어: [${job.failedCodes.join(', ')}]. 암호화된 준비 체크포인트를 저장했습니다.`
+    `✅ ${validCodes.length}/12개 언어 검증 통과. 게시 대상: [${validCodes.join(", ")}], 제외 언어: [${job.failedCodes.join(", ")}]. 암호화된 준비 체크포인트를 저장했습니다.`,
   );
-  setWorkflowOutput('ready');
+  setWorkflowOutput("ready");
 }
 
 async function materializeCheckpoint() {
   const queue = loadRetryQueue();
-  if (!fs.existsSync(TOPICS_FILE)) throw new Error('topics.txt 파일이 존재하지 않습니다.');
+  if (!fs.existsSync(TOPICS_FILE))
+    throw new Error("topics.txt 파일이 존재하지 않습니다.");
   const topicLines = fs
-    .readFileSync(TOPICS_FILE, 'utf-8')
+    .readFileSync(TOPICS_FILE, "utf-8")
     .split(/\r?\n/)
     .map((x) => x.trim())
     .filter(Boolean);
-  if (!topicLines.length) throw new Error('topics.txt가 비어 있어 체크포인트를 게시할 수 없습니다.');
+  if (!topicLines.length)
+    throw new Error("topics.txt가 비어 있어 체크포인트를 게시할 수 없습니다.");
 
   const topic = topicLines[0];
   const jobIndex = queue.findIndex((item) => item.topic === topic);
-  if (jobIndex < 0) throw new Error('현재 주제와 일치하는 발행 준비 체크포인트가 없습니다.');
+  if (jobIndex < 0)
+    throw new Error("현재 주제와 일치하는 발행 준비 체크포인트가 없습니다.");
   const job = queue[jobIndex];
   if (job.promptRecipeVersion !== PROMPT_RECIPE_VERSION) {
-    throw new Error('체크포인트의 프롬프트 버전이 현재 생성기와 다릅니다. 먼저 생성 단계에서 다시 작성해야 합니다.');
+    throw new Error(
+      "체크포인트의 프롬프트 버전이 현재 생성기와 다릅니다. 먼저 생성 단계에서 다시 작성해야 합니다.",
+    );
   }
-  if (job.status !== 'ready') throw new Error('체크포인트가 12개 언어 발행 준비 상태가 아닙니다.');
+  if (job.status !== "ready")
+    throw new Error("체크포인트가 12개 언어 발행 준비 상태가 아닙니다.");
   const publication = decidePublishLocales(
     TARGET_LANGS,
-    Object.keys(job.validatedPosts || {}).filter((code) => typeof job.validatedPosts[code] === 'string'),
-    10
+    Object.keys(job.validatedPosts || {}).filter(
+      (code) => typeof job.validatedPosts[code] === "string",
+    ),
+    10,
   );
   const validLangs = publication.passingLocales;
   if (!publication.canPublish) {
-    throw new Error(`유효 원고가 ${validLangs.length}/12개뿐입니다. 최소 10개 기준 미달로 게시하지 않습니다.`);
+    throw new Error(
+      `유효 원고가 ${validLangs.length}/12개뿐입니다. 최소 10개 기준 미달로 게시하지 않습니다.`,
+    );
   }
 
   for (const lang of validLangs) {
-    const errors = validateGeneratedPost(job.validatedPosts[lang.code], lang.code);
-    if (errors.length) throw new Error(`최종 체크포인트 검증 실패(${lang.code}): ${errors.join(', ')}`);
+    const errors = validateGeneratedPost(
+      job.validatedPosts[lang.code],
+      lang.code,
+    );
+    if (errors.length)
+      throw new Error(
+        `최종 체크포인트 검증 실패(${lang.code}): ${errors.join(", ")}`,
+      );
   }
-  const skipped = TARGET_LANGS.filter((lang) => !job.validatedPosts[lang.code]).map((lang) => lang.code);
-  console.log(`게시 제외 언어: [${skipped.join(', ')}]`);
+  const skipped = TARGET_LANGS.filter(
+    (lang) => !job.validatedPosts[lang.code],
+  ).map((lang) => lang.code);
+  console.log(`게시 제외 언어: [${skipped.join(", ")}]`);
 
   const reusableLocales = new Set(
-    findReusablePostLocales(TARGET_LANGS, job.slug, job.validatedPosts, (localeCode, filename) => {
-      const filePath = path.join(POSTS_BASE_DIR, localeCode, filename);
-      return fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf-8') : null;
-    })
+    findReusablePostLocales(
+      TARGET_LANGS,
+      job.slug,
+      job.validatedPosts,
+      (localeCode, filename) => {
+        const filePath = path.join(POSTS_BASE_DIR, localeCode, filename);
+        return fs.existsSync(filePath)
+          ? fs.readFileSync(filePath, "utf-8")
+          : null;
+      },
+    ),
   );
 
   const createdFiles = [];
@@ -930,7 +1144,7 @@ async function materializeCheckpoint() {
       const targetDir = path.join(POSTS_BASE_DIR, lang.code);
       fs.mkdirSync(targetDir, { recursive: true });
       const filePath = path.join(targetDir, `${job.slug}.md`);
-      fs.writeFileSync(filePath, job.validatedPosts[lang.code], 'utf-8');
+      fs.writeFileSync(filePath, job.validatedPosts[lang.code], "utf-8");
       createdFiles.push(filePath);
     }
   } catch (error) {
@@ -938,27 +1152,34 @@ async function materializeCheckpoint() {
       try {
         fs.unlinkSync(filePath);
       } catch (cleanupError) {
-        console.error(`Failed to remove partial output ${filePath}: ${cleanupError.message}`);
+        console.error(
+          `Failed to remove partial output ${filePath}: ${cleanupError.message}`,
+        );
       }
     }
     throw error;
   }
 
   topicLines.shift();
-  fs.writeFileSync(TOPICS_FILE, topicLines.join('\n') + (topicLines.length ? '\n' : ''), 'utf-8');
+  fs.writeFileSync(
+    TOPICS_FILE,
+    topicLines.join("\n") + (topicLines.length ? "\n" : ""),
+    "utf-8",
+  );
   queue.splice(jobIndex, 1);
   saveRetryQueue(queue);
   console.log(
-    `✅ 원자적 게시 파일 생성 완료: ${job.slug}의 ${validLangs.length}/12개 통과 언어와 주제 포인터를 함께 준비했습니다.`
+    `✅ 원자적 게시 파일 생성 완료: ${job.slug}의 ${validLangs.length}/12개 통과 언어와 주제 포인터를 함께 준비했습니다.`,
   );
 }
 
 const task = isLocaleRepair
   ? recoverMissingJapaneseVietnameseLocales()
-  : process.argv.includes('--materialize')
+  : process.argv.includes("--materialize")
     ? materializeCheckpoint()
     : run();
 task.catch((error) => {
-  console.error('❌ 자동 발행 준비 실패:', error.message);
+  console.error("❌ 자동 발행 준비 실패:", error.message);
   process.exitCode = 1;
 });
+
