@@ -1,0 +1,76 @@
+name: Repair 2-1 Japanese and Vietnamese locales
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: blog-publish-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: false
+  queue: max
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  repair:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Download the original encrypted checkpoint
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: 13040812403
+          run-id: 41195722419
+          repository: ${{ github.repository }}
+          github-token: ${{ github.token }}
+          path: .repair-artifact
+
+      - name: Restore checkpoint to an isolated path
+        run: node scripts/restore-retry-checkpoint.mjs .repair-artifact .repair-21ho-checkpoint.json
+
+      - name: Generate and validate only JA and VI
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          LOCALE_REPAIR_CHECKPOINT_FILE: .repair-21ho-checkpoint.json
+        run: node generate-all.mjs --repair-ja-vi-20261031
+
+      - name: Remove temporary recovery artifacts
+        run: |
+          rm -f .repair-21ho-checkpoint.json
+          rm -rf .repair-artifact
+
+      - name: Build site
+        run: npm run build
+
+      - name: Verify only the two missing locale files changed
+        shell: bash
+        run: |
+          expected=$'src/data/post/ja/post-b4b719fb09ff3fb4.md\nsrc/data/post/vi/post-b4b719fb09ff3fb4.md'
+          actual="$(git status --porcelain | sed -E 's/^...//')"
+          if [[ "$actual" != "$expected" ]]; then
+            printf 'Unexpected changed paths:\n%s\n' "$actual"
+            exit 1
+          fi
+
+      - name: Commit only the repaired locales
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -- src/data/post/ja/post-b4b719fb09ff3fb4.md src/data/post/vi/post-b4b719fb09ff3fb4.md
+          git diff --cached --check
+          git commit -m "Repair missing Japanese and Vietnamese locales"
+          git push
+

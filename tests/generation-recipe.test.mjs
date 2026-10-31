@@ -22,7 +22,7 @@ test('generation recipe invalidates drafts when topic-specific headings change',
   assert.ok(source.includes('Do not use headings that could be reused unchanged for an unrelated article'));
   assert.ok(source.includes('Do not state a time-to-solve or guaranteed financial outcome'));
   assert.doesNotMatch(source, /TROUBLESHOOTING_SCENARIOS_30|scenarioForTopic|Assigned Situation|persona:/);
-  assert.ok(source.includes("localeContext: 'Korean-language readers in South Korea'"));
+  assert.match(source, /localeContext: ['"]Korean-language readers in South Korea['"]/);
 });
 
 test('word-count corrections aim inside the existing range without lowering validation standards', () => {
@@ -206,5 +206,5 @@ test('generator uses the tested publication plan in generation and materializati
   assert.equal((source.match(/decidePublishLocales\(/g) || []).length, 2);
   assert.equal((source.match(/if \(!publication\.canPublish\)/g) || []).length, 2);
   assert.match(source, /const validLangs = publication\.passingLocales;/);
-  assert.ok(source.includes('findReusablePostLocales(TARGET_LANGS, job.slug'));
+  assert.match(source, /findReusablePostLocales\(\s*TARGET_LANGS,\s*job\.slug,/);
 });
