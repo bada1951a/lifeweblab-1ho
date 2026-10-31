@@ -68,7 +68,7 @@ function getKstPublishDateIso(date = new Date()) {
   const year = kst.getUTCFullYear();
   const month = kst.getUTCMonth();
   const day = kst.getUTCDate();
-  return new Date(Date.UTC(year, month, day, 10, 40, 0)).toISOString();
+  return new Date(Date.UTC(year, month, day, 10, 8, 0)).toISOString();
 }
 
 function checkpointKey(salt) {
