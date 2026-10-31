@@ -46,6 +46,11 @@ jobs:
           LOCALE_REPAIR_CHECKPOINT_FILE: .repair-21ho-checkpoint.json
         run: node generate-all.mjs --repair-ja-vi-20261031
 
+      - name: Remove temporary recovery artifacts
+        run: |
+          rm -f .repair-21ho-checkpoint.json
+          rm -rf .repair-artifact
+
       - name: Build site
         run: npm run build
 
