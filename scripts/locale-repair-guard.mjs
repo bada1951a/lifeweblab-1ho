@@ -7,10 +7,10 @@ export const LOCALE_REPAIR = Object.freeze({
 });
 
 function parseFrontmatter(content) {
-  const match = content.match(/^---\\s*\\r?\\n([\\s\\S]*?)\\r?\\n---(?:\\r?\\n|$)/);
+  const match = content.match(/^---\s*\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
   if (!match) throw new Error('게시물 frontmatter를 읽을 수 없습니다.');
   const value = (name) => {
-    const field = match[1].match(new RegExp('^' + name + ':\\\\s*(.*)$', 'm'));
+    const field = match[1].match(new RegExp('^' + name + ':\\\s*(.*)$', 'm'));
     return field ? field[1].trim().replace(/^["']|["']$/g, '') : '';
   };
   return { value, body: content.slice(match[0].length) };
