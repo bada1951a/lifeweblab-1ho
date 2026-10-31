@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const artifactDir = path.resolve(process.argv[2] || '.retry-checkpoint-artifact');
 const artifactFile = path.join(artifactDir, '.publish-retry-queue.json');
-const targetFile = path.resolve('.publish-retry-queue.json');
+const targetFile = path.resolve(process.argv[3] || '.publish-retry-queue.json');
 
 if (!fs.existsSync(artifactFile)) {
   throw new Error('Downloaded artifact does not contain .publish-retry-queue.json.');
