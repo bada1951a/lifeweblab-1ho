@@ -1,4 +1,3 @@
-Fixing Stripe Webhook 500 Internal Server Error
 Square Terminal Payment Failed: Network Timeout Fix
 How to Solve Stripe card_velocity_exceeded Error
 PayPal Things Do Not Appear to Be Working at the Moment Fix
