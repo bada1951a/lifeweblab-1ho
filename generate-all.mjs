@@ -19,6 +19,11 @@ import {
   reconcilePromptCheckpoint,
 } from './src/utils/generation-recipe.js';
 import { buildNarrativeVoiceInstructions } from './src/utils/narrative-prompt.js';
+import {
+  assertLocaleRepairArtifact,
+  assertLocaleRepairExistingPosts,
+  assertLocaleRepairDraft,
+} from './scripts/locale-repair-guard.mjs';
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 if (!OPENAI_API_KEY) {
@@ -28,7 +33,11 @@ if (!OPENAI_API_KEY) {
 const POSTS_BASE_DIR = path.resolve('src/data/post');
 const TOPICS_FILE = path.resolve('topics.txt');
 const PHOTO_DIR = path.resolve('public/images/billing-photo');
-const RETRY_QUEUE_FILE = path.resolve('.publish-retry-queue.json');
+const LOCALE_REPAIR_ARG = '--repair-ja-vi-20261031';
+const isLocaleRepair = process.argv.includes(LOCALE_REPAIR_ARG);
+const RETRY_QUEUE_FILE = path.resolve(
+  isLocaleRepair ? process.env.LOCALE_REPAIR_CHECKPOINT_FILE || '.repair-21ho-checkpoint.json' : '.publish-retry-queue.json'
+);
 
 // =========================================================================
 // [2-1호기 전용] public/images/billing-photo 로컬 이미지 자동 셔플
@@ -359,24 +368,25 @@ function inspectAndHealMarkdown(body, langCode) {
 // =========================================================================
 // topics.txt 로드
 // =========================================================================
-if (!fs.existsSync(TOPICS_FILE)) {
-  console.error('❌ topics.txt 파일이 존재하지 않습니다.');
-  process.exit(1);
+if (!isLocaleRepair) {
+  if (!fs.existsSync(TOPICS_FILE)) {
+    console.error('❌ topics.txt 파일이 존재하지 않습니다.');
+    process.exit(1);
+  }
+
+  const fileContent = fs.readFileSync(TOPICS_FILE, 'utf-8');
+  const lines = fileContent
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+
+  if (lines.length === 0) {
+    console.log('⚠️ topics.txt에 남은 주제가 없습니다. 생성을 건너뜁니다.');
+    process.exit(0);
+  }
+
+  console.log(`📌 오늘 처리할 주제 [2-1호기 LifeWebLab]: "${lines[0]}"`);
 }
-
-const fileContent = fs.readFileSync(TOPICS_FILE, 'utf-8');
-const lines = fileContent
-  .split(/\r?\n/)
-  .map((l) => l.trim())
-  .filter((l) => l.length > 0);
-
-if (lines.length === 0) {
-  console.log('⚠️ topics.txt에 남은 주제가 없습니다. 생성을 건너뜁니다.');
-  process.exit(0);
-}
-
-const currentTopic = lines[0];
-console.log(`📌 오늘 처리할 주제 [2-1호기 LifeWebLab]: "${currentTopic}"`);
 
 const TARGET_LANGS = [
   {
@@ -666,6 +676,73 @@ ${resumeState.draftText ? `이전 원고:\n${resumeState.draftText}` : '이전 �
   };
 }
 
+async function recoverMissingJapaneseVietnameseLocales() {
+  const expectedCheckpointPath = '.repair-21ho-checkpoint.json';
+  if (!isLocaleRepair || process.env.LOCALE_REPAIR_CHECKPOINT_FILE !== expectedCheckpointPath) {
+    throw new Error('JA/VI 복구 전용 체크포인트 설정이 올바르지 않습니다.');
+  }
+
+  const queue = loadRetryQueue();
+  const job = assertLocaleRepairArtifact(queue);
+  const existingPosts = {};
+  const existingCodes = TARGET_LANGS.map((lang) => lang.code).filter((code) => !['ja', 'vi'].includes(code));
+
+  for (const code of existingCodes) {
+    const filePath = path.join(POSTS_BASE_DIR, code, `${job.slug}.md`);
+    if (!fs.existsSync(filePath)) throw new Error(`기존 게시 locale ${code} 파일이 없습니다. 복구를 중단합니다.`);
+    existingPosts[code] = fs.readFileSync(filePath, 'utf-8');
+  }
+  assertLocaleRepairExistingPosts(existingPosts);
+
+  const generated = [];
+  for (const code of ['ja', 'vi']) {
+    const langIndex = TARGET_LANGS.findIndex((lang) => lang.code === code);
+    const lang = TARGET_LANGS[langIndex];
+    const targetFile = path.join(POSTS_BASE_DIR, code, `${job.slug}.md`);
+    if (fs.existsSync(targetFile)) throw new Error(`${code} 대상 글이 이미 존재합니다. 덮어쓰지 않습니다.`);
+
+    const imageSet = job.imageSets[code];
+    const result = await generateSinglePost(
+      lang,
+      langIndex,
+      job.topic,
+      new Date('2026-10-31T10:40:00.000Z'),
+      imageSet
+    );
+    if (!result.ok) throw new Error(`${code} 원고가 통과하지 못해 두 locale 모두 게시하지 않습니다: ${result.errors.join(', ')}`);
+    assertLocaleRepairDraft(code, result.content, imageSet);
+    generated.push({ code, filePath: targetFile, content: result.content });
+  }
+
+  if (generated.length !== 2 || generated.map(({ code }) => code).sort().join(',') !== 'ja,vi') {
+    throw new Error('복구 결과가 정확히 JA/VI 두 locale이 아닙니다.');
+  }
+  for (const { filePath } of generated) {
+    if (fs.existsSync(filePath)) throw new Error('복구 중 대상 파일이 생겼습니다. 덮어쓰지 않습니다.');
+  }
+
+  const createdFiles = [];
+  try {
+    for (const { filePath, content } of generated) {
+      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+      fs.writeFileSync(filePath, content, { encoding: 'utf-8', flag: 'wx' });
+      createdFiles.push(filePath);
+    }
+  } catch (error) {
+    for (const filePath of createdFiles) {
+      try {
+        fs.unlinkSync(filePath);
+      } catch (cleanupError) {
+        console.error(`복구 원고 임시 정리 실패(${filePath}): ${cleanupError.message}`);
+      }
+    }
+    throw error;
+  }
+
+  setWorkflowOutput('locale-repair-ready');
+  console.log('✅ JA/VI 두 locale만 생성했습니다. topics.txt, 기존 10개 게시물, retry queue는 변경하지 않았습니다.');
+}
+
 async function run() {
   console.log('==================================================');
   console.log('LifeWebLab: 언어별 교정 재시도 및 원자적 12개국 발행');
@@ -876,7 +953,11 @@ async function materializeCheckpoint() {
   );
 }
 
-const task = process.argv.includes('--materialize') ? materializeCheckpoint() : run();
+const task = isLocaleRepair
+  ? recoverMissingJapaneseVietnameseLocales()
+  : process.argv.includes('--materialize')
+    ? materializeCheckpoint()
+    : run();
 task.catch((error) => {
   console.error('❌ 자동 발행 준비 실패:', error.message);
   process.exitCode = 1;
