@@ -38,7 +38,7 @@ jobs:
           path: .repair-artifact
 
       - name: Restore checkpoint to an isolated path
-        run: node scripts/restore-retry-checkpoint.mjs .repair-artifact .repair-21ho-checkpoint.json
+        run: node scripts/restore-retry-checkpoint.mjs .repair-artifact/locale-checkpoint-dbfcaf8aa8cfac8e1b1218730a7086967eacfbb2-post-b4b719fb09ff3fb4 .repair-21ho-checkpoint.json
 
       - name: Generate and validate only JA and VI
         env:
