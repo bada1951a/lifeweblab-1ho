@@ -1182,4 +1182,3 @@ task.catch((error) => {
   console.error("❌ 자동 발행 준비 실패:", error.message);
   process.exitCode = 1;
 });
-
