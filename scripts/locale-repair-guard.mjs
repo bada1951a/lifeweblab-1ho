@@ -79,4 +79,3 @@ export function assertLocaleRepairDraft(code, content, imageSet) {
   }
   return true;
 }
-
