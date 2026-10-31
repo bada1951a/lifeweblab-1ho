@@ -2,7 +2,7 @@ name: Auto Multi-Language Blog Publishing Pipeline (Unit 2-1)
 
 on:
   schedule:
-    - cron: '40 19 * * *'
+    - cron: '8 19 * * *'
       timezone: 'Asia/Seoul'
   workflow_dispatch: # 수동 즉시 실행 지원
 
