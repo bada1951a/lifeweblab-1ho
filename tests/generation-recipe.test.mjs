@@ -206,5 +206,5 @@ test('generator uses the tested publication plan in generation and materializati
   assert.equal((source.match(/decidePublishLocales\(/g) || []).length, 2);
   assert.equal((source.match(/if \(!publication\.canPublish\)/g) || []).length, 2);
   assert.match(source, /const validLangs = publication\.passingLocales;/);
-  assert.match(source, /findReusablePostLocales\\(\\s*TARGET_LANGS,\\s*job\\.slug,/);
+  assert.match(source, /findReusablePostLocales\(\s*TARGET_LANGS,\s*job\.slug,/);
 });
