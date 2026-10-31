@@ -1,5 +1,5 @@
 export const LOCALE_REPAIR = Object.freeze({
-  topic: 'Fixing a Stripe Webhook 500 Internal Server Error',
+  topic: 'Fixing Stripe Webhook 500 Internal Server Error',
   slug: 'post-b4b719fb09ff3fb4',
   publishDate: '2026-10-31T10:40:00.000Z',
   repairLocales: Object.freeze(['ja', 'vi']),
