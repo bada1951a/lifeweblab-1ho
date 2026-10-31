@@ -10,8 +10,8 @@ function parseFrontmatter(content) {
   const match = content.match(/^---\s*\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
   if (!match) throw new Error('게시물 frontmatter를 읽을 수 없습니다.');
   const value = (name) => {
-    const field = match[1].match(new RegExp('^' + name + ':\\\s*(.*)$', 'm'));
-    return field ? field[1].trim().replace(/^["']|["']$/g, '') : '';
+    const field = match[1].split(/\r?\n/).find((line) => line.startsWith(name + ':'));
+    return field ? field.slice(name.length + 1).trim().replace(/^["']|["']$/g, '') : '';
   };
   return { value, body: content.slice(match[0].length) };
 }
@@ -29,11 +29,17 @@ export function assertLocaleRepairArtifact(queue) {
   }
   for (const code of LOCALE_REPAIR.repairLocales) {
     const images = job.imageSets[code];
-    if (!images || typeof images.coverUrl !== 'string' || !images.coverUrl || typeof images.bodyUrl !== 'string' || !images.bodyUrl) {
-      throw new Error(`복구 아티팩트의 ${code} 원본 이미지 매핑이 없습니다.`);
+    if (
+      !images ||
+      typeof images.coverUrl !== 'string' ||
+      !images.coverUrl ||
+      typeof images.bodyUrl !== 'string' ||
+      !images.bodyUrl
+    ) {
+      throw new Error('복구 아티팩트의 ' + code + ' 원본 이미지 매핑이 없습니다.');
     }
     if (typeof job.validatedPosts[code] === 'string' && job.validatedPosts[code].trim()) {
-      throw new Error(`복구 아티팩트에 이미 ${code} 검증 원고가 있어 재생성하지 않습니다.`);
+      throw new Error('복구 아티팩트에 이미 ' + code + ' 검증 원고가 있어 재생성하지 않습니다.');
     }
   }
   return job;
@@ -49,7 +55,7 @@ export function assertLocaleRepairExistingPosts(posts) {
   for (const code of expected) {
     const { value } = parseFrontmatter(posts[code]);
     if (value('publishDate') !== LOCALE_REPAIR.publishDate) {
-      throw new Error(`기존 ${code} 게시물의 publishDate가 원본 세트와 다릅니다.`);
+      throw new Error('기존 ' + code + ' 게시물의 publishDate가 원본 세트와 다릅니다.');
     }
   }
   return true;
@@ -57,14 +63,14 @@ export function assertLocaleRepairExistingPosts(posts) {
 
 export function assertLocaleRepairDraft(code, content, imageSet) {
   if (!LOCALE_REPAIR.repairLocales.includes(code)) {
-    throw new Error(`허용되지 않은 복구 locale: ${code}`);
+    throw new Error('허용되지 않은 복구 locale: ' + code);
   }
   const { value, body } = parseFrontmatter(content);
   if (value('publishDate') !== LOCALE_REPAIR.publishDate) {
-    throw new Error(`${code} 원고 publishDate가 기존 세트 시간과 다릅니다.`);
+    throw new Error(code + ' 원고 publishDate가 기존 세트 시간과 다릅니다.');
   }
-  if (value('image') !== imageSet.coverUrl || !body.includes(`![Troubleshooting Guide](${imageSet.bodyUrl})`)) {
-    throw new Error(`${code} 원고가 체크포인트의 기존 이미지 매핑을 보존하지 않았습니다.`);
+  if (value('image') !== imageSet.coverUrl || !body.includes('![Troubleshooting Guide](' + imageSet.bodyUrl + ')')) {
+    throw new Error(code + ' 원고가 체크포인트의 기존 이미지 매핑을 보존하지 않았습니다.');
   }
   return true;
 }
