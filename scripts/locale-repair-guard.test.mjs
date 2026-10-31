@@ -70,4 +70,3 @@ test("rejects wrong locale, date, or image mapping before materialization", () =
     }),
   );
 });
-
